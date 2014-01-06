@@ -1,0 +1,28 @@
+{
+  "name": "FirehoseJS",
+  "version": "0.1.0",
+  "homepage": "https://github.com/mysterioustrousers/FirehoseJS",
+  "authors": [
+    "Adam Kirk <atomkirk@gmail.com>"
+  ],
+  "description": "A Javascript Library for interacting with the Firehose Help Desk API.",
+  "keywords": [
+    "firehose"
+  ],
+  "license": "MIT",
+  "ignore": [
+    "build",
+    "components",
+    "src",
+    "node_modules",
+    "test",
+    "*.*"
+  ],
+  "dependencies": {
+    "jquery": "~2.0.0"
+  },
+  "devDependencies": {
+    "qunit": "~1.12.0",
+    "faker": "https://github.com/Marak/Faker.js.git"
+  }
+}
