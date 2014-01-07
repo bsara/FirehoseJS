@@ -434,6 +434,24 @@ FirehoseJS.Agent = (function(_super) {
     });
   };
 
+  Agent.prototype.browserAppLoginURL = function(returnTo) {
+    var params, url;
+    url = "" + (FirehoseJS.client.serverAddress('browser')) + "/login";
+    params = [];
+    params.push("access_token=" + this.accessToken);
+    if (returnTo) {
+      params.push("return_to=" + (encodeURIComponent(returnTo)));
+    }
+    if (params.length > 0) {
+      url += "?" + (params.join('&'));
+    }
+    return url;
+  };
+
+  Agent.browserAppURL = function() {
+    return "" + (FirehoseJS.client.serverAddress('browser'));
+  };
+
   Agent.prototype.logout = function() {
     this.accessToken = null;
     this.URLToken = null;
@@ -441,6 +459,10 @@ FirehoseJS.Agent = (function(_super) {
     FirehoseJS.client.APIAccessToken = null;
     FirehoseJS.client.URLToken = null;
     return FirehoseJS.client.billingAccessToken = null;
+  };
+
+  Agent.prototype.browserAppLogoutURL = function() {
+    return "" + (FirehoseJS.client.serverAddress('marketing')) + "/?logout=true";
   };
 
   Agent.prototype.fetch = function() {
@@ -2217,54 +2239,3 @@ FirehoseJS.TwitterInteraction = (function(_super) {
   return TwitterInteraction;
 
 })(FirehoseJS.Interaction);
-
-FirehoseJS.URLGenerator = (function() {
-  function URLGenerator() {}
-
-  URLGenerator.APIURL = function() {
-    return FirehoseJS.client.serverAddress('API');
-  };
-
-  URLGenerator.browserURL = function() {
-    return FirehoseJS.client.serverAddress('browser');
-  };
-
-  URLGenerator.marketingURL = function() {
-    return FirehoseJS.client.serverAddress('marketing');
-  };
-
-  URLGenerator.billingURL = function() {
-    return FirehoseJS.client.serverAddress('billing');
-  };
-
-  URLGenerator.browserLoginURL = function(accessToken, id, URLToken, returnTo) {
-    var params, url;
-    url = "" + (this.browserURL()) + "/login";
-    params = [];
-    params.push("access_token=" + accessToken);
-    if (id != null) {
-      params.push("id=" + id);
-    }
-    if (URLToken != null) {
-      params.push("url_token=" + URLToken);
-    }
-    if (returnTo) {
-      params.push("return_to=" + (encodeURIComponent(returnTo)));
-    }
-    if (params.length > 0) {
-      url += "?" + (params.join('&'));
-    }
-    return url;
-  };
-
-  URLGenerator.browserAppURL = function() {
-    return "" + (this.browserURL()) + "/app";
-  };
-
-  URLGenerator.browserLogoutURL = function() {
-    return "" + (this.marketingURL()) + "/?logout=true";
-  };
-
-  return URLGenerator;
-
-})();

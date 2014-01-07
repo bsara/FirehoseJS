@@ -65,8 +65,22 @@ class FirehoseJS.Agent extends FirehoseJS.Object
       this._populateWithJSON data
       FirehoseJS.client.APIAccessToken = @accessToken
       FirehoseJS.Agent.loggedInAgent = this
+      
+      
+  browserAppLoginURL: (returnTo) ->
+    url = "#{FirehoseJS.client.serverAddress('browser')}/login"
+    params = []
+    params.push "access_token=#{@accessToken}"
+    params.push "return_to=#{encodeURIComponent(returnTo)}" if returnTo
+    if params.length > 0
+      url += "?#{params.join('&')}"
+    url
     
+  
+  @browserAppURL: ->
+    "#{FirehoseJS.client.serverAddress('browser')}"
     
+  
   logout: ->
     @accessToken                          = null
     @URLToken                             = null
@@ -74,6 +88,10 @@ class FirehoseJS.Agent extends FirehoseJS.Object
     FirehoseJS.client.APIAccessToken      = null
     FirehoseJS.client.URLToken            = null
     FirehoseJS.client.billingAccessToken  = null
+    
+    
+  browserAppLogoutURL: ->
+    "#{FirehoseJS.client.serverAddress('marketing')}/?logout=true"
     
   
   fetch: ->
