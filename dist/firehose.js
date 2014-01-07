@@ -250,15 +250,15 @@ FirehoseJS.Client = (function() {
     development: {
       APIURL: "http://localhost:3000",
       browserURL: "http://localhost:3001",
-      marketingURL: "http://localhost:3001",
-      billingURL: "http://localhost:3002",
+      marketingURL: "http://localhost:3002",
+      billingURL: "http://localhost:3003",
       stripeKey: "pk_test_oIyMNHil987ug1v8owRhuJwr"
     },
     test: {
-      APIURL: "http://localhost:3001",
-      browserURL: "http://localhost:3002",
-      marketingURL: "http://localhost:3002",
-      billingURL: "http://localhost:3003",
+      APIURL: "http://localhost:3010",
+      browserURL: "http://localhost:3011",
+      marketingURL: "http://localhost:3012",
+      billingURL: "http://localhost:3013",
       stripeKey: "pk_test_oIyMNHil987ug1v8owRhuJwr"
     }
   };
@@ -2218,25 +2218,53 @@ FirehoseJS.TwitterInteraction = (function(_super) {
 
 })(FirehoseJS.Interaction);
 
-FirehoseJS.Utils = (function() {
-  function Utils() {}
+FirehoseJS.URLGenerator = (function() {
+  function URLGenerator() {}
 
-  Utils.prototype.APIURL = function() {
+  URLGenerator.APIURL = function() {
     return FirehoseJS.client.serverAddress('API');
   };
 
-  Utils.prototype.browserURL = function() {
+  URLGenerator.browserURL = function() {
     return FirehoseJS.client.serverAddress('browser');
   };
 
-  Utils.prototype.marketingURL = function() {
+  URLGenerator.marketingURL = function() {
     return FirehoseJS.client.serverAddress('marketing');
   };
 
-  Utils.prototype.billingURL = function() {
+  URLGenerator.billingURL = function() {
     return FirehoseJS.client.serverAddress('billing');
   };
 
-  return Utils;
+  URLGenerator.browserLoginURL = function(accessToken, id, URLToken, returnTo) {
+    var params, url;
+    url = "" + (this.browserURL()) + "/login";
+    params = [];
+    params.push("access_token=" + accessToken);
+    if (id != null) {
+      params.push("id=" + id);
+    }
+    if (URLToken != null) {
+      params.push("url_token=" + URLToken);
+    }
+    if (returnTo != null) {
+      params.push("&return_to=" + (encodeURIComponent(returnTo)));
+    }
+    if (params.length > 0) {
+      url += "?" + (params.join('&'));
+    }
+    return url;
+  };
+
+  URLGenerator.browserAppURL = function() {
+    return "" + (this.browserURL()) + "/app";
+  };
+
+  URLGenerator.browserLogoutURL = function() {
+    return "" + (this.marketingURL()) + "/?logout=true";
+  };
+
+  return URLGenerator;
 
 })();

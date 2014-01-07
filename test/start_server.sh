@@ -25,4 +25,4 @@ then
 fi
 # prepare the test db and start up the rails server in test environment
 bundle exec rake fh_billing:test:client:prepare
-rails s -e testclient -p 3011 -d
+rails s -e testclient -p 3013 -d
