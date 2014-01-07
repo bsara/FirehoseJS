@@ -65,7 +65,7 @@ firehoseTest 'Browser App URL', 1, (agent) ->
   start()
   
 firehoseTest 'Browser App Logout URL', 1, (agent) ->
-  url = agent.browserAppLogoutURL()
+  url = FirehoseJS.Agent.browserAppLogoutURL()
   equal url, "http://localhost:3012/?logout=true"
   start()
     

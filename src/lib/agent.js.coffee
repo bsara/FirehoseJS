@@ -90,7 +90,7 @@ class FirehoseJS.Agent extends FirehoseJS.Object
     FirehoseJS.client.billingAccessToken  = null
     
     
-  browserAppLogoutURL: ->
+  @browserAppLogoutURL: ->
     "#{FirehoseJS.client.serverAddress('marketing')}/?logout=true"
     
   

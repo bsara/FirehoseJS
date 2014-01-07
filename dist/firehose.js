@@ -461,7 +461,7 @@ FirehoseJS.Agent = (function(_super) {
     return FirehoseJS.client.billingAccessToken = null;
   };
 
-  Agent.prototype.browserAppLogoutURL = function() {
+  Agent.browserAppLogoutURL = function() {
     return "" + (FirehoseJS.client.serverAddress('marketing')) + "/?logout=true";
   };
 
