@@ -479,6 +479,29 @@ FirehoseJS.Agent = (function(_super) {
     });
   };
 
+  Agent.requestPasswordReset = function(email) {
+    var params;
+    params = {
+      route: "request_reset_password",
+      body: {
+        email: email
+      }
+    };
+    return FirehoseJS.client.post(params);
+  };
+
+  Agent.resetPassword = function(token, newPassword) {
+    var params;
+    params = {
+      route: "reset_password",
+      body: {
+        token: token,
+        password: newPassword
+      }
+    };
+    return FirehoseJS.client.post(params);
+  };
+
   Agent.prototype.setNewPassword = function(newPassword) {
     return this._password = newPassword;
   };
@@ -2178,3 +2201,41 @@ FirehoseJS.TwitterInteraction = (function(_super) {
   return TwitterInteraction;
 
 })(FirehoseJS.Interaction);
+
+FirehoseJS.Utils = (function() {
+  function Utils() {}
+
+  Utils.APIURL = function() {
+    FirehoseJS.Utils._inferEnvironment();
+    return FirehoseJS.client.serverAddress('API');
+  };
+
+  Utils.browserURL = function() {
+    FirehoseJS.Utils._inferEnvironment();
+    return FirehoseJS.client.serverAddress('browser');
+  };
+
+  Utils.marketingURL = function() {
+    FirehoseJS.Utils._inferEnvironment();
+    return FirehoseJS.client.serverAddress('marketing');
+  };
+
+  Utils.billingURL = function() {
+    FirehoseJS.Utils._inferEnvironment();
+    return FirehoseJS.client.serverAddress('billing');
+  };
+
+  Utils._inferEnvironment = function() {
+    var anchor;
+    anchor = document.createElement("a");
+    anchor.href = document.URL;
+    if (anchor.hostname === "localhost") {
+      return FirehoseJS.client.setEnvironment("development");
+    } else {
+      return FirehoseJS.client.setEnvironment("production");
+    }
+  };
+
+  return Utils;
+
+})();

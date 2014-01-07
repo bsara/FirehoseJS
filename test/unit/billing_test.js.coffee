@@ -59,7 +59,7 @@ firehoseTest 'Add', 6, (agent) ->
   .fail (jqXHR, textStatus, errorThrown) ->
     start()
     
-firehoseTest 'Add', 6, (agent) ->
+firehoseTest 'Fetch', 6, (agent) ->
   firstAgent = new FirehoseJS.Agent( "agent1@example.com", "pw" )
   firstAgent.login()
   .done (data, textStatus) ->

@@ -73,6 +73,7 @@ module.exports = (grunt) ->
           files.push "lib/tag"
           files.push "lib/twitter_account"
           files.push "lib/twitter_interaction"
+          files.push "lib/utils"
           sources = []
           sources.push 'stripe/stripe.js'
           for file in files

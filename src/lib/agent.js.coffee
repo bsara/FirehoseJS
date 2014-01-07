@@ -109,6 +109,24 @@ class FirehoseJS.Agent extends FirehoseJS.Object
       for notification in notifications
         idx = notifications.indexOf notification
         notifications.splice( idx, 1 )
+        
+        
+  @requestPasswordReset: (email) ->
+    params = 
+      route: "request_reset_password"
+      body:
+        email: email
+    FirehoseJS.client.post( params )
+    
+  
+  @resetPassword: (token, newPassword) ->
+    params = 
+      route: "reset_password"
+      body:
+        token:    token
+        password: newPassword
+    FirehoseJS.client.post( params )
+    
 
 
   setNewPassword: (newPassword) ->
