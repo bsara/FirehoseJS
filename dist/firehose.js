@@ -133,11 +133,11 @@ FirehoseJS.Client = (function() {
 
   Client.prototype.billingAccessToken = null;
 
-  Client.prototype.env = 'production';
+  Client.prototype.env = null;
 
   function Client() {
     this._firefoxHack();
-    this.setEnvironment(this.env);
+    this._ensureEnvironment();
   }
 
   Client.prototype.setEnvironment = function(environment) {
@@ -174,11 +174,13 @@ FirehoseJS.Client = (function() {
   };
 
   Client.prototype.serverAddress = function(server) {
+    this._ensureEnvironment();
     return this._environments[this.env]["" + server + "URL"];
   };
 
   Client.prototype._sendRequest = function(options) {
     var body, defaults, headers, key, method, page, paramStrings, params, perPage, route, server, url, value;
+    this._ensureEnvironment();
     defaults = {
       server: 'API',
       route: '',
@@ -258,6 +260,20 @@ FirehoseJS.Client = (function() {
       marketingURL: "http://localhost:3002",
       billingURL: "http://localhost:3003",
       stripeKey: "pk_test_oIyMNHil987ug1v8owRhuJwr"
+    }
+  };
+
+  Client.prototype._ensureEnvironment = function() {
+    var anchor;
+    if (this.env != null) {
+      return;
+    }
+    anchor = document.createElement("a");
+    anchor.href = document.URL;
+    if (anchor.hostname === "localhost") {
+      return this.setEnvironment("development");
+    } else {
+      return this.setEnvironment("production");
     }
   };
 
@@ -2205,35 +2221,20 @@ FirehoseJS.TwitterInteraction = (function(_super) {
 FirehoseJS.Utils = (function() {
   function Utils() {}
 
-  Utils.APIURL = function() {
-    FirehoseJS.Utils._inferEnvironment();
+  Utils.prototype.APIURL = function() {
     return FirehoseJS.client.serverAddress('API');
   };
 
-  Utils.browserURL = function() {
-    FirehoseJS.Utils._inferEnvironment();
+  Utils.prototype.browserURL = function() {
     return FirehoseJS.client.serverAddress('browser');
   };
 
-  Utils.marketingURL = function() {
-    FirehoseJS.Utils._inferEnvironment();
+  Utils.prototype.marketingURL = function() {
     return FirehoseJS.client.serverAddress('marketing');
   };
 
-  Utils.billingURL = function() {
-    FirehoseJS.Utils._inferEnvironment();
+  Utils.prototype.billingURL = function() {
     return FirehoseJS.client.serverAddress('billing');
-  };
-
-  Utils._inferEnvironment = function() {
-    var anchor;
-    anchor = document.createElement("a");
-    anchor.href = document.URL;
-    if (anchor.hostname === "localhost") {
-      return FirehoseJS.client.setEnvironment("development");
-    } else {
-      return FirehoseJS.client.setEnvironment("production");
-    }
   };
 
   return Utils;
