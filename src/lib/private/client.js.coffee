@@ -106,14 +106,14 @@ class FirehoseJS.Client
     development:
       APIURL        : "http://localhost:3000"
       browserURL    : "http://localhost:3001"
-      marketingURL  : "http://localhost:3001"
-      billingURL    : "http://localhost:3002"
-      stripeKey     : "pk_test_oIyMNHil987ug1v8owRhuJwr"
-    test:
-      APIURL        : "http://localhost:3001"
-      browserURL    : "http://localhost:3002"
       marketingURL  : "http://localhost:3002"
       billingURL    : "http://localhost:3003"
+      stripeKey     : "pk_test_oIyMNHil987ug1v8owRhuJwr"
+    test:
+      APIURL        : "http://localhost:3010"
+      browserURL    : "http://localhost:3011"
+      marketingURL  : "http://localhost:3012"
+      billingURL    : "http://localhost:3013"
       stripeKey     : "pk_test_oIyMNHil987ug1v8owRhuJwr"
     
     
