@@ -18,7 +18,7 @@ class FirehoseJS.URLGenerator
     params.push "access_token=#{accessToken}"
     params.push "id=#{id}" if id?
     params.push "url_token=#{URLToken}" if URLToken?
-    params.push "&return_to=#{encodeURIComponent(returnTo)}" if returnTo?
+    params.push "return_to=#{encodeURIComponent(returnTo)}" if returnTo
     if params.length > 0
       url += "?#{params.join('&')}"
     url
