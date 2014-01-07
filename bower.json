@@ -16,7 +16,16 @@
     "src",
     "node_modules",
     "test",
-    "*.*"
+    "stripe",
+    ".bowerrc",
+    ".git",
+    ".gitignore",
+    ".jshintrc",
+    "bower.json",
+    "CONTRIBUTING.md",
+    "Gruntfile.coffee",
+    "package.json",
+    "README.md"
   ],
   "dependencies": {
     "jquery": "~2.0.0"
