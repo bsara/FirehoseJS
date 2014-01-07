@@ -7,19 +7,19 @@ class FirehoseJS.Client
   
   billingAccessToken: null
   
-  env: 'production'
+  env: null
   
   
   constructor: ->
     this._firefoxHack()
-    this.setEnvironment @env
+    this._ensureEnvironment()
     
   
   setEnvironment: (environment) ->
     @env = environment
     Stripe.setPublishableKey @_environments[@env]["stripeKey"]
     
-
+    
   get: (options) ->
     $.extend options, method: 'GET'
     this._sendRequest(options)
@@ -41,10 +41,12 @@ class FirehoseJS.Client
 
 
   serverAddress: (server) ->
+    this._ensureEnvironment()
     @_environments[@env]["#{server}URL"]
     
     
   _sendRequest: (options) ->
+    this._ensureEnvironment()
     
     defaults =
       server:   'API'   
@@ -115,22 +117,29 @@ class FirehoseJS.Client
       stripeKey     : "pk_test_oIyMNHil987ug1v8owRhuJwr"
     
     
+  _ensureEnvironment: ->
+    return if @env?
+    anchor = document.createElement "a"
+    anchor.href = document.URL
+    if anchor.hostname == "localhost"
+      this.setEnvironment "development"
+    else
+      this.setEnvironment "production"
+
+    
   _firefoxHack: ->
     # Firefox hack: http://api.jquery.com/jQuery.ajax/
     _super          = jQuery.ajaxSettings.xhr
     xhrCorsHeaders  = [ "Cache-Control", "Content-Language", "Content-Type", "Expires", "Last-Modified", "Pragma" ];
-
     jQuery.ajaxSettings.xhr = ->
       xhr = _super()
       getAllResponseHeaders = xhr.getAllResponseHeaders
-
       xhr.getAllResponseHeaders = ->
         allHeaders = ""
         try
           allHeaders = getAllResponseHeaders.apply( xhr )
           return allHeaders if allHeaders?
         catch e
-
         $.each xhrCorsHeaders, ( i, headerName ) ->
           allHeaders += "#{headerName}: #{xhr.getResponseHeader( headerName )}\n" if xhr.getResponseHeader( headerName )
           true

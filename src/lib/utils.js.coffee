@@ -1,31 +1,12 @@
-class FirehoseJS.Utils
-  
-  
-  @APIURL: ->
-    FirehoseJS.Utils._inferEnvironment()
-    FirehoseJS.client.serverAddress 'API'
+FirehoseJS.APIURL: ->
+  FirehoseJS.client.serverAddress 'API'
     
+FirehoseJS.browserURL: ->
+  FirehoseJS.client.serverAddress 'browser'
     
-  @browserURL: ->
-    FirehoseJS.Utils._inferEnvironment()
-    FirehoseJS.client.serverAddress 'browser'
+FirehoseJS.marketingURL: ->
+  FirehoseJS.client.serverAddress 'marketing'
     
-    
-  @marketingURL: ->
-    FirehoseJS.Utils._inferEnvironment()
-    FirehoseJS.client.serverAddress 'marketing'
-    
-    
-  @billingURL: ->
-    FirehoseJS.Utils._inferEnvironment()
-    FirehoseJS.client.serverAddress 'billing'
-    
-    
-  @_inferEnvironment: ->
-    anchor = document.createElement "a"
-    anchor.href = document.URL
-    if anchor.hostname == "localhost"
-      FirehoseJS.client.setEnvironment "development"
-    else
-      FirehoseJS.client.setEnvironment "production"
+FirehoseJS.billingURL: ->
+  FirehoseJS.client.serverAddress 'billing'
     

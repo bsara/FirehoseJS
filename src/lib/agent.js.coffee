@@ -128,7 +128,6 @@ class FirehoseJS.Agent extends FirehoseJS.Object
     FirehoseJS.client.post( params )
     
 
-
   setNewPassword: (newPassword) ->
     @_password = newPassword
 
