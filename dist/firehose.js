@@ -2248,8 +2248,8 @@ FirehoseJS.URLGenerator = (function() {
     if (URLToken != null) {
       params.push("url_token=" + URLToken);
     }
-    if (returnTo != null) {
-      params.push("&return_to=" + (encodeURIComponent(returnTo)));
+    if (returnTo) {
+      params.push("return_to=" + (encodeURIComponent(returnTo)));
     }
     if (params.length > 0) {
       url += "?" + (params.join('&'));
