@@ -9,6 +9,9 @@
   "keywords": [
     "firehose"
   ],
+  "main": [
+    "./firehose.min.js"
+  ],
   "license": "MIT",
   "ignore": [
     "build",
