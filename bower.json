@@ -10,7 +10,7 @@
     "firehose"
   ],
   "main": [
-    "./firehose.min.js"
+    "./dist/firehose.min.js"
   ],
   "license": "MIT",
   "ignore": [
