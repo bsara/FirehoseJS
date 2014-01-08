@@ -434,24 +434,6 @@ FirehoseJS.Agent = (function(_super) {
     });
   };
 
-  Agent.prototype.browserAppLoginURL = function(returnTo) {
-    var params, url;
-    url = "" + (FirehoseJS.client.serverAddress('browser')) + "/login";
-    params = [];
-    params.push("access_token=" + this.accessToken);
-    if (returnTo) {
-      params.push("return_to=" + (encodeURIComponent(returnTo)));
-    }
-    if (params.length > 0) {
-      url += "?" + (params.join('&'));
-    }
-    return url;
-  };
-
-  Agent.browserAppURL = function() {
-    return "" + (FirehoseJS.client.serverAddress('browser'));
-  };
-
   Agent.prototype.logout = function() {
     this.accessToken = null;
     this.URLToken = null;
@@ -459,10 +441,6 @@ FirehoseJS.Agent = (function(_super) {
     FirehoseJS.client.APIAccessToken = null;
     FirehoseJS.client.URLToken = null;
     return FirehoseJS.client.billingAccessToken = null;
-  };
-
-  Agent.browserAppLogoutURL = function() {
-    return "" + (FirehoseJS.client.serverAddress('marketing')) + "/?logout=true";
   };
 
   Agent.prototype.fetch = function() {

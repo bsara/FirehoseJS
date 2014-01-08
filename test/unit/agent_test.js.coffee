@@ -52,23 +52,6 @@ firehoseTest 'Log In', 8, (agent) ->
   .fail ->
     start()
     
-firehoseTest 'Browser App Login URL', 2, (agent) ->
-  url = agent.browserAppLoginURL()
-  equal url, "http://localhost:3011/login?access_token=#{agent.accessToken}"
-  url = agent.browserAppLoginURL( 'adam' )
-  equal url, "http://localhost:3011/login?access_token=#{agent.accessToken}&return_to=adam"
-  start()
-  
-firehoseTest 'Browser App URL', 1, (agent) ->
-  url = FirehoseJS.Agent.browserAppURL()
-  equal url, "http://localhost:3011"
-  start()
-  
-firehoseTest 'Browser App Logout URL', 1, (agent) ->
-  url = FirehoseJS.Agent.browserAppLogoutURL()
-  equal url, "http://localhost:3012/?logout=true"
-  start()
-    
 firehoseTest 'Fetch', 14, (agent) ->
   agent.fetch()
   .done (data, textStatus) ->
