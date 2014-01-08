@@ -9,6 +9,8 @@ class FirehoseJS.Client
   
   env: null
   
+  _unauthorizedHandler: null
+  
   
   constructor: ->
     this._firefoxHack()
@@ -44,6 +46,10 @@ class FirehoseJS.Client
     this._ensureEnvironment()
     @_environments[@env]["#{server}URL"]
     
+  
+  setUnauthorizedHandler: (callback) ->
+    @_unauthorizedHandler = callback
+      
     
   _sendRequest: (options) ->
     this._ensureEnvironment()
@@ -94,6 +100,9 @@ class FirehoseJS.Client
       dataType:     'json'
       headers:      headers
       contentType:  'application/json'
+      statusCode:
+        401: =>
+          @_unauthorizedHandler()
       
 
   _environments:

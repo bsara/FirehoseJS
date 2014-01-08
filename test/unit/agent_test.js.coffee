@@ -102,3 +102,10 @@ firehoseTest 'Destroy', 1, (agent) ->
     start()
   .fail ->
     start()   
+    
+firehoseTest 'Unauthorized Handler', 1, (agent) ->
+  FirehoseJS.client.setUnauthorizedHandler ->
+    ok true
+    start()
+  FirehoseJS.client.APIAccessToken = "blah"
+  agent.fetch()

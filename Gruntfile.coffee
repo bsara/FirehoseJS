@@ -112,6 +112,7 @@ module.exports = (grunt) ->
       
     uglify:
       options:
+        mangle: false
         banner: '<%= banner %>'
       dist: 
         src: 'dist/firehose.js'

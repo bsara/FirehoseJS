@@ -135,6 +135,8 @@ FirehoseJS.Client = (function() {
 
   Client.prototype.env = null;
 
+  Client.prototype._unauthorizedHandler = null;
+
   function Client() {
     this._firefoxHack();
     this._ensureEnvironment();
@@ -178,8 +180,13 @@ FirehoseJS.Client = (function() {
     return this._environments[this.env]["" + server + "URL"];
   };
 
+  Client.prototype.setUnauthorizedHandler = function(callback) {
+    return this._unauthorizedHandler = callback;
+  };
+
   Client.prototype._sendRequest = function(options) {
-    var body, defaults, headers, key, method, page, paramStrings, params, perPage, route, server, url, value;
+    var body, defaults, headers, key, method, page, paramStrings, params, perPage, route, server, url, value,
+      _this = this;
     this._ensureEnvironment();
     defaults = {
       server: 'API',
@@ -235,7 +242,12 @@ FirehoseJS.Client = (function() {
       processData: false,
       dataType: 'json',
       headers: headers,
-      contentType: 'application/json'
+      contentType: 'application/json',
+      statusCode: {
+        401: function() {
+          return _this._unauthorizedHandler();
+        }
+      }
     });
   };
 
