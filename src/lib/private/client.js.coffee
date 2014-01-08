@@ -102,7 +102,7 @@ class FirehoseJS.Client
       contentType:  'application/json'
       statusCode:
         401: =>
-          @_unauthorizedHandler()
+          @_unauthorizedHandler() if @_unauthorizedHandler?
       
 
   _environments:

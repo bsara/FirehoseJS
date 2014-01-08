@@ -37,7 +37,24 @@ asyncTest 'Sign Up', 8, ->
   .fail ->
     start()
        
-firehoseTest 'Log In', 8, (agent) ->
+firehoseTest 'Log In With un/pw', 8, (agent) ->
+  agent2 = new FirehoseJS.Agent( agent.email, "pw" )
+  agent2.login()
+  .done (data, textStatus) ->
+    equal textStatus, "success"
+    ok agent2.firstName?
+    ok agent2.lastName?
+    ok agent2.email?
+    ok agent2.id?
+    ok agent2.createdAt?
+    equal agent2.companies.length, 1
+    ok agent2.currentCompany?
+    start()
+  .fail ->
+    start()
+    
+firehoseTest 'Log In With Access Token', 8, (agent) ->
+  agent.email = null
   agent.login()
   .done (data, textStatus) ->
     equal textStatus, "success"

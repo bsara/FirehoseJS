@@ -245,7 +245,9 @@ FirehoseJS.Client = (function() {
       contentType: 'application/json',
       statusCode: {
         401: function() {
-          return _this._unauthorizedHandler();
+          if (_this._unauthorizedHandler != null) {
+            return _this._unauthorizedHandler();
+          }
         }
       }
     });
@@ -432,13 +434,18 @@ FirehoseJS.Agent = (function(_super) {
   Agent.prototype.login = function() {
     var params,
       _this = this;
+    FirehoseJS.client.APIAccessToken = null;
     params = {
-      route: 'login',
-      body: {
+      route: 'login'
+    };
+    if ((this.email != null) && (this._password != null)) {
+      params.body = {
         email: this.email,
         password: this._password
-      }
-    };
+      };
+    } else if (this.accessToken != null) {
+      FirehoseJS.client.APIAccessToken = this.accessToken;
+    }
     return FirehoseJS.client.post(params).done(function(data) {
       _this._populateWithJSON(data);
       FirehoseJS.client.APIAccessToken = _this.accessToken;

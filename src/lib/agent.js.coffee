@@ -55,11 +55,17 @@ class FirehoseJS.Agent extends FirehoseJS.Object
   
   
   login: ->    
+    FirehoseJS.client.APIAccessToken = null
+    
     params = 
       route: 'login'
-      body:   
-        email:    @email
-        password: @_password
+    
+    if @email? and @_password?
+      params.body =
+        email:    @email      
+        password: @_password  
+    else if @accessToken?
+      FirehoseJS.client.APIAccessToken = @accessToken
         
     FirehoseJS.client.post( params ).done (data) =>
       this._populateWithJSON data
