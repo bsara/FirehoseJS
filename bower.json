@@ -24,7 +24,6 @@
     ".git",
     ".gitignore",
     ".jshintrc",
-    "bower.json",
     "CONTRIBUTING.md",
     "Gruntfile.coffee",
     "package.json",
