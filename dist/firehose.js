@@ -1944,7 +1944,7 @@ FirehoseJS.Note = (function(_super) {
   };
 
   Note.prototype._populateWithJSON = function(json) {
-    this.body = json.label;
+    this.body = json.body;
     this._populateAssociatedObjectWithJSON(this, "agent", json.agent, function(json) {
       return new FirehoseJS.Agent(json.id);
     });

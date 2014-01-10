@@ -21,7 +21,7 @@ FirehoseJS.client.setEnvironment('test')
 
 module "Note"
 
-firehoseTest 'Create', 1, (agent) ->
+firehoseTest 'Create', 2, (agent) ->
   company = agent.companies[0]
   customers = company.customersWithCriteria( channels: ["twitter"] )
   customers.next()
@@ -35,6 +35,7 @@ firehoseTest 'Create', 1, (agent) ->
       note.save()
       .done (data, textStatus) ->
         ok textStatus == "success"
+        ok note.body?
         start()
       .fail (jqXHR, textStatus, errorThrown) ->
         start()
