@@ -293,7 +293,11 @@ FirehoseJS.Client = (function() {
     anchor = document.createElement("a");
     anchor.href = document.URL;
     if (anchor.hostname === "localhost") {
-      return this.setEnvironment("development");
+      if (anchor.port === 3021) {
+        return this.setEnvironment("production");
+      } else {
+        return this.setEnvironment("development");
+      }
     } else {
       return this.setEnvironment("production");
     }
