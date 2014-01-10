@@ -139,9 +139,9 @@ class FirehoseJS.Client
     anchor = document.createElement "a"
     anchor.href = document.URL
     if anchor.hostname == "localhost"
-      if anchor.port == 3011
+      if anchor.port == "3011"
         this.setEnvironment "test"
-      if anchor.port == 3021
+      if anchor.port == "3021"
         this.setEnvironment "production"
       else
         this.setEnvironment "development"
