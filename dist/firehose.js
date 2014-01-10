@@ -180,6 +180,11 @@ FirehoseJS.Client = (function() {
     return this._environments[this.env]["" + server + "URL"];
   };
 
+  Client.prototype.serviceToken = function(service) {
+    this._ensureEnvironment();
+    return this._environments[this.env]["" + service + "Key"];
+  };
+
   Client.prototype.setUnauthorizedHandler = function(callback) {
     return this._unauthorizedHandler = callback;
   };
@@ -259,21 +264,24 @@ FirehoseJS.Client = (function() {
       browserURL: "https://firehoseapp.com",
       marketingURL: "https://getfirehose.com",
       billingURL: "https://billing.firehoseapp.com",
-      stripeKey: "pk_live_CGPaLboKkpr7tqswA4elf8NQ"
+      stripeKey: "pk_live_CGPaLboKkpr7tqswA4elf8NQ",
+      pusherKey: "d3e373f7fac89de7bde8"
     },
     development: {
       APIURL: "http://localhost:3000",
       browserURL: "http://localhost:3001",
       marketingURL: "http://localhost:3002",
       billingURL: "http://localhost:3003",
-      stripeKey: "pk_test_oIyMNHil987ug1v8owRhuJwr"
+      stripeKey: "pk_test_oIyMNHil987ug1v8owRhuJwr",
+      pusherKey: "2f64ac0434cc8a94526e"
     },
     test: {
       APIURL: "http://localhost:3010",
       browserURL: "http://localhost:3011",
       marketingURL: "http://localhost:3012",
       billingURL: "http://localhost:3013",
-      stripeKey: "pk_test_oIyMNHil987ug1v8owRhuJwr"
+      stripeKey: "pk_test_oIyMNHil987ug1v8owRhuJwr",
+      pusherKey: "2f64ac0434cc8a94526e"
     }
   };
 
