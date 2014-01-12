@@ -77,7 +77,7 @@ class FirehoseJS.Company extends FirehoseJS.Object
     company 
   
   
-  @_companyWithID: (id, creator) ->
+  @companyWithID: (id, creator) ->
     company = FirehoseJS.Object._objectOfClassWithID( FirehoseJS.Company, id )
     company._creator = creator
     company 
@@ -124,7 +124,7 @@ class FirehoseJS.Company extends FirehoseJS.Object
       sort:         criteria.sort if criteria.sort?
       search_text:  criteria.searchString if criteria.searchString
     new FirehoseJS.RemoteArray "companies/#{@id}/customers", params, (json) =>
-      FirehoseJS.Customer._customerWithID( json.id, this )
+      FirehoseJS.Customer.customerWithID( json.id, this )
       
       
   notifications: ->
@@ -158,7 +158,7 @@ class FirehoseJS.Company extends FirehoseJS.Object
   articles: ->
     unless @_articles?
       @_articles = new FirehoseJS.RemoteArray "companies/#{@id}/articles", null, (json) =>
-        FirehoseJS.Article._articleWithID( json.id, this )
+        FirehoseJS.Article.articleWithID( json.id, this )
     @_articles
              
   
@@ -184,7 +184,7 @@ class FirehoseJS.Company extends FirehoseJS.Object
         route: "entities/#{@id}"
       FirehoseJS.client.get( params ).done (json) =>
         if json.credit_card?
-          @creditCard = FirehoseJS.CreditCard._creditCardWithID( json.credit_card.id, this )
+          @creditCard = FirehoseJS.CreditCard.creditCardWithID( json.credit_card.id, this )
           @creditCard._populateWithJSON json.credit_card
         @billingEmail           = json.email || FirehoseJS.Agent.loggedInAgent.email
         @billingRate            = json.rate / 100.0
@@ -213,7 +213,7 @@ class FirehoseJS.Company extends FirehoseJS.Object
     @numberOfAccounts       = json.number_of_accounts
     
     this._populateAssociatedObjects this, "agents", json.agents, (json) ->
-      agent = FirehoseJS.Agent._agentWithID( json.id )
+      agent = FirehoseJS.Agent.agentWithID( json.id )
       agent.companies.push this
       agent
       

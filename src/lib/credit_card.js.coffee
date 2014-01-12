@@ -28,7 +28,7 @@ class FirehoseJS.CreditCard extends FirehoseJS.Object
     creditCard 
   
     
-  @_creditCardWithID: (id, company) ->
+  @creditCardWithID: (id, company) ->
     creditCard = FirehoseJS.Object._objectOfClassWithID( FirehoseJS.CreditCard, id )
     creditCard.company = company
     creditCard 

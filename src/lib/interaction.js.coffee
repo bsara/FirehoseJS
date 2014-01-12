@@ -134,7 +134,7 @@ class FirehoseJS.Interaction extends FirehoseJS.Object
     @resolved       = json.resolved
     
     this._populateAssociatedObjectWithJSON this, "agent", json.agent, (json) ->
-      FirehoseJS.Agent._agentWithID( json.id )
+      FirehoseJS.Agent.agentWithID( json.id )
       
     this._populateAssociatedObjectWithJSON this, "customerAccount", json.customer_account, (json) =>
       FirehoseJS.CustomerAccount._customerAccountWithID( json.id, @customer )
@@ -150,7 +150,7 @@ class FirehoseJS.Interaction extends FirehoseJS.Object
       FirehoseJS.Tag._tagWithID( json.id, @customer.company )
       
     this._populateAssociatedObjects this, "flaggedAgents", json.flagged_agents, (json) =>
-      FirehoseJS.Agent._agentWithID( json.id )
+      FirehoseJS.Agent.agentWithID( json.id )
       
     super json
     

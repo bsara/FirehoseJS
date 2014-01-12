@@ -452,7 +452,7 @@ FirehoseJS.Agent = (function(_super) {
     return agent;
   };
 
-  Agent._agentWithID = function(id) {
+  Agent.agentWithID = function(id) {
     var agent;
     agent = FirehoseJS.Object._objectOfClassWithID(FirehoseJS.Agent, id);
     return agent;
@@ -606,7 +606,7 @@ FirehoseJS.Agent = (function(_super) {
     this.lastName = json.last_name;
     this.email = json.email;
     this._populateAssociatedObjects(this, "companies", json.companies, function(json) {
-      return FirehoseJS.Company._companyWithID(json.id, this);
+      return FirehoseJS.Company.companyWithID(json.id, this);
     });
     if (this.companies.length > 0 && (this.currentCompany == null)) {
       this.currentCompany = this.companies[0];
@@ -705,7 +705,7 @@ FirehoseJS.Company = (function(_super) {
     return company;
   };
 
-  Company._companyWithID = function(id, creator) {
+  Company.companyWithID = function(id, creator) {
     var company;
     company = FirehoseJS.Object._objectOfClassWithID(FirehoseJS.Company, id);
     company._creator = creator;
@@ -772,7 +772,7 @@ FirehoseJS.Company = (function(_super) {
       search_text: criteria.searchString ? criteria.searchString : void 0
     };
     return new FirehoseJS.RemoteArray("companies/" + this.id + "/customers", params, function(json) {
-      return FirehoseJS.Customer._customerWithID(json.id, _this);
+      return FirehoseJS.Customer.customerWithID(json.id, _this);
     });
   };
 
@@ -820,7 +820,7 @@ FirehoseJS.Company = (function(_super) {
     var _this = this;
     if (this._articles == null) {
       this._articles = new FirehoseJS.RemoteArray("companies/" + this.id + "/articles", null, function(json) {
-        return FirehoseJS.Article._articleWithID(json.id, _this);
+        return FirehoseJS.Article.articleWithID(json.id, _this);
       });
     }
     return this._articles;
@@ -860,7 +860,7 @@ FirehoseJS.Company = (function(_super) {
       };
       return FirehoseJS.client.get(params).done(function(json) {
         if (json.credit_card != null) {
-          _this.creditCard = FirehoseJS.CreditCard._creditCardWithID(json.credit_card.id, _this);
+          _this.creditCard = FirehoseJS.CreditCard.creditCardWithID(json.credit_card.id, _this);
           _this.creditCard._populateWithJSON(json.credit_card);
         }
         _this.billingEmail = json.email || FirehoseJS.Agent.loggedInAgent.email;
@@ -892,7 +892,7 @@ FirehoseJS.Company = (function(_super) {
     this.numberOfAccounts = json.number_of_accounts;
     this._populateAssociatedObjects(this, "agents", json.agents, function(json) {
       var agent;
-      agent = FirehoseJS.Agent._agentWithID(json.id);
+      agent = FirehoseJS.Agent.agentWithID(json.id);
       agent.companies.push(this);
       return agent;
     });
@@ -1104,7 +1104,7 @@ FirehoseJS.Interaction = (function(_super) {
     this.happiness = json.happiness;
     this.resolved = json.resolved;
     this._populateAssociatedObjectWithJSON(this, "agent", json.agent, function(json) {
-      return FirehoseJS.Agent._agentWithID(json.id);
+      return FirehoseJS.Agent.agentWithID(json.id);
     });
     this._populateAssociatedObjectWithJSON(this, "customerAccount", json.customer_account, function(json) {
       return FirehoseJS.CustomerAccount._customerAccountWithID(json.id, _this.customer);
@@ -1120,7 +1120,7 @@ FirehoseJS.Interaction = (function(_super) {
       return FirehoseJS.Tag._tagWithID(json.id, _this.customer.company);
     });
     this._populateAssociatedObjects(this, "flaggedAgents", json.flagged_agents, function(json) {
-      return FirehoseJS.Agent._agentWithID(json.id);
+      return FirehoseJS.Agent.agentWithID(json.id);
     });
     return Interaction.__super__._populateWithJSON.call(this, json);
   };
@@ -1381,7 +1381,7 @@ FirehoseJS.CreditCard = (function(_super) {
     return creditCard;
   };
 
-  CreditCard._creditCardWithID = function(id, company) {
+  CreditCard.creditCardWithID = function(id, company) {
     var creditCard;
     creditCard = FirehoseJS.Object._objectOfClassWithID(FirehoseJS.CreditCard, id);
     creditCard.company = company;
@@ -1498,7 +1498,7 @@ FirehoseJS.Customer = (function(_super) {
 
   Customer.prototype._interactions = null;
 
-  Customer._customerWithID = function(id, company) {
+  Customer.customerWithID = function(id, company) {
     var customer;
     customer = FirehoseJS.Object._objectOfClassWithID(FirehoseJS.Customer, id);
     customer.company = company;
@@ -1553,10 +1553,10 @@ FirehoseJS.Customer = (function(_super) {
       return FirehoseJS.CustomerAccount._customerAccountWithID(json.id, this);
     });
     this._populateAssociatedObjects(this, "interactionFlaggedAgents", json.interaction_flagged_agents, function(json) {
-      return FirehoseJS.Agent._agentWithID(json.id);
+      return FirehoseJS.Agent.agentWithID(json.id);
     });
     this._populateAssociatedObjectWithJSON(this, "agentWithDibs", json.agent_with_dibs, function(json) {
-      return FirehoseJS.Agent._agentWithID(json.id);
+      return FirehoseJS.Agent.agentWithID(json.id);
     });
     return Customer.__super__._populateWithJSON.call(this, json);
   };
@@ -2110,7 +2110,7 @@ FirehoseJS.Note = (function(_super) {
   Note.prototype._populateWithJSON = function(json) {
     this.body = json.body;
     this._populateAssociatedObjectWithJSON(this, "agent", json.agent, function(json) {
-      return FirehoseJS.Agent._agentWithID(json.id);
+      return FirehoseJS.Agent.agentWithID(json.id);
     });
     return Note.__super__._populateWithJSON.call(this, json);
   };
@@ -2476,7 +2476,7 @@ FirehoseJS.Article = (function(_super) {
     return article;
   };
 
-  Article._articleWithID = function(id, company) {
+  Article.articleWithID = function(id, company) {
     var article;
     article = FirehoseJS.Object._objectOfClassWithID(FirehoseJS.Article, id);
     article.company = company;

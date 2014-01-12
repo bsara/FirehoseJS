@@ -49,7 +49,7 @@ class FirehoseJS.Note extends FirehoseJS.Object
     @body = json.body
     
     this._populateAssociatedObjectWithJSON this, "agent", json.agent, (json) ->
-      FirehoseJS.Agent._agentWithID( json.id )
+      FirehoseJS.Agent.agentWithID( json.id )
       
     super json
     

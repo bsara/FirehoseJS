@@ -16,7 +16,7 @@ class FirehoseJS.Article extends FirehoseJS.Object
     article
   
   
-  @_articleWithID: (id, company) ->
+  @articleWithID: (id, company) ->
     article = FirehoseJS.Object._objectOfClassWithID( FirehoseJS.Article, id )
     article.company  = company
     article

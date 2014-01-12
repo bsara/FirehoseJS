@@ -28,7 +28,7 @@ class FirehoseJS.Customer extends FirehoseJS.Object
   _interactions: null
   
     
-  @_customerWithID: (id, company) ->
+  @customerWithID: (id, company) ->
     customer = FirehoseJS.Object._objectOfClassWithID( FirehoseJS.Customer, id )
     customer.company = company
     customer 
@@ -72,10 +72,10 @@ class FirehoseJS.Customer extends FirehoseJS.Object
       FirehoseJS.CustomerAccount._customerAccountWithID( json.id, this )
       
     this._populateAssociatedObjects this, "interactionFlaggedAgents", json.interaction_flagged_agents, (json) ->
-      FirehoseJS.Agent._agentWithID( json.id )
+      FirehoseJS.Agent.agentWithID( json.id )
     
     this._populateAssociatedObjectWithJSON this, "agentWithDibs", json.agent_with_dibs, (json) ->
-      FirehoseJS.Agent._agentWithID( json.id )
+      FirehoseJS.Agent.agentWithID( json.id )
     
     super json
   

@@ -33,7 +33,7 @@ class FirehoseJS.Agent extends FirehoseJS.Object
     agent 
 
 
-  @_agentWithID: (id) ->
+  @agentWithID: (id) ->
     agent = FirehoseJS.Object._objectOfClassWithID( FirehoseJS.Agent, id )
     agent 
     
@@ -153,7 +153,7 @@ class FirehoseJS.Agent extends FirehoseJS.Object
     @email        = json.email
     
     this._populateAssociatedObjects this, "companies", json.companies, (json) ->
-      FirehoseJS.Company._companyWithID( json.id, this )
+      FirehoseJS.Company.companyWithID( json.id, this )
       
     if @companies.length > 0 and not @currentCompany?
       @currentCompany = @companies[0]
