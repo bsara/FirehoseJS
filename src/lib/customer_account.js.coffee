@@ -16,9 +16,10 @@ class FirehoseJS.CustomerAccount extends FirehoseJS.Object
   channel: null
   
   
-  constructor: (id, customer) ->
-    @id       = id
-    @customer = customer 
+  @_customerAccountWithID: (id, customer) ->
+    customerAccount = FirehoseJS.Object._objectOfClassWithID( FirehoseJS.CustomerAccount, id )
+    customerAccount.customer = customer
+    customerAccount 
     
     
   _populateWithJSON: (json) ->

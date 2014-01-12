@@ -27,11 +27,12 @@ class FirehoseJS.Customer extends FirehoseJS.Object
   
   _interactions: null
   
-  
-  constructor: (id, company) ->
-    @id       = id
-    @company  = company if company
     
+  @_customerWithID: (id, company) ->
+    customer = FirehoseJS.Object._objectOfClassWithID( FirehoseJS.Customer, id )
+    customer.company = company
+    customer 
+  
   
   fetch: ->
     params = 
@@ -55,7 +56,7 @@ class FirehoseJS.Customer extends FirehoseJS.Object
   interactions: ->
     unless @_interactions?
       @_interactions = new FirehoseJS.RemoteArray "customers/#{@id}/interactions", null, (json) =>
-        new FirehoseJS.Interaction.interactionWithJSON( json, this )
+        FirehoseJS.Interaction._interactionWithJSON( json, this )
     @_interactions
     
     
@@ -68,13 +69,13 @@ class FirehoseJS.Customer extends FirehoseJS.Object
     @newestInteractionReceivedAt  = Date.parse json.newest_interaction_received_at
     
     this._populateAssociatedObjects this, "customerAccounts", json.customer_accounts, (json) ->
-      new FirehoseJS.CustomerAccount( json.id, this )
+      FirehoseJS.CustomerAccount._customerAccountWithID( json.id, this )
       
     this._populateAssociatedObjects this, "interactionFlaggedAgents", json.interaction_flagged_agents, (json) ->
-      new FirehoseJS.Agent( json.id )
+      FirehoseJS.Agent._agentWithID( json.id )
     
     this._populateAssociatedObjectWithJSON this, "agentWithDibs", json.agent_with_dibs, (json) ->
-      new FirehoseJS.Agent( json.id )
+      FirehoseJS.Agent._agentWithID( json.id )
     
     super json
   

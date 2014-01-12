@@ -8,17 +8,18 @@ class FirehoseJS.Note extends FirehoseJS.Object
   agent: null
   
   
-  constructor: (arg1, arg2) ->
-    # with id 
-    unless isNaN(parseInt(arg1))
-      @id = arg1
-      if arg2? and arg2 instanceof FirehoseJS.Interaction
-        @interaction = arg2
-    # with title and agent
-    else if typeof(arg1) == 'string'
-      @body = arg1
-      if arg2 instanceof FirehoseJS.Interaction
-        @interaction = arg2
+  @noteWithBody: (body, interaction) ->
+    note = FirehoseJS.Object._objectOfClassWithID( FirehoseJS.Note, null )
+    note.body         = body
+    note.interaction  = interaction
+    note 
+  
+        
+  @_noteWithID: (id, interaction) ->
+    note = FirehoseJS.Object._objectOfClassWithID( FirehoseJS.Note, id )
+    note.interaction = interaction
+    note     
+    
         
   save: ->
     if @id?
@@ -48,7 +49,7 @@ class FirehoseJS.Note extends FirehoseJS.Object
     @body = json.body
     
     this._populateAssociatedObjectWithJSON this, "agent", json.agent, (json) ->
-      new FirehoseJS.Agent( json.id )
+      FirehoseJS.Agent._agentWithID( json.id )
       
     super json
     

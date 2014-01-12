@@ -21,21 +21,22 @@ class FirehoseJS.FacebookInteraction extends FirehoseJS.Interaction
   
   type: null
   
-  
-  constructor: (id) ->
-    @id = id
+    
+  @_facebookInteractionWithID: (id) ->
+    FirehoseJS.Object._objectOfClassWithID( FirehoseJS.FacebookInteraction, id )
   
   
   _populateWithJSON: (json) ->
-    facebookJSON  = json.facebook_interaction
-    @fromUserId   = facebookJSON.from_user_id
-    @fromName     = facebookJSON.from_name
-    @toUserId     = facebookJSON.to_user_id
-    @toName       = facebookJSON.to_name
-    @postId       = facebookJSON.post_id
-    @commentId    = facebookJSON.comment_id
-    @postType     = facebookJSON.post_type
-    @postExcerpt  = facebookJSON.post_excerpt
-    @likeCount    = facebookJSON.like_count
+    if json.facebook_interaction?
+      facebookJSON  = json.facebook_interaction
+      @fromUserId   = facebookJSON.from_user_id
+      @fromName     = facebookJSON.from_name
+      @toUserId     = facebookJSON.to_user_id
+      @toName       = facebookJSON.to_name
+      @postId       = facebookJSON.post_id
+      @commentId    = facebookJSON.comment_id
+      @postType     = facebookJSON.post_type
+      @postExcerpt  = facebookJSON.post_excerpt
+      @likeCount    = facebookJSON.like_count
     super json
   

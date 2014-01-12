@@ -19,21 +19,24 @@ class FirehoseJS.Agent extends FirehoseJS.Object
   
   _password: null
 
-  
-  constructor: (arg1, arg2) ->
-    # with email and password
-    if arg2?
-      @email      = arg1
-      @_password  = arg2
       
-    # with id
-    else if not isNaN(parseInt(arg1))
-      @id = arg1
+  @agentWithAccessToken: (accessToken) ->
+    agent = FirehoseJS.Object._objectOfClassWithID( FirehoseJS.Agent, null )
+    agent.accessToken = accessToken
+    agent 
       
-    # with access token
-    else if typeof(arg1) == 'string'
-      @accessToken = arg1
+      
+  @agentWithEmailAndPassword: (email, password) ->
+    agent = FirehoseJS.Object._objectOfClassWithID( FirehoseJS.Agent, null )
+    agent.email     = email
+    agent._password = password
+    agent 
 
+
+  @_agentWithID: (id) ->
+    agent = FirehoseJS.Object._objectOfClassWithID( FirehoseJS.Agent, id )
+    agent 
+    
   
   signUpWithFirstAndLastName: (firstName, lastName) ->
     @firstName  = firstName
@@ -150,7 +153,7 @@ class FirehoseJS.Agent extends FirehoseJS.Object
     @email        = json.email
     
     this._populateAssociatedObjects this, "companies", json.companies, (json) ->
-      new FirehoseJS.Company( json.id, this )
+      FirehoseJS.Company._companyWithID( json.id, this )
       
     if @companies.length > 0 and not @currentCompany?
       @currentCompany = @companies[0]

@@ -6,17 +6,18 @@ class FirehoseJS.Tag extends FirehoseJS.Object
   label: null
   
   
-  constructor: (arg1, arg2) ->
-    # with id 
-    unless isNaN(parseInt(arg1))
-      @id = arg1
-      if arg2? and arg2.constructor == FirehoseJS.Company
-        @company = arg2
-    # with title and agent
-    else if typeof(arg1) == 'string'
-      @label = arg1
-      if arg2.constructor == FirehoseJS.Company
-        @company = arg2
+  @tagWithLabel: (label, company) ->
+    tag = FirehoseJS.Object._objectOfClassWithID( FirehoseJS.Tag, null )
+    tag.label   = label
+    tag.company = company
+    tag 
+        
+        
+  @_tagWithID: (id, company) ->
+    tag = FirehoseJS.Object._objectOfClassWithID( FirehoseJS.Tag, id )
+    tag.company = company
+    tag 
+
         
   save: ->
     if @id?

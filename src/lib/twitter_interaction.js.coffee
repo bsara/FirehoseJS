@@ -20,20 +20,21 @@ class FirehoseJS.TwitterInteraction extends FirehoseJS.Interaction
   fromUserId: null
   
   
-  constructor: (id) ->
-    @id = id
+  @_twitterInteractionWithID: (id) ->
+    FirehoseJS.Object._objectOfClassWithID( FirehoseJS.TwitterInteraction, id )
   
   
   _populateWithJSON: (json) ->
-    twitterJSON           = json.twitter_interaction
-    @favorited            = twitterJSON.favorited
-    @tweetId              = twitterJSON.tweet_id
-    @inReplyToScreenName  = twitterJSON.in_reply_to_screen_name
-    @inReplyToStatusId    = twitterJSON.in_reply_to_status_id
-    @retweetCount         = twitterJSON.retweet_count
-    @tweetSource          = twitterJSON.tweet_source
-    @toUserId             = twitterJSON.to_user_id
-    @toScreenName         = twitterJSON.twitter_account.screen_name
-    @fromUserId           = twitterJSON.from_user_id
+    if json.twitter_interaction?
+      twitterJSON           = json.twitter_interaction
+      @favorited            = twitterJSON.favorited
+      @tweetId              = twitterJSON.tweet_id
+      @inReplyToScreenName  = twitterJSON.in_reply_to_screen_name
+      @inReplyToStatusId    = twitterJSON.in_reply_to_status_id
+      @retweetCount         = twitterJSON.retweet_count
+      @tweetSource          = twitterJSON.tweet_source
+      @toUserId             = twitterJSON.to_user_id
+      @toScreenName         = twitterJSON.twitter_account.screen_name
+      @fromUserId           = twitterJSON.from_user_id
     super json
  

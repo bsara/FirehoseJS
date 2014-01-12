@@ -350,6 +350,25 @@ FirehoseJS.Object = (function() {
 
   Object.prototype.createdAt = null;
 
+  Object._objects = [];
+
+  Object._objectOfClassWithID = function(klass, id) {
+    var obj, _i, _len, _ref;
+    if (id) {
+      _ref = this._objects;
+      for (_i = 0, _len = _ref.length; _i < _len; _i++) {
+        obj = _ref[_i];
+        if (obj.id && obj.id === id && obj.constructor === klass) {
+          return obj;
+        }
+      }
+    }
+    obj = new klass;
+    obj.id = id;
+    this._objects.push(obj);
+    return obj;
+  };
+
   Object.prototype._populateAssociatedObjects = function(owner, association, json, creation) {
     var object, objectJSON, objects, _i, _len, _results;
     if (json != null) {
@@ -388,11 +407,17 @@ FirehoseJS.Object = (function() {
 
 })();
 
-var __hasProp = {}.hasOwnProperty,
+var _ref,
+  __hasProp = {}.hasOwnProperty,
   __extends = function(child, parent) { for (var key in parent) { if (__hasProp.call(parent, key)) child[key] = parent[key]; } function ctor() { this.constructor = child; } ctor.prototype = parent.prototype; child.prototype = new ctor(); child.__super__ = parent.prototype; return child; };
 
 FirehoseJS.Agent = (function(_super) {
   __extends(Agent, _super);
+
+  function Agent() {
+    _ref = Agent.__super__.constructor.apply(this, arguments);
+    return _ref;
+  }
 
   Agent.loggedInAgent = null;
 
@@ -412,16 +437,26 @@ FirehoseJS.Agent = (function(_super) {
 
   Agent.prototype._password = null;
 
-  function Agent(arg1, arg2) {
-    if (arg2 != null) {
-      this.email = arg1;
-      this._password = arg2;
-    } else if (!isNaN(parseInt(arg1))) {
-      this.id = arg1;
-    } else if (typeof arg1 === 'string') {
-      this.accessToken = arg1;
-    }
-  }
+  Agent.agentWithAccessToken = function(accessToken) {
+    var agent;
+    agent = FirehoseJS.Object._objectOfClassWithID(FirehoseJS.Agent, null);
+    agent.accessToken = accessToken;
+    return agent;
+  };
+
+  Agent.agentWithEmailAndPassword = function(email, password) {
+    var agent;
+    agent = FirehoseJS.Object._objectOfClassWithID(FirehoseJS.Agent, null);
+    agent.email = email;
+    agent._password = password;
+    return agent;
+  };
+
+  Agent._agentWithID = function(id) {
+    var agent;
+    agent = FirehoseJS.Object._objectOfClassWithID(FirehoseJS.Agent, id);
+    return agent;
+  };
 
   Agent.prototype.signUpWithFirstAndLastName = function(firstName, lastName) {
     var params,
@@ -571,7 +606,7 @@ FirehoseJS.Agent = (function(_super) {
     this.lastName = json.last_name;
     this.email = json.email;
     this._populateAssociatedObjects(this, "companies", json.companies, function(json) {
-      return new FirehoseJS.Company(json.id, this);
+      return FirehoseJS.Company._companyWithID(json.id, this);
     });
     if (this.companies.length > 0 && (this.currentCompany == null)) {
       this.currentCompany = this.companies[0];
@@ -594,11 +629,17 @@ FirehoseJS.Agent = (function(_super) {
 
 })(FirehoseJS.Object);
 
-var __hasProp = {}.hasOwnProperty,
+var _ref,
+  __hasProp = {}.hasOwnProperty,
   __extends = function(child, parent) { for (var key in parent) { if (__hasProp.call(parent, key)) child[key] = parent[key]; } function ctor() { this.constructor = child; } ctor.prototype = parent.prototype; child.prototype = new ctor(); child.__super__ = parent.prototype; return child; };
 
 FirehoseJS.Company = (function(_super) {
   __extends(Company, _super);
+
+  function Company() {
+    _ref = Company.__super__.constructor.apply(this, arguments);
+    return _ref;
+  }
 
   Company.prototype.title = null;
 
@@ -634,6 +675,8 @@ FirehoseJS.Company = (function(_super) {
 
   Company.prototype._emailAccounts = null;
 
+  Company.prototype._articles = null;
+
   Company.prototype.creditCard = null;
 
   Company.prototype.billingEmail = null;
@@ -652,23 +695,22 @@ FirehoseJS.Company = (function(_super) {
 
   Company.prototype.hasSuccessfulBilling = false;
 
-  Company._creator = null;
+  Company.prototype._creator = null;
 
-  function Company(arg1, arg2) {
-    if (!isNaN(parseInt(arg1))) {
-      this.id = arg1;
-      if ((arg2 != null) && arg2.constructor === FirehoseJS.Agent) {
-        this._creator = arg2;
-        this.agents.push(this._creator);
-      }
-    } else if (typeof arg1 === 'string') {
-      this.title = arg1;
-      if (arg2.constructor === FirehoseJS.Agent) {
-        this._creator = arg2;
-        this.agents.push(this._creator);
-      }
-    }
-  }
+  Company.companyWithTitle = function(title, creator) {
+    var company;
+    company = FirehoseJS.Object._objectOfClassWithID(FirehoseJS.Company, null);
+    company.title = title;
+    company._creator = creator;
+    return company;
+  };
+
+  Company._companyWithID = function(id, creator) {
+    var company;
+    company = FirehoseJS.Object._objectOfClassWithID(FirehoseJS.Company, id);
+    company._creator = creator;
+    return company;
+  };
 
   Company.prototype.fetch = function() {
     var params,
@@ -730,7 +772,7 @@ FirehoseJS.Company = (function(_super) {
       search_text: criteria.searchString ? criteria.searchString : void 0
     };
     return new FirehoseJS.RemoteArray("companies/" + this.id + "/customers", params, function(json) {
-      return new FirehoseJS.Customer(json.id, _this);
+      return FirehoseJS.Customer._customerWithID(json.id, _this);
     });
   };
 
@@ -738,7 +780,7 @@ FirehoseJS.Company = (function(_super) {
     var _this = this;
     if (this._notifications == null) {
       this._notifications = new FirehoseJS.RemoteArray("companies/" + this.id + "/notifications", null, function(json) {
-        return new FirehoseJS.Notification(json.id, _this);
+        return FirehoseJS.Notification._notificationWithID(json.id, _this);
       });
     }
     return this._notifications;
@@ -748,7 +790,7 @@ FirehoseJS.Company = (function(_super) {
     var _this = this;
     if (this._twitterAccounts == null) {
       this._twitterAccounts = new FirehoseJS.RemoteArray("companies/" + this.id + "/twitter_accounts", null, function(json) {
-        return new FirehoseJS.TwitterAccount(json.id, _this);
+        return FirehoseJS.TwitterAccount._twitterAccountWithID(json.id, _this);
       });
     }
     return this._twitterAccounts;
@@ -758,7 +800,7 @@ FirehoseJS.Company = (function(_super) {
     var _this = this;
     if (this._facebookAccounts == null) {
       this._facebookAccounts = new FirehoseJS.RemoteArray("companies/" + this.id + "/facebook_accounts", null, function(json) {
-        return new FirehoseJS.FacebookAccount(json.id, _this);
+        return FirehoseJS.FacebookAccount._facebookAccountWithID(json.id, _this);
       });
     }
     return this._facebookAccounts;
@@ -768,10 +810,20 @@ FirehoseJS.Company = (function(_super) {
     var _this = this;
     if (this._emailAccounts == null) {
       this._emailAccounts = new FirehoseJS.RemoteArray("companies/" + this.id + "/email_accounts", null, function(json) {
-        return new FirehoseJS.EmailAccount(json.id, _this);
+        return FirehoseJS.EmailAccount._emailAccountWithID(json.id, _this);
       });
     }
     return this._emailAccounts;
+  };
+
+  Company.prototype.articles = function() {
+    var _this = this;
+    if (this._articles == null) {
+      this._articles = new FirehoseJS.RemoteArray("companies/" + this.id + "/articles", null, function(json) {
+        return FirehoseJS.Article._articleWithID(json.id, _this);
+      });
+    }
+    return this._articles;
   };
 
   Company.prototype.addAgent = function(agent) {
@@ -808,7 +860,7 @@ FirehoseJS.Company = (function(_super) {
       };
       return FirehoseJS.client.get(params).done(function(json) {
         if (json.credit_card != null) {
-          _this.creditCard = new FirehoseJS.CreditCard(_this);
+          _this.creditCard = FirehoseJS.CreditCard._creditCardWithID(json.credit_card.id, _this);
           _this.creditCard._populateWithJSON(json.credit_card);
         }
         _this.billingEmail = json.email || FirehoseJS.Agent.loggedInAgent.email;
@@ -840,18 +892,18 @@ FirehoseJS.Company = (function(_super) {
     this.numberOfAccounts = json.number_of_accounts;
     this._populateAssociatedObjects(this, "agents", json.agents, function(json) {
       var agent;
-      agent = new FirehoseJS.Agent(json.id);
+      agent = FirehoseJS.Agent._agentWithID(json.id);
       agent.companies.push(this);
       return agent;
     });
     this._populateAssociatedObjects(this, "agentInvites", json.agent_invites, function(json) {
-      return new FirehoseJS.AgentInvite(json.id, this);
+      return FirehoseJS.AgentInvite._agentInviteWithID(json.id, this);
     });
     this._populateAssociatedObjects(this, "tags", json.tags, function(json) {
-      return new FirehoseJS.Tag(json.id, this);
+      return FirehoseJS.Tag._tagWithID(json.id, this);
     });
     this._populateAssociatedObjects(this, "cannedResponses", json.canned_responses, function(json) {
-      return new FirehoseJS.CannedResponse(json.id, this);
+      return FirehoseJS.CannedResponse._cannedResponseWithID(json.id, this);
     });
     FirehoseJS.client.billingAccessToken = this.token;
     return Company.__super__._populateWithJSON.call(this, json);
@@ -912,19 +964,17 @@ FirehoseJS.Interaction = (function(_super) {
 
   Interaction.prototype.flaggedAgents = new FirehoseJS.UniqueArray;
 
-  Interaction.interactionWithJSON = function(json, customer) {
+  Interaction._interactionWithJSON = function(json, customer) {
     var interaction;
     interaction = null;
     if (json.channel === "twitter") {
-      interaction = new FirehoseJS.TwitterInteraction(json.id);
-      interaction.customer = customer;
+      interaction = FirehoseJS.TwitterInteraction._twitterInteractionWithID(json.id);
     } else if (json.channel === "facebook") {
-      interaction = new FirehoseJS.FacebookInteraction(json.id);
-      interaction.customer = customer;
+      interaction = FirehoseJS.FacebookInteraction._facebookInteractionWithID(json.id);
     } else if (json.channel === "email") {
-      interaction = new FirehoseJS.EmailInteraction(json.id);
-      interaction.customer = customer;
+      interaction = FirehoseJS.EmailInteraction._emailInteractionWithID(json.id);
     }
+    interaction.customer = customer;
     interaction._populateWithJSON(json);
     return interaction;
   };
@@ -958,7 +1008,7 @@ FirehoseJS.Interaction = (function(_super) {
     return FirehoseJS.client.post(params).done(function(data) {
       var response;
       _this.responseDraft = null;
-      response = new FirehoseJS.Interaction(data, _this.customer);
+      response = FirehoseJS.Interaction._interactionWithJSON(data, _this.customer);
       _this.responseInteractions.push(response);
       response.agent = FirehoseJS.Agent.loggedInAgent;
       return _this.responseInteractions.sort(function(interaction1, interaction2) {
@@ -1054,22 +1104,23 @@ FirehoseJS.Interaction = (function(_super) {
     this.happiness = json.happiness;
     this.resolved = json.resolved;
     this._populateAssociatedObjectWithJSON(this, "agent", json.agent, function(json) {
-      return new FirehoseJS.Agent(json.id);
+      return FirehoseJS.Agent._agentWithID(json.id);
     });
     this._populateAssociatedObjectWithJSON(this, "customerAccount", json.customer_account, function(json) {
-      return new FirehoseJS.CustomerAccount(json.id, _this.customer);
+      return FirehoseJS.CustomerAccount._customerAccountWithID(json.id, _this.customer);
     });
     this._populateAssociatedObjects(this, "responseInteractions", json.response_interactions, function(json) {
-      return new FirehoseJS.Interaction(json, _this.customer);
+      json.channel = _this.channel;
+      return FirehoseJS.Interaction._interactionWithJSON(json, _this.customer);
     });
     this._populateAssociatedObjects(this, "notes", json.notes, function(json) {
-      return new FirehoseJS.Note(json.id, _this);
+      return FirehoseJS.Note._noteWithID(json.id, _this);
     });
     this._populateAssociatedObjects(this, "tags", json.tags, function(json) {
-      return new FirehoseJS.Tag(json.id, _this.customer.company);
+      return FirehoseJS.Tag._tagWithID(json.id, _this.customer.company);
     });
     this._populateAssociatedObjects(this, "flaggedAgents", json.flagged_agents, function(json) {
-      return new FirehoseJS.Agent(json.id);
+      return FirehoseJS.Agent._agentWithID(json.id);
     });
     return Interaction.__super__._populateWithJSON.call(this, json);
   };
@@ -1087,29 +1138,36 @@ FirehoseJS.Interaction = (function(_super) {
 
 })(FirehoseJS.Object);
 
-var __hasProp = {}.hasOwnProperty,
+var _ref,
+  __hasProp = {}.hasOwnProperty,
   __extends = function(child, parent) { for (var key in parent) { if (__hasProp.call(parent, key)) child[key] = parent[key]; } function ctor() { this.constructor = child; } ctor.prototype = parent.prototype; child.prototype = new ctor(); child.__super__ = parent.prototype; return child; };
 
 FirehoseJS.AgentInvite = (function(_super) {
   __extends(AgentInvite, _super);
 
+  function AgentInvite() {
+    _ref = AgentInvite.__super__.constructor.apply(this, arguments);
+    return _ref;
+  }
+
   AgentInvite.prototype.toEmail = null;
 
   AgentInvite.prototype.company = null;
 
-  function AgentInvite(arg1, arg2) {
-    if (!isNaN(parseInt(arg1))) {
-      this.id = arg1;
-      if ((arg2 != null) && arg2.constructor === FirehoseJS.Company) {
-        this.company = arg2;
-      }
-    } else if (typeof arg1 === 'string') {
-      this.toEmail = arg1;
-      if (arg2.constructor === FirehoseJS.Company) {
-        this.company = arg2;
-      }
-    }
-  }
+  AgentInvite.agentInviteWithEmail = function(email, company) {
+    var agentInvite;
+    agentInvite = FirehoseJS.Object._objectOfClassWithID(FirehoseJS.AgentInvite, null);
+    agentInvite.toEmail = email;
+    agentInvite.company = company;
+    return agentInvite;
+  };
+
+  AgentInvite._agentInviteWithID = function(id, company) {
+    var agentInvite;
+    agentInvite = FirehoseJS.Object._objectOfClassWithID(FirehoseJS.AgentInvite, id);
+    agentInvite.company = company;
+    return agentInvite;
+  };
 
   AgentInvite.prototype.save = function() {
     var params,
@@ -1160,11 +1218,17 @@ FirehoseJS.AgentInvite = (function(_super) {
 
 })(FirehoseJS.Object);
 
-var __hasProp = {}.hasOwnProperty,
+var _ref,
+  __hasProp = {}.hasOwnProperty,
   __extends = function(child, parent) { for (var key in parent) { if (__hasProp.call(parent, key)) child[key] = parent[key]; } function ctor() { this.constructor = child; } ctor.prototype = parent.prototype; child.prototype = new ctor(); child.__super__ = parent.prototype; return child; };
 
 FirehoseJS.Attachment = (function(_super) {
   __extends(Attachment, _super);
+
+  function Attachment() {
+    _ref = Attachment.__super__.constructor.apply(this, arguments);
+    return _ref;
+  }
 
   Attachment.prototype.emailInteraction = null;
 
@@ -1172,10 +1236,12 @@ FirehoseJS.Attachment = (function(_super) {
 
   Attachment.prototype.temporaryURL = null;
 
-  function Attachment(id, emailInteraction) {
-    this.id = id;
-    this.emailInteraction = emailInteraction;
-  }
+  Attachment._attachmentWithID = function(id, emailInteraction) {
+    var attachment;
+    attachment = FirehoseJS.Object._objectOfClassWithID(FirehoseJS.Attachment, id);
+    attachment.emailInteraction = emailInteraction;
+    return attachment;
+  };
 
   Attachment.prototype._populateWithJSON = function(json) {
     this.filename = json.filename;
@@ -1187,11 +1253,17 @@ FirehoseJS.Attachment = (function(_super) {
 
 })(FirehoseJS.Object);
 
-var __hasProp = {}.hasOwnProperty,
+var _ref,
+  __hasProp = {}.hasOwnProperty,
   __extends = function(child, parent) { for (var key in parent) { if (__hasProp.call(parent, key)) child[key] = parent[key]; } function ctor() { this.constructor = child; } ctor.prototype = parent.prototype; child.prototype = new ctor(); child.__super__ = parent.prototype; return child; };
 
 FirehoseJS.CannedResponse = (function(_super) {
   __extends(CannedResponse, _super);
+
+  function CannedResponse() {
+    _ref = CannedResponse.__super__.constructor.apply(this, arguments);
+    return _ref;
+  }
 
   CannedResponse.prototype.company = null;
 
@@ -1201,22 +1273,21 @@ FirehoseJS.CannedResponse = (function(_super) {
 
   CannedResponse.prototype.text = null;
 
-  function CannedResponse(arg1, arg2, arg3) {
-    if (!isNaN(parseInt(arg1))) {
-      this.id = arg1;
-      if ((arg2 != null) && arg2.constructor === FirehoseJS.Company) {
-        this.company = arg2;
-      }
-    } else if (typeof arg1 === 'string') {
-      this.name = arg1;
-      if (typeof arg2 === 'string') {
-        this.text = arg2;
-      }
-      if (arg3.constructor === FirehoseJS.Company) {
-        this.company = arg3;
-      }
-    }
-  }
+  CannedResponse.cannedResponseWithNameAndText = function(name, text, company) {
+    var cannedResponse;
+    cannedResponse = FirehoseJS.Object._objectOfClassWithID(FirehoseJS.CannedResponse, null);
+    cannedResponse.name = name;
+    cannedResponse.text = text;
+    cannedResponse.company = company;
+    return cannedResponse;
+  };
+
+  CannedResponse._cannedResponseWithID = function(id, company) {
+    var cannedResponse;
+    cannedResponse = FirehoseJS.Object._objectOfClassWithID(FirehoseJS.CannedResponse, id);
+    cannedResponse.company = company;
+    return cannedResponse;
+  };
 
   CannedResponse.prototype.save = function() {
     var params,
@@ -1271,13 +1342,23 @@ FirehoseJS.CannedResponse = (function(_super) {
 
 })(FirehoseJS.Object);
 
-var __hasProp = {}.hasOwnProperty,
+var _ref,
+  __hasProp = {}.hasOwnProperty,
   __extends = function(child, parent) { for (var key in parent) { if (__hasProp.call(parent, key)) child[key] = parent[key]; } function ctor() { this.constructor = child; } ctor.prototype = parent.prototype; child.prototype = new ctor(); child.__super__ = parent.prototype; return child; };
 
 FirehoseJS.CreditCard = (function(_super) {
   __extends(CreditCard, _super);
 
+  function CreditCard() {
+    _ref = CreditCard.__super__.constructor.apply(this, arguments);
+    return _ref;
+  }
+
   CreditCard.prototype.company = null;
+
+  CreditCard.prototype.number = null;
+
+  CreditCard.prototype.cvc = null;
 
   CreditCard.prototype.expirationMonth = null;
 
@@ -1289,17 +1370,31 @@ FirehoseJS.CreditCard = (function(_super) {
 
   CreditCard.prototype.email = null;
 
-  function CreditCard(company) {
-    this.company = company;
-  }
+  CreditCard.creditCardWithNumber = function(number, cvc, expMonth, expYear, company) {
+    var creditCard;
+    creditCard = FirehoseJS.Object._objectOfClassWithID(FirehoseJS.CreditCard, null);
+    creditCard.number = number;
+    creditCard.cvc = cvc;
+    creditCard.expirationMonth = expMonth;
+    creditCard.expirationYear = expYear;
+    creditCard.company = company;
+    return creditCard;
+  };
 
-  CreditCard.prototype.submitToStripe = function(number, cvc, expMonth, expYear, callback) {
+  CreditCard._creditCardWithID = function(id, company) {
+    var creditCard;
+    creditCard = FirehoseJS.Object._objectOfClassWithID(FirehoseJS.CreditCard, id);
+    creditCard.company = company;
+    return creditCard;
+  };
+
+  CreditCard.prototype.submitToStripe = function(callback) {
     var _this = this;
     return Stripe.card.createToken({
-      number: number,
-      cvc: cvc,
-      exp_month: expMonth,
-      exp_year: expYear
+      number: this.number,
+      cvc: this.cvc,
+      exp_month: this.expirationMonth,
+      exp_year: this.expirationYear
     }, function(status, response) {
       if (!response.error) {
         _this.expirationMonth = response.card.exp_month;
@@ -1369,11 +1464,17 @@ FirehoseJS.CreditCard = (function(_super) {
 
 })(FirehoseJS.Object);
 
-var __hasProp = {}.hasOwnProperty,
+var _ref,
+  __hasProp = {}.hasOwnProperty,
   __extends = function(child, parent) { for (var key in parent) { if (__hasProp.call(parent, key)) child[key] = parent[key]; } function ctor() { this.constructor = child; } ctor.prototype = parent.prototype; child.prototype = new ctor(); child.__super__ = parent.prototype; return child; };
 
 FirehoseJS.Customer = (function(_super) {
   __extends(Customer, _super);
+
+  function Customer() {
+    _ref = Customer.__super__.constructor.apply(this, arguments);
+    return _ref;
+  }
 
   Customer.prototype.company = null;
 
@@ -1397,12 +1498,12 @@ FirehoseJS.Customer = (function(_super) {
 
   Customer.prototype._interactions = null;
 
-  function Customer(id, company) {
-    this.id = id;
-    if (company) {
-      this.company = company;
-    }
-  }
+  Customer._customerWithID = function(id, company) {
+    var customer;
+    customer = FirehoseJS.Object._objectOfClassWithID(FirehoseJS.Customer, id);
+    customer.company = company;
+    return customer;
+  };
 
   Customer.prototype.fetch = function() {
     var params,
@@ -1435,7 +1536,7 @@ FirehoseJS.Customer = (function(_super) {
     var _this = this;
     if (this._interactions == null) {
       this._interactions = new FirehoseJS.RemoteArray("customers/" + this.id + "/interactions", null, function(json) {
-        return new FirehoseJS.Interaction.interactionWithJSON(json, _this);
+        return FirehoseJS.Interaction._interactionWithJSON(json, _this);
       });
     }
     return this._interactions;
@@ -1449,13 +1550,13 @@ FirehoseJS.Customer = (function(_super) {
     this.newestInteractionExcerpt = json.newest_interaction_excerpt;
     this.newestInteractionReceivedAt = Date.parse(json.newest_interaction_received_at);
     this._populateAssociatedObjects(this, "customerAccounts", json.customer_accounts, function(json) {
-      return new FirehoseJS.CustomerAccount(json.id, this);
+      return FirehoseJS.CustomerAccount._customerAccountWithID(json.id, this);
     });
     this._populateAssociatedObjects(this, "interactionFlaggedAgents", json.interaction_flagged_agents, function(json) {
-      return new FirehoseJS.Agent(json.id);
+      return FirehoseJS.Agent._agentWithID(json.id);
     });
     this._populateAssociatedObjectWithJSON(this, "agentWithDibs", json.agent_with_dibs, function(json) {
-      return new FirehoseJS.Agent(json.id);
+      return FirehoseJS.Agent._agentWithID(json.id);
     });
     return Customer.__super__._populateWithJSON.call(this, json);
   };
@@ -1464,11 +1565,17 @@ FirehoseJS.Customer = (function(_super) {
 
 })(FirehoseJS.Object);
 
-var __hasProp = {}.hasOwnProperty,
+var _ref,
+  __hasProp = {}.hasOwnProperty,
   __extends = function(child, parent) { for (var key in parent) { if (__hasProp.call(parent, key)) child[key] = parent[key]; } function ctor() { this.constructor = child; } ctor.prototype = parent.prototype; child.prototype = new ctor(); child.__super__ = parent.prototype; return child; };
 
 FirehoseJS.CustomerAccount = (function(_super) {
   __extends(CustomerAccount, _super);
+
+  function CustomerAccount() {
+    _ref = CustomerAccount.__super__.constructor.apply(this, arguments);
+    return _ref;
+  }
 
   CustomerAccount.prototype.customer = null;
 
@@ -1484,10 +1591,12 @@ FirehoseJS.CustomerAccount = (function(_super) {
 
   CustomerAccount.prototype.channel = null;
 
-  function CustomerAccount(id, customer) {
-    this.id = id;
-    this.customer = customer;
-  }
+  CustomerAccount._customerAccountWithID = function(id, customer) {
+    var customerAccount;
+    customerAccount = FirehoseJS.Object._objectOfClassWithID(FirehoseJS.CustomerAccount, id);
+    customerAccount.customer = customer;
+    return customerAccount;
+  };
 
   CustomerAccount.prototype._populateWithJSON = function(json) {
     this.username = json.username;
@@ -1503,11 +1612,17 @@ FirehoseJS.CustomerAccount = (function(_super) {
 
 })(FirehoseJS.Object);
 
-var __hasProp = {}.hasOwnProperty,
+var _ref,
+  __hasProp = {}.hasOwnProperty,
   __extends = function(child, parent) { for (var key in parent) { if (__hasProp.call(parent, key)) child[key] = parent[key]; } function ctor() { this.constructor = child; } ctor.prototype = parent.prototype; child.prototype = new ctor(); child.__super__ = parent.prototype; return child; };
 
 FirehoseJS.EmailAccount = (function(_super) {
   __extends(EmailAccount, _super);
+
+  function EmailAccount() {
+    _ref = EmailAccount.__super__.constructor.apply(this, arguments);
+    return _ref;
+  }
 
   EmailAccount.prototype.company = null;
 
@@ -1529,39 +1644,48 @@ FirehoseJS.EmailAccount = (function(_super) {
 
   EmailAccount.prototype.deleteFromServer = false;
 
-  function EmailAccount(id, company, settings) {
-    this.id = id;
-    this.company = company;
+  EmailAccount.emailAccountWithSettings = function(company, settings) {
+    var emailAccount;
+    emailAccount = FirehoseJS.Object._objectOfClassWithID(FirehoseJS.EmailAccount, null);
+    emailAccount.company = company;
     if (settings != null) {
       if (settings.emailAddress != null) {
-        this.emailAddress = settings.emailAddress;
+        emailAccount.emailAddress = settings.emailAddress;
       }
       if (settings.title != null) {
-        this.title = settings.title;
+        emailAccount.title = settings.title;
       }
       if (settings.kind != null) {
-        this.kind = settings.kind;
+        emailAccount.kind = settings.kind;
       }
       if (settings.server != null) {
-        this.server = settings.server;
+        emailAccount.server = settings.server;
       }
       if (settings.port != null) {
-        this.port = settings.port;
+        emailAccount.port = settings.port;
       }
       if (settings.username != null) {
-        this.username = settings.username;
+        emailAccount.username = settings.username;
       }
       if (settings.password != null) {
-        this.password = settings.password;
+        emailAccount.password = settings.password;
       }
       if (settings.SSL != null) {
-        this.SSL = settings.SSL;
+        emailAccount.SSL = settings.SSL;
       }
       if (settings.deleteFromServer != null) {
-        this.deleteFromServer = settings.deleteFromServer;
+        emailAccount.deleteFromServer = settings.deleteFromServer;
       }
     }
-  }
+    return emailAccount;
+  };
+
+  EmailAccount._emailAccountWithID = function(id, company) {
+    var emailAccount;
+    emailAccount = FirehoseJS.Object._objectOfClassWithID(FirehoseJS.EmailAccount, id);
+    emailAccount.company = company;
+    return emailAccount;
+  };
 
   EmailAccount.prototype.save = function() {
     var params,
@@ -1644,10 +1768,10 @@ FirehoseJS.EmailAccount = (function(_super) {
   ];
 
   EmailAccount.prototype.guessFieldsFromEmail = function() {
-    var domain, service, _i, _len, _ref;
-    _ref = this._popularServices;
-    for (_i = 0, _len = _ref.length; _i < _len; _i++) {
-      service = _ref[_i];
+    var domain, service, _i, _len, _ref1;
+    _ref1 = this._popularServices;
+    for (_i = 0, _len = _ref1.length; _i < _len; _i++) {
+      service = _ref1[_i];
       domain = "@" + service.domain;
       if (this.username.indexOf(domain) !== -1) {
         this.kind = service.kind;
@@ -1696,11 +1820,17 @@ FirehoseJS.EmailAccount = (function(_super) {
 
 })(FirehoseJS.Object);
 
-var __hasProp = {}.hasOwnProperty,
+var _ref,
+  __hasProp = {}.hasOwnProperty,
   __extends = function(child, parent) { for (var key in parent) { if (__hasProp.call(parent, key)) child[key] = parent[key]; } function ctor() { this.constructor = child; } ctor.prototype = parent.prototype; child.prototype = new ctor(); child.__super__ = parent.prototype; return child; };
 
 FirehoseJS.EmailInteraction = (function(_super) {
   __extends(EmailInteraction, _super);
+
+  function EmailInteraction() {
+    _ref = EmailInteraction.__super__.constructor.apply(this, arguments);
+    return _ref;
+  }
 
   EmailInteraction.prototype.emailSubject = null;
 
@@ -1712,21 +1842,23 @@ FirehoseJS.EmailInteraction = (function(_super) {
 
   EmailInteraction.prototype.attachments = new FirehoseJS.UniqueArray;
 
-  function EmailInteraction(id) {
-    this.id = id;
-  }
+  EmailInteraction._emailInteractionWithID = function(id) {
+    return FirehoseJS.Object._objectOfClassWithID(FirehoseJS.EmailInteraction, id);
+  };
 
   EmailInteraction.prototype._populateWithJSON = function(json) {
     var emailJSON,
       _this = this;
-    emailJSON = json.email_interaction;
-    this.emailSubject = emailJSON.subject;
-    this.replyTo = emailJSON.reply_to;
-    this.toEmail = emailJSON.to_email;
-    this.fromEmail = emailJSON.from_email;
-    this._populateAssociatedObjects(this, "attachments", emailJSON.attachments, function(json) {
-      return new FirehoseJS.Attachment(json.id, _this);
-    });
+    if (json.email_interaction != null) {
+      emailJSON = json.email_interaction;
+      this.emailSubject = emailJSON.subject;
+      this.replyTo = emailJSON.reply_to;
+      this.toEmail = emailJSON.to_email;
+      this.fromEmail = emailJSON.from_email;
+      this._populateAssociatedObjects(this, "attachments", emailJSON.attachments, function(json) {
+        return FirehoseJS.Attachment._attachmentWithID(json.id, _this);
+      });
+    }
     return EmailInteraction.__super__._populateWithJSON.call(this, json);
   };
 
@@ -1734,11 +1866,17 @@ FirehoseJS.EmailInteraction = (function(_super) {
 
 })(FirehoseJS.Interaction);
 
-var __hasProp = {}.hasOwnProperty,
+var _ref,
+  __hasProp = {}.hasOwnProperty,
   __extends = function(child, parent) { for (var key in parent) { if (__hasProp.call(parent, key)) child[key] = parent[key]; } function ctor() { this.constructor = child; } ctor.prototype = parent.prototype; child.prototype = new ctor(); child.__super__ = parent.prototype; return child; };
 
 FirehoseJS.FacebookAccount = (function(_super) {
   __extends(FacebookAccount, _super);
+
+  function FacebookAccount() {
+    _ref = FacebookAccount.__super__.constructor.apply(this, arguments);
+    return _ref;
+  }
 
   FacebookAccount.prototype.company = null;
 
@@ -1752,10 +1890,12 @@ FirehoseJS.FacebookAccount = (function(_super) {
 
   FacebookAccount.prototype.facebookPages = new FirehoseJS.UniqueArray;
 
-  function FacebookAccount(id, company) {
-    this.id = id;
-    this.company = company;
-  }
+  FacebookAccount._facebookAccountWithID = function(id, company) {
+    var facebookAccount;
+    facebookAccount = FirehoseJS.Object._objectOfClassWithID(FirehoseJS.FacebookAccount, id);
+    facebookAccount.company = company;
+    return facebookAccount;
+  };
 
   FacebookAccount.OAuthURLForCompanyWithCallback = function(company, callback) {
     return "" + (FirehoseJS.client.serverAddress()) + "/companies/" + company.id + "/oauth_facebook?url_token=" + FirehoseJS.client.URLToken + "&callback_url=" + callback;
@@ -1775,7 +1915,7 @@ FirehoseJS.FacebookAccount = (function(_super) {
     this.imageURL = json.image_url;
     this.name = json.name;
     this._populateAssociatedObjects(this, "facebookPages", json.facebook_pages, function(json) {
-      return new FirehoseJS.FacebookPage(json.id, this);
+      return FirehoseJS.FacebookPage._facebookPageWithID(json.id, this);
     });
     return FacebookAccount.__super__._populateWithJSON.call(this, json);
   };
@@ -1784,11 +1924,17 @@ FirehoseJS.FacebookAccount = (function(_super) {
 
 })(FirehoseJS.Object);
 
-var __hasProp = {}.hasOwnProperty,
+var _ref,
+  __hasProp = {}.hasOwnProperty,
   __extends = function(child, parent) { for (var key in parent) { if (__hasProp.call(parent, key)) child[key] = parent[key]; } function ctor() { this.constructor = child; } ctor.prototype = parent.prototype; child.prototype = new ctor(); child.__super__ = parent.prototype; return child; };
 
 FirehoseJS.FacebookInteraction = (function(_super) {
   __extends(FacebookInteraction, _super);
+
+  function FacebookInteraction() {
+    _ref = FacebookInteraction.__super__.constructor.apply(this, arguments);
+    return _ref;
+  }
 
   FacebookInteraction.prototype.fromUserId = null;
 
@@ -1810,22 +1956,24 @@ FirehoseJS.FacebookInteraction = (function(_super) {
 
   FacebookInteraction.prototype.type = null;
 
-  function FacebookInteraction(id) {
-    this.id = id;
-  }
+  FacebookInteraction._facebookInteractionWithID = function(id) {
+    return FirehoseJS.Object._objectOfClassWithID(FirehoseJS.FacebookInteraction, id);
+  };
 
   FacebookInteraction.prototype._populateWithJSON = function(json) {
     var facebookJSON;
-    facebookJSON = json.facebook_interaction;
-    this.fromUserId = facebookJSON.from_user_id;
-    this.fromName = facebookJSON.from_name;
-    this.toUserId = facebookJSON.to_user_id;
-    this.toName = facebookJSON.to_name;
-    this.postId = facebookJSON.post_id;
-    this.commentId = facebookJSON.comment_id;
-    this.postType = facebookJSON.post_type;
-    this.postExcerpt = facebookJSON.post_excerpt;
-    this.likeCount = facebookJSON.like_count;
+    if (json.facebook_interaction != null) {
+      facebookJSON = json.facebook_interaction;
+      this.fromUserId = facebookJSON.from_user_id;
+      this.fromName = facebookJSON.from_name;
+      this.toUserId = facebookJSON.to_user_id;
+      this.toName = facebookJSON.to_name;
+      this.postId = facebookJSON.post_id;
+      this.commentId = facebookJSON.comment_id;
+      this.postType = facebookJSON.post_type;
+      this.postExcerpt = facebookJSON.post_excerpt;
+      this.likeCount = facebookJSON.like_count;
+    }
     return FacebookInteraction.__super__._populateWithJSON.call(this, json);
   };
 
@@ -1855,9 +2003,11 @@ FirehoseJS.FacebookPage = (function(_super) {
 
   FacebookPage.prototype.active = false;
 
-  FacebookPage.prototype.construction = function(id, facebookAccount) {
-    this.id = id;
-    return this.facebookAccount = facebookAccount;
+  FacebookPage._facebookPageWithID = function(id, facebookAccount) {
+    var facebookPage;
+    facebookPage = FirehoseJS.Object._objectOfClassWithID(FirehoseJS.FacebookPage, id);
+    facebookPage.facebookAccount = facebookAccount;
+    return facebookPage;
   };
 
   FacebookPage.prototype.save = function() {
@@ -1889,11 +2039,17 @@ FirehoseJS.FacebookPage = (function(_super) {
 
 })(FirehoseJS.Object);
 
-var __hasProp = {}.hasOwnProperty,
+var _ref,
+  __hasProp = {}.hasOwnProperty,
   __extends = function(child, parent) { for (var key in parent) { if (__hasProp.call(parent, key)) child[key] = parent[key]; } function ctor() { this.constructor = child; } ctor.prototype = parent.prototype; child.prototype = new ctor(); child.__super__ = parent.prototype; return child; };
 
 FirehoseJS.Note = (function(_super) {
   __extends(Note, _super);
+
+  function Note() {
+    _ref = Note.__super__.constructor.apply(this, arguments);
+    return _ref;
+  }
 
   Note.prototype.interaction = null;
 
@@ -1901,19 +2057,20 @@ FirehoseJS.Note = (function(_super) {
 
   Note.prototype.agent = null;
 
-  function Note(arg1, arg2) {
-    if (!isNaN(parseInt(arg1))) {
-      this.id = arg1;
-      if ((arg2 != null) && arg2 instanceof FirehoseJS.Interaction) {
-        this.interaction = arg2;
-      }
-    } else if (typeof arg1 === 'string') {
-      this.body = arg1;
-      if (arg2 instanceof FirehoseJS.Interaction) {
-        this.interaction = arg2;
-      }
-    }
-  }
+  Note.noteWithBody = function(body, interaction) {
+    var note;
+    note = FirehoseJS.Object._objectOfClassWithID(FirehoseJS.Note, null);
+    note.body = body;
+    note.interaction = interaction;
+    return note;
+  };
+
+  Note._noteWithID = function(id, interaction) {
+    var note;
+    note = FirehoseJS.Object._objectOfClassWithID(FirehoseJS.Note, id);
+    note.interaction = interaction;
+    return note;
+  };
 
   Note.prototype.save = function() {
     var params,
@@ -1953,7 +2110,7 @@ FirehoseJS.Note = (function(_super) {
   Note.prototype._populateWithJSON = function(json) {
     this.body = json.body;
     this._populateAssociatedObjectWithJSON(this, "agent", json.agent, function(json) {
-      return new FirehoseJS.Agent(json.id);
+      return FirehoseJS.Agent._agentWithID(json.id);
     });
     return Note.__super__._populateWithJSON.call(this, json);
   };
@@ -1970,11 +2127,17 @@ FirehoseJS.Note = (function(_super) {
 
 })(FirehoseJS.Object);
 
-var __hasProp = {}.hasOwnProperty,
+var _ref,
+  __hasProp = {}.hasOwnProperty,
   __extends = function(child, parent) { for (var key in parent) { if (__hasProp.call(parent, key)) child[key] = parent[key]; } function ctor() { this.constructor = child; } ctor.prototype = parent.prototype; child.prototype = new ctor(); child.__super__ = parent.prototype; return child; };
 
 FirehoseJS.Notification = (function(_super) {
   __extends(Notification, _super);
+
+  function Notification() {
+    _ref = Notification.__super__.constructor.apply(this, arguments);
+    return _ref;
+  }
 
   Notification.prototype.company = null;
 
@@ -1984,10 +2147,12 @@ FirehoseJS.Notification = (function(_super) {
 
   Notification.prototype.level = 0;
 
-  function Notification(id, company) {
-    this.id = id;
-    this.company = company;
-  }
+  Notification._notificationWithID = function(id, company) {
+    var notification;
+    notification = FirehoseJS.Object._objectOfClassWithID(FirehoseJS.Notification, id);
+    notification.company = company;
+    return notification;
+  };
 
   Notification.prototype._populateWithJSON = function(json) {
     this.title = json.title;
@@ -2000,11 +2165,17 @@ FirehoseJS.Notification = (function(_super) {
 
 })(FirehoseJS.Object);
 
-var __hasProp = {}.hasOwnProperty,
+var _ref,
+  __hasProp = {}.hasOwnProperty,
   __extends = function(child, parent) { for (var key in parent) { if (__hasProp.call(parent, key)) child[key] = parent[key]; } function ctor() { this.constructor = child; } ctor.prototype = parent.prototype; child.prototype = new ctor(); child.__super__ = parent.prototype; return child; };
 
 FirehoseJS.OutgoingAttachment = (function(_super) {
   __extends(OutgoingAttachment, _super);
+
+  function OutgoingAttachment() {
+    _ref = OutgoingAttachment.__super__.constructor.apply(this, arguments);
+    return _ref;
+  }
 
   OutgoingAttachment.prototype.filename = null;
 
@@ -2018,13 +2189,16 @@ FirehoseJS.OutgoingAttachment = (function(_super) {
 
   OutgoingAttachment.prototype.uploaded = false;
 
-  OutgoingAttachment.prototype.localURL = null;
+  OutgoingAttachment.prototype.file = null;
 
-  function OutgoingAttachment(localURL) {
-    this.localURL = localURL;
-  }
+  OutgoingAttachment.outgoingAttachmentWithFile = function(file) {
+    var outgoingAttachment;
+    outgoingAttachment = FirehoseJS.Object._objectOfClassWithID(FirehoseJS.OutgoingAttachment, id);
+    outgoingAttachment.file = file;
+    return outgoingAttachment;
+  };
 
-  OutgoingAttachment.prototype.upload = function(file, completionHandler, errorHandler, progressHandler) {
+  OutgoingAttachment.prototype.upload = function(completionHandler, errorHandler, progressHandler) {
     var params,
       _this = this;
     params = {
@@ -2032,7 +2206,7 @@ FirehoseJS.OutgoingAttachment = (function(_super) {
       body: this._toJSON()
     };
     return FirehoseJS.client.post(params).done(function(data) {
-      var xhr, _ref;
+      var xhr, _ref1;
       xhr = new XMLHttpRequest();
       if ("withCredentials" in xhr) {
         xhr.open('PUT', data.upload_url, true);
@@ -2040,8 +2214,8 @@ FirehoseJS.OutgoingAttachment = (function(_super) {
         xhr = new XDomainRequest();
         xhr.open('PUT', data.upload_url);
       }
-      if ((_ref = xhr.upload) != null) {
-        _ref.addEventListener('progress', function(event) {
+      if ((_ref1 = xhr.upload) != null) {
+        _ref1.addEventListener('progress', function(event) {
           var percentComplete;
           if (event.lengthComputable) {
             percentComplete = parseInt(event.loaded / event.total * 100, 10);
@@ -2068,9 +2242,9 @@ FirehoseJS.OutgoingAttachment = (function(_super) {
           return errorHandler("Your attachment failed to upload successfully, please try again. Please contact support@getfirehose.com if the problem persists and we'll get it fixed for you.");
         }
       };
-      xhr.setRequestHeader('Content-Type', file.type);
+      xhr.setRequestHeader('Content-Type', _this.file.type);
       xhr.setRequestHeader('x-amz-acl', 'authenticated-read');
-      return xhr.send(file);
+      return xhr.send(_this.file);
     }).fail(function(jqXHR, textStatus, errorThrown) {
       return errorHandler(errorThrown);
     });
@@ -2090,29 +2264,36 @@ FirehoseJS.OutgoingAttachment = (function(_super) {
 
 })(FirehoseJS.Object);
 
-var __hasProp = {}.hasOwnProperty,
+var _ref,
+  __hasProp = {}.hasOwnProperty,
   __extends = function(child, parent) { for (var key in parent) { if (__hasProp.call(parent, key)) child[key] = parent[key]; } function ctor() { this.constructor = child; } ctor.prototype = parent.prototype; child.prototype = new ctor(); child.__super__ = parent.prototype; return child; };
 
 FirehoseJS.Tag = (function(_super) {
   __extends(Tag, _super);
 
+  function Tag() {
+    _ref = Tag.__super__.constructor.apply(this, arguments);
+    return _ref;
+  }
+
   Tag.prototype.company = null;
 
   Tag.prototype.label = null;
 
-  function Tag(arg1, arg2) {
-    if (!isNaN(parseInt(arg1))) {
-      this.id = arg1;
-      if ((arg2 != null) && arg2.constructor === FirehoseJS.Company) {
-        this.company = arg2;
-      }
-    } else if (typeof arg1 === 'string') {
-      this.label = arg1;
-      if (arg2.constructor === FirehoseJS.Company) {
-        this.company = arg2;
-      }
-    }
-  }
+  Tag.tagWithLabel = function(label, company) {
+    var tag;
+    tag = FirehoseJS.Object._objectOfClassWithID(FirehoseJS.Tag, null);
+    tag.label = label;
+    tag.company = company;
+    return tag;
+  };
+
+  Tag._tagWithID = function(id, company) {
+    var tag;
+    tag = FirehoseJS.Object._objectOfClassWithID(FirehoseJS.Tag, id);
+    tag.company = company;
+    return tag;
+  };
 
   Tag.prototype.save = function() {
     var params,
@@ -2163,11 +2344,17 @@ FirehoseJS.Tag = (function(_super) {
 
 })(FirehoseJS.Object);
 
-var __hasProp = {}.hasOwnProperty,
+var _ref,
+  __hasProp = {}.hasOwnProperty,
   __extends = function(child, parent) { for (var key in parent) { if (__hasProp.call(parent, key)) child[key] = parent[key]; } function ctor() { this.constructor = child; } ctor.prototype = parent.prototype; child.prototype = new ctor(); child.__super__ = parent.prototype; return child; };
 
 FirehoseJS.TwitterAccount = (function(_super) {
   __extends(TwitterAccount, _super);
+
+  function TwitterAccount() {
+    _ref = TwitterAccount.__super__.constructor.apply(this, arguments);
+    return _ref;
+  }
 
   TwitterAccount.prototype.company = null;
 
@@ -2177,10 +2364,12 @@ FirehoseJS.TwitterAccount = (function(_super) {
 
   TwitterAccount.prototype.imageURL = null;
 
-  function TwitterAccount(id, company) {
-    this.id = id;
-    this.company = company;
-  }
+  TwitterAccount._twitterAccountWithID = function(id, company) {
+    var twitterAccount;
+    twitterAccount = FirehoseJS.Object._objectOfClassWithID(FirehoseJS.TwitterAccount, id);
+    twitterAccount.company = company;
+    return twitterAccount;
+  };
 
   TwitterAccount.OAuthURLForCompanyWithCallback = function(company, callback) {
     return "" + (FirehoseJS.client.serverAddress()) + "/companies/" + company.id + "/oauth_twitter?url_token=" + FirehoseJS.client.URLToken + "&callback_url=" + callback;
@@ -2205,11 +2394,17 @@ FirehoseJS.TwitterAccount = (function(_super) {
 
 })(FirehoseJS.Object);
 
-var __hasProp = {}.hasOwnProperty,
+var _ref,
+  __hasProp = {}.hasOwnProperty,
   __extends = function(child, parent) { for (var key in parent) { if (__hasProp.call(parent, key)) child[key] = parent[key]; } function ctor() { this.constructor = child; } ctor.prototype = parent.prototype; child.prototype = new ctor(); child.__super__ = parent.prototype; return child; };
 
 FirehoseJS.TwitterInteraction = (function(_super) {
   __extends(TwitterInteraction, _super);
+
+  function TwitterInteraction() {
+    _ref = TwitterInteraction.__super__.constructor.apply(this, arguments);
+    return _ref;
+  }
 
   TwitterInteraction.prototype.favorited = false;
 
@@ -2229,25 +2424,123 @@ FirehoseJS.TwitterInteraction = (function(_super) {
 
   TwitterInteraction.prototype.fromUserId = null;
 
-  function TwitterInteraction(id) {
-    this.id = id;
-  }
+  TwitterInteraction._twitterInteractionWithID = function(id) {
+    return FirehoseJS.Object._objectOfClassWithID(FirehoseJS.TwitterInteraction, id);
+  };
 
   TwitterInteraction.prototype._populateWithJSON = function(json) {
     var twitterJSON;
-    twitterJSON = json.twitter_interaction;
-    this.favorited = twitterJSON.favorited;
-    this.tweetId = twitterJSON.tweet_id;
-    this.inReplyToScreenName = twitterJSON.in_reply_to_screen_name;
-    this.inReplyToStatusId = twitterJSON.in_reply_to_status_id;
-    this.retweetCount = twitterJSON.retweet_count;
-    this.tweetSource = twitterJSON.tweet_source;
-    this.toUserId = twitterJSON.to_user_id;
-    this.toScreenName = twitterJSON.twitter_account.screen_name;
-    this.fromUserId = twitterJSON.from_user_id;
+    if (json.twitter_interaction != null) {
+      twitterJSON = json.twitter_interaction;
+      this.favorited = twitterJSON.favorited;
+      this.tweetId = twitterJSON.tweet_id;
+      this.inReplyToScreenName = twitterJSON.in_reply_to_screen_name;
+      this.inReplyToStatusId = twitterJSON.in_reply_to_status_id;
+      this.retweetCount = twitterJSON.retweet_count;
+      this.tweetSource = twitterJSON.tweet_source;
+      this.toUserId = twitterJSON.to_user_id;
+      this.toScreenName = twitterJSON.twitter_account.screen_name;
+      this.fromUserId = twitterJSON.from_user_id;
+    }
     return TwitterInteraction.__super__._populateWithJSON.call(this, json);
   };
 
   return TwitterInteraction;
 
 })(FirehoseJS.Interaction);
+
+var _ref,
+  __hasProp = {}.hasOwnProperty,
+  __extends = function(child, parent) { for (var key in parent) { if (__hasProp.call(parent, key)) child[key] = parent[key]; } function ctor() { this.constructor = child; } ctor.prototype = parent.prototype; child.prototype = new ctor(); child.__super__ = parent.prototype; return child; };
+
+FirehoseJS.Article = (function(_super) {
+  __extends(Article, _super);
+
+  function Article() {
+    _ref = Article.__super__.constructor.apply(this, arguments);
+    return _ref;
+  }
+
+  Article.prototype.company = null;
+
+  Article.prototype.title = null;
+
+  Article.prototype.body = null;
+
+  Article.articleWithTitleBodyAndCompany = function(title, body, company) {
+    var article;
+    article = FirehoseJS.Object._objectOfClassWithID(FirehoseJS.Article, null);
+    article.title = title;
+    article.body = body;
+    article.company = company;
+    return article;
+  };
+
+  Article._articleWithID = function(id, company) {
+    var article;
+    article = FirehoseJS.Object._objectOfClassWithID(FirehoseJS.Article, id);
+    article.company = company;
+    return article;
+  };
+
+  Article.prototype.fetch = function() {
+    var params,
+      _this = this;
+    params = {
+      route: "articles/" + this.id
+    };
+    return FirehoseJS.client.get(params).done(function(data) {
+      return _this._populateWithJSON(data);
+    });
+  };
+
+  Article.prototype.save = function() {
+    var params,
+      _this = this;
+    if (this.id != null) {
+      params = {
+        route: "articles/" + this.id,
+        body: this._toJSON()
+      };
+      return FirehoseJS.client.put(params);
+    } else {
+      params = {
+        route: "companies/" + this.company.id + "/articles",
+        body: this._toJSON()
+      };
+      return FirehoseJS.client.post(params).done(function(data) {
+        _this._populateWithJSON(data);
+        return _this.company.articles().push(_this);
+      });
+    }
+  };
+
+  Article.prototype.destroy = function() {
+    var params,
+      _this = this;
+    params = {
+      route: "articles/" + this.id
+    };
+    return FirehoseJS.client["delete"](params).done(function() {
+      return _this.company.articles().remove(_this);
+    });
+  };
+
+  Article.prototype._populateWithJSON = function(json) {
+    this.title = json.title;
+    this.body = json.body;
+    return Article.__super__._populateWithJSON.call(this, json);
+  };
+
+  Article.prototype._toJSON = function() {
+    return {
+      article: {
+        title: this.title,
+        body: this.body
+      }
+    };
+  };
+
+  return Article;
+
+})(FirehoseJS.Object);

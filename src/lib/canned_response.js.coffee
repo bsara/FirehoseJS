@@ -8,22 +8,20 @@ class FirehoseJS.CannedResponse extends FirehoseJS.Object
   shortcut: null
   
   text: null
+    
+    
+  @cannedResponseWithNameAndText: (name, text, company) ->
+    cannedResponse = FirehoseJS.Object._objectOfClassWithID( FirehoseJS.CannedResponse, null )
+    cannedResponse.name     = name
+    cannedResponse.text     = text
+    cannedResponse.company  = company
+    cannedResponse 
   
-  
-  constructor: (arg1, arg2, arg3) ->
-    # with id and company
-    unless isNaN(parseInt(arg1))
-      @id = arg1
-      if arg2? and arg2.constructor == FirehoseJS.Company
-        @company = arg2
-      
-    # with name, text and company
-    else if typeof(arg1) == 'string'
-      @name = arg1
-      if typeof(arg2) == 'string'
-        @text = arg2
-      if arg3.constructor == FirehoseJS.Company
-        @company = arg3
+        
+  @_cannedResponseWithID: (id, company) ->
+    cannedResponse = FirehoseJS.Object._objectOfClassWithID( FirehoseJS.CannedResponse, id )
+    cannedResponse.company = company
+    cannedResponse 
 
 
   save: ->

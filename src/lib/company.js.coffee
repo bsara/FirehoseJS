@@ -41,6 +41,8 @@ class FirehoseJS.Company extends FirehoseJS.Object
   
   _emailAccounts: null
   
+  _articles: null
+  
   
   # billing
   
@@ -65,23 +67,20 @@ class FirehoseJS.Company extends FirehoseJS.Object
   
   # protected
   
-  @_creator: null
+  _creator: null
+    
+    
+  @companyWithTitle: (title, creator) ->
+    company = FirehoseJS.Object._objectOfClassWithID( FirehoseJS.Company, null )
+    company.title    = title
+    company._creator = creator
+    company 
   
   
-  constructor: (arg1, arg2) ->
-    # with id 
-    unless isNaN(parseInt(arg1))
-      @id = arg1
-      if arg2? and arg2.constructor == FirehoseJS.Agent
-        @_creator = arg2
-        @agents.push @_creator
-      
-    # with title and agent
-    else if typeof(arg1) == 'string'
-      @title = arg1
-      if arg2.constructor == FirehoseJS.Agent
-        @_creator = arg2
-        @agents.push @_creator
+  @_companyWithID: (id, creator) ->
+    company = FirehoseJS.Object._objectOfClassWithID( FirehoseJS.Company, id )
+    company._creator = creator
+    company 
     
     
   fetch: ->
@@ -125,35 +124,42 @@ class FirehoseJS.Company extends FirehoseJS.Object
       sort:         criteria.sort if criteria.sort?
       search_text:  criteria.searchString if criteria.searchString
     new FirehoseJS.RemoteArray "companies/#{@id}/customers", params, (json) =>
-      new FirehoseJS.Customer( json.id, this )
+      FirehoseJS.Customer._customerWithID( json.id, this )
       
       
   notifications: ->
     unless @_notifications?
       @_notifications = new FirehoseJS.RemoteArray "companies/#{@id}/notifications", null, (json) =>
-        new FirehoseJS.Notification( json.id, this )
+        FirehoseJS.Notification._notificationWithID( json.id, this )
     @_notifications
     
     
   twitterAccounts: ->
     unless @_twitterAccounts?
       @_twitterAccounts = new FirehoseJS.RemoteArray "companies/#{@id}/twitter_accounts", null, (json) =>
-        new FirehoseJS.TwitterAccount( json.id, this )
+        FirehoseJS.TwitterAccount._twitterAccountWithID( json.id, this )
     @_twitterAccounts
     
   
   facebookAccounts: ->
     unless @_facebookAccounts?
       @_facebookAccounts = new FirehoseJS.RemoteArray "companies/#{@id}/facebook_accounts", null, (json) =>
-        new FirehoseJS.FacebookAccount( json.id, this )
+        FirehoseJS.FacebookAccount._facebookAccountWithID( json.id, this )
     @_facebookAccounts
     
     
   emailAccounts: ->
     unless @_emailAccounts?
       @_emailAccounts = new FirehoseJS.RemoteArray "companies/#{@id}/email_accounts", null, (json) =>
-        new FirehoseJS.EmailAccount( json.id, this )
+        FirehoseJS.EmailAccount._emailAccountWithID( json.id, this )
     @_emailAccounts
+    
+    
+  articles: ->
+    unless @_articles?
+      @_articles = new FirehoseJS.RemoteArray "companies/#{@id}/articles", null, (json) =>
+        FirehoseJS.Article._articleWithID( json.id, this )
+    @_articles
              
   
   addAgent: (agent) ->
@@ -178,7 +184,7 @@ class FirehoseJS.Company extends FirehoseJS.Object
         route: "entities/#{@id}"
       FirehoseJS.client.get( params ).done (json) =>
         if json.credit_card?
-          @creditCard = new FirehoseJS.CreditCard( this )
+          @creditCard = FirehoseJS.CreditCard._creditCardWithID( json.credit_card.id, this )
           @creditCard._populateWithJSON json.credit_card
         @billingEmail           = json.email || FirehoseJS.Agent.loggedInAgent.email
         @billingRate            = json.rate / 100.0
@@ -207,18 +213,18 @@ class FirehoseJS.Company extends FirehoseJS.Object
     @numberOfAccounts       = json.number_of_accounts
     
     this._populateAssociatedObjects this, "agents", json.agents, (json) ->
-      agent = new FirehoseJS.Agent( json.id )
+      agent = FirehoseJS.Agent._agentWithID( json.id )
       agent.companies.push this
       agent
       
     this._populateAssociatedObjects this, "agentInvites", json.agent_invites, (json) ->
-      new FirehoseJS.AgentInvite( json.id, this )
+      FirehoseJS.AgentInvite._agentInviteWithID( json.id, this )
       
     this._populateAssociatedObjects this, "tags", json.tags, (json) ->
-      new FirehoseJS.Tag( json.id, this )
+      FirehoseJS.Tag._tagWithID( json.id, this )
       
     this._populateAssociatedObjects this, "cannedResponses", json.canned_responses, (json) ->
-      new FirehoseJS.CannedResponse( json.id, this )
+      FirehoseJS.CannedResponse._cannedResponseWithID( json.id, this )
       
     FirehoseJS.client.billingAccessToken = @token
     

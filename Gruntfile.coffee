@@ -73,6 +73,7 @@ module.exports = (grunt) ->
           files.push "lib/tag"
           files.push "lib/twitter_account"
           files.push "lib/twitter_interaction"
+          files.push "lib/article"
           sources = []
           sources.push 'stripe/stripe.js'
           for file in files
@@ -108,6 +109,7 @@ module.exports = (grunt) ->
     qunit:
       all:
         options:
+          timeout: 10000
           urls: ['http://localhost:9001/build/test/firehosejs_tests.html']
       
     uglify:

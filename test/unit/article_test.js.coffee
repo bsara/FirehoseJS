@@ -19,25 +19,43 @@
 
 FirehoseJS.client.setEnvironment('test')
 
-module "Canned Response"
+module "Article"
 
 firehoseTest 'Create', 1, (agent) ->
   company = agent.companies[0]
-  cannedResponse = FirehoseJS.CannedResponse.cannedResponseWithNameAndText( Faker.Lorem.words(1).join(" "), Faker.Lorem.words(10).join(" "), company)
-  cannedResponse.save()
+  article = FirehoseJS.Article.articleWithTitleBodyAndCompany( Faker.Lorem.words(4).join(" "), Faker.Lorem.words(10).join(" "), company)
+  article.save()
   .done (data, textStatus) ->
     equal textStatus, "success"
     start()
   .fail (jqXHR, textStatus, errorThrown) ->
     start()
+    
+firehoseTest 'Fetch', 5, (agent) ->
+  company = agent.companies[0]
+  article = FirehoseJS.Article.articleWithTitleBodyAndCompany( Faker.Lorem.words(4).join(" "), Faker.Lorem.words(10).join(" "), company)
+  article.save()
+  .done (data, textStatus) ->
+    article.fetch()
+    .done (data, textStatus) ->
+      equal textStatus, "success"
+      ok article.id?
+      ok article.title?
+      ok article.body?
+      ok article.createdAt?
+      start()
+    .fail (jqXHR, textStatus, errorThrown) ->
+      start()
+  .fail (jqXHR, textStatus, errorThrown) ->
 
 firehoseTest 'Update', 1, (agent) ->
   company = agent.companies[0]
-  cannedResponse = FirehoseJS.CannedResponse.cannedResponseWithNameAndText( Faker.Lorem.words(1).join(" "), Faker.Lorem.words(10).join(" "), company)
-  cannedResponse.save()
+  article = FirehoseJS.Article.articleWithTitleBodyAndCompany( Faker.Lorem.words(4).join(" "), Faker.Lorem.words(10).join(" "), company)
+  article.save()
   .done (data, textStatus) ->
-    cannedResponse.text = Faker.Lorem.words(50).join(" ")
-    cannedResponse.save()
+    article.title = Faker.Lorem.words(10).join(" ")
+    article.body  = Faker.Lorem.words(50).join(" ")
+    article.save()
     .done (data, textStatus) ->
       equal textStatus, "nocontent"
       start()
@@ -48,10 +66,10 @@ firehoseTest 'Update', 1, (agent) ->
 
 firehoseTest 'Destroy', 1, (agent) ->
   company = agent.companies[0]
-  cannedResponse = FirehoseJS.CannedResponse.cannedResponseWithNameAndText( Faker.Lorem.words(1).join(" "), Faker.Lorem.words(10).join(" "), company)
-  cannedResponse.save()
+  article = FirehoseJS.Article.articleWithTitleBodyAndCompany( Faker.Lorem.words(4).join(" "), Faker.Lorem.words(10).join(" "), company)
+  article.save()
   .done (data, textStatus) ->
-    cannedResponse.destroy()
+    article.destroy()
     .done (data, textStatus) ->
       equal textStatus, "nocontent"
       start()

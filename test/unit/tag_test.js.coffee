@@ -23,7 +23,7 @@ module "Tag"
 
 firehoseTest 'Create', 4, (agent) ->
   company = agent.companies[0]
-  tag = new FirehoseJS.Tag( Faker.Lorem.words(1).join(" "), company)
+  tag = FirehoseJS.Tag.tagWithLabel( Faker.Lorem.words(1).join(" "), company)
   tag.save()
   .done (data, textStatus) ->
     equal textStatus, "success"
@@ -36,7 +36,7 @@ firehoseTest 'Create', 4, (agent) ->
 
 firehoseTest 'Update', 1, (agent) ->
   company = agent.companies[0]
-  tag = new FirehoseJS.Tag( Faker.Lorem.words(1).join(" "), company)
+  tag = FirehoseJS.Tag.tagWithLabel( Faker.Lorem.words(1).join(" "), company)
   tag.save()
   .done (data, textStatus) ->
     tag.label = Faker.Lorem.words(1).join(" ")
@@ -51,7 +51,7 @@ firehoseTest 'Update', 1, (agent) ->
 
 firehoseTest 'Destroy', 1, (agent) ->
   company = agent.companies[0]
-  tag = new FirehoseJS.Tag( Faker.Lorem.words(1).join(" "), company)
+  tag = FirehoseJS.Tag.tagWithLabel( Faker.Lorem.words(1).join(" "), company)
   tag.save()
   .done (data, textStatus) ->
     tag.destroy()

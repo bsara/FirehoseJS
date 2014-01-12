@@ -9,10 +9,11 @@ class FirehoseJS.Notification extends FirehoseJS.Object
   
   level: 0
   
-  
-  constructor: (id, company) ->
-    @id       = id
-    @company  = company
+    
+  @_notificationWithID: (id, company) ->
+    notification = FirehoseJS.Object._objectOfClassWithID( FirehoseJS.Notification, id )
+    notification.company = company
+    notification 
     
     
   _populateWithJSON: (json) ->

@@ -23,7 +23,7 @@ module "Email Account"
 
 firehoseTest 'Create', 3, (agent) ->
   company = agent.companies[0]
-  emailAccount = new FirehoseJS.EmailAccount null, company,
+  emailAccount = FirehoseJS.EmailAccount.emailAccountWithSettings company,
     emailAddress: Faker.Internet.email()
     title:        Faker.Lorem.words(1).join(" ")
     kind:         "IMAP"
@@ -43,7 +43,7 @@ firehoseTest 'Create', 3, (agent) ->
     
 firehoseTest 'Update', 1, (agent) ->
   company = agent.companies[0]
-  emailAccount = new FirehoseJS.EmailAccount null, company,
+  emailAccount = FirehoseJS.EmailAccount.emailAccountWithSettings company,
     emailAddress: Faker.Internet.email()
     title:        Faker.Lorem.words(1).join(" ")
     kind:         "IMAP"
@@ -66,7 +66,7 @@ firehoseTest 'Update', 1, (agent) ->
 
 firehoseTest 'Destroy', 1, (agent) ->
   company = agent.companies[0]
-  emailAccount = new FirehoseJS.EmailAccount null, company,
+  emailAccount = FirehoseJS.EmailAccount.emailAccountWithSettings company,
     emailAddress: Faker.Internet.email()
     title:        Faker.Lorem.words(1).join(" ")
     kind:         "IMAP"
@@ -89,7 +89,7 @@ firehoseTest 'Destroy', 1, (agent) ->
     
 firehoseTest 'Guess Fields From Email', 8, (agent) ->
   company = agent.companies[0]
-  emailAccount = new FirehoseJS.EmailAccount null, company,
+  emailAccount = FirehoseJS.EmailAccount.emailAccountWithSettings company,
     emailAddress: Faker.Internet.email()
     title:        Faker.Lorem.words(1).join(" ")
     kind:         "IMAP"
@@ -112,3 +112,4 @@ firehoseTest 'Guess Fields From Email', 8, (agent) ->
   ok emailAccount.port == 995
   ok emailAccount.server == "pop3.live.com"
   start()
+  

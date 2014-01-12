@@ -22,7 +22,7 @@ FirehoseJS.client.setEnvironment('test')
 module "Company"
 
 firehoseTest 'Create', 13, (agent) ->
-  company = new FirehoseJS.Company( Faker.Lorem.words(1).join(" "), agent )
+  company = FirehoseJS.Company.companyWithTitle( Faker.Lorem.words(1).join(" "), agent )
   company.save()
   .done (data, textStatus) ->
     equal textStatus, "success"
@@ -69,11 +69,10 @@ firehoseTest 'Update', 3, (agent) ->
   company.save()
   .done (data, textStatus) ->
     equal textStatus, "nocontent"
-    fetchedCompany = new FirehoseJS.Company( company.id )
-    fetchedCompany.fetch()
+    company.fetch()
     .done (data, textStatus) ->
       equal textStatus, "success"
-      equal fetchedCompany.title, "Adam's Company"
+      equal company.title, "Adam's Company"
       start()
     .fail ->
       start()
@@ -81,7 +80,7 @@ firehoseTest 'Update', 3, (agent) ->
     start()
     
 firehoseTest 'Destroy', 1, (agent) ->
-  company = new FirehoseJS.Company( Faker.Lorem.words(1).join(" "), agent )
+  company = FirehoseJS.Company.companyWithTitle( Faker.Lorem.words(1).join(" "), agent )
   company.save()
   .done (data, textStatus) ->
     company.destroy()
@@ -142,6 +141,17 @@ firehoseTest 'Fetch Email Accounts', 2, (agent) ->
   .done (data, textStatus) ->
     equal textStatus, "success"
     ok emailAccounts.length > 0
+    start()
+  .fail (jqXHR, textStatus, errorThrown) ->
+    start()
+    
+firehoseTest 'Fetch Articles', 2, (agent) ->
+  company = agent.companies[0]
+  articles = company.articles()
+  articles.next()
+  .done (data, textStatus) ->
+    equal textStatus, "success"
+    ok articles.length > 0
     start()
   .fail (jqXHR, textStatus, errorThrown) ->
     start()

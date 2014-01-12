@@ -175,7 +175,6 @@ firehoseTest 'Destroy', 1, (agent) ->
   .fail (jqXHR, textStatus, errorThrown) ->
     start()
 
-
 firehoseTest 'Add And Remove Interaction Tag', 4, (agent) ->
   company = agent.companies[0]
   customers = company.customersWithCriteria( channels: ["email"] )
@@ -187,7 +186,7 @@ firehoseTest 'Add And Remove Interaction Tag', 4, (agent) ->
     .done (data, textStatus) ->
       interaction = interactions[0]
       tagCount = interaction.tags.length
-      tag = new FirehoseJS.Tag( Faker.Lorem.words(1).join(" "), company)
+      tag = FirehoseJS.Tag.tagWithLabel( Faker.Lorem.words(1).join(" "), company)
       tag.save()
       .done (data, textStatus) ->
         interaction.addTag( tag )  

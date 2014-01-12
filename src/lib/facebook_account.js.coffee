@@ -16,9 +16,10 @@ class FirehoseJS.FacebookAccount extends FirehoseJS.Object
   facebookPages: new FirehoseJS.UniqueArray
   
   
-  constructor: (id, company) ->
-    @id       = id
-    @company  = company
+  @_facebookAccountWithID: (id, company) ->
+    facebookAccount = FirehoseJS.Object._objectOfClassWithID( FirehoseJS.FacebookAccount, id )
+    facebookAccount.company = company
+    facebookAccount 
   
   
   @OAuthURLForCompanyWithCallback: (company, callback)  ->
@@ -38,7 +39,7 @@ class FirehoseJS.FacebookAccount extends FirehoseJS.Object
     @name           = json.name
     
     this._populateAssociatedObjects this, "facebookPages", json.facebook_pages, (json) ->
-      new FirehoseJS.FacebookPage( json.id, this )
+      FirehoseJS.FacebookPage._facebookPageWithID( json.id, this )
       
     super json
     

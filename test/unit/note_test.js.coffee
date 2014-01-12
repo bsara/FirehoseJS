@@ -31,7 +31,7 @@ firehoseTest 'Create', 2, (agent) ->
     interactions.next()
     .done (data, textStatus) ->
       interaction = interactions[0]
-      note = new FirehoseJS.Note( Faker.Lorem.words(5).join(" "), interaction )
+      note = FirehoseJS.Note.noteWithBody( Faker.Lorem.words(5).join(" "), interaction )
       note.save()
       .done (data, textStatus) ->
         ok textStatus == "success"
@@ -54,7 +54,7 @@ firehoseTest 'Update', 1, (agent) ->
     interactions.next()
     .done (data, textStatus) ->
       interaction = interactions[0]
-      note = new FirehoseJS.Note( Faker.Lorem.words(5).join(" "), interaction )
+      note = FirehoseJS.Note.noteWithBody( Faker.Lorem.words(5).join(" "), interaction )
       note.save()
       .done (data, textStatus) ->
         note.body = Faker.Lorem.words(50).join(" ")
@@ -81,7 +81,7 @@ firehoseTest 'Destroy', 1, (agent) ->
     interactions.next()
     .done (data, textStatus) ->
       interaction = interactions[0]
-      note = new FirehoseJS.Note( Faker.Lorem.words(5).join(" "), interaction )
+      note = FirehoseJS.Note.noteWithBody( Faker.Lorem.words(5).join(" "), interaction )
       note.save()
       .done (data, textStatus) ->
         note.destroy()

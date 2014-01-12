@@ -3,6 +3,10 @@ class FirehoseJS.CreditCard extends FirehoseJS.Object
   
   company: null
   
+  number: null 
+  
+  cvc: null
+  
   expirationMonth: null
   
   expirationYear: null
@@ -12,21 +16,33 @@ class FirehoseJS.CreditCard extends FirehoseJS.Object
   stripeToken: null
   
   email: null
+    
+    
+  @creditCardWithNumber: (number, cvc, expMonth, expYear, company) ->
+    creditCard = FirehoseJS.Object._objectOfClassWithID( FirehoseJS.CreditCard, null )
+    creditCard.number           = number
+    creditCard.cvc              = cvc
+    creditCard.expirationMonth  = expMonth
+    creditCard.expirationYear   = expYear
+    creditCard.company          = company
+    creditCard 
   
-  
-  constructor: (company) ->
-    @company = company
+    
+  @_creditCardWithID: (id, company) ->
+    creditCard = FirehoseJS.Object._objectOfClassWithID( FirehoseJS.CreditCard, id )
+    creditCard.company = company
+    creditCard 
     
   
-  submitToStripe: (number, cvc, expMonth, expYear, callback) ->
+  submitToStripe: (callback) ->
     Stripe.card.createToken
-      number: number
-      cvc: cvc
-      exp_month: expMonth
-      exp_year: expYear
+      number:     @number
+      cvc:        @cvc
+      exp_month:  @expirationMonth
+      exp_year:   @expirationYear
     , (status, response) =>
       if not response.error
-        @expirationMonth  =  response.card.exp_month
+        @expirationMonth  = response.card.exp_month
         @expirationYear   = response.card.exp_year
         @lastFour         = response.card.last4
         @stripeToken      = response.id

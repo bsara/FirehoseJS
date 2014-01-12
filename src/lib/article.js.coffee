@@ -1,0 +1,63 @@
+class FirehoseJS.Article extends FirehoseJS.Object
+  
+  
+  company: null
+  
+  title: null
+  
+  body: null
+    
+    
+  @articleWithTitleBodyAndCompany: (title, body, company) ->
+    article         = FirehoseJS.Object._objectOfClassWithID( FirehoseJS.Article, null )
+    article.title   = title
+    article.body    = body
+    article.company = company
+    article
+  
+  
+  @_articleWithID: (id, company) ->
+    article = FirehoseJS.Object._objectOfClassWithID( FirehoseJS.Article, id )
+    article.company  = company
+    article
+  
+  
+  fetch: ->
+    params = 
+      route: "articles/#{@id}"
+    FirehoseJS.client.get( params ).done (data) =>
+      this._populateWithJSON data
+
+
+  save: ->
+    if @id?
+      params = 
+        route: "articles/#{@id}"
+        body:  this._toJSON()
+      FirehoseJS.client.put( params )
+    else
+      params = 
+        route: "companies/#{@company.id}/articles"
+        body:  this._toJSON()
+      FirehoseJS.client.post( params ).done (data) =>
+        this._populateWithJSON data
+        @company.articles().push this
+      
+      
+  destroy: ->
+    params = 
+      route: "articles/#{@id}"
+    FirehoseJS.client.delete( params ).done =>
+      @company.articles().remove this
+    
+
+  _populateWithJSON: (json) ->
+    @title  = json.title
+    @body   = json.body
+    super json
+    
+    
+  _toJSON: ->
+    article:
+      title:  @title
+      body:   @body

@@ -22,7 +22,7 @@ FirehoseJS.client.setEnvironment('test')
 module "Billing"
 
 firehoseTest 'Fetch Billing Info', 2, (agent) ->
-  firstAgent = new FirehoseJS.Agent( "agent1@example.com", "pw" )
+  firstAgent = FirehoseJS.Agent.agentWithEmailAndPassword( "agent1@example.com", "pw" )
   firstAgent.login()
   .done (data, textStatus) ->
     company = firstAgent.companies[0]
@@ -38,12 +38,12 @@ firehoseTest 'Fetch Billing Info', 2, (agent) ->
     start()
 
 firehoseTest 'Add', 6, (agent) ->
-  firstAgent = new FirehoseJS.Agent( "agent1@example.com", "pw" )
+  firstAgent = FirehoseJS.Agent.agentWithEmailAndPassword( "agent1@example.com", "pw" )
   firstAgent.login()
   .done (data, textStatus) ->
     company = firstAgent.companies[0]
-    creditCard = new FirehoseJS.CreditCard( company )
-    creditCard.submitToStripe "4242424242424242", 888, 4, 2014, ->
+    creditCard = FirehoseJS.CreditCard.creditCardWithNumber( "4242424242424242", 888, 4, 2014, company )
+    creditCard.submitToStripe ->
       company.token = "entity_token_#{company.id}"
       creditCard.save()
       .done (data, textStatus) ->
@@ -60,12 +60,12 @@ firehoseTest 'Add', 6, (agent) ->
     start()
     
 firehoseTest 'Fetch', 6, (agent) ->
-  firstAgent = new FirehoseJS.Agent( "agent1@example.com", "pw" )
+  firstAgent = FirehoseJS.Agent.agentWithEmailAndPassword( "agent1@example.com", "pw" )
   firstAgent.login()
   .done (data, textStatus) ->
     company = firstAgent.companies[0]
-    creditCard = new FirehoseJS.CreditCard( company )
-    creditCard.submitToStripe "4242424242424242", 888, 4, 2014, ->
+    creditCard = FirehoseJS.CreditCard.creditCardWithNumber( "4242424242424242", 888, 4, 2014, company )
+    creditCard.submitToStripe ->
       company.token = "entity_token_#{company.id}"
       creditCard.save()
       .done (data, textStatus) ->
@@ -86,12 +86,12 @@ firehoseTest 'Fetch', 6, (agent) ->
     start()
 
 firehoseTest 'Remove', 1, (agent) ->
-  firstAgent = new FirehoseJS.Agent( "agent1@example.com", "pw" )
+  firstAgent = FirehoseJS.Agent.agentWithEmailAndPassword( "agent1@example.com", "pw" )
   firstAgent.login()
   .done (data, textStatus) ->
     company = firstAgent.companies[0]
-    creditCard = new FirehoseJS.CreditCard( company )
-    creditCard.submitToStripe "4242424242424242", 888, 4, 2014, ->
+    creditCard = FirehoseJS.CreditCard.creditCardWithNumber( "4242424242424242", 888, 4, 2014, company )
+    creditCard.submitToStripe ->
       company.token = "entity_token_#{company.id}"
       creditCard.save()
       .done (data, textStatus) ->

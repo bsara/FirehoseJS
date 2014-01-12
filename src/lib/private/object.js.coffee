@@ -5,6 +5,19 @@ class FirehoseJS.Object
 
   createdAt: null
   
+  @_objects: []
+  
+  
+  @_objectOfClassWithID: (klass, id) ->
+    if id
+      for obj in @_objects
+        if obj.id and obj.id == id and obj.constructor == klass
+          return obj
+    obj = new klass
+    obj.id = id
+    @_objects.push obj
+    obj  
+    
   
   _populateAssociatedObjects: (owner, association, json, creation) ->
     if json?

@@ -13,14 +13,16 @@ class FirehoseJS.OutgoingAttachment extends FirehoseJS.Object
   
   uploaded: false
   
-  localURL: null
+  file: null
   
-  
-  constructor: (localURL) ->
-    @localURL = localURL
+    
+  @outgoingAttachmentWithFile: (file) ->
+    outgoingAttachment = FirehoseJS.Object._objectOfClassWithID( FirehoseJS.OutgoingAttachment, id )
+    outgoingAttachment.file = file
+    outgoingAttachment 
     
   
-  upload: (file, completionHandler, errorHandler, progressHandler) ->
+  upload: (completionHandler, errorHandler, progressHandler) ->
     params = 
       route: "companies/#{@id}/outgoing_attachments"
       body: this._toJSON()
@@ -63,9 +65,9 @@ class FirehoseJS.OutgoingAttachment extends FirehoseJS.Object
           errorHandler("Your attachment failed to upload successfully, please try again. Please contact support@getfirehose.com if the problem persists and we'll get it fixed for you.")
 
       # These have to match what the server does because it's part of the URL signature
-      xhr.setRequestHeader('Content-Type', file.type)
+      xhr.setRequestHeader('Content-Type', @file.type)
       xhr.setRequestHeader('x-amz-acl', 'authenticated-read')
-      xhr.send(file) 
+      xhr.send(@file) 
     
     .fail (jqXHR, textStatus, errorThrown) ->
       errorHandler(errorThrown)

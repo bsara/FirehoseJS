@@ -22,7 +22,7 @@ FirehoseJS.client.setEnvironment('test')
 module "Agent"
 
 asyncTest 'Sign Up', 8, ->
-  agent = new FirehoseJS.Agent(Faker.Internet.email(), Faker.Name.firstName())
+  agent = FirehoseJS.Agent.agentWithEmailAndPassword(Faker.Internet.email(), Faker.Name.firstName())
   agent.signUpWithFirstAndLastName( Faker.Name.firstName(), Faker.Name.lastName() )
   .done (data, textStatus) ->
     equal textStatus, "success"
@@ -38,7 +38,7 @@ asyncTest 'Sign Up', 8, ->
     start()
        
 firehoseTest 'Log In With un/pw', 8, (agent) ->
-  agent2 = new FirehoseJS.Agent( agent.email, "pw" )
+  agent2 = FirehoseJS.Agent.agentWithEmailAndPassword( agent.email, "pw" )
   agent2.login()
   .done (data, textStatus) ->
     equal textStatus, "success"

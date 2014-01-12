@@ -34,17 +34,15 @@ class FirehoseJS.Interaction extends FirehoseJS.Object
   flaggedAgents: new FirehoseJS.UniqueArray
     
     
-  @interactionWithJSON: (json, customer) ->
+  @_interactionWithJSON: (json, customer) ->
     interaction = null
     if json.channel == "twitter"
-      interaction = new FirehoseJS.TwitterInteraction( json.id )
-      interaction.customer = customer
+      interaction = FirehoseJS.TwitterInteraction._twitterInteractionWithID( json.id )
     else if json.channel == "facebook"    
-      interaction = new FirehoseJS.FacebookInteraction( json.id )
-      interaction.customer = customer
+      interaction = FirehoseJS.FacebookInteraction._facebookInteractionWithID( json.id )
     else if json.channel == "email"
-      interaction = new FirehoseJS.EmailInteraction( json.id )
-      interaction.customer = customer
+      interaction = FirehoseJS.EmailInteraction._emailInteractionWithID( json.id )
+    interaction.customer = customer
     interaction._populateWithJSON json
     interaction
     
@@ -67,7 +65,7 @@ class FirehoseJS.Interaction extends FirehoseJS.Object
       body:  body
     FirehoseJS.client.post( params ).done (data) =>
       @responseDraft = null
-      response = new FirehoseJS.Interaction( data, @customer )
+      response = FirehoseJS.Interaction._interactionWithJSON( data, @customer )
       @responseInteractions.push response
       response.agent = FirehoseJS.Agent.loggedInAgent
       @responseInteractions.sort (interaction1, interaction2) ->
@@ -136,22 +134,23 @@ class FirehoseJS.Interaction extends FirehoseJS.Object
     @resolved       = json.resolved
     
     this._populateAssociatedObjectWithJSON this, "agent", json.agent, (json) ->
-      new FirehoseJS.Agent( json.id )
+      FirehoseJS.Agent._agentWithID( json.id )
       
     this._populateAssociatedObjectWithJSON this, "customerAccount", json.customer_account, (json) =>
-      new FirehoseJS.CustomerAccount( json.id, @customer )
+      FirehoseJS.CustomerAccount._customerAccountWithID( json.id, @customer )
     
     this._populateAssociatedObjects this, "responseInteractions", json.response_interactions, (json) =>
-      new FirehoseJS.Interaction( json, @customer )
+      json.channel = @channel
+      FirehoseJS.Interaction._interactionWithJSON( json, @customer )
       
     this._populateAssociatedObjects this, "notes", json.notes, (json) =>
-      new FirehoseJS.Note( json.id, this )
+      FirehoseJS.Note._noteWithID( json.id, this )
       
     this._populateAssociatedObjects this, "tags", json.tags, (json) =>
-      new FirehoseJS.Tag( json.id, @customer.company )
+      FirehoseJS.Tag._tagWithID( json.id, @customer.company )
       
     this._populateAssociatedObjects this, "flaggedAgents", json.flagged_agents, (json) =>
-      new FirehoseJS.Agent( json.id )
+      FirehoseJS.Agent._agentWithID( json.id )
       
     super json
     

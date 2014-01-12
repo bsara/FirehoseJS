@@ -7,10 +7,11 @@ class FirehoseJS.Attachment extends FirehoseJS.Object
   
   temporaryURL: null
   
-  
-  constructor: (id, emailInteraction) ->
-    @id               = id
-    @emailInteraction = emailInteraction
+    
+  @_attachmentWithID: (id, emailInteraction) ->
+    attachment = FirehoseJS.Object._objectOfClassWithID( FirehoseJS.Attachment, id )
+    attachment.emailInteraction = emailInteraction
+    attachment 
     
     
   _populateWithJSON: (json) ->

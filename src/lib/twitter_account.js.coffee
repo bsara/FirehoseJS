@@ -9,10 +9,11 @@ class FirehoseJS.TwitterAccount extends FirehoseJS.Object
   
   imageURL: null
   
-  
-  constructor: (id, company) ->
-    @id       = id
-    @company  = company
+    
+  @_twitterAccountWithID: (id, company) ->
+    twitterAccount = FirehoseJS.Object._objectOfClassWithID( FirehoseJS.TwitterAccount, id )
+    twitterAccount.company = company
+    twitterAccount 
   
   
   @OAuthURLForCompanyWithCallback: (company, callback)  ->

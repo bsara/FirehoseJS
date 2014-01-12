@@ -6,19 +6,18 @@ class FirehoseJS.AgentInvite extends FirehoseJS.Object
   company: null
   
   
-  constructor: (arg1, arg2) ->
-    # with id and company
-    unless isNaN(parseInt(arg1))
-      @id = arg1
-      if arg2? and arg2.constructor == FirehoseJS.Company
-        @company = arg2
-      
-    # with email and company
-    else if typeof(arg1) == 'string'
-      @toEmail = arg1
-      if arg2.constructor == FirehoseJS.Company
-        @company = arg2
+  @agentInviteWithEmail: (email, company) ->
+    agentInvite = FirehoseJS.Object._objectOfClassWithID( FirehoseJS.AgentInvite, null )
+    agentInvite.toEmail = email
+    agentInvite.company = company
+    agentInvite 
 
+
+  @_agentInviteWithID: (id, company) ->
+    agentInvite = FirehoseJS.Object._objectOfClassWithID( FirehoseJS.AgentInvite, id )
+    agentInvite.company = company
+    agentInvite 
+    
 
   save: ->
     params = 

@@ -22,21 +22,27 @@ class FirehoseJS.EmailAccount extends FirehoseJS.Object
   deleteFromServer: false
   
   
-  
-  constructor: (id, company, settings) ->
-    @id       = id
-    @company  = company
+  @emailAccountWithSettings: (company, settings) ->
+    emailAccount = FirehoseJS.Object._objectOfClassWithID( FirehoseJS.EmailAccount, null )
+    emailAccount.company = company
     if settings?
-      @emailAddress     = settings.emailAddress if settings.emailAddress?
-      @title            = settings.title if settings.title?  
-      @kind             = settings.kind if settings.kind?
-      @server           = settings.server if settings.server?
-      @port             = settings.port if settings.port?
-      @username         = settings.username if settings.username?
-      @password         = settings.password if settings.password?
-      @SSL              = settings.SSL if settings.SSL?
-      @deleteFromServer = settings.deleteFromServer if settings.deleteFromServer?
-      
+      emailAccount.emailAddress     = settings.emailAddress     if settings.emailAddress?
+      emailAccount.title            = settings.title            if settings.title?  
+      emailAccount.kind             = settings.kind             if settings.kind?
+      emailAccount.server           = settings.server           if settings.server?
+      emailAccount.port             = settings.port             if settings.port?
+      emailAccount.username         = settings.username         if settings.username?
+      emailAccount.password         = settings.password         if settings.password?
+      emailAccount.SSL              = settings.SSL              if settings.SSL?
+      emailAccount.deleteFromServer = settings.deleteFromServer if settings.deleteFromServer?
+    emailAccount 
+    
+    
+  @_emailAccountWithID: (id, company) ->
+    emailAccount = FirehoseJS.Object._objectOfClassWithID( FirehoseJS.EmailAccount, id )
+    emailAccount.company = company
+    emailAccount
+    
       
   save: ->
     if @id?
