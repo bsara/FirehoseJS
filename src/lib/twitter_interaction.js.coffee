@@ -21,7 +21,8 @@ class FirehoseJS.TwitterInteraction extends FirehoseJS.Interaction
   
   
   @_twitterInteractionWithID: (id) ->
-    FirehoseJS.Object._objectOfClassWithID( FirehoseJS.TwitterInteraction, id )
+    FirehoseJS.Object._objectOfClassWithID FirehoseJS.TwitterInteraction,
+      id: id
   
   
   _populateWithJSON: (json) ->

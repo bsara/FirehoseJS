@@ -29,9 +29,9 @@ class FirehoseJS.Customer extends FirehoseJS.Object
   
     
   @customerWithID: (id, company) ->
-    customer = FirehoseJS.Object._objectOfClassWithID( FirehoseJS.Customer, id )
-    customer.company = company
-    customer 
+    FirehoseJS.Object._objectOfClassWithID FirehoseJS.Customer,
+      id:      id
+      company: company
   
   
   fetch: ->

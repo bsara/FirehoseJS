@@ -71,16 +71,15 @@ class FirehoseJS.Company extends FirehoseJS.Object
     
     
   @companyWithTitle: (title, creator) ->
-    company = FirehoseJS.Object._objectOfClassWithID( FirehoseJS.Company, null )
-    company.title    = title
-    company._creator = creator
-    company 
+    FirehoseJS.Object._objectOfClassWithID FirehoseJS.Company,
+      title:    title
+      _creator: creator
   
   
   @companyWithID: (id, creator) ->
-    company = FirehoseJS.Object._objectOfClassWithID( FirehoseJS.Company, id )
-    company._creator = creator
-    company 
+    FirehoseJS.Object._objectOfClassWithID FirehoseJS.Company,
+      id:       id
+      _creator: creator
     
     
   fetch: ->

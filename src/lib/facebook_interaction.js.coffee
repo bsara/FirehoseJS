@@ -23,7 +23,8 @@ class FirehoseJS.FacebookInteraction extends FirehoseJS.Interaction
   
     
   @_facebookInteractionWithID: (id) ->
-    FirehoseJS.Object._objectOfClassWithID( FirehoseJS.FacebookInteraction, id )
+    FirehoseJS.Object._objectOfClassWithID FirehoseJS.FacebookInteraction,
+      id: id
   
   
   _populateWithJSON: (json) ->

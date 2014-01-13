@@ -352,19 +352,21 @@ FirehoseJS.Object = (function() {
 
   Object._objects = [];
 
-  Object._objectOfClassWithID = function(klass, id) {
-    var obj, _i, _len, _ref;
+  Object._objectOfClassWithID = function(klass, properties) {
+    var id, obj, _i, _len, _ref;
+    id = properties.id;
     if (id) {
       _ref = this._objects;
       for (_i = 0, _len = _ref.length; _i < _len; _i++) {
         obj = _ref[_i];
         if (obj.id && obj.id === id && obj.constructor === klass) {
+          obj._populateProperties(properties);
           return obj;
         }
       }
     }
     obj = new klass;
-    obj.id = id;
+    obj._populateProperties(properties);
     this._objects.push(obj);
     return obj;
   };
@@ -403,6 +405,15 @@ FirehoseJS.Object = (function() {
     return this.createdAt != null ? this.createdAt : this.createdAt = Date.parse(json.created_at);
   };
 
+  Object.prototype._populateProperties = function(properties) {
+    var prop, _results;
+    _results = [];
+    for (prop in properties) {
+      _results.push(this[prop] = properties[prop]);
+    }
+    return _results;
+  };
+
   return Object;
 
 })();
@@ -438,24 +449,22 @@ FirehoseJS.Agent = (function(_super) {
   Agent.prototype._password = null;
 
   Agent.agentWithAccessToken = function(accessToken) {
-    var agent;
-    agent = FirehoseJS.Object._objectOfClassWithID(FirehoseJS.Agent, null);
-    agent.accessToken = accessToken;
-    return agent;
+    return FirehoseJS.Object._objectOfClassWithID(FirehoseJS.Agent, {
+      accessToken: accessToken
+    });
   };
 
   Agent.agentWithEmailAndPassword = function(email, password) {
-    var agent;
-    agent = FirehoseJS.Object._objectOfClassWithID(FirehoseJS.Agent, null);
-    agent.email = email;
-    agent._password = password;
-    return agent;
+    return FirehoseJS.Object._objectOfClassWithID(FirehoseJS.Agent, {
+      email: email,
+      _password: password
+    });
   };
 
   Agent.agentWithID = function(id) {
-    var agent;
-    agent = FirehoseJS.Object._objectOfClassWithID(FirehoseJS.Agent, id);
-    return agent;
+    return FirehoseJS.Object._objectOfClassWithID(FirehoseJS.Agent, {
+      id: id
+    });
   };
 
   Agent.prototype.signUpWithFirstAndLastName = function(firstName, lastName) {
@@ -698,18 +707,17 @@ FirehoseJS.Company = (function(_super) {
   Company.prototype._creator = null;
 
   Company.companyWithTitle = function(title, creator) {
-    var company;
-    company = FirehoseJS.Object._objectOfClassWithID(FirehoseJS.Company, null);
-    company.title = title;
-    company._creator = creator;
-    return company;
+    return FirehoseJS.Object._objectOfClassWithID(FirehoseJS.Company, {
+      title: title,
+      _creator: creator
+    });
   };
 
   Company.companyWithID = function(id, creator) {
-    var company;
-    company = FirehoseJS.Object._objectOfClassWithID(FirehoseJS.Company, id);
-    company._creator = creator;
-    return company;
+    return FirehoseJS.Object._objectOfClassWithID(FirehoseJS.Company, {
+      id: id,
+      _creator: creator
+    });
   };
 
   Company.prototype.fetch = function() {
@@ -974,7 +982,7 @@ FirehoseJS.Interaction = (function(_super) {
     } else if (json.channel === "email") {
       interaction = FirehoseJS.EmailInteraction._emailInteractionWithID(json.id);
     }
-    interaction.customer = customer;
+    interaction._setCustomer(customer);
     interaction._populateWithJSON(json);
     return interaction;
   };
@@ -1091,6 +1099,10 @@ FirehoseJS.Interaction = (function(_super) {
     }
   };
 
+  Interaction.prototype._setCustomer = function(customer) {
+    return this.customer = customer;
+  };
+
   Interaction.prototype._populateWithJSON = function(json) {
     var _this = this;
     if (this.token == null) {
@@ -1155,18 +1167,17 @@ FirehoseJS.AgentInvite = (function(_super) {
   AgentInvite.prototype.company = null;
 
   AgentInvite.agentInviteWithEmail = function(email, company) {
-    var agentInvite;
-    agentInvite = FirehoseJS.Object._objectOfClassWithID(FirehoseJS.AgentInvite, null);
-    agentInvite.toEmail = email;
-    agentInvite.company = company;
-    return agentInvite;
+    return FirehoseJS.Object._objectOfClassWithID(FirehoseJS.AgentInvite, {
+      toEmail: email,
+      company: company
+    });
   };
 
   AgentInvite._agentInviteWithID = function(id, company) {
-    var agentInvite;
-    agentInvite = FirehoseJS.Object._objectOfClassWithID(FirehoseJS.AgentInvite, id);
-    agentInvite.company = company;
-    return agentInvite;
+    return FirehoseJS.Object._objectOfClassWithID(FirehoseJS.AgentInvite, {
+      id: id,
+      company: company
+    });
   };
 
   AgentInvite.prototype.save = function() {
@@ -1237,10 +1248,10 @@ FirehoseJS.Attachment = (function(_super) {
   Attachment.prototype.temporaryURL = null;
 
   Attachment._attachmentWithID = function(id, emailInteraction) {
-    var attachment;
-    attachment = FirehoseJS.Object._objectOfClassWithID(FirehoseJS.Attachment, id);
-    attachment.emailInteraction = emailInteraction;
-    return attachment;
+    return FirehoseJS.Object._objectOfClassWithID(FirehoseJS.Attachment, {
+      id: id,
+      emailInteraction: emailInteraction
+    });
   };
 
   Attachment.prototype._populateWithJSON = function(json) {
@@ -1274,19 +1285,18 @@ FirehoseJS.CannedResponse = (function(_super) {
   CannedResponse.prototype.text = null;
 
   CannedResponse.cannedResponseWithNameAndText = function(name, text, company) {
-    var cannedResponse;
-    cannedResponse = FirehoseJS.Object._objectOfClassWithID(FirehoseJS.CannedResponse, null);
-    cannedResponse.name = name;
-    cannedResponse.text = text;
-    cannedResponse.company = company;
-    return cannedResponse;
+    return FirehoseJS.Object._objectOfClassWithID(FirehoseJS.CannedResponse, {
+      name: name,
+      text: text,
+      company: company
+    });
   };
 
   CannedResponse._cannedResponseWithID = function(id, company) {
-    var cannedResponse;
-    cannedResponse = FirehoseJS.Object._objectOfClassWithID(FirehoseJS.CannedResponse, id);
-    cannedResponse.company = company;
-    return cannedResponse;
+    return FirehoseJS.Object._objectOfClassWithID(FirehoseJS.CannedResponse, {
+      id: id,
+      company: company
+    });
   };
 
   CannedResponse.prototype.save = function() {
@@ -1371,21 +1381,20 @@ FirehoseJS.CreditCard = (function(_super) {
   CreditCard.prototype.email = null;
 
   CreditCard.creditCardWithNumber = function(number, cvc, expMonth, expYear, company) {
-    var creditCard;
-    creditCard = FirehoseJS.Object._objectOfClassWithID(FirehoseJS.CreditCard, null);
-    creditCard.number = number;
-    creditCard.cvc = cvc;
-    creditCard.expirationMonth = expMonth;
-    creditCard.expirationYear = expYear;
-    creditCard.company = company;
-    return creditCard;
+    return FirehoseJS.Object._objectOfClassWithID(FirehoseJS.CreditCard, {
+      number: number,
+      cvc: cvc,
+      expirationMonth: expMonth,
+      expirationYear: expYear,
+      company: company
+    });
   };
 
   CreditCard.creditCardWithID = function(id, company) {
-    var creditCard;
-    creditCard = FirehoseJS.Object._objectOfClassWithID(FirehoseJS.CreditCard, id);
-    creditCard.company = company;
-    return creditCard;
+    return FirehoseJS.Object._objectOfClassWithID(FirehoseJS.CreditCard, {
+      id: id,
+      company: company
+    });
   };
 
   CreditCard.prototype.submitToStripe = function(callback) {
@@ -1499,10 +1508,10 @@ FirehoseJS.Customer = (function(_super) {
   Customer.prototype._interactions = null;
 
   Customer.customerWithID = function(id, company) {
-    var customer;
-    customer = FirehoseJS.Object._objectOfClassWithID(FirehoseJS.Customer, id);
-    customer.company = company;
-    return customer;
+    return FirehoseJS.Object._objectOfClassWithID(FirehoseJS.Customer, {
+      id: id,
+      company: company
+    });
   };
 
   Customer.prototype.fetch = function() {
@@ -1592,10 +1601,10 @@ FirehoseJS.CustomerAccount = (function(_super) {
   CustomerAccount.prototype.channel = null;
 
   CustomerAccount._customerAccountWithID = function(id, customer) {
-    var customerAccount;
-    customerAccount = FirehoseJS.Object._objectOfClassWithID(FirehoseJS.CustomerAccount, id);
-    customerAccount.customer = customer;
-    return customerAccount;
+    return FirehoseJS.Object._objectOfClassWithID(FirehoseJS.CustomerAccount, {
+      id: id,
+      customer: customer
+    });
   };
 
   CustomerAccount.prototype._populateWithJSON = function(json) {
@@ -1646,7 +1655,7 @@ FirehoseJS.EmailAccount = (function(_super) {
 
   EmailAccount.emailAccountWithSettings = function(company, settings) {
     var emailAccount;
-    emailAccount = FirehoseJS.Object._objectOfClassWithID(FirehoseJS.EmailAccount, null);
+    emailAccount = {};
     emailAccount.company = company;
     if (settings != null) {
       if (settings.emailAddress != null) {
@@ -1677,14 +1686,14 @@ FirehoseJS.EmailAccount = (function(_super) {
         emailAccount.deleteFromServer = settings.deleteFromServer;
       }
     }
-    return emailAccount;
+    return FirehoseJS.Object._objectOfClassWithID(FirehoseJS.EmailAccount, emailAccount);
   };
 
   EmailAccount._emailAccountWithID = function(id, company) {
-    var emailAccount;
-    emailAccount = FirehoseJS.Object._objectOfClassWithID(FirehoseJS.EmailAccount, id);
-    emailAccount.company = company;
-    return emailAccount;
+    return FirehoseJS.Object._objectOfClassWithID(FirehoseJS.EmailAccount, {
+      id: id,
+      company: company
+    });
   };
 
   EmailAccount.prototype.save = function() {
@@ -1843,7 +1852,9 @@ FirehoseJS.EmailInteraction = (function(_super) {
   EmailInteraction.prototype.attachments = new FirehoseJS.UniqueArray;
 
   EmailInteraction._emailInteractionWithID = function(id) {
-    return FirehoseJS.Object._objectOfClassWithID(FirehoseJS.EmailInteraction, id);
+    return FirehoseJS.Object._objectOfClassWithID(FirehoseJS.EmailInteraction, {
+      id: id
+    });
   };
 
   EmailInteraction.prototype._populateWithJSON = function(json) {
@@ -1891,10 +1902,10 @@ FirehoseJS.FacebookAccount = (function(_super) {
   FacebookAccount.prototype.facebookPages = new FirehoseJS.UniqueArray;
 
   FacebookAccount._facebookAccountWithID = function(id, company) {
-    var facebookAccount;
-    facebookAccount = FirehoseJS.Object._objectOfClassWithID(FirehoseJS.FacebookAccount, id);
-    facebookAccount.company = company;
-    return facebookAccount;
+    return FirehoseJS.Object._objectOfClassWithID(FirehoseJS.FacebookAccount, {
+      id: id,
+      company: company
+    });
   };
 
   FacebookAccount.OAuthURLForCompanyWithCallback = function(company, callback) {
@@ -1957,7 +1968,9 @@ FirehoseJS.FacebookInteraction = (function(_super) {
   FacebookInteraction.prototype.type = null;
 
   FacebookInteraction._facebookInteractionWithID = function(id) {
-    return FirehoseJS.Object._objectOfClassWithID(FirehoseJS.FacebookInteraction, id);
+    return FirehoseJS.Object._objectOfClassWithID(FirehoseJS.FacebookInteraction, {
+      id: id
+    });
   };
 
   FacebookInteraction.prototype._populateWithJSON = function(json) {
@@ -2004,10 +2017,10 @@ FirehoseJS.FacebookPage = (function(_super) {
   FacebookPage.prototype.active = false;
 
   FacebookPage._facebookPageWithID = function(id, facebookAccount) {
-    var facebookPage;
-    facebookPage = FirehoseJS.Object._objectOfClassWithID(FirehoseJS.FacebookPage, id);
-    facebookPage.facebookAccount = facebookAccount;
-    return facebookPage;
+    return FirehoseJS.Object._objectOfClassWithID(FirehoseJS.FacebookPage, {
+      id: id,
+      facebookAccount: facebookAccount
+    });
   };
 
   FacebookPage.prototype.save = function() {
@@ -2058,18 +2071,17 @@ FirehoseJS.Note = (function(_super) {
   Note.prototype.agent = null;
 
   Note.noteWithBody = function(body, interaction) {
-    var note;
-    note = FirehoseJS.Object._objectOfClassWithID(FirehoseJS.Note, null);
-    note.body = body;
-    note.interaction = interaction;
-    return note;
+    return FirehoseJS.Object._objectOfClassWithID(FirehoseJS.Note, {
+      body: body,
+      interaction: interaction
+    });
   };
 
   Note._noteWithID = function(id, interaction) {
-    var note;
-    note = FirehoseJS.Object._objectOfClassWithID(FirehoseJS.Note, id);
-    note.interaction = interaction;
-    return note;
+    return FirehoseJS.Object._objectOfClassWithID(FirehoseJS.Note, {
+      id: id,
+      interaction: interaction
+    });
   };
 
   Note.prototype.save = function() {
@@ -2148,10 +2160,10 @@ FirehoseJS.Notification = (function(_super) {
   Notification.prototype.level = 0;
 
   Notification._notificationWithID = function(id, company) {
-    var notification;
-    notification = FirehoseJS.Object._objectOfClassWithID(FirehoseJS.Notification, id);
-    notification.company = company;
-    return notification;
+    return FirehoseJS.Object._objectOfClassWithID(FirehoseJS.Notification, {
+      id: id,
+      company: company
+    });
   };
 
   Notification.prototype._populateWithJSON = function(json) {
@@ -2192,10 +2204,10 @@ FirehoseJS.OutgoingAttachment = (function(_super) {
   OutgoingAttachment.prototype.file = null;
 
   OutgoingAttachment.outgoingAttachmentWithFile = function(file) {
-    var outgoingAttachment;
-    outgoingAttachment = FirehoseJS.Object._objectOfClassWithID(FirehoseJS.OutgoingAttachment, id);
-    outgoingAttachment.file = file;
-    return outgoingAttachment;
+    return FirehoseJS.Object._objectOfClassWithID(FirehoseJS.OutgoingAttachment, {
+      id: id,
+      file: file
+    });
   };
 
   OutgoingAttachment.prototype.upload = function(completionHandler, errorHandler, progressHandler) {
@@ -2281,18 +2293,17 @@ FirehoseJS.Tag = (function(_super) {
   Tag.prototype.label = null;
 
   Tag.tagWithLabel = function(label, company) {
-    var tag;
-    tag = FirehoseJS.Object._objectOfClassWithID(FirehoseJS.Tag, null);
-    tag.label = label;
-    tag.company = company;
-    return tag;
+    return FirehoseJS.Object._objectOfClassWithID(FirehoseJS.Tag, {
+      label: label,
+      company: company
+    });
   };
 
   Tag._tagWithID = function(id, company) {
-    var tag;
-    tag = FirehoseJS.Object._objectOfClassWithID(FirehoseJS.Tag, id);
-    tag.company = company;
-    return tag;
+    return FirehoseJS.Object._objectOfClassWithID(FirehoseJS.Tag, {
+      id: id,
+      company: company
+    });
   };
 
   Tag.prototype.save = function() {
@@ -2365,10 +2376,10 @@ FirehoseJS.TwitterAccount = (function(_super) {
   TwitterAccount.prototype.imageURL = null;
 
   TwitterAccount._twitterAccountWithID = function(id, company) {
-    var twitterAccount;
-    twitterAccount = FirehoseJS.Object._objectOfClassWithID(FirehoseJS.TwitterAccount, id);
-    twitterAccount.company = company;
-    return twitterAccount;
+    return FirehoseJS.Object._objectOfClassWithID(FirehoseJS.TwitterAccount, {
+      id: id,
+      company: company
+    });
   };
 
   TwitterAccount.OAuthURLForCompanyWithCallback = function(company, callback) {
@@ -2425,7 +2436,9 @@ FirehoseJS.TwitterInteraction = (function(_super) {
   TwitterInteraction.prototype.fromUserId = null;
 
   TwitterInteraction._twitterInteractionWithID = function(id) {
-    return FirehoseJS.Object._objectOfClassWithID(FirehoseJS.TwitterInteraction, id);
+    return FirehoseJS.Object._objectOfClassWithID(FirehoseJS.TwitterInteraction, {
+      id: id
+    });
   };
 
   TwitterInteraction.prototype._populateWithJSON = function(json) {
@@ -2468,19 +2481,18 @@ FirehoseJS.Article = (function(_super) {
   Article.prototype.body = null;
 
   Article.articleWithTitleBodyAndCompany = function(title, body, company) {
-    var article;
-    article = FirehoseJS.Object._objectOfClassWithID(FirehoseJS.Article, null);
-    article.title = title;
-    article.body = body;
-    article.company = company;
-    return article;
+    return FirehoseJS.Object._objectOfClassWithID(FirehoseJS.Article, {
+      title: title,
+      body: body,
+      company: company
+    });
   };
 
   Article.articleWithID = function(id, company) {
-    var article;
-    article = FirehoseJS.Object._objectOfClassWithID(FirehoseJS.Article, id);
-    article.company = company;
-    return article;
+    return FirehoseJS.Object._objectOfClassWithID(FirehoseJS.Article, {
+      id: id,
+      company: company
+    });
   };
 
   Article.prototype.fetch = function() {

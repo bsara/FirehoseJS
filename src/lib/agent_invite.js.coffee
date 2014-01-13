@@ -7,16 +7,15 @@ class FirehoseJS.AgentInvite extends FirehoseJS.Object
   
   
   @agentInviteWithEmail: (email, company) ->
-    agentInvite = FirehoseJS.Object._objectOfClassWithID( FirehoseJS.AgentInvite, null )
-    agentInvite.toEmail = email
-    agentInvite.company = company
-    agentInvite 
+    FirehoseJS.Object._objectOfClassWithID FirehoseJS.AgentInvite,
+      toEmail: email
+      company: company
 
 
   @_agentInviteWithID: (id, company) ->
-    agentInvite = FirehoseJS.Object._objectOfClassWithID( FirehoseJS.AgentInvite, id )
-    agentInvite.company = company
-    agentInvite 
+    FirehoseJS.Object._objectOfClassWithID FirehoseJS.AgentInvite,
+      id:      id
+      company: company
     
 
   save: ->

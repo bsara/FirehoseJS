@@ -9,9 +9,9 @@ class FirehoseJS.Attachment extends FirehoseJS.Object
   
     
   @_attachmentWithID: (id, emailInteraction) ->
-    attachment = FirehoseJS.Object._objectOfClassWithID( FirehoseJS.Attachment, id )
-    attachment.emailInteraction = emailInteraction
-    attachment 
+    FirehoseJS.Object._objectOfClassWithID FirehoseJS.Attachment,
+      id:               id
+      emailInteraction: emailInteraction
     
     
   _populateWithJSON: (json) ->

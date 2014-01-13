@@ -19,19 +19,19 @@ class FirehoseJS.CreditCard extends FirehoseJS.Object
     
     
   @creditCardWithNumber: (number, cvc, expMonth, expYear, company) ->
-    creditCard = FirehoseJS.Object._objectOfClassWithID( FirehoseJS.CreditCard, null )
-    creditCard.number           = number
-    creditCard.cvc              = cvc
-    creditCard.expirationMonth  = expMonth
-    creditCard.expirationYear   = expYear
-    creditCard.company          = company
-    creditCard 
+    FirehoseJS.Object._objectOfClassWithID FirehoseJS.CreditCard, 
+    number:          number
+    cvc:             cvc
+    expirationMonth: expMonth
+    expirationYear:  expYear
+    company:         company
+     
   
     
   @creditCardWithID: (id, company) ->
-    creditCard = FirehoseJS.Object._objectOfClassWithID( FirehoseJS.CreditCard, id )
-    creditCard.company = company
-    creditCard 
+    FirehoseJS.Object._objectOfClassWithID FirehoseJS.CreditCard,
+      id:      id
+      company: company
     
   
   submitToStripe: (callback) ->

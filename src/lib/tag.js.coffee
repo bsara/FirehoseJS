@@ -7,17 +7,15 @@ class FirehoseJS.Tag extends FirehoseJS.Object
   
   
   @tagWithLabel: (label, company) ->
-    tag = FirehoseJS.Object._objectOfClassWithID( FirehoseJS.Tag, null )
-    tag.label   = label
-    tag.company = company
-    tag 
-        
+    FirehoseJS.Object._objectOfClassWithID FirehoseJS.Tag,
+      label:   label
+      company: company
         
   @_tagWithID: (id, company) ->
-    tag = FirehoseJS.Object._objectOfClassWithID( FirehoseJS.Tag, id )
-    tag.company = company
-    tag 
-
+    FirehoseJS.Object._objectOfClassWithID FirehoseJS.Tag,
+      id:      id
+      company: company
+      
         
   save: ->
     if @id?

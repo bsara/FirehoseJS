@@ -11,17 +11,16 @@ class FirehoseJS.CannedResponse extends FirehoseJS.Object
     
     
   @cannedResponseWithNameAndText: (name, text, company) ->
-    cannedResponse = FirehoseJS.Object._objectOfClassWithID( FirehoseJS.CannedResponse, null )
-    cannedResponse.name     = name
-    cannedResponse.text     = text
-    cannedResponse.company  = company
-    cannedResponse 
+    FirehoseJS.Object._objectOfClassWithID FirehoseJS.CannedResponse,
+      name:    name
+      text:    text
+      company: company
   
         
   @_cannedResponseWithID: (id, company) ->
-    cannedResponse = FirehoseJS.Object._objectOfClassWithID( FirehoseJS.CannedResponse, id )
-    cannedResponse.company = company
-    cannedResponse 
+    FirehoseJS.Object._objectOfClassWithID FirehoseJS.CannedResponse,
+      id:      id
+      company: company
 
 
   save: ->

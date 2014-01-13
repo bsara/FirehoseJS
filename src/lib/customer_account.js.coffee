@@ -17,9 +17,9 @@ class FirehoseJS.CustomerAccount extends FirehoseJS.Object
   
   
   @_customerAccountWithID: (id, customer) ->
-    customerAccount = FirehoseJS.Object._objectOfClassWithID( FirehoseJS.CustomerAccount, id )
-    customerAccount.customer = customer
-    customerAccount 
+    FirehoseJS.Object._objectOfClassWithID FirehoseJS.CustomerAccount,
+      id:       id
+      customer: customer
     
     
   _populateWithJSON: (json) ->

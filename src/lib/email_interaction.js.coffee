@@ -15,7 +15,8 @@ class FirehoseJS.EmailInteraction extends FirehoseJS.Interaction
     
     
   @_emailInteractionWithID: (id) ->
-    FirehoseJS.Object._objectOfClassWithID( FirehoseJS.EmailInteraction, id )
+    FirehoseJS.Object._objectOfClassWithID FirehoseJS.EmailInteraction,
+      id: id
     
   
   _populateWithJSON: (json) ->

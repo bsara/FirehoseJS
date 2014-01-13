@@ -13,9 +13,9 @@ class FirehoseJS.FacebookPage extends FirehoseJS.Object
   
     
   @_facebookPageWithID: (id, facebookAccount) ->
-    facebookPage = FirehoseJS.Object._objectOfClassWithID( FirehoseJS.FacebookPage, id )
-    facebookPage.facebookAccount = facebookAccount
-    facebookPage      
+    FirehoseJS.Object._objectOfClassWithID FirehoseJS.FacebookPage,
+      id:              id
+      facebookAccount: facebookAccount
     
     
   save: ->

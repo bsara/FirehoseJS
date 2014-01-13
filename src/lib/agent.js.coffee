@@ -21,21 +21,19 @@ class FirehoseJS.Agent extends FirehoseJS.Object
 
       
   @agentWithAccessToken: (accessToken) ->
-    agent = FirehoseJS.Object._objectOfClassWithID( FirehoseJS.Agent, null )
-    agent.accessToken = accessToken
-    agent 
+    FirehoseJS.Object._objectOfClassWithID FirehoseJS.Agent,
+      accessToken: accessToken
       
       
   @agentWithEmailAndPassword: (email, password) ->
-    agent = FirehoseJS.Object._objectOfClassWithID( FirehoseJS.Agent, null )
-    agent.email     = email
-    agent._password = password
-    agent 
-
+    FirehoseJS.Object._objectOfClassWithID FirehoseJS.Agent,
+      email:      email
+      _password:  password
+      
 
   @agentWithID: (id) ->
-    agent = FirehoseJS.Object._objectOfClassWithID( FirehoseJS.Agent, id )
-    agent 
+    FirehoseJS.Object._objectOfClassWithID FirehoseJS.Agent,
+      id: id
     
   
   signUpWithFirstAndLastName: (firstName, lastName) ->

@@ -17,9 +17,9 @@ class FirehoseJS.OutgoingAttachment extends FirehoseJS.Object
   
     
   @outgoingAttachmentWithFile: (file) ->
-    outgoingAttachment = FirehoseJS.Object._objectOfClassWithID( FirehoseJS.OutgoingAttachment, id )
-    outgoingAttachment.file = file
-    outgoingAttachment 
+    FirehoseJS.Object._objectOfClassWithID FirehoseJS.OutgoingAttachment,
+      id:   id
+      file: file
     
   
   upload: (completionHandler, errorHandler, progressHandler) ->

@@ -9,16 +9,15 @@ class FirehoseJS.Note extends FirehoseJS.Object
   
   
   @noteWithBody: (body, interaction) ->
-    note = FirehoseJS.Object._objectOfClassWithID( FirehoseJS.Note, null )
-    note.body         = body
-    note.interaction  = interaction
-    note 
+    FirehoseJS.Object._objectOfClassWithID FirehoseJS.Note,
+      body:        body
+      interaction: interaction
   
         
   @_noteWithID: (id, interaction) ->
-    note = FirehoseJS.Object._objectOfClassWithID( FirehoseJS.Note, id )
-    note.interaction = interaction
-    note     
+    FirehoseJS.Object._objectOfClassWithID FirehoseJS.Note,
+      id:          id
+      interaction: interaction
     
         
   save: ->

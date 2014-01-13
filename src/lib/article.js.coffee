@@ -9,17 +9,16 @@ class FirehoseJS.Article extends FirehoseJS.Object
     
     
   @articleWithTitleBodyAndCompany: (title, body, company) ->
-    article         = FirehoseJS.Object._objectOfClassWithID( FirehoseJS.Article, null )
-    article.title   = title
-    article.body    = body
-    article.company = company
-    article
+    FirehoseJS.Object._objectOfClassWithID FirehoseJS.Article,
+      title:    title
+      body:     body
+      company:  company
   
   
   @articleWithID: (id, company) ->
-    article = FirehoseJS.Object._objectOfClassWithID( FirehoseJS.Article, id )
-    article.company  = company
-    article
+    FirehoseJS.Object._objectOfClassWithID FirehoseJS.Article,
+      id:      id
+      company: company
   
   
   fetch: ->

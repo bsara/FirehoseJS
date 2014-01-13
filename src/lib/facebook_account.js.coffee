@@ -17,9 +17,9 @@ class FirehoseJS.FacebookAccount extends FirehoseJS.Object
   
   
   @_facebookAccountWithID: (id, company) ->
-    facebookAccount = FirehoseJS.Object._objectOfClassWithID( FirehoseJS.FacebookAccount, id )
-    facebookAccount.company = company
-    facebookAccount 
+    FirehoseJS.Object._objectOfClassWithID FirehoseJS.FacebookAccount,
+      id:      id
+      company: company
   
   
   @OAuthURLForCompanyWithCallback: (company, callback)  ->

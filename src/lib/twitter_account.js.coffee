@@ -11,9 +11,9 @@ class FirehoseJS.TwitterAccount extends FirehoseJS.Object
   
     
   @_twitterAccountWithID: (id, company) ->
-    twitterAccount = FirehoseJS.Object._objectOfClassWithID( FirehoseJS.TwitterAccount, id )
-    twitterAccount.company = company
-    twitterAccount 
+    FirehoseJS.Object._objectOfClassWithID FirehoseJS.TwitterAccount,
+      id:      id
+      company: company
   
   
   @OAuthURLForCompanyWithCallback: (company, callback)  ->

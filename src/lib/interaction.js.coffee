@@ -42,7 +42,7 @@ class FirehoseJS.Interaction extends FirehoseJS.Object
       interaction = FirehoseJS.FacebookInteraction._facebookInteractionWithID( json.id )
     else if json.channel == "email"
       interaction = FirehoseJS.EmailInteraction._emailInteractionWithID( json.id )
-    interaction.customer = customer
+    interaction._setCustomer customer
     interaction._populateWithJSON json
     interaction
     
@@ -121,6 +121,10 @@ class FirehoseJS.Interaction extends FirehoseJS.Object
       "Satisfied"
     else if @happiness == 2
       "Happy"
+      
+      
+  _setCustomer: (customer) ->
+    @customer = customer
     
     
   _populateWithJSON: (json) ->
