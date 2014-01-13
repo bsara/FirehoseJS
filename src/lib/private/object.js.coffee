@@ -8,15 +8,18 @@ class FirehoseJS.Object
   @_objects: []
   
   
+  constructor: (properties) ->
+    for prop of properties
+      this[prop] = properties[prop]
+  
+  
   @_objectOfClassWithID: (klass, properties) ->
     id = properties.id
     if id
       for obj in @_objects
         if obj.id and obj.id == id and obj.constructor == klass
-          obj._populateProperties properties
           return obj
-    obj = new klass
-    obj._populateProperties properties
+    obj = new klass properties
     @_objects.push obj
     obj  
     
@@ -43,9 +46,4 @@ class FirehoseJS.Object
   _populateWithJSON: (json) ->
     @id         ?= json.id
     @createdAt  ?= Date.parse json.created_at
-    
-  _populateProperties: (properties) ->
-    for prop of properties
-      this[prop] = properties[prop]
-    
   

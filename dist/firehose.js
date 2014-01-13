@@ -344,13 +344,18 @@ FirehoseJS.Client = (function() {
 FirehoseJS.client = new FirehoseJS.Client;
 
 FirehoseJS.Object = (function() {
-  function Object() {}
-
   Object.prototype.id = null;
 
   Object.prototype.createdAt = null;
 
   Object._objects = [];
+
+  function Object(properties) {
+    var prop;
+    for (prop in properties) {
+      this[prop] = properties[prop];
+    }
+  }
 
   Object._objectOfClassWithID = function(klass, properties) {
     var id, obj, _i, _len, _ref;
@@ -360,13 +365,11 @@ FirehoseJS.Object = (function() {
       for (_i = 0, _len = _ref.length; _i < _len; _i++) {
         obj = _ref[_i];
         if (obj.id && obj.id === id && obj.constructor === klass) {
-          obj._populateProperties(properties);
           return obj;
         }
       }
     }
-    obj = new klass;
-    obj._populateProperties(properties);
+    obj = new klass(properties);
     this._objects.push(obj);
     return obj;
   };
@@ -403,15 +406,6 @@ FirehoseJS.Object = (function() {
       this.id = json.id;
     }
     return this.createdAt != null ? this.createdAt : this.createdAt = Date.parse(json.created_at);
-  };
-
-  Object.prototype._populateProperties = function(properties) {
-    var prop, _results;
-    _results = [];
-    for (prop in properties) {
-      _results.push(this[prop] = properties[prop]);
-    }
-    return _results;
   };
 
   return Object;
