@@ -1549,6 +1549,7 @@ FirehoseJS.Customer = (function(_super) {
   };
 
   Customer.prototype._populateWithJSON = function(json) {
+    var _this = this;
     this.set("name", json.name);
     this.set("location", json.location);
     this.set("timeZone", json.time_zone);
@@ -1556,7 +1557,7 @@ FirehoseJS.Customer = (function(_super) {
     this.set("newestInteractionExcerpt", json.newest_interaction_excerpt);
     this.set("newestInteractionReceivedAt", Date.parse(json.newest_interaction_received_at));
     this._populateAssociatedObjects(this, "customerAccounts", json.customer_accounts, function(json) {
-      return FirehoseJS.CustomerAccount._customerAccountWithID(json.id, this);
+      return FirehoseJS.CustomerAccount._customerAccountWithID(json.id, _this);
     });
     this._populateAssociatedObjects(this, "interactionFlaggedAgents", json.interaction_flagged_agents, function(json) {
       return FirehoseJS.Agent.agentWithID(json.id);
