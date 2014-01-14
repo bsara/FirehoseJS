@@ -68,7 +68,7 @@ class FirehoseJS.Customer extends FirehoseJS.Object
     this.set "newestInteractionExcerpt",     json.newest_interaction_excerpt
     this.set "newestInteractionReceivedAt",  Date.parse json.newest_interaction_received_at
     
-    this._populateAssociatedObjects this, "customerAccounts", json.customer_accounts, (json) ->
+    this._populateAssociatedObjects this, "customerAccounts", json.customer_accounts, (json) =>
       FirehoseJS.CustomerAccount._customerAccountWithID( json.id, this )
       
     this._populateAssociatedObjects this, "interactionFlaggedAgents", json.interaction_flagged_agents, (json) ->
