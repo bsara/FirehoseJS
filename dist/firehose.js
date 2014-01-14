@@ -1116,6 +1116,7 @@ FirehoseJS.Interaction = (function(_super) {
       return FirehoseJS.Agent.agentWithID(json.id);
     });
     this._populateAssociatedObjectWithJSON(this, "customerAccount", json.customer_account, function(json) {
+      json.channel = _this.channel;
       return FirehoseJS.CustomerAccount._customerAccountWithID(json.id, _this.customer);
     });
     this._populateAssociatedObjects(this, "responseInteractions", json.response_interactions, function(json) {

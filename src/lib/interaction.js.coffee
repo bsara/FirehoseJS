@@ -141,6 +141,7 @@ class FirehoseJS.Interaction extends FirehoseJS.Object
       FirehoseJS.Agent.agentWithID( json.id )
       
     this._populateAssociatedObjectWithJSON this, "customerAccount", json.customer_account, (json) =>
+      json.channel = @channel
       FirehoseJS.CustomerAccount._customerAccountWithID( json.id, @customer )
     
     this._populateAssociatedObjects this, "responseInteractions", json.response_interactions, (json) =>
