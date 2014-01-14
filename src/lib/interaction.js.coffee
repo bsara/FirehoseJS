@@ -64,7 +64,7 @@ class FirehoseJS.Interaction extends FirehoseJS.Object
       route: "interactions/#{@id}/reply"
       body:  body
     FirehoseJS.client.post( params ).done (data) =>
-      @responseDraft = null
+      this.set "responseDraft", null
       response = FirehoseJS.Interaction._interactionWithJSON( data, @customer )
       @responseInteractions.push response
       response.agent = FirehoseJS.Agent.loggedInAgent
@@ -124,18 +124,18 @@ class FirehoseJS.Interaction extends FirehoseJS.Object
       
       
   _setCustomer: (customer) ->
-    @customer = customer
+    this.set "customer", customer
     
     
   _populateWithJSON: (json) ->
-    @token          ?= json.token
-    @body           = json.body
-    @responseDraft  = json.response_draft
-    @channel        = json.channel
-    @receivedAt     = Date.parse json.received_at
-    @privateURL     = json.private_url
-    @happiness      = json.happiness
-    @resolved       = json.resolved
+    this.set "token",         json.token unless @token?
+    this.set "body",          json.body
+    this.set "responseDraft", json.response_draft
+    this.set "channel",       json.channel
+    this.set "receivedAt",    Date.parse(json.received_at)
+    this.set "privateURL",    json.private_url
+    this.set "happiness",     json.happiness
+    this.set "resolved",      json.resolved
     
     this._populateAssociatedObjectWithJSON this, "agent", json.agent, (json) ->
       FirehoseJS.Agent.agentWithID( json.id )

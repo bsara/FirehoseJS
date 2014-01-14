@@ -55,18 +55,18 @@ class FirehoseJS.Customer extends FirehoseJS.Object
   
   interactions: ->
     unless @_interactions?
-      @_interactions = new FirehoseJS.RemoteArray "customers/#{@id}/interactions", null, (json) =>
+      this.set "_interactions", new FirehoseJS.RemoteArray "customers/#{@id}/interactions", null, (json) =>
         FirehoseJS.Interaction._interactionWithJSON( json, this )
     @_interactions
     
     
   _populateWithJSON: (json) ->
-    @name                         = json.name
-    @location                     = json.location
-    @timeZone                     = json.time_zone
-    @newestInteractionId          = json.newest_interaction_id
-    @newestInteractionExcerpt     = json.newest_interaction_excerpt
-    @newestInteractionReceivedAt  = Date.parse json.newest_interaction_received_at
+    this.set "name",                         json.name
+    this.set "location",                     json.location
+    this.set "timeZone",                     json.time_zone
+    this.set "newestInteractionId",          json.newest_interaction_id
+    this.set "newestInteractionExcerpt",     json.newest_interaction_excerpt
+    this.set "newestInteractionReceivedAt",  Date.parse json.newest_interaction_received_at
     
     this._populateAssociatedObjects this, "customerAccounts", json.customer_accounts, (json) ->
       FirehoseJS.CustomerAccount._customerAccountWithID( json.id, this )

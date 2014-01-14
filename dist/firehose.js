@@ -357,6 +357,14 @@ FirehoseJS.Object = (function() {
     }
   }
 
+  Object.prototype.get = function(key) {
+    return this[key];
+  };
+
+  Object.prototype.set = function(key, value) {
+    return this[key] = value;
+  };
+
   Object._objectOfClassWithID = function(klass, properties) {
     var id, obj, _i, _len, _ref;
     id = properties.id;
@@ -377,7 +385,8 @@ FirehoseJS.Object = (function() {
   Object.prototype._populateAssociatedObjects = function(owner, association, json, creation) {
     var object, objectJSON, objects, _i, _len, _results;
     if (json != null) {
-      objects = owner[association] = new FirehoseJS.UniqueArray;
+      objects = new FirehoseJS.UniqueArray;
+      owner.set(association, objects);
       _results = [];
       for (_i = 0, _len = json.length; _i < _len; _i++) {
         objectJSON = json[_i];
@@ -392,20 +401,23 @@ FirehoseJS.Object = (function() {
   Object.prototype._populateAssociatedObjectWithJSON = function(owner, association, json, creation) {
     var object;
     if (json != null) {
-      object = owner[association] = creation(json);
+      object = creation(json);
+      owner.set(association, object);
       return object._populateWithJSON(json);
     }
   };
 
   Object.prototype._populateAssociatedObjectWithID = function(owner, association, id, creation) {
-    return owner[association] = id != null ? creation(id) : null;
+    return owner.set(association, id != null ? creation(id) : null);
   };
 
   Object.prototype._populateWithJSON = function(json) {
     if (this.id == null) {
-      this.id = json.id;
+      this.set("id", json.id);
     }
-    return this.createdAt != null ? this.createdAt : this.createdAt = Date.parse(json.created_at);
+    if (this.createdAt == null) {
+      return this.set("createdAt", Date.parse(json.created_at));
+    }
   };
 
   return Object;
@@ -464,8 +476,8 @@ FirehoseJS.Agent = (function(_super) {
   Agent.prototype.signUpWithFirstAndLastName = function(firstName, lastName) {
     var params,
       _this = this;
-    this.firstName = firstName;
-    this.lastName = lastName;
+    this.set("firstName", firstName);
+    this.set("lastName", lastName);
     params = {
       route: 'agents',
       body: {
@@ -507,8 +519,8 @@ FirehoseJS.Agent = (function(_super) {
   };
 
   Agent.prototype.logout = function() {
-    this.accessToken = null;
-    this.URLToken = null;
+    this.set("accessToken", null);
+    this.set("URLToken", null);
     FirehoseJS.Agent.loggedInAgent = null;
     FirehoseJS.client.APIAccessToken = null;
     FirehoseJS.client.URLToken = null;
@@ -555,16 +567,7 @@ FirehoseJS.Agent = (function(_super) {
     params = {
       route: "agents/" + this.id + "/notifications/" + (ids.join(','))
     };
-    return FirehoseJS.client.put(params).done(function() {
-      var idx, _j, _len1, _results;
-      _results = [];
-      for (_j = 0, _len1 = notifications.length; _j < _len1; _j++) {
-        notification = notifications[_j];
-        idx = notifications.indexOf(notification);
-        _results.push(notifications.splice(idx, 1));
-      }
-      return _results;
-    });
+    return FirehoseJS.client.put(params);
   };
 
   Agent.requestPasswordReset = function(email) {
@@ -591,7 +594,7 @@ FirehoseJS.Agent = (function(_super) {
   };
 
   Agent.prototype.setNewPassword = function(newPassword) {
-    return this._password = newPassword;
+    return this.set("_password", newPassword);
   };
 
   Agent.prototype.fullName = function() {
@@ -600,19 +603,19 @@ FirehoseJS.Agent = (function(_super) {
 
   Agent.prototype._populateWithJSON = function(json) {
     if (this.accessToken == null) {
-      this.accessToken = json.access_token;
+      this.set("accessToken", json.access_token);
     }
     if (this.URLToken == null) {
-      this.URLToken = json.url_token;
+      this.set("urlToken", json.url_token);
     }
-    this.firstName = json.first_name;
-    this.lastName = json.last_name;
-    this.email = json.email;
+    this.set("firstName", json.first_name);
+    this.set("lastName", json.last_name);
+    this.set("email", json.email);
     this._populateAssociatedObjects(this, "companies", json.companies, function(json) {
       return FirehoseJS.Company.companyWithID(json.id, this);
     });
     if (this.companies.length > 0 && (this.currentCompany == null)) {
-      this.currentCompany = this.companies[0];
+      this.set("currentCompany", this.companies[0]);
     }
     return Agent.__super__._populateWithJSON.call(this, json);
   };
@@ -781,9 +784,9 @@ FirehoseJS.Company = (function(_super) {
   Company.prototype.notifications = function() {
     var _this = this;
     if (this._notifications == null) {
-      this._notifications = new FirehoseJS.RemoteArray("companies/" + this.id + "/notifications", null, function(json) {
+      this.set("_notifications", new FirehoseJS.RemoteArray("companies/" + this.id + "/notifications", null, function(json) {
         return FirehoseJS.Notification._notificationWithID(json.id, _this);
-      });
+      }));
     }
     return this._notifications;
   };
@@ -791,9 +794,9 @@ FirehoseJS.Company = (function(_super) {
   Company.prototype.twitterAccounts = function() {
     var _this = this;
     if (this._twitterAccounts == null) {
-      this._twitterAccounts = new FirehoseJS.RemoteArray("companies/" + this.id + "/twitter_accounts", null, function(json) {
+      this.set("_twitterAccounts", new FirehoseJS.RemoteArray("companies/" + this.id + "/twitter_accounts", null, function(json) {
         return FirehoseJS.TwitterAccount._twitterAccountWithID(json.id, _this);
-      });
+      }));
     }
     return this._twitterAccounts;
   };
@@ -801,9 +804,9 @@ FirehoseJS.Company = (function(_super) {
   Company.prototype.facebookAccounts = function() {
     var _this = this;
     if (this._facebookAccounts == null) {
-      this._facebookAccounts = new FirehoseJS.RemoteArray("companies/" + this.id + "/facebook_accounts", null, function(json) {
+      this.set("_facebookAccounts", new FirehoseJS.RemoteArray("companies/" + this.id + "/facebook_accounts", null, function(json) {
         return FirehoseJS.FacebookAccount._facebookAccountWithID(json.id, _this);
-      });
+      }));
     }
     return this._facebookAccounts;
   };
@@ -811,9 +814,9 @@ FirehoseJS.Company = (function(_super) {
   Company.prototype.emailAccounts = function() {
     var _this = this;
     if (this._emailAccounts == null) {
-      this._emailAccounts = new FirehoseJS.RemoteArray("companies/" + this.id + "/email_accounts", null, function(json) {
+      this.set("_emailAccounts", new FirehoseJS.RemoteArray("companies/" + this.id + "/email_accounts", null, function(json) {
         return FirehoseJS.EmailAccount._emailAccountWithID(json.id, _this);
-      });
+      }));
     }
     return this._emailAccounts;
   };
@@ -821,9 +824,9 @@ FirehoseJS.Company = (function(_super) {
   Company.prototype.articles = function() {
     var _this = this;
     if (this._articles == null) {
-      this._articles = new FirehoseJS.RemoteArray("companies/" + this.id + "/articles", null, function(json) {
+      this.set("_articles", new FirehoseJS.RemoteArray("companies/" + this.id + "/articles", null, function(json) {
         return FirehoseJS.Article.articleWithID(json.id, _this);
-      });
+      }));
     }
     return this._articles;
   };
@@ -862,12 +865,12 @@ FirehoseJS.Company = (function(_super) {
       };
       return FirehoseJS.client.get(params).done(function(json) {
         if (json.credit_card != null) {
-          _this.creditCard = FirehoseJS.CreditCard.creditCardWithID(json.credit_card.id, _this);
+          _this.set("creditCard", FirehoseJS.CreditCard.creditCardWithID(json.credit_card.id, _this));
           _this.creditCard._populateWithJSON(json.credit_card);
         }
-        _this.billingEmail = json.email || FirehoseJS.Agent.loggedInAgent.email;
-        _this.billingRate = json.rate / 100.0;
-        return _this.trialExpirationDate = Date.parse(json.free_trial_expiration_date || new Date(+(new Date) + 12096e5));
+        _this.set("billingEmail", json.email || FirehoseJS.Agent.loggedInAgent.email);
+        _this.set("billingRate", json.rate / 100.0);
+        return _this.set("trialExpirationDate", Date.parse(json.free_trial_expiration_date || new Date(+(new Date) + 12096e5)));
       });
     };
     if (this.token) {
@@ -880,18 +883,18 @@ FirehoseJS.Company = (function(_super) {
   };
 
   Company.prototype._populateWithJSON = function(json) {
-    this.title = json.title;
+    this.set("title", json.title);
     if (this.token == null) {
-      this.token = json.token;
+      this.set("token", json.token);
     }
-    this.fetchAutomatically = json.fetch_automatically;
-    this.lastFetchAt = json.last_fetch_at;
+    this.set("fetchAutomatically", json.fetch_automatically);
+    this.set("lastFetchAt", json.last_fetch_at);
     if (this.forwardingEmailAddress == null) {
-      this.forwardingEmailAddress = json.forwarding_email;
+      this.set("forwardingEmailAddress", json.forwarding_email);
     }
-    this.knowledgeBaseSubdomain = json.kb_subdomain;
-    this.unresolvedCount = json.unresolved_count;
-    this.numberOfAccounts = json.number_of_accounts;
+    this.set("knowledgeBaseSubdomain", json.kb_subdomain);
+    this.set("unresolvedCount", json.unresolved_count);
+    this.set("numberOfAccounts", json.number_of_accounts);
     this._populateAssociatedObjects(this, "agents", json.agents, function(json) {
       var agent;
       agent = FirehoseJS.Agent.agentWithID(json.id);
@@ -1009,7 +1012,7 @@ FirehoseJS.Interaction = (function(_super) {
     };
     return FirehoseJS.client.post(params).done(function(data) {
       var response;
-      _this.responseDraft = null;
+      _this.set("responseDraft", null);
       response = FirehoseJS.Interaction._interactionWithJSON(data, _this.customer);
       _this.responseInteractions.push(response);
       response.agent = FirehoseJS.Agent.loggedInAgent;
@@ -1094,21 +1097,21 @@ FirehoseJS.Interaction = (function(_super) {
   };
 
   Interaction.prototype._setCustomer = function(customer) {
-    return this.customer = customer;
+    return this.set("customer", customer);
   };
 
   Interaction.prototype._populateWithJSON = function(json) {
     var _this = this;
     if (this.token == null) {
-      this.token = json.token;
+      this.set("token", json.token);
     }
-    this.body = json.body;
-    this.responseDraft = json.response_draft;
-    this.channel = json.channel;
-    this.receivedAt = Date.parse(json.received_at);
-    this.privateURL = json.private_url;
-    this.happiness = json.happiness;
-    this.resolved = json.resolved;
+    this.set("body", json.body);
+    this.set("responseDraft", json.response_draft);
+    this.set("channel", json.channel);
+    this.set("receivedAt", Date.parse(json.received_at));
+    this.set("privateURL", json.private_url);
+    this.set("happiness", json.happiness);
+    this.set("resolved", json.resolved);
     this._populateAssociatedObjectWithJSON(this, "agent", json.agent, function(json) {
       return FirehoseJS.Agent.agentWithID(json.id);
     });
@@ -1207,7 +1210,7 @@ FirehoseJS.AgentInvite = (function(_super) {
   };
 
   AgentInvite.prototype._populateWithJSON = function(json) {
-    this.email = json.email;
+    this.set("email", json.email);
     return AgentInvite.__super__._populateWithJSON.call(this, json);
   };
 
@@ -1249,8 +1252,8 @@ FirehoseJS.Attachment = (function(_super) {
   };
 
   Attachment.prototype._populateWithJSON = function(json) {
-    this.filename = json.filename;
-    this.temporaryURL = json.temporary_url;
+    this.set("filename", json.filename);
+    this.set("temporaryURL", json.temporary_url);
     return Attachment.__super__._populateWithJSON.call(this, json);
   };
 
@@ -1326,9 +1329,9 @@ FirehoseJS.CannedResponse = (function(_super) {
   };
 
   CannedResponse.prototype._populateWithJSON = function(json) {
-    this.name = json.name;
-    this.shortcut = json.shortcut;
-    this.text = json.text;
+    this.set("name", json.name);
+    this.set("shortcut", json.shortcut);
+    this.set("text", json.text);
     return CannedResponse.__super__._populateWithJSON.call(this, json);
   };
 
@@ -1400,11 +1403,11 @@ FirehoseJS.CreditCard = (function(_super) {
       exp_year: this.expirationYear
     }, function(status, response) {
       if (!response.error) {
-        _this.expirationMonth = response.card.exp_month;
-        _this.expirationYear = response.card.exp_year;
-        _this.lastFour = response.card.last4;
-        _this.stripeToken = response.id;
-        _this.email = FirehoseJS.Agent.loggedInAgent.email;
+        _this.set("expirationMonth", response.card.exp_month);
+        _this.set("expirationYear", response.card.exp_year);
+        _this.set("lastFour", response.card.last4);
+        _this.set("stripeToken", response.id);
+        _this.set("email", FirehoseJS.Agent.loggedInAgent.email);
         return callback();
       }
     });
@@ -1445,9 +1448,9 @@ FirehoseJS.CreditCard = (function(_super) {
   };
 
   CreditCard.prototype._populateWithJSON = function(json) {
-    this.expirationMonth = json.expiration_month;
-    this.expirationYear = json.expiration_year;
-    this.lastFour = json.last_four;
+    this.set("expirationMonth", json.expiration_month);
+    this.set("expirationYear", json.expiration_year);
+    this.set("lastFour", json.last_four);
     return CreditCard.__super__._populateWithJSON.call(this, json);
   };
 
@@ -1538,20 +1541,20 @@ FirehoseJS.Customer = (function(_super) {
   Customer.prototype.interactions = function() {
     var _this = this;
     if (this._interactions == null) {
-      this._interactions = new FirehoseJS.RemoteArray("customers/" + this.id + "/interactions", null, function(json) {
+      this.set("_interactions", new FirehoseJS.RemoteArray("customers/" + this.id + "/interactions", null, function(json) {
         return FirehoseJS.Interaction._interactionWithJSON(json, _this);
-      });
+      }));
     }
     return this._interactions;
   };
 
   Customer.prototype._populateWithJSON = function(json) {
-    this.name = json.name;
-    this.location = json.location;
-    this.timeZone = json.time_zone;
-    this.newestInteractionId = json.newest_interaction_id;
-    this.newestInteractionExcerpt = json.newest_interaction_excerpt;
-    this.newestInteractionReceivedAt = Date.parse(json.newest_interaction_received_at);
+    this.set("name", json.name);
+    this.set("location", json.location);
+    this.set("timeZone", json.time_zone);
+    this.set("newestInteractionId", json.newest_interaction_id);
+    this.set("newestInteractionExcerpt", json.newest_interaction_excerpt);
+    this.set("newestInteractionReceivedAt", Date.parse(json.newest_interaction_received_at));
     this._populateAssociatedObjects(this, "customerAccounts", json.customer_accounts, function(json) {
       return FirehoseJS.CustomerAccount._customerAccountWithID(json.id, this);
     });
@@ -1602,12 +1605,12 @@ FirehoseJS.CustomerAccount = (function(_super) {
   };
 
   CustomerAccount.prototype._populateWithJSON = function(json) {
-    this.username = json.username;
-    this.followingUs = json.following_us;
-    this.imageURL = json.image_url;
-    this.description = json.description;
-    this.followersCount = json.followers_count;
-    this.channel = json.channel;
+    this.set("username", json.username);
+    this.set("followingUs", json.following_us);
+    this.set("imageURL", json.image_url);
+    this.set("description", json.description);
+    this.set("followersCount", json.followers_count);
+    this.set("channel", json.channel);
     return CustomerAccount.__super__._populateWithJSON.call(this, json);
   };
 
@@ -1777,10 +1780,10 @@ FirehoseJS.EmailAccount = (function(_super) {
       service = _ref1[_i];
       domain = "@" + service.domain;
       if (this.username.indexOf(domain) !== -1) {
-        this.kind = service.kind;
-        this.SSL = service.SSL;
-        this.port = service.port;
-        this.server = service.server;
+        this.set("kind", service.kind);
+        this.set("SSL", service.SSL);
+        this.set("port", service.port);
+        this.set("server", service.server);
         return true;
       }
     }
@@ -1788,18 +1791,18 @@ FirehoseJS.EmailAccount = (function(_super) {
   };
 
   EmailAccount.prototype._populateWithJSON = function(json) {
-    this.emailAddress = json.email;
+    this.set("emailAddress", json.email);
     if (this.title == null) {
-      this.title = json.title;
+      this.set("title", json.title);
     }
-    this.server = json.incoming_server;
-    this.SSL = json.incoming_ssl;
+    this.set("server", json.incoming_server);
+    this.set("SSL", json.incoming_ssl);
     if (this.port == null) {
-      this.port = json.incoming_port;
+      this.set("port", json.incoming_port);
     }
-    this.username = json.incoming_username;
-    this.kind = json.kind;
-    this.deleteFromServer = json.delete_from_server;
+    this.set("username", json.incoming_username);
+    this.set("kind", json.kind);
+    this.set("deleteFromServer", json.delete_from_server);
     return EmailAccount.__super__._populateWithJSON.call(this, json);
   };
 
@@ -1856,10 +1859,10 @@ FirehoseJS.EmailInteraction = (function(_super) {
       _this = this;
     if (json.email_interaction != null) {
       emailJSON = json.email_interaction;
-      this.emailSubject = emailJSON.subject;
-      this.replyTo = emailJSON.reply_to;
-      this.toEmail = emailJSON.to_email;
-      this.fromEmail = emailJSON.from_email;
+      this.set("emailSubject", emailJSON.subject);
+      this.set("replyTo", emailJSON.reply_to);
+      this.set("toEmail", emailJSON.to_email);
+      this.set("fromEmail", emailJSON.from_email);
       this._populateAssociatedObjects(this, "attachments", emailJSON.attachments, function(json) {
         return FirehoseJS.Attachment._attachmentWithID(json.id, _this);
       });
@@ -1915,10 +1918,10 @@ FirehoseJS.FacebookAccount = (function(_super) {
   };
 
   FacebookAccount.prototype._populateWithJSON = function(json) {
-    this.username = json.username;
-    this.facebookUserId = json.facebook_user_id;
-    this.imageURL = json.image_url;
-    this.name = json.name;
+    this.set("username", json.username);
+    this.set("facebookUserId", json.facebook_user_id);
+    this.set("imageURL", json.image_url);
+    this.set("name", json.name);
     this._populateAssociatedObjects(this, "facebookPages", json.facebook_pages, function(json) {
       return FirehoseJS.FacebookPage._facebookPageWithID(json.id, this);
     });
@@ -1971,15 +1974,15 @@ FirehoseJS.FacebookInteraction = (function(_super) {
     var facebookJSON;
     if (json.facebook_interaction != null) {
       facebookJSON = json.facebook_interaction;
-      this.fromUserId = facebookJSON.from_user_id;
-      this.fromName = facebookJSON.from_name;
-      this.toUserId = facebookJSON.to_user_id;
-      this.toName = facebookJSON.to_name;
-      this.postId = facebookJSON.post_id;
-      this.commentId = facebookJSON.comment_id;
-      this.postType = facebookJSON.post_type;
-      this.postExcerpt = facebookJSON.post_excerpt;
-      this.likeCount = facebookJSON.like_count;
+      this.set("fromUserId", facebookJSON.from_user_id);
+      this.set("fromName", facebookJSON.from_name);
+      this.set("toUserId", facebookJSON.to_user_id);
+      this.set("toName", facebookJSON.to_name);
+      this.set("postId", facebookJSON.post_id);
+      this.set("commentId", facebookJSON.comment_id);
+      this.set("postType", facebookJSON.post_type);
+      this.set("postExcerpt", facebookJSON.post_excerpt);
+      this.set("likeCount", facebookJSON.like_count);
     }
     return FacebookInteraction.__super__._populateWithJSON.call(this, json);
   };
@@ -2027,10 +2030,10 @@ FirehoseJS.FacebookPage = (function(_super) {
   };
 
   FacebookPage.prototype._populateWithJSON = function(json) {
-    this.name = json.name;
-    this.category = json.category;
-    this.pageId = json.page_id;
-    this.active = json.active;
+    this.set("name", json.name);
+    this.set("category", json.category);
+    this.set("pageId", json.page_id);
+    this.set("active", json.active);
     return FacebookPage.__super__._populateWithJSON.call(this, json);
   };
 
@@ -2114,7 +2117,7 @@ FirehoseJS.Note = (function(_super) {
   };
 
   Note.prototype._populateWithJSON = function(json) {
-    this.body = json.body;
+    this.set("body", json.body);
     this._populateAssociatedObjectWithJSON(this, "agent", json.agent, function(json) {
       return FirehoseJS.Agent.agentWithID(json.id);
     });
@@ -2161,9 +2164,9 @@ FirehoseJS.Notification = (function(_super) {
   };
 
   Notification.prototype._populateWithJSON = function(json) {
-    this.title = json.title;
-    this.text = json.text;
-    this.level = json.level;
+    this.set("title", json.title);
+    this.set("text", json.text);
+    this.set("level", json.level);
     return Notification.__super__._populateWithJSON.call(this, json);
   };
 
@@ -2333,7 +2336,7 @@ FirehoseJS.Tag = (function(_super) {
   };
 
   Tag.prototype._populateWithJSON = function(json) {
-    this.label = json.label;
+    this.set("label", json.label);
     return Tag.__super__._populateWithJSON.call(this, json);
   };
 
@@ -2389,9 +2392,9 @@ FirehoseJS.TwitterAccount = (function(_super) {
   };
 
   TwitterAccount.prototype._populateWithJSON = function(json) {
-    this.screenName = json.screen_name;
-    this.twitterUserId = json.twitter_user_id;
-    this.imageURL = json.image_url;
+    this.set("screenName", json.screen_name);
+    this.set("twitterUserId", json.twitter_user_id);
+    this.set("imageURL", json.image_url);
     return TwitterAccount.__super__._populateWithJSON.call(this, json);
   };
 
@@ -2439,15 +2442,15 @@ FirehoseJS.TwitterInteraction = (function(_super) {
     var twitterJSON;
     if (json.twitter_interaction != null) {
       twitterJSON = json.twitter_interaction;
-      this.favorited = twitterJSON.favorited;
-      this.tweetId = twitterJSON.tweet_id;
-      this.inReplyToScreenName = twitterJSON.in_reply_to_screen_name;
-      this.inReplyToStatusId = twitterJSON.in_reply_to_status_id;
-      this.retweetCount = twitterJSON.retweet_count;
-      this.tweetSource = twitterJSON.tweet_source;
-      this.toUserId = twitterJSON.to_user_id;
-      this.toScreenName = twitterJSON.twitter_account.screen_name;
-      this.fromUserId = twitterJSON.from_user_id;
+      this.set("favorited", twitterJSON.favorited);
+      this.set("tweetId", twitterJSON.tweet_id);
+      this.set("inReplyToScreenName", twitterJSON.in_reply_to_screen_name);
+      this.set("inReplyToStatusId", twitterJSON.in_reply_to_status_id);
+      this.set("retweetCount", twitterJSON.retweet_count);
+      this.set("tweetSource", twitterJSON.tweet_source);
+      this.set("toUserId", twitterJSON.to_user_id);
+      this.set("toScreenName", twitterJSON.twitter_account.screen_name);
+      this.set("fromUserId", twitterJSON.from_user_id);
     }
     return TwitterInteraction.__super__._populateWithJSON.call(this, json);
   };
@@ -2533,8 +2536,8 @@ FirehoseJS.Article = (function(_super) {
   };
 
   Article.prototype._populateWithJSON = function(json) {
-    this.title = json.title;
-    this.body = json.body;
+    this.set("title", json.title);
+    this.set("body", json.body);
     return Article.__super__._populateWithJSON.call(this, json);
   };
 

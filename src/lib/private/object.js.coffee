@@ -11,7 +11,15 @@ class FirehoseJS.Object
   constructor: (properties) ->
     for prop of properties
       this[prop] = properties[prop]
+      
   
+  get: (key) ->
+    this[key]
+  
+  
+  set: (key, value) ->
+    this[key] = value
+    
   
   @_objectOfClassWithID: (klass, properties) ->
     id = properties.id
@@ -26,7 +34,8 @@ class FirehoseJS.Object
   
   _populateAssociatedObjects: (owner, association, json, creation) ->
     if json?
-      objects = owner[association] = new FirehoseJS.UniqueArray
+      objects = new FirehoseJS.UniqueArray
+      owner.set association, objects
       for objectJSON in json
         object = creation objectJSON
         object._populateWithJSON objectJSON
@@ -35,15 +44,15 @@ class FirehoseJS.Object
   
   _populateAssociatedObjectWithJSON:(owner, association, json, creation) ->
     if json? 
-      object = owner[association] = creation json
+      object = creation json
+      owner.set association, object
       object._populateWithJSON json
       
       
   _populateAssociatedObjectWithID:(owner, association, id, creation) ->
-    owner[association] = if id? then creation( id ) else null
+    owner.set association, if id? then creation( id ) else null
           
           
   _populateWithJSON: (json) ->
-    @id         ?= json.id
-    @createdAt  ?= Date.parse json.created_at
-  
+    this.set "id",        json.id                     unless @id?
+    this.set "createdAt", Date.parse(json.created_at) unless @createdAt?

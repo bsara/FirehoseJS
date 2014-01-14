@@ -37,8 +37,8 @@ class FirehoseJS.Agent extends FirehoseJS.Object
     
   
   signUpWithFirstAndLastName: (firstName, lastName) ->
-    @firstName  = firstName
-    @lastName   = lastName
+    this.set "firstName", firstName
+    this.set "lastName",  lastName
     
     params = 
       route: 'agents'
@@ -75,8 +75,8 @@ class FirehoseJS.Agent extends FirehoseJS.Object
       
   
   logout: ->
-    @accessToken                          = null
-    @URLToken                             = null
+    this.set "accessToken", null
+    this.set "URLToken", null
     FirehoseJS.Agent.loggedInAgent        = null
     FirehoseJS.client.APIAccessToken      = null
     FirehoseJS.client.URLToken            = null
@@ -112,10 +112,7 @@ class FirehoseJS.Agent extends FirehoseJS.Object
     
     params = 
       route: "agents/#{@id}/notifications/#{ids.join(',')}"
-    FirehoseJS.client.put( params ).done ->
-      for notification in notifications
-        idx = notifications.indexOf notification
-        notifications.splice( idx, 1 )
+    FirehoseJS.client.put( params )
         
         
   @requestPasswordReset: (email) ->
@@ -136,7 +133,7 @@ class FirehoseJS.Agent extends FirehoseJS.Object
     
 
   setNewPassword: (newPassword) ->
-    @_password = newPassword
+    this.set "_password", newPassword
 
 
   fullName: ->
@@ -144,17 +141,17 @@ class FirehoseJS.Agent extends FirehoseJS.Object
   
   
   _populateWithJSON: (json) ->
-    @accessToken  ?= json.access_token
-    @URLToken     ?= json.url_token
-    @firstName    = json.first_name
-    @lastName     = json.last_name
-    @email        = json.email
+    this.set "accessToken", json.access_token unless @accessToken?
+    this.set "urlToken",    json.url_token    unless @URLToken?
+    this.set "firstName",   json.first_name
+    this.set "lastName",    json.last_name
+    this.set "email",       json.email
     
     this._populateAssociatedObjects this, "companies", json.companies, (json) ->
       FirehoseJS.Company.companyWithID( json.id, this )
       
     if @companies.length > 0 and not @currentCompany?
-      @currentCompany = @companies[0]
+      this.set "currentCompany", @companies[0]
     
     super json
     

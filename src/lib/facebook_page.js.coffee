@@ -26,10 +26,10 @@ class FirehoseJS.FacebookPage extends FirehoseJS.Object
     
     
   _populateWithJSON: (json) ->
-    @name     = json.name
-    @category = json.category
-    @pageId   = json.page_id
-    @active   = json.active
+    this.set "name",     json.name
+    this.set "category", json.category
+    this.set "pageId",   json.page_id
+    this.set "active",   json.active
     super json
     
     

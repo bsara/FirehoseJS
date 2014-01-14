@@ -128,35 +128,35 @@ class FirehoseJS.Company extends FirehoseJS.Object
       
   notifications: ->
     unless @_notifications?
-      @_notifications = new FirehoseJS.RemoteArray "companies/#{@id}/notifications", null, (json) =>
+      this.set "_notifications", new FirehoseJS.RemoteArray "companies/#{@id}/notifications", null, (json) =>
         FirehoseJS.Notification._notificationWithID( json.id, this )
     @_notifications
     
     
   twitterAccounts: ->
     unless @_twitterAccounts?
-      @_twitterAccounts = new FirehoseJS.RemoteArray "companies/#{@id}/twitter_accounts", null, (json) =>
+      this.set "_twitterAccounts", new FirehoseJS.RemoteArray "companies/#{@id}/twitter_accounts", null, (json) =>
         FirehoseJS.TwitterAccount._twitterAccountWithID( json.id, this )
     @_twitterAccounts
     
   
   facebookAccounts: ->
     unless @_facebookAccounts?
-      @_facebookAccounts = new FirehoseJS.RemoteArray "companies/#{@id}/facebook_accounts", null, (json) =>
+      this.set "_facebookAccounts", new FirehoseJS.RemoteArray "companies/#{@id}/facebook_accounts", null, (json) =>
         FirehoseJS.FacebookAccount._facebookAccountWithID( json.id, this )
     @_facebookAccounts
     
     
   emailAccounts: ->
     unless @_emailAccounts?
-      @_emailAccounts = new FirehoseJS.RemoteArray "companies/#{@id}/email_accounts", null, (json) =>
+      this.set "_emailAccounts", new FirehoseJS.RemoteArray "companies/#{@id}/email_accounts", null, (json) =>
         FirehoseJS.EmailAccount._emailAccountWithID( json.id, this )
     @_emailAccounts
     
     
   articles: ->
     unless @_articles?
-      @_articles = new FirehoseJS.RemoteArray "companies/#{@id}/articles", null, (json) =>
+      this.set "_articles", new FirehoseJS.RemoteArray "companies/#{@id}/articles", null, (json) =>
         FirehoseJS.Article.articleWithID( json.id, this )
     @_articles
              
@@ -183,12 +183,12 @@ class FirehoseJS.Company extends FirehoseJS.Object
         route: "entities/#{@id}"
       FirehoseJS.client.get( params ).done (json) =>
         if json.credit_card?
-          @creditCard = FirehoseJS.CreditCard.creditCardWithID( json.credit_card.id, this )
+          this.set "creditCard", FirehoseJS.CreditCard.creditCardWithID( json.credit_card.id, this )
           @creditCard._populateWithJSON json.credit_card
-        @billingEmail           = json.email || FirehoseJS.Agent.loggedInAgent.email
-        @billingRate            = json.rate / 100.0
-        @trialExpirationDate    = Date.parse json.free_trial_expiration_date || new Date(+new Date + 12096e5); # 14 days away
-        # @nextBillingDate        = Date.parse json.next_bill_date
+        this.set "billingEmail",        json.email || FirehoseJS.Agent.loggedInAgent.email
+        this.set "billingRate",         json.rate / 100.0
+        this.set "trialExpirationDate", Date.parse json.free_trial_expiration_date || new Date(+new Date + 12096e5) # 14 days away
+        # nextBillingDate        = Date.parse json.next_bill_date
         # @isGracePeriodOver      = json.grace_period_over
         # @daysLeftInGracePeriod  = json.days_left_in_grace_period
         # @isCurrent              = json.current
@@ -202,14 +202,14 @@ class FirehoseJS.Company extends FirehoseJS.Object
     
     
   _populateWithJSON: (json) ->
-    @title                  = json.title
-    @token                  ?= json.token
-    @fetchAutomatically     = json.fetch_automatically
-    @lastFetchAt            = json.last_fetch_at
-    @forwardingEmailAddress ?= json.forwarding_email
-    @knowledgeBaseSubdomain = json.kb_subdomain
-    @unresolvedCount        = json.unresolved_count
-    @numberOfAccounts       = json.number_of_accounts
+    this.set "title",                  json.title
+    this.set "token",                  json.token               unless @token?
+    this.set "fetchAutomatically",     json.fetch_automatically
+    this.set "lastFetchAt",            json.last_fetch_at
+    this.set "forwardingEmailAddress", json.forwarding_email    unless @forwardingEmailAddress?
+    this.set "knowledgeBaseSubdomain", json.kb_subdomain
+    this.set "unresolvedCount",        json.unresolved_count
+    this.set "numberOfAccounts",       json.number_of_accounts
     
     this._populateAssociatedObjects this, "agents", json.agents, (json) ->
       agent = FirehoseJS.Agent.agentWithID( json.id )

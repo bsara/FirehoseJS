@@ -30,14 +30,14 @@ class FirehoseJS.FacebookInteraction extends FirehoseJS.Interaction
   _populateWithJSON: (json) ->
     if json.facebook_interaction?
       facebookJSON  = json.facebook_interaction
-      @fromUserId   = facebookJSON.from_user_id
-      @fromName     = facebookJSON.from_name
-      @toUserId     = facebookJSON.to_user_id
-      @toName       = facebookJSON.to_name
-      @postId       = facebookJSON.post_id
-      @commentId    = facebookJSON.comment_id
-      @postType     = facebookJSON.post_type
-      @postExcerpt  = facebookJSON.post_excerpt
-      @likeCount    = facebookJSON.like_count
+      this.set "fromUserId", facebookJSON.from_user_id
+      this.set "fromName",   facebookJSON.from_name
+      this.set "toUserId",   facebookJSON.to_user_id
+      this.set "toName",     facebookJSON.to_name
+      this.set "postId",     facebookJSON.post_id
+      this.set "commentId",  facebookJSON.comment_id
+      this.set "postType",   facebookJSON.post_type
+      this.set "postExcerpt",facebookJSON.post_excerpt
+      this.set "likeCount",  facebookJSON.like_count
     super json
   

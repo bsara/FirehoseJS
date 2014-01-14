@@ -46,9 +46,9 @@ class FirehoseJS.CannedResponse extends FirehoseJS.Object
     
 
   _populateWithJSON: (json) ->
-    @name     = json.name
-    @shortcut = json.shortcut
-    @text     = json.text
+    this.set "name",     json.name
+    this.set "shortcut", json.shortcut
+    this.set "text",     json.text
     super json
     
     

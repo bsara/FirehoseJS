@@ -42,11 +42,11 @@ class FirehoseJS.CreditCard extends FirehoseJS.Object
       exp_year:   @expirationYear
     , (status, response) =>
       if not response.error
-        @expirationMonth  = response.card.exp_month
-        @expirationYear   = response.card.exp_year
-        @lastFour         = response.card.last4
-        @stripeToken      = response.id
-        @email            = FirehoseJS.Agent.loggedInAgent.email
+        this.set "expirationMonth", response.card.exp_month
+        this.set "expirationYear",  response.card.exp_year
+        this.set "lastFour",        response.card.last4
+        this.set "stripeToken",     response.id
+        this.set "email",           FirehoseJS.Agent.loggedInAgent.email
         callback()
       
     
@@ -77,9 +77,9 @@ class FirehoseJS.CreditCard extends FirehoseJS.Object
     
     
   _populateWithJSON: (json) ->
-    @expirationMonth  = json.expiration_month
-    @expirationYear   = json.expiration_year
-    @lastFour         = json.last_four
+    this.set "expirationMonth", json.expiration_month
+    this.set "expirationYear",  json.expiration_year
+    this.set "lastFour",        json.last_four
     super json
 
 

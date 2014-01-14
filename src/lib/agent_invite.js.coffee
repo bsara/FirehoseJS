@@ -41,7 +41,7 @@ class FirehoseJS.AgentInvite extends FirehoseJS.Object
     
 
   _populateWithJSON: (json) ->
-    @email = json.email
+    this.set "email", json.email
     super json
     
     
