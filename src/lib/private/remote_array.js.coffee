@@ -36,6 +36,10 @@ class FirehoseJS.RemoteArray extends FirehoseJS.UniqueArray
             object._populateWithJSON json
             this.appendObject object
       
+      
+  isAllLoaded: ->
+   this.length == @totalRows 
+   
     
   next: ->
     return null if not @_fresh and this.length == @totalRows
