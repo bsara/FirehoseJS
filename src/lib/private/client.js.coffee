@@ -140,13 +140,13 @@ class FirehoseJS.Client
     anchor.href = document.URL
     if anchor.hostname == "localhost"
       if anchor.port == "3011"
-        this.setIfNotNullEnvironment "test"
+        this.setEnvironment "test"
       if anchor.port == "3021"
-        this.setIfNotNullEnvironment "production"
+        this.setEnvironment "production"
       else
-        this.setIfNotNullEnvironment "development"
+        this.setEnvironment "development"
     else
-      this.setIfNotNullEnvironment "production"
+      this.setEnvironment "production"
 
     
   _firefoxHack: ->
