@@ -64,10 +64,10 @@ class FirehoseJS.Interaction extends FirehoseJS.Object
       route: "interactions/#{@id}/reply"
       body:  body
     FirehoseJS.client.post( params ).done (data) =>
-      this.set "responseDraft", null
+      this.setIfNotNull "responseDraft", null
       response = FirehoseJS.Interaction._interactionWithJSON( data, @customer )
       @responseInteractions.push response
-      response.agent = FirehoseJS.Agent.loggedInAgent
+      response.setIfNotNull "agent", FirehoseJS.Agent.loggedInAgent
       @responseInteractions.sort (interaction1, interaction2) ->
         interaction1.createdAt > interaction2.createdAt
     
@@ -124,18 +124,18 @@ class FirehoseJS.Interaction extends FirehoseJS.Object
       
       
   _setCustomer: (customer) ->
-    this.set "customer", customer
+    this.setIfNotNull "customer", customer
     
     
   _populateWithJSON: (json) ->
-    this.set "token",         json.token unless @token?
-    this.set "body",          json.body
-    this.set "responseDraft", json.response_draft
-    this.set "channel",       json.channel
-    this.set "receivedAt",    Date.parse(json.received_at)
-    this.set "privateURL",    json.private_url
-    this.set "happiness",     json.happiness
-    this.set "resolved",      json.resolved
+    this.setIfNotNull "token",         json.token unless @token?
+    this.setIfNotNull "body",          json.body
+    this.setIfNotNull "responseDraft", json.response_draft
+    this.setIfNotNull "channel",       json.channel
+    this.setIfNotNull "receivedAt",    Date.parse(json.received_at)
+    this.setIfNotNull "privateURL",    json.private_url
+    this.setIfNotNull "happiness",     json.happiness
+    this.setIfNotNull "resolved",      json.resolved
     
     this._populateAssociatedObjectWithJSON this, "agent", json.agent, (json) ->
       FirehoseJS.Agent.agentWithID( json.id )

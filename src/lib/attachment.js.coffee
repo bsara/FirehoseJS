@@ -15,6 +15,6 @@ class FirehoseJS.Attachment extends FirehoseJS.Object
     
     
   _populateWithJSON: (json) ->
-    this.set "filename",     json.filename
-    this.set "temporaryURL", json.temporary_url
+    this.setIfNotNull "filename",     json.filename
+    this.setIfNotNull "temporaryURL", json.temporary_url
     super json

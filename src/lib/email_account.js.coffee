@@ -119,23 +119,23 @@ class FirehoseJS.EmailAccount extends FirehoseJS.Object
     for service in @_popularServices
       domain = "@#{service.domain}"
       if @username.indexOf( domain ) != -1
-        this.set "kind",   service.kind
-        this.set "SSL",    service.SSL
-        this.set "port",   service.port
-        this.set "server", service.server
+        this.setIfNotNull "kind",   service.kind
+        this.setIfNotNull "SSL",    service.SSL
+        this.setIfNotNull "port",   service.port
+        this.setIfNotNull "server", service.server
         return true
     return false
     
     
   _populateWithJSON: (json) ->
-    this.set "emailAddress",     json.email
-    this.set "title",            json.title unless @title?
-    this.set "server",           json.incoming_server
-    this.set "SSL",              json.incoming_ssl
-    this.set "port",             json.incoming_port unless @port?
-    this.set "username",         json.incoming_username
-    this.set "kind",             json.kind
-    this.set "deleteFromServer", json.delete_from_server
+    this.setIfNotNull "emailAddress",     json.email
+    this.setIfNotNull "title",            json.title unless @title?
+    this.setIfNotNull "server",           json.incoming_server
+    this.setIfNotNull "SSL",              json.incoming_ssl
+    this.setIfNotNull "port",             json.incoming_port unless @port?
+    this.setIfNotNull "username",         json.incoming_username
+    this.setIfNotNull "kind",             json.kind
+    this.setIfNotNull "deleteFromServer", json.delete_from_server
     super json
     
     

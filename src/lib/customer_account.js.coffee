@@ -23,10 +23,10 @@ class FirehoseJS.CustomerAccount extends FirehoseJS.Object
     
     
   _populateWithJSON: (json) ->
-    this.set "username",       json.username
-    this.set "followingUs",    json.following_us
-    this.set "imageURL",       json.image_url
-    this.set "description",    json.description
-    this.set "followersCount", json.followers_count
-    this.set "channel",        json.channel
+    this.setIfNotNull "username",       json.username
+    this.setIfNotNull "followingUs",    json.following_us
+    this.setIfNotNull "imageURL",       json.image_url
+    this.setIfNotNull "description",    json.description
+    this.setIfNotNull "followersCount", json.followers_count
+    this.setIfNotNull "channel",        json.channel
     super json

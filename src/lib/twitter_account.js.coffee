@@ -27,7 +27,7 @@ class FirehoseJS.TwitterAccount extends FirehoseJS.Object
 
 
   _populateWithJSON: (json) ->
-    this.set "screenName",    json.screen_name
-    this.set "twitterUserId", json.twitter_user_id
-    this.set "imageURL",      json.image_url
+    this.setIfNotNull "screenName",    json.screen_name
+    this.setIfNotNull "twitterUserId", json.twitter_user_id
+    this.setIfNotNull "imageURL",      json.image_url
     super json

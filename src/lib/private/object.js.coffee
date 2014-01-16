@@ -20,6 +20,11 @@ class FirehoseJS.Object
   set: (key, value) ->
     this[key] = value
     
+    
+  setIfNotNull: (key, value) ->
+    if value?
+      this.set key, value
+    
   
   @_objectOfClassWithID: (klass, properties) ->
     id = properties.id
@@ -54,5 +59,5 @@ class FirehoseJS.Object
           
           
   _populateWithJSON: (json) ->
-    this.set "id",        json.id                     unless @id?
-    this.set "createdAt", Date.parse(json.created_at) unless @createdAt?
+    this.setIfNotNull "id",        json.id                     unless @id?
+    this.setIfNotNull "createdAt", Date.parse(json.created_at) unless @createdAt?

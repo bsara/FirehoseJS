@@ -40,7 +40,7 @@ class FirehoseJS.Tag extends FirehoseJS.Object
     
 
   _populateWithJSON: (json) ->
-    this.set "label", json.label
+    this.setIfNotNull "label", json.label
     super json
     
     

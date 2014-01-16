@@ -33,12 +33,12 @@ class FirehoseJS.FacebookAccount extends FirehoseJS.Object
 
 
   _populateWithJSON: (json) ->
-    this.set "username",       json.username
-    this.set "facebookUserId", json.facebook_user_id
-    this.set "imageURL",       json.image_url
-    this.set "name",           json.name
+    this.setIfNotNull "username",       json.username
+    this.setIfNotNull "facebookUserId", json.facebook_user_id
+    this.setIfNotNull "imageURL",       json.image_url
+    this.setIfNotNull "name",           json.name
     
-    this._populateAssociatedObjects this, "facebookPages", json.facebook_pages, (json) ->
+    this._populateAssociatedObjects this, "facebookPages", json.facebook_pages, (json) =>
       FirehoseJS.FacebookPage._facebookPageWithID( json.id, this )
       
     super json

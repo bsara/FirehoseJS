@@ -37,8 +37,8 @@ class FirehoseJS.Agent extends FirehoseJS.Object
     
   
   signUpWithFirstAndLastName: (firstName, lastName) ->
-    this.set "firstName", firstName
-    this.set "lastName",  lastName
+    this.setIfNotNull "firstName", firstName
+    this.setIfNotNull "lastName",  lastName
     
     params = 
       route: 'agents'
@@ -75,8 +75,8 @@ class FirehoseJS.Agent extends FirehoseJS.Object
       
   
   logout: ->
-    this.set "accessToken", null
-    this.set "URLToken", null
+    this.setIfNotNull "accessToken", null
+    this.setIfNotNull "URLToken", null
     FirehoseJS.Agent.loggedInAgent        = null
     FirehoseJS.client.APIAccessToken      = null
     FirehoseJS.client.URLToken            = null
@@ -133,7 +133,7 @@ class FirehoseJS.Agent extends FirehoseJS.Object
     
 
   setNewPassword: (newPassword) ->
-    this.set "_password", newPassword
+    this.setIfNotNull "_password", newPassword
 
 
   fullName: ->
@@ -141,17 +141,17 @@ class FirehoseJS.Agent extends FirehoseJS.Object
   
   
   _populateWithJSON: (json) ->
-    this.set "accessToken", json.access_token unless @accessToken?
-    this.set "urlToken",    json.url_token    unless @URLToken?
-    this.set "firstName",   json.first_name
-    this.set "lastName",    json.last_name
-    this.set "email",       json.email
+    this.setIfNotNull "accessToken", json.access_token unless @accessToken?
+    this.setIfNotNull "urlToken",    json.url_token    unless @URLToken?
+    this.setIfNotNull "firstName",   json.first_name
+    this.setIfNotNull "lastName",    json.last_name
+    this.setIfNotNull "email",       json.email
     
-    this._populateAssociatedObjects this, "companies", json.companies, (json) ->
+    this._populateAssociatedObjects this, "companies", json.companies, (json) =>
       FirehoseJS.Company.companyWithID( json.id, this )
       
     if @companies.length > 0 and not @currentCompany?
-      this.set "currentCompany", @companies[0]
+      this.setIfNotNull "currentCompany", @companies[0]
     
     super json
     

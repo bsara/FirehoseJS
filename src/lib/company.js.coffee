@@ -128,35 +128,35 @@ class FirehoseJS.Company extends FirehoseJS.Object
       
   notifications: ->
     unless @_notifications?
-      this.set "_notifications", new FirehoseJS.RemoteArray "companies/#{@id}/notifications", null, (json) =>
+      this.setIfNotNull "_notifications", new FirehoseJS.RemoteArray "companies/#{@id}/notifications", null, (json) =>
         FirehoseJS.Notification._notificationWithID( json.id, this )
     @_notifications
     
     
   twitterAccounts: ->
     unless @_twitterAccounts?
-      this.set "_twitterAccounts", new FirehoseJS.RemoteArray "companies/#{@id}/twitter_accounts", null, (json) =>
+      this.setIfNotNull "_twitterAccounts", new FirehoseJS.RemoteArray "companies/#{@id}/twitter_accounts", null, (json) =>
         FirehoseJS.TwitterAccount._twitterAccountWithID( json.id, this )
     @_twitterAccounts
     
   
   facebookAccounts: ->
     unless @_facebookAccounts?
-      this.set "_facebookAccounts", new FirehoseJS.RemoteArray "companies/#{@id}/facebook_accounts", null, (json) =>
+      this.setIfNotNull "_facebookAccounts", new FirehoseJS.RemoteArray "companies/#{@id}/facebook_accounts", null, (json) =>
         FirehoseJS.FacebookAccount._facebookAccountWithID( json.id, this )
     @_facebookAccounts
     
     
   emailAccounts: ->
     unless @_emailAccounts?
-      this.set "_emailAccounts", new FirehoseJS.RemoteArray "companies/#{@id}/email_accounts", null, (json) =>
+      this.setIfNotNull "_emailAccounts", new FirehoseJS.RemoteArray "companies/#{@id}/email_accounts", null, (json) =>
         FirehoseJS.EmailAccount._emailAccountWithID( json.id, this )
     @_emailAccounts
     
     
   articles: ->
     unless @_articles?
-      this.set "_articles", new FirehoseJS.RemoteArray "companies/#{@id}/articles", null, (json) =>
+      this.setIfNotNull "_articles", new FirehoseJS.RemoteArray "companies/#{@id}/articles", null, (json) =>
         FirehoseJS.Article.articleWithID( json.id, this )
     @_articles
              
@@ -183,11 +183,11 @@ class FirehoseJS.Company extends FirehoseJS.Object
         route: "entities/#{@id}"
       FirehoseJS.client.get( params ).done (json) =>
         if json.credit_card?
-          this.set "creditCard", FirehoseJS.CreditCard.creditCardWithID( json.credit_card.id, this )
+          this.setIfNotNull "creditCard", FirehoseJS.CreditCard.creditCardWithID( json.credit_card.id, this )
           @creditCard._populateWithJSON json.credit_card
-        this.set "billingEmail",        json.email || FirehoseJS.Agent.loggedInAgent.email
-        this.set "billingRate",         json.rate / 100.0
-        this.set "trialExpirationDate", Date.parse json.free_trial_expiration_date || new Date(+new Date + 12096e5) # 14 days away
+        this.setIfNotNull "billingEmail",        json.email || FirehoseJS.Agent.loggedInAgent.email
+        this.setIfNotNull "billingRate",         json.rate / 100.0
+        this.setIfNotNull "trialExpirationDate", Date.parse json.free_trial_expiration_date || new Date(+new Date + 12096e5) # 14 days away
         # nextBillingDate        = Date.parse json.next_bill_date
         # @isGracePeriodOver      = json.grace_period_over
         # @daysLeftInGracePeriod  = json.days_left_in_grace_period
@@ -202,27 +202,27 @@ class FirehoseJS.Company extends FirehoseJS.Object
     
     
   _populateWithJSON: (json) ->
-    this.set "title",                  json.title
-    this.set "token",                  json.token               unless @token?
-    this.set "fetchAutomatically",     json.fetch_automatically
-    this.set "lastFetchAt",            json.last_fetch_at
-    this.set "forwardingEmailAddress", json.forwarding_email    unless @forwardingEmailAddress?
-    this.set "knowledgeBaseSubdomain", json.kb_subdomain
-    this.set "unresolvedCount",        json.unresolved_count
-    this.set "numberOfAccounts",       json.number_of_accounts
+    this.setIfNotNull "title",                  json.title
+    this.setIfNotNull "token",                  json.token               unless @token?
+    this.setIfNotNull "fetchAutomatically",     json.fetch_automatically
+    this.setIfNotNull "lastFetchAt",            json.last_fetch_at
+    this.setIfNotNull "forwardingEmailAddress", json.forwarding_email    unless @forwardingEmailAddress?
+    this.setIfNotNull "knowledgeBaseSubdomain", json.kb_subdomain
+    this.setIfNotNull "unresolvedCount",        json.unresolved_count
+    this.setIfNotNull "numberOfAccounts",       json.number_of_accounts
     
-    this._populateAssociatedObjects this, "agents", json.agents, (json) ->
+    this._populateAssociatedObjects this, "agents", json.agents, (json) =>
       agent = FirehoseJS.Agent.agentWithID( json.id )
       agent.companies.push this
       agent
       
-    this._populateAssociatedObjects this, "agentInvites", json.agent_invites, (json) ->
+    this._populateAssociatedObjects this, "agentInvites", json.agent_invites, (json) =>
       FirehoseJS.AgentInvite._agentInviteWithID( json.id, this )
       
-    this._populateAssociatedObjects this, "tags", json.tags, (json) ->
+    this._populateAssociatedObjects this, "tags", json.tags, (json) =>
       FirehoseJS.Tag._tagWithID( json.id, this )
       
-    this._populateAssociatedObjects this, "cannedResponses", json.canned_responses, (json) ->
+    this._populateAssociatedObjects this, "cannedResponses", json.canned_responses, (json) =>
       FirehoseJS.CannedResponse._cannedResponseWithID( json.id, this )
       
     FirehoseJS.client.billingAccessToken = @token

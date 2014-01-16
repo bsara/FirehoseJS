@@ -17,7 +17,7 @@ class FirehoseJS.Notification extends FirehoseJS.Object
     
     
   _populateWithJSON: (json) ->
-    this.set "title", json.title
-    this.set "text",  json.text
-    this.set "level", json.level
+    this.setIfNotNull "title", json.title
+    this.setIfNotNull "text",  json.text
+    this.setIfNotNull "level", json.level
     super json

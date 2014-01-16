@@ -51,8 +51,8 @@ class FirehoseJS.Article extends FirehoseJS.Object
     
 
   _populateWithJSON: (json) ->
-    this.set "title", json.title
-    this.set "body",  json.body
+    this.setIfNotNull "title", json.title
+    this.setIfNotNull "body",  json.body
     super json
     
     
