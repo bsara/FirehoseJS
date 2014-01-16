@@ -32,7 +32,7 @@ class FirehoseJS.Note extends FirehoseJS.Object
         body:  this._toJSON()
       FirehoseJS.client.post( params ).done (data) =>
         this._populateWithJSON data
-        @interaction.notes.push this
+        @interaction.notes.pushObject this
         @interaction.notes.sort (note1, note2) ->
           note1.createdAt > note2.createdAt
       
@@ -41,7 +41,7 @@ class FirehoseJS.Note extends FirehoseJS.Object
     params = 
       route: "notes/#{@id}"
     FirehoseJS.client.delete( params ).done =>
-      @interaction.notes.remove this
+      @interaction.notes.dropObject this
     
 
   _populateWithJSON: (json) ->

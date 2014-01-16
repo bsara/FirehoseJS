@@ -66,7 +66,7 @@ class FirehoseJS.Interaction extends FirehoseJS.Object
     FirehoseJS.client.post( params ).done (data) =>
       this.setIfNotNull "responseDraft", null
       response = FirehoseJS.Interaction._interactionWithJSON( data, @customer )
-      @responseInteractions.push response
+      @responseInteractions.pushObject response
       response.setIfNotNull "agent", FirehoseJS.Agent.loggedInAgent
       @responseInteractions.sort (interaction1, interaction2) ->
         interaction1.createdAt > interaction2.createdAt
@@ -83,35 +83,35 @@ class FirehoseJS.Interaction extends FirehoseJS.Object
     params = 
       route: "interactions/#{@id}"
     FirehoseJS.client.delete( params ).done =>
-      @customer.interactions().remove this
+      @customer.interactions().dropObject this
     
     
   addTag: (tag) ->
     params = 
       route: "interactions/#{@id}/tags/#{tag.id}"
     FirehoseJS.client.put( params ).done =>
-      @tags.push tag
+      @tags.pushObject tag
     
     
   removeTag: (tag) ->
     params = 
       route: "interactions/#{@id}/tags/#{tag.id}"
     FirehoseJS.client.delete( params ).done =>
-      @tags.remove tag
+      @tags.dropObject tag
     
     
   flagAgent: (agent) ->
     params = 
       route: "interactions/#{@id}/agents/#{agent.id}"
     FirehoseJS.client.put( params ).done =>
-      @flaggedAgents.push agent
+      @flaggedAgents.pushObject agent
     
   
   unflagAgent: (agent) ->
     params = 
       route: "interactions/#{@id}/agents/#{agent.id}"
     FirehoseJS.client.delete( params ).done =>
-      @flaggedAgents.remove agent
+      @flaggedAgents.dropObject agent
     
   
   happinessString: ->

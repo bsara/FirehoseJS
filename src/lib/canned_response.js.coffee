@@ -35,14 +35,14 @@ class FirehoseJS.CannedResponse extends FirehoseJS.Object
         body:  this._toJSON()
       FirehoseJS.client.post( params ).done (data) =>
         this._populateWithJSON data
-        @company.cannedResponses.push this
+        @company.cannedResponses.pushObject this
       
       
   destroy: ->
     params = 
       route: "canned_responses/#{@id}"
     FirehoseJS.client.delete( params ).done =>
-      @company.cannedResponses.remove this
+      @company.cannedResponses.dropObject this
     
 
   _populateWithJSON: (json) ->

@@ -40,14 +40,14 @@ class FirehoseJS.Article extends FirehoseJS.Object
         body:  this._toJSON()
       FirehoseJS.client.post( params ).done (data) =>
         this._populateWithJSON data
-        @company.articles().push this
+        @company.articles().pushObject this
       
       
   destroy: ->
     params = 
       route: "articles/#{@id}"
     FirehoseJS.client.delete( params ).done =>
-      @company.articles().remove this
+      @company.articles().dropObject this
     
 
   _populateWithJSON: (json) ->

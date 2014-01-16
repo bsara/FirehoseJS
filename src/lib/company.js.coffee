@@ -165,14 +165,14 @@ class FirehoseJS.Company extends FirehoseJS.Object
     params = 
       route: "companies/#{@id}/agents/#{agent.id}"
     FirehoseJS.client.put( params ).done =>
-      @agents.push agent
+      @agents.pushObject agent
     
   
   removeAgent: (agent) ->
     params = 
       route: "companies/#{@id}/agents/#{agent.id}"
     FirehoseJS.client.delete( params ).done =>
-      @agents.remove agent
+      @agents.dropObject agent
     
     
   fetchBillingInfo: ->
@@ -213,7 +213,7 @@ class FirehoseJS.Company extends FirehoseJS.Object
     
     this._populateAssociatedObjects this, "agents", json.agents, (json) =>
       agent = FirehoseJS.Agent.agentWithID( json.id )
-      agent.companies.push this
+      agent.companies.pushObject this
       agent
       
     this._populateAssociatedObjects this, "agentInvites", json.agent_invites, (json) =>

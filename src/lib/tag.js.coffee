@@ -10,7 +10,8 @@ class FirehoseJS.Tag extends FirehoseJS.Object
     FirehoseJS.Object._objectOfClassWithID FirehoseJS.Tag,
       label:   label
       company: company
-        
+
+
   @_tagWithID: (id, company) ->
     FirehoseJS.Object._objectOfClassWithID FirehoseJS.Tag,
       id:      id
@@ -29,14 +30,14 @@ class FirehoseJS.Tag extends FirehoseJS.Object
         body:  this._toJSON()
       FirehoseJS.client.post( params ).done (data) =>
         this._populateWithJSON data
-        @company.tags.push this
+        @company.tags.pushObject this
       
       
   destroy: ->
     params = 
       route: "tags/#{@id}"
     FirehoseJS.client.delete( params ).done =>
-      @company.tags.remove this
+      @company.tags.dropObject this
     
 
   _populateWithJSON: (json) ->

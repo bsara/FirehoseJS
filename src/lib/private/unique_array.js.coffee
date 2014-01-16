@@ -1,19 +1,15 @@
 class FirehoseJS.UniqueArray extends Array
   
-  
   constructor: ->
     super
   
-  push: ->
+  pushObject: ->
     for arg in arguments
       if this.indexOf(arg) == -1
-        super arg
+        this.push arg
         
-  unshift: ->
+  dropObject: ->
     for arg in arguments
-      if this.indexOf(arg) == -1
-        super arg
-        
-  remove: (obj) ->
-    idx = this.indexOf obj
-    this.splice( idx, 1 ) unless idx == -1
+      idx = this.indexOf arg
+      this.splice( idx, 1 ) unless idx == -1
+      

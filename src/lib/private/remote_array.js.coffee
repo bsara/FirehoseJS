@@ -34,9 +34,8 @@ class FirehoseJS.RemoteArray extends FirehoseJS.UniqueArray
           for json in data
             object = @_creationFunction(json)
             object._populateWithJSON json
-            this.push object
+            this.pushObject object
       
-    
     
   next: ->
     return null if not @_fresh and this.length == @totalRows
@@ -45,7 +44,8 @@ class FirehoseJS.RemoteArray extends FirehoseJS.UniqueArray
   
   
   empty: ->
-    this.length = 0
+    for obj in this.splice(0)
+      this.dropObject obj
     
   
   reset: ->
