@@ -782,7 +782,7 @@ FirehoseJS.Company = (function(_super) {
       criteria = {};
     }
     params = {
-      filter: (criteria.resolved != null) && criteria.resolved ? "resolved" : "unresolved",
+      filter: (criteria.unresolvedOnly != null) && criteria.unresolvedOnly ? "unresolved" : "",
       channel: criteria.channels != null ? criteria.channels.join(",") : void 0,
       sort: criteria.sort != null ? criteria.sort : void 0,
       search_text: criteria.searchString ? criteria.searchString : void 0
