@@ -44,7 +44,7 @@ class FirehoseJS.Object
       for objectJSON in json
         object = creation objectJSON
         object._populateWithJSON objectJSON
-        objects.pushObject object
+        objects.appendObject object
         
   
   _populateAssociatedObjectWithJSON:(owner, association, json, creation) ->

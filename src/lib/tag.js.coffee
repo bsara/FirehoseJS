@@ -30,7 +30,7 @@ class FirehoseJS.Tag extends FirehoseJS.Object
         body:  this._toJSON()
       FirehoseJS.client.post( params ).done (data) =>
         this._populateWithJSON data
-        @company.tags.pushObject this
+        @company.tags.appendObject this
       
       
   destroy: ->

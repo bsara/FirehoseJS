@@ -165,7 +165,7 @@ class FirehoseJS.Company extends FirehoseJS.Object
     params = 
       route: "companies/#{@id}/agents/#{agent.id}"
     FirehoseJS.client.put( params ).done =>
-      @agents.pushObject agent
+      @agents.appendObject agent
     
   
   removeAgent: (agent) ->
@@ -213,7 +213,7 @@ class FirehoseJS.Company extends FirehoseJS.Object
     
     this._populateAssociatedObjects this, "agents", json.agents, (json) =>
       agent = FirehoseJS.Agent.agentWithID( json.id )
-      agent.companies.pushObject this
+      agent.companies.appendObject this
       agent
       
     this._populateAssociatedObjects this, "agentInvites", json.agent_invites, (json) =>

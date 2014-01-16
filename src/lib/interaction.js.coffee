@@ -66,7 +66,7 @@ class FirehoseJS.Interaction extends FirehoseJS.Object
     FirehoseJS.client.post( params ).done (data) =>
       this.setIfNotNull "responseDraft", null
       response = FirehoseJS.Interaction._interactionWithJSON( data, @customer )
-      @responseInteractions.pushObject response
+      @responseInteractions.appendObject response
       response.setIfNotNull "agent", FirehoseJS.Agent.loggedInAgent
       @responseInteractions.sort (interaction1, interaction2) ->
         interaction1.createdAt > interaction2.createdAt
@@ -90,7 +90,7 @@ class FirehoseJS.Interaction extends FirehoseJS.Object
     params = 
       route: "interactions/#{@id}/tags/#{tag.id}"
     FirehoseJS.client.put( params ).done =>
-      @tags.pushObject tag
+      @tags.appendObject tag
     
     
   removeTag: (tag) ->
@@ -104,7 +104,7 @@ class FirehoseJS.Interaction extends FirehoseJS.Object
     params = 
       route: "interactions/#{@id}/agents/#{agent.id}"
     FirehoseJS.client.put( params ).done =>
-      @flaggedAgents.pushObject agent
+      @flaggedAgents.appendObject agent
     
   
   unflagAgent: (agent) ->

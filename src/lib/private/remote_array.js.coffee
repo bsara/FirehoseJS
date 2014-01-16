@@ -34,7 +34,7 @@ class FirehoseJS.RemoteArray extends FirehoseJS.UniqueArray
           for json in data
             object = @_creationFunction(json)
             object._populateWithJSON json
-            this.pushObject object
+            this.appendObject object
       
     
   next: ->

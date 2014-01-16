@@ -3,7 +3,7 @@ class FirehoseJS.UniqueArray extends Array
   constructor: ->
     super
   
-  pushObject: ->
+  appendObject: ->
     for arg in arguments
       if this.indexOf(arg) == -1
         this.push arg

@@ -24,7 +24,7 @@ class FirehoseJS.AgentInvite extends FirehoseJS.Object
       body:  this._toJSON()
     FirehoseJS.client.post( params ).done (data) =>
       this._populateWithJSON data
-      @company.agentInvites.pushObject this
+      @company.agentInvites.appendObject this
       
   
   resend: ->

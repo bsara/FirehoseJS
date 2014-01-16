@@ -11,7 +11,7 @@ FirehoseJS.UniqueArray = (function(_super) {
     UniqueArray.__super__.constructor.apply(this, arguments);
   }
 
-  UniqueArray.prototype.pushObject = function() {
+  UniqueArray.prototype.appendObject = function() {
     var arg, _i, _len, _results;
     _results = [];
     for (_i = 0, _len = arguments.length; _i < _len; _i++) {
@@ -88,7 +88,7 @@ FirehoseJS.RemoteArray = (function(_super) {
             json = data[_i];
             object = _this._creationFunction(json);
             object._populateWithJSON(json);
-            _results.push(_this.pushObject(object));
+            _results.push(_this.appendObject(object));
           }
           return _results;
         }
@@ -398,7 +398,7 @@ FirehoseJS.Object = (function() {
         objectJSON = json[_i];
         object = creation(objectJSON);
         object._populateWithJSON(objectJSON);
-        _results.push(objects.pushObject(object));
+        _results.push(objects.appendObject(object));
       }
       return _results;
     }
@@ -845,7 +845,7 @@ FirehoseJS.Company = (function(_super) {
       route: "companies/" + this.id + "/agents/" + agent.id
     };
     return FirehoseJS.client.put(params).done(function() {
-      return _this.agents.pushObject(agent);
+      return _this.agents.appendObject(agent);
     });
   };
 
@@ -906,7 +906,7 @@ FirehoseJS.Company = (function(_super) {
     this._populateAssociatedObjects(this, "agents", json.agents, function(json) {
       var agent;
       agent = FirehoseJS.Agent.agentWithID(json.id);
-      agent.companies.pushObject(_this);
+      agent.companies.appendObject(_this);
       return agent;
     });
     this._populateAssociatedObjects(this, "agentInvites", json.agent_invites, function(json) {
@@ -1022,7 +1022,7 @@ FirehoseJS.Interaction = (function(_super) {
       var response;
       _this.setIfNotNull("responseDraft", null);
       response = FirehoseJS.Interaction._interactionWithJSON(data, _this.customer);
-      _this.responseInteractions.pushObject(response);
+      _this.responseInteractions.appendObject(response);
       response.setIfNotNull("agent", FirehoseJS.Agent.loggedInAgent);
       return _this.responseInteractions.sort(function(interaction1, interaction2) {
         return interaction1.createdAt > interaction2.createdAt;
@@ -1057,7 +1057,7 @@ FirehoseJS.Interaction = (function(_super) {
       route: "interactions/" + this.id + "/tags/" + tag.id
     };
     return FirehoseJS.client.put(params).done(function() {
-      return _this.tags.pushObject(tag);
+      return _this.tags.appendObject(tag);
     });
   };
 
@@ -1079,7 +1079,7 @@ FirehoseJS.Interaction = (function(_super) {
       route: "interactions/" + this.id + "/agents/" + agent.id
     };
     return FirehoseJS.client.put(params).done(function() {
-      return _this.flaggedAgents.pushObject(agent);
+      return _this.flaggedAgents.appendObject(agent);
     });
   };
 
@@ -1195,7 +1195,7 @@ FirehoseJS.AgentInvite = (function(_super) {
     };
     return FirehoseJS.client.post(params).done(function(data) {
       _this._populateWithJSON(data);
-      return _this.company.agentInvites.pushObject(_this);
+      return _this.company.agentInvites.appendObject(_this);
     });
   };
 
@@ -1321,7 +1321,7 @@ FirehoseJS.CannedResponse = (function(_super) {
       };
       return FirehoseJS.client.post(params).done(function(data) {
         _this._populateWithJSON(data);
-        return _this.company.cannedResponses.pushObject(_this);
+        return _this.company.cannedResponses.appendObject(_this);
       });
     }
   };
@@ -2108,7 +2108,7 @@ FirehoseJS.Note = (function(_super) {
       };
       return FirehoseJS.client.post(params).done(function(data) {
         _this._populateWithJSON(data);
-        _this.interaction.notes.pushObject(_this);
+        _this.interaction.notes.appendObject(_this);
         return _this.interaction.notes.sort(function(note1, note2) {
           return note1.createdAt > note2.createdAt;
         });
@@ -2330,7 +2330,7 @@ FirehoseJS.Tag = (function(_super) {
       };
       return FirehoseJS.client.post(params).done(function(data) {
         _this._populateWithJSON(data);
-        return _this.company.tags.pushObject(_this);
+        return _this.company.tags.appendObject(_this);
       });
     }
   };
@@ -2530,7 +2530,7 @@ FirehoseJS.Article = (function(_super) {
       };
       return FirehoseJS.client.post(params).done(function(data) {
         _this._populateWithJSON(data);
-        return _this.company.articles().pushObject(_this);
+        return _this.company.articles().appendObject(_this);
       });
     }
   };
