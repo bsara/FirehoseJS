@@ -38,7 +38,7 @@ class FirehoseJS.RemoteArray extends FirehoseJS.UniqueArray
       
       
   isAllLoaded: ->
-   this.length == @totalRows 
+    parseInt(this.length) == parseInt(@totalRows)
    
     
   next: ->
