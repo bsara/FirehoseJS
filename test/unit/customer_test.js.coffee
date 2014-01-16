@@ -86,7 +86,7 @@ firehoseTest 'Resolve All Interactions', 1, (agent) ->
 
 firehoseTest 'List Unresolved', 2, (agent) ->
   company = agent.companies[0]
-  customers = company.customersWithCriteria( unresolvedOnly: false )
+  customers = company.customersWithCriteria( everything: true )
   customers.next()
   .done (data, textStatus) ->
     equal textStatus, "success"

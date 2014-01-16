@@ -118,7 +118,7 @@ class FirehoseJS.Company extends FirehoseJS.Object
   customersWithCriteria: (criteria) ->
     criteria ?= {}
     params =
-      filter:       if criteria.unresolvedOnly? and criteria.unresolvedOnly then "unresolved" else ""
+      filter:       if criteria.everything? and criteria.everything then "everything" else "unresolved"
       channel:      criteria.channels.join(",") if criteria.channels?
       sort:         criteria.sort if criteria.sort?
       search_text:  criteria.searchString if criteria.searchString
