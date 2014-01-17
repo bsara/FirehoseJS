@@ -41,10 +41,12 @@ class FirehoseJS.Object
     if json?
       objects = new FirehoseJS.UniqueArray
       owner.set association, objects
+      aggregate = []
       for objectJSON in json
         object = creation objectJSON
         object._populateWithJSON objectJSON
-        objects.appendObject object
+        aggregate.push object
+      objects.appendObjects aggregate 
         
   
   _populateAssociatedObjectWithJSON:(owner, association, json, creation) ->

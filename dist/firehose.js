@@ -25,6 +25,16 @@ FirehoseJS.UniqueArray = (function(_super) {
     return _results;
   };
 
+  UniqueArray.prototype.appendObjects = function(objects) {
+    var obj, _i, _len, _results;
+    _results = [];
+    for (_i = 0, _len = objects.length; _i < _len; _i++) {
+      obj = objects[_i];
+      _results.push(this.appendObject(obj));
+    }
+    return _results;
+  };
+
   UniqueArray.prototype.dropObject = function() {
     var arg, idx, _i, _len, _results;
     _results = [];
@@ -36,6 +46,16 @@ FirehoseJS.UniqueArray = (function(_super) {
       } else {
         _results.push(void 0);
       }
+    }
+    return _results;
+  };
+
+  UniqueArray.prototype.dropObjects = function(objects) {
+    var obj, _i, _len, _results;
+    _results = [];
+    for (_i = 0, _len = objects.length; _i < _len; _i++) {
+      obj = objects[_i];
+      _results.push(this.dropObject(obj));
     }
     return _results;
   };
@@ -80,17 +100,17 @@ FirehoseJS.RemoteArray = (function(_super) {
         perPage: _this.perPage
       };
       return FirehoseJS.client.get(options).done(function(data) {
-        var json, object, _i, _len, _results;
+        var aggregate, json, object, _i, _len;
         if (data.constructor === Array && data.length > 0) {
           _this.totalRows = data[0].total_rows;
-          _results = [];
+          aggregate = [];
           for (_i = 0, _len = data.length; _i < _len; _i++) {
             json = data[_i];
             object = _this._creationFunction(json);
             object._populateWithJSON(json);
-            _results.push(_this.appendObject(object));
+            aggregate.push(object);
           }
-          return _results;
+          return _this.appendObjects(aggregate);
         }
       });
     };
@@ -109,14 +129,7 @@ FirehoseJS.RemoteArray = (function(_super) {
   };
 
   RemoteArray.prototype.empty = function() {
-    var obj, _i, _len, _ref, _results;
-    _ref = this.splice(0);
-    _results = [];
-    for (_i = 0, _len = _ref.length; _i < _len; _i++) {
-      obj = _ref[_i];
-      _results.push(this.dropObject(obj));
-    }
-    return _results;
+    return this.dropObjects(this.splice(0));
   };
 
   RemoteArray.prototype.reset = function() {
@@ -393,18 +406,18 @@ FirehoseJS.Object = (function() {
   };
 
   Object.prototype._populateAssociatedObjects = function(owner, association, json, creation) {
-    var object, objectJSON, objects, _i, _len, _results;
+    var aggregate, object, objectJSON, objects, _i, _len;
     if (json != null) {
       objects = new FirehoseJS.UniqueArray;
       owner.set(association, objects);
-      _results = [];
+      aggregate = [];
       for (_i = 0, _len = json.length; _i < _len; _i++) {
         objectJSON = json[_i];
         object = creation(objectJSON);
         object._populateWithJSON(objectJSON);
-        _results.push(objects.appendObject(object));
+        aggregate.push(object);
       }
-      return _results;
+      return objects.appendObjects(aggregate);
     }
   };
 

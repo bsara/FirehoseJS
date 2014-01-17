@@ -31,10 +31,12 @@ class FirehoseJS.RemoteArray extends FirehoseJS.UniqueArray
       FirehoseJS.client.get( options ).done (data) =>
         if data.constructor == Array and data.length > 0
           @totalRows = data[0].total_rows
+          aggregate = []
           for json in data
             object = @_creationFunction(json)
             object._populateWithJSON json
-            this.appendObject object
+            aggregate.push object
+          this.appendObjects aggregate 
       
       
   isAllLoaded: ->
@@ -48,8 +50,7 @@ class FirehoseJS.RemoteArray extends FirehoseJS.UniqueArray
   
   
   empty: ->
-    for obj in this.splice(0)
-      this.dropObject obj
+    this.dropObjects this.splice(0)
     
   
   reset: ->
