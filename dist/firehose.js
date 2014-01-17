@@ -76,19 +76,19 @@ FirehoseJS.UniqueArray = (function(_super) {
 
   UniqueArray.prototype.sortOn = function(property, direction) {
     this._sortOn = property;
-    return this.sortDirection = direction || 'asc';
+    return this._sortDirection = direction || 'asc';
   };
 
   UniqueArray.prototype.sortObjects = function() {
     var _this = this;
-    if (this.sortOn == null) {
+    if (this._sortOn == null) {
       return;
     }
     return this.sort(function(obj1, obj2) {
-      if (_this.sortDirection === 'asc') {
-        return obj1[_this.sortOn] > obj2[_this.sortOn];
+      if (_this._sortDirection === 'asc') {
+        return obj1[_this._sortOn] > obj2[_this._sortOn];
       } else {
-        return obj1[_this.sortOn] < obj2[_this.sortOn];
+        return obj1[_this._sortOn] < obj2[_this._sortOn];
       }
     });
   };
