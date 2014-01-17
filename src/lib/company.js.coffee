@@ -20,13 +20,13 @@ class FirehoseJS.Company extends FirehoseJS.Object
   
   # associations
   
-  agents: new FirehoseJS.UniqueArray
+  agents: null
   
-  agentInvites: new FirehoseJS.UniqueArray
+  agentInvites: null
   
-  tags: new FirehoseJS.UniqueArray
+  tags: null
   
-  cannedResponses: new FirehoseJS.UniqueArray
+  cannedResponses: null
   
   
   # remote arrays
@@ -68,6 +68,17 @@ class FirehoseJS.Company extends FirehoseJS.Object
   # protected
   
   _creator: null
+    
+    
+  setup: ->
+    @agents           = new FirehoseJS.UniqueArray
+    @agentInvites     = new FirehoseJS.UniqueArray
+    @tags             = new FirehoseJS.UniqueArray
+    @cannedResponses  = new FirehoseJS.UniqueArray
+
+    @agents.sortOn "firstName"
+    @tags.sortOn "label"
+    @cannedResponses.sortOn "name"
     
     
   @companyWithTitle: (title, creator) ->
@@ -122,14 +133,17 @@ class FirehoseJS.Company extends FirehoseJS.Object
       channel:      criteria.channels.join(",") if criteria.channels?
       sort:         if criteria.sort? then criteria.sort else "newest_first"
       search_text:  criteria.searchString if criteria.searchString
-    new FirehoseJS.RemoteArray "companies/#{@id}/customers", params, (json) =>
+    customers = new FirehoseJS.RemoteArray "companies/#{@id}/customers", params, (json) =>
       FirehoseJS.Customer.customerWithID( json.id, this )
+    customers.sortOn "newestInteractionReceivedAt", "desc"
+    customers
       
       
   notifications: ->
     unless @_notifications?
       this.setIfNotNull "_notifications", new FirehoseJS.RemoteArray "companies/#{@id}/notifications", null, (json) =>
         FirehoseJS.Notification._notificationWithID( json.id, this )
+      @_notifications.sortOn "title"
     @_notifications
     
     
@@ -137,6 +151,7 @@ class FirehoseJS.Company extends FirehoseJS.Object
     unless @_twitterAccounts?
       this.setIfNotNull "_twitterAccounts", new FirehoseJS.RemoteArray "companies/#{@id}/twitter_accounts", null, (json) =>
         FirehoseJS.TwitterAccount._twitterAccountWithID( json.id, this )
+      @_twitterAccounts.sortOn "screenName"
     @_twitterAccounts
     
   
@@ -144,6 +159,7 @@ class FirehoseJS.Company extends FirehoseJS.Object
     unless @_facebookAccounts?
       this.setIfNotNull "_facebookAccounts", new FirehoseJS.RemoteArray "companies/#{@id}/facebook_accounts", null, (json) =>
         FirehoseJS.FacebookAccount._facebookAccountWithID( json.id, this )
+      @_facebookAccounts.sortOn "name"
     @_facebookAccounts
     
     
@@ -151,6 +167,7 @@ class FirehoseJS.Company extends FirehoseJS.Object
     unless @_emailAccounts?
       this.setIfNotNull "_emailAccounts", new FirehoseJS.RemoteArray "companies/#{@id}/email_accounts", null, (json) =>
         FirehoseJS.EmailAccount._emailAccountWithID( json.id, this )
+      @_emailAccounts.sortOn "username"
     @_emailAccounts
     
     
@@ -158,6 +175,7 @@ class FirehoseJS.Company extends FirehoseJS.Object
     unless @_articles?
       this.setIfNotNull "_articles", new FirehoseJS.RemoteArray "companies/#{@id}/articles", null, (json) =>
         FirehoseJS.Article.articleWithID( json.id, this )
+      @_articles.sortOn "title"
     @_articles
              
   
@@ -165,7 +183,7 @@ class FirehoseJS.Company extends FirehoseJS.Object
     params = 
       route: "companies/#{@id}/agents/#{agent.id}"
     FirehoseJS.client.put( params ).done =>
-      @agents.appendObject agent
+      @agents.insertObject agent
     
   
   removeAgent: (agent) ->
@@ -213,7 +231,7 @@ class FirehoseJS.Company extends FirehoseJS.Object
     
     this._populateAssociatedObjects this, "agents", json.agents, (json) =>
       agent = FirehoseJS.Agent.agentWithID( json.id )
-      agent.companies.appendObject this
+      agent.companies.insertObject this
       agent
       
     this._populateAssociatedObjects this, "agentInvites", json.agent_invites, (json) =>

@@ -13,7 +13,11 @@ class FirehoseJS.FacebookAccount extends FirehoseJS.Object
   
   # associations
   
-  facebookPages: new FirehoseJS.UniqueArray
+  facebookPages: null
+  
+  
+  setup: ->
+    @facebookPages = new FirehoseJS.UniqueArray
   
   
   @_facebookAccountWithID: (id, company) ->

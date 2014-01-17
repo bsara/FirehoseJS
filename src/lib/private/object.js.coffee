@@ -13,6 +13,9 @@ class FirehoseJS.Object
       this[prop] = properties[prop]
       
   
+  setup: ->
+    
+  
   get: (key) ->
     this[key]
   
@@ -33,6 +36,7 @@ class FirehoseJS.Object
         if obj.id and obj.id == id and obj.constructor == klass
           return obj
     obj = new klass properties
+    obj.setup()
     @_objects.push obj
     obj  
     
@@ -46,7 +50,7 @@ class FirehoseJS.Object
         object = creation objectJSON
         object._populateWithJSON objectJSON
         aggregate.push object
-      objects.appendObjects aggregate 
+      objects.insertObjects aggregate 
         
   
   _populateAssociatedObjectWithJSON:(owner, association, json, creation) ->

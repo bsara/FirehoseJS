@@ -36,7 +36,7 @@ class FirehoseJS.RemoteArray extends FirehoseJS.UniqueArray
             object = @_creationFunction(json)
             object._populateWithJSON json
             aggregate.push object
-          this.appendObjects aggregate 
+          this.insertObjects aggregate 
       
       
   isAllLoaded: ->

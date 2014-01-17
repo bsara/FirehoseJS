@@ -40,7 +40,7 @@ class FirehoseJS.Article extends FirehoseJS.Object
         body:  this._toJSON()
       FirehoseJS.client.post( params ).done (data) =>
         this._populateWithJSON data
-        @company.articles().appendObject this
+        @company.articles().insertObject this
       
       
   destroy: ->

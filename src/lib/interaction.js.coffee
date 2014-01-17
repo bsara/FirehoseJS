@@ -25,13 +25,24 @@ class FirehoseJS.Interaction extends FirehoseJS.Object
   
   # associations
   
-  responseInteractions: new FirehoseJS.UniqueArray
+  responseInteractions: null
   
-  notes: new FirehoseJS.UniqueArray
+  notes: null
   
-  tags: new FirehoseJS.UniqueArray
+  tags: null
   
-  flaggedAgents: new FirehoseJS.UniqueArray
+  flaggedAgents: null
+  
+  
+  setup: ->
+    @responseInteractions = new FirehoseJS.UniqueArray
+    @notes                = new FirehoseJS.UniqueArray
+    @tags                 = new FirehoseJS.UniqueArray
+    @flaggedAgents        = new FirehoseJS.UniqueArray
+    @responseInteractions.sortOn "receivedAt"
+    @notes.sortOn "createdAt"
+    @tags.sortOn "label"
+    @flaggedAgents.sortOn "firstName"
     
     
   @_interactionWithJSON: (json, customer) ->
@@ -66,7 +77,7 @@ class FirehoseJS.Interaction extends FirehoseJS.Object
     FirehoseJS.client.post( params ).done (data) =>
       this.setIfNotNull "responseDraft", null
       response = FirehoseJS.Interaction._interactionWithJSON( data, @customer )
-      @responseInteractions.appendObject response
+      @responseInteractions.insertObject response
       response.setIfNotNull "agent", FirehoseJS.Agent.loggedInAgent
       @responseInteractions.sort (interaction1, interaction2) ->
         interaction1.createdAt > interaction2.createdAt
@@ -90,7 +101,7 @@ class FirehoseJS.Interaction extends FirehoseJS.Object
     params = 
       route: "interactions/#{@id}/tags/#{tag.id}"
     FirehoseJS.client.put( params ).done =>
-      @tags.appendObject tag
+      @tags.insertObject tag
     
     
   removeTag: (tag) ->
@@ -104,7 +115,7 @@ class FirehoseJS.Interaction extends FirehoseJS.Object
     params = 
       route: "interactions/#{@id}/agents/#{agent.id}"
     FirehoseJS.client.put( params ).done =>
-      @flaggedAgents.appendObject agent
+      @flaggedAgents.insertObject agent
     
   
   unflagAgent: (agent) ->

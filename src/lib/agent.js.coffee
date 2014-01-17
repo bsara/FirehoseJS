@@ -13,13 +13,19 @@ class FirehoseJS.Agent extends FirehoseJS.Object
   
   email: null
   
-  companies: new FirehoseJS.UniqueArray
-  
   currentCompany: null
   
   _password: null
+  
+  # associations
+  
+  companies: null 
+  
+  
+  setup: ->
+    @companies = new FirehoseJS.UniqueArray
 
-      
+
   @agentWithAccessToken: (accessToken) ->
     FirehoseJS.Object._objectOfClassWithID FirehoseJS.Agent,
       accessToken: accessToken

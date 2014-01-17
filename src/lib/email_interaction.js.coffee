@@ -11,7 +11,11 @@ class FirehoseJS.EmailInteraction extends FirehoseJS.Interaction
   
   # associations
   
-  attachments: new FirehoseJS.UniqueArray
+  attachments: null
+    
+    
+  setup: ->
+    @attachments = new FirehoseJS.UniqueArray
     
     
   @_emailInteractionWithID: (id) ->

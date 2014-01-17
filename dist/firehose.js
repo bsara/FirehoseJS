@@ -7,6 +7,10 @@ var __hasProp = {}.hasOwnProperty,
 FirehoseJS.UniqueArray = (function(_super) {
   __extends(UniqueArray, _super);
 
+  UniqueArray.prototype._sortOn = null;
+
+  UniqueArray.prototype._sortDirection = 'asc';
+
   function UniqueArray() {
     UniqueArray.__super__.constructor.apply(this, arguments);
   }
@@ -35,6 +39,16 @@ FirehoseJS.UniqueArray = (function(_super) {
     return _results;
   };
 
+  UniqueArray.prototype.insertObject = function() {
+    this.appendObject.apply(this, arguments);
+    return this.sortObjects();
+  };
+
+  UniqueArray.prototype.insertObjects = function(objects) {
+    this.appendObjects(objects);
+    return this.sortObjects();
+  };
+
   UniqueArray.prototype.dropObject = function() {
     var arg, idx, _i, _len, _results;
     _results = [];
@@ -58,6 +72,25 @@ FirehoseJS.UniqueArray = (function(_super) {
       _results.push(this.dropObject(obj));
     }
     return _results;
+  };
+
+  UniqueArray.prototype.sortOn = function(property, direction) {
+    this._sortOn = property;
+    return this.sortDirection = direction || 'asc';
+  };
+
+  UniqueArray.prototype.sortObjects = function() {
+    var _this = this;
+    if (this.sortOn == null) {
+      return;
+    }
+    return this.sort(function(obj1, obj2) {
+      if (_this.sortDirection === 'asc') {
+        return obj1[_this.sortOn] > obj2[_this.sortOn];
+      } else {
+        return obj1[_this.sortOn] < obj2[_this.sortOn];
+      }
+    });
   };
 
   return UniqueArray;
@@ -110,7 +143,7 @@ FirehoseJS.RemoteArray = (function(_super) {
             object._populateWithJSON(json);
             aggregate.push(object);
           }
-          return _this.appendObjects(aggregate);
+          return _this.insertObjects(aggregate);
         }
       });
     };
@@ -374,6 +407,8 @@ FirehoseJS.Object = (function() {
     }
   }
 
+  Object.prototype.setup = function() {};
+
   Object.prototype.get = function(key) {
     return this[key];
   };
@@ -401,6 +436,7 @@ FirehoseJS.Object = (function() {
       }
     }
     obj = new klass(properties);
+    obj.setup();
     this._objects.push(obj);
     return obj;
   };
@@ -417,7 +453,7 @@ FirehoseJS.Object = (function() {
         object._populateWithJSON(objectJSON);
         aggregate.push(object);
       }
-      return objects.appendObjects(aggregate);
+      return objects.insertObjects(aggregate);
     }
   };
 
@@ -471,11 +507,15 @@ FirehoseJS.Agent = (function(_super) {
 
   Agent.prototype.email = null;
 
-  Agent.prototype.companies = new FirehoseJS.UniqueArray;
-
   Agent.prototype.currentCompany = null;
 
   Agent.prototype._password = null;
+
+  Agent.prototype.companies = null;
+
+  Agent.prototype.setup = function() {
+    return this.companies = new FirehoseJS.UniqueArray;
+  };
 
   Agent.agentWithAccessToken = function(accessToken) {
     return FirehoseJS.Object._objectOfClassWithID(FirehoseJS.Agent, {
@@ -687,13 +727,13 @@ FirehoseJS.Company = (function(_super) {
 
   Company.prototype.numberOfAccounts = 0;
 
-  Company.prototype.agents = new FirehoseJS.UniqueArray;
+  Company.prototype.agents = null;
 
-  Company.prototype.agentInvites = new FirehoseJS.UniqueArray;
+  Company.prototype.agentInvites = null;
 
-  Company.prototype.tags = new FirehoseJS.UniqueArray;
+  Company.prototype.tags = null;
 
-  Company.prototype.cannedResponses = new FirehoseJS.UniqueArray;
+  Company.prototype.cannedResponses = null;
 
   Company.prototype._customers = null;
 
@@ -726,6 +766,16 @@ FirehoseJS.Company = (function(_super) {
   Company.prototype.hasSuccessfulBilling = false;
 
   Company.prototype._creator = null;
+
+  Company.prototype.setup = function() {
+    this.agents = new FirehoseJS.UniqueArray;
+    this.agentInvites = new FirehoseJS.UniqueArray;
+    this.tags = new FirehoseJS.UniqueArray;
+    this.cannedResponses = new FirehoseJS.UniqueArray;
+    this.agents.sortOn("firstName");
+    this.tags.sortOn("label");
+    return this.cannedResponses.sortOn("name");
+  };
 
   Company.companyWithTitle = function(title, creator) {
     return FirehoseJS.Object._objectOfClassWithID(FirehoseJS.Company, {
@@ -789,7 +839,7 @@ FirehoseJS.Company = (function(_super) {
   };
 
   Company.prototype.customersWithCriteria = function(criteria) {
-    var params,
+    var customers, params,
       _this = this;
     if (criteria == null) {
       criteria = {};
@@ -800,9 +850,11 @@ FirehoseJS.Company = (function(_super) {
       sort: criteria.sort != null ? criteria.sort : "newest_first",
       search_text: criteria.searchString ? criteria.searchString : void 0
     };
-    return new FirehoseJS.RemoteArray("companies/" + this.id + "/customers", params, function(json) {
+    customers = new FirehoseJS.RemoteArray("companies/" + this.id + "/customers", params, function(json) {
       return FirehoseJS.Customer.customerWithID(json.id, _this);
     });
+    customers.sortOn("newestInteractionReceivedAt", "desc");
+    return customers;
   };
 
   Company.prototype.notifications = function() {
@@ -811,6 +863,7 @@ FirehoseJS.Company = (function(_super) {
       this.setIfNotNull("_notifications", new FirehoseJS.RemoteArray("companies/" + this.id + "/notifications", null, function(json) {
         return FirehoseJS.Notification._notificationWithID(json.id, _this);
       }));
+      this._notifications.sortOn("title");
     }
     return this._notifications;
   };
@@ -821,6 +874,7 @@ FirehoseJS.Company = (function(_super) {
       this.setIfNotNull("_twitterAccounts", new FirehoseJS.RemoteArray("companies/" + this.id + "/twitter_accounts", null, function(json) {
         return FirehoseJS.TwitterAccount._twitterAccountWithID(json.id, _this);
       }));
+      this._twitterAccounts.sortOn("screenName");
     }
     return this._twitterAccounts;
   };
@@ -831,6 +885,7 @@ FirehoseJS.Company = (function(_super) {
       this.setIfNotNull("_facebookAccounts", new FirehoseJS.RemoteArray("companies/" + this.id + "/facebook_accounts", null, function(json) {
         return FirehoseJS.FacebookAccount._facebookAccountWithID(json.id, _this);
       }));
+      this._facebookAccounts.sortOn("name");
     }
     return this._facebookAccounts;
   };
@@ -841,6 +896,7 @@ FirehoseJS.Company = (function(_super) {
       this.setIfNotNull("_emailAccounts", new FirehoseJS.RemoteArray("companies/" + this.id + "/email_accounts", null, function(json) {
         return FirehoseJS.EmailAccount._emailAccountWithID(json.id, _this);
       }));
+      this._emailAccounts.sortOn("username");
     }
     return this._emailAccounts;
   };
@@ -851,6 +907,7 @@ FirehoseJS.Company = (function(_super) {
       this.setIfNotNull("_articles", new FirehoseJS.RemoteArray("companies/" + this.id + "/articles", null, function(json) {
         return FirehoseJS.Article.articleWithID(json.id, _this);
       }));
+      this._articles.sortOn("title");
     }
     return this._articles;
   };
@@ -862,7 +919,7 @@ FirehoseJS.Company = (function(_super) {
       route: "companies/" + this.id + "/agents/" + agent.id
     };
     return FirehoseJS.client.put(params).done(function() {
-      return _this.agents.appendObject(agent);
+      return _this.agents.insertObject(agent);
     });
   };
 
@@ -923,7 +980,7 @@ FirehoseJS.Company = (function(_super) {
     this._populateAssociatedObjects(this, "agents", json.agents, function(json) {
       var agent;
       agent = FirehoseJS.Agent.agentWithID(json.id);
-      agent.companies.appendObject(_this);
+      agent.companies.insertObject(_this);
       return agent;
     });
     this._populateAssociatedObjects(this, "agentInvites", json.agent_invites, function(json) {
@@ -986,13 +1043,24 @@ FirehoseJS.Interaction = (function(_super) {
 
   Interaction.prototype.agent = null;
 
-  Interaction.prototype.responseInteractions = new FirehoseJS.UniqueArray;
+  Interaction.prototype.responseInteractions = null;
 
-  Interaction.prototype.notes = new FirehoseJS.UniqueArray;
+  Interaction.prototype.notes = null;
 
-  Interaction.prototype.tags = new FirehoseJS.UniqueArray;
+  Interaction.prototype.tags = null;
 
-  Interaction.prototype.flaggedAgents = new FirehoseJS.UniqueArray;
+  Interaction.prototype.flaggedAgents = null;
+
+  Interaction.prototype.setup = function() {
+    this.responseInteractions = new FirehoseJS.UniqueArray;
+    this.notes = new FirehoseJS.UniqueArray;
+    this.tags = new FirehoseJS.UniqueArray;
+    this.flaggedAgents = new FirehoseJS.UniqueArray;
+    this.responseInteractions.sortOn("receivedAt");
+    this.notes.sortOn("createdAt");
+    this.tags.sortOn("label");
+    return this.flaggedAgents.sortOn("firstName");
+  };
 
   Interaction._interactionWithJSON = function(json, customer) {
     var interaction;
@@ -1039,7 +1107,7 @@ FirehoseJS.Interaction = (function(_super) {
       var response;
       _this.setIfNotNull("responseDraft", null);
       response = FirehoseJS.Interaction._interactionWithJSON(data, _this.customer);
-      _this.responseInteractions.appendObject(response);
+      _this.responseInteractions.insertObject(response);
       response.setIfNotNull("agent", FirehoseJS.Agent.loggedInAgent);
       return _this.responseInteractions.sort(function(interaction1, interaction2) {
         return interaction1.createdAt > interaction2.createdAt;
@@ -1074,7 +1142,7 @@ FirehoseJS.Interaction = (function(_super) {
       route: "interactions/" + this.id + "/tags/" + tag.id
     };
     return FirehoseJS.client.put(params).done(function() {
-      return _this.tags.appendObject(tag);
+      return _this.tags.insertObject(tag);
     });
   };
 
@@ -1096,7 +1164,7 @@ FirehoseJS.Interaction = (function(_super) {
       route: "interactions/" + this.id + "/agents/" + agent.id
     };
     return FirehoseJS.client.put(params).done(function() {
-      return _this.flaggedAgents.appendObject(agent);
+      return _this.flaggedAgents.insertObject(agent);
     });
   };
 
@@ -1212,7 +1280,7 @@ FirehoseJS.AgentInvite = (function(_super) {
     };
     return FirehoseJS.client.post(params).done(function(data) {
       _this._populateWithJSON(data);
-      return _this.company.agentInvites.appendObject(_this);
+      return _this.company.agentInvites.insertObject(_this);
     });
   };
 
@@ -1338,7 +1406,7 @@ FirehoseJS.CannedResponse = (function(_super) {
       };
       return FirehoseJS.client.post(params).done(function(data) {
         _this._populateWithJSON(data);
-        return _this.company.cannedResponses.appendObject(_this);
+        return _this.company.cannedResponses.insertObject(_this);
       });
     }
   };
@@ -1524,11 +1592,17 @@ FirehoseJS.Customer = (function(_super) {
 
   Customer.prototype.agentWithDibs = null;
 
-  Customer.prototype.customerAccounts = new FirehoseJS.UniqueArray;
+  Customer.prototype.customerAccounts = null;
 
-  Customer.prototype.customerFlaggedAgents = new FirehoseJS.UniqueArray;
+  Customer.prototype.customerFlaggedAgents = null;
 
   Customer.prototype._interactions = null;
+
+  Customer.prototype.setup = function() {
+    this.customerAccounts = new FirehoseJS.UniqueArray;
+    this.customerFlaggedAgents = new FirehoseJS.UniqueArray;
+    return this.customerFlaggedAgents.sortOn("firstName");
+  };
 
   Customer.customerWithID = function(id, company) {
     return FirehoseJS.Object._objectOfClassWithID(FirehoseJS.Customer, {
@@ -1570,6 +1644,7 @@ FirehoseJS.Customer = (function(_super) {
       this.setIfNotNull("_interactions", new FirehoseJS.RemoteArray("customers/" + this.id + "/interactions", null, function(json) {
         return FirehoseJS.Interaction._interactionWithJSON(json, _this);
       }));
+      this._interactions.sortOn("receivedAt");
     }
     return this._interactions;
   };
@@ -1873,7 +1948,11 @@ FirehoseJS.EmailInteraction = (function(_super) {
 
   EmailInteraction.prototype.fromEmail = null;
 
-  EmailInteraction.prototype.attachments = new FirehoseJS.UniqueArray;
+  EmailInteraction.prototype.attachments = null;
+
+  EmailInteraction.prototype.setup = function() {
+    return this.attachments = new FirehoseJS.UniqueArray;
+  };
 
   EmailInteraction._emailInteractionWithID = function(id) {
     return FirehoseJS.Object._objectOfClassWithID(FirehoseJS.EmailInteraction, {
@@ -1923,7 +2002,11 @@ FirehoseJS.FacebookAccount = (function(_super) {
 
   FacebookAccount.prototype.name = null;
 
-  FacebookAccount.prototype.facebookPages = new FirehoseJS.UniqueArray;
+  FacebookAccount.prototype.facebookPages = null;
+
+  FacebookAccount.prototype.setup = function() {
+    return this.facebookPages = new FirehoseJS.UniqueArray;
+  };
 
   FacebookAccount._facebookAccountWithID = function(id, company) {
     return FirehoseJS.Object._objectOfClassWithID(FirehoseJS.FacebookAccount, {
@@ -2125,10 +2208,7 @@ FirehoseJS.Note = (function(_super) {
       };
       return FirehoseJS.client.post(params).done(function(data) {
         _this._populateWithJSON(data);
-        _this.interaction.notes.appendObject(_this);
-        return _this.interaction.notes.sort(function(note1, note2) {
-          return note1.createdAt > note2.createdAt;
-        });
+        return _this.interaction.notes.insertObject(_this);
       });
     }
   };
@@ -2347,7 +2427,7 @@ FirehoseJS.Tag = (function(_super) {
       };
       return FirehoseJS.client.post(params).done(function(data) {
         _this._populateWithJSON(data);
-        return _this.company.tags.appendObject(_this);
+        return _this.company.tags.insertObject(_this);
       });
     }
   };
@@ -2547,7 +2627,7 @@ FirehoseJS.Article = (function(_super) {
       };
       return FirehoseJS.client.post(params).done(function(data) {
         _this._populateWithJSON(data);
-        return _this.company.articles().appendObject(_this);
+        return _this.company.articles().insertObject(_this);
       });
     }
   };

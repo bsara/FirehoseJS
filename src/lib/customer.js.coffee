@@ -19,13 +19,19 @@ class FirehoseJS.Customer extends FirehoseJS.Object
   
   # associations
   
-  customerAccounts: new FirehoseJS.UniqueArray
+  customerAccounts: null
   
-  customerFlaggedAgents: new FirehoseJS.UniqueArray
+  customerFlaggedAgents: null
   
   # remote arrays
   
   _interactions: null
+  
+  
+  setup: ->
+    @customerAccounts = new FirehoseJS.UniqueArray
+    @customerFlaggedAgents = new FirehoseJS.UniqueArray
+    @customerFlaggedAgents.sortOn "firstName"
   
     
   @customerWithID: (id, company) ->
@@ -57,6 +63,7 @@ class FirehoseJS.Customer extends FirehoseJS.Object
     unless @_interactions?
       this.setIfNotNull "_interactions", new FirehoseJS.RemoteArray "customers/#{@id}/interactions", null, (json) =>
         FirehoseJS.Interaction._interactionWithJSON( json, this )
+      @_interactions.sortOn "receivedAt"
     @_interactions
     
     

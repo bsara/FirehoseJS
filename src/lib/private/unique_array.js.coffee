@@ -1,7 +1,14 @@
 class FirehoseJS.UniqueArray extends Array
   
+  
+  _sortOn: null
+  
+  _sortDirection: 'asc'
+  
+  
   constructor: ->
     super
+  
   
   appendObject: ->
     for arg in arguments
@@ -11,7 +18,17 @@ class FirehoseJS.UniqueArray extends Array
   
   appendObjects: (objects) ->
     for obj in objects
-      this.appendObject obj 
+      this.appendObject obj
+    
+    
+  insertObject: ->
+    this.appendObject.apply this, arguments
+    this.sortObjects()
+    
+    
+  insertObjects: (objects) -> 
+    this.appendObjects objects
+    this.sortObjects()
     
         
   dropObject: ->
@@ -23,3 +40,17 @@ class FirehoseJS.UniqueArray extends Array
   dropObjects: (objects) ->
     for obj in objects
       this.dropObject obj
+
+
+  sortOn: (property, direction) ->
+    @_sortOn        = property
+    @sortDirection  = direction || 'asc'
+
+
+  sortObjects: ->
+    return unless @sortOn?
+    this.sort (obj1, obj2) =>
+      if this.sortDirection == 'asc'
+        obj1[this.sortOn] > obj2[this.sortOn]
+      else
+        obj1[this.sortOn] < obj2[this.sortOn]
