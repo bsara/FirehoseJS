@@ -84,13 +84,18 @@ FirehoseJS.UniqueArray = (function(_super) {
     if (this._sortOn == null) {
       return;
     }
-    return this.sort(function(obj1, obj2) {
-      if (_this._sortDirection === 'asc') {
-        return obj1[_this._sortOn] > obj2[_this._sortOn];
+    this.sort(function(obj1, obj2) {
+      if (obj1[_this._sortOn] > obj2[_this._sortOn]) {
+        return 1;
+      } else if (obj1[_this._sortOn] < obj2[_this._sortOn]) {
+        return -1;
       } else {
-        return obj1[_this._sortOn] < obj2[_this._sortOn];
+        return 0;
       }
     });
+    if (this._sortDirection === 'desc') {
+      return this.reverse();
+    }
   };
 
   return UniqueArray;
@@ -853,7 +858,11 @@ FirehoseJS.Company = (function(_super) {
     customers = new FirehoseJS.RemoteArray("companies/" + this.id + "/customers", params, function(json) {
       return FirehoseJS.Customer.customerWithID(json.id, _this);
     });
-    customers.sortOn("newestInteractionReceivedAt", "desc");
+    if (params.sort === 'newest_first') {
+      customers.sortOn("newestInteractionReceivedAt", "desc");
+    } else {
+      customers.sortOn("newestInteractionReceivedAt", "asc");
+    }
     return customers;
   };
 

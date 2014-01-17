@@ -135,7 +135,10 @@ class FirehoseJS.Company extends FirehoseJS.Object
       search_text:  criteria.searchString if criteria.searchString
     customers = new FirehoseJS.RemoteArray "companies/#{@id}/customers", params, (json) =>
       FirehoseJS.Customer.customerWithID( json.id, this )
-    customers.sortOn "newestInteractionReceivedAt", "desc"
+    if params.sort == 'newest_first'
+      customers.sortOn "newestInteractionReceivedAt", "desc"
+    else
+      customers.sortOn "newestInteractionReceivedAt", "asc"
     customers
       
       
