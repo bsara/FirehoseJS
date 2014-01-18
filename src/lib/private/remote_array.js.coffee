@@ -40,7 +40,7 @@ class FirehoseJS.RemoteArray extends FirehoseJS.UniqueArray
       
       
   isAllLoaded: ->
-    parseInt(this.length) == parseInt(@totalRows)
+    not @_fresh and parseInt(this.length) == parseInt(@totalRows)
    
     
   next: ->

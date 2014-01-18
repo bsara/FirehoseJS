@@ -155,7 +155,7 @@ FirehoseJS.RemoteArray = (function(_super) {
   }
 
   RemoteArray.prototype.isAllLoaded = function() {
-    return parseInt(this.length) === parseInt(this.totalRows);
+    return !this._fresh && parseInt(this.length) === parseInt(this.totalRows);
   };
 
   RemoteArray.prototype.next = function() {
