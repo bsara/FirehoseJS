@@ -132,7 +132,7 @@ class FirehoseJS.Company extends FirehoseJS.Object
       filter:       if criteria.everything? and criteria.everything then "everything" else "unresolved"
       channel:      criteria.channels.join(",") if criteria.channels?
       sort:         if criteria.sort? then criteria.sort else "newest_first"
-      search_text:  criteria.searchString if criteria.searchString
+      search_text:  encodeURIComponent( criteria.searchString ) if criteria.searchString
     customers = new FirehoseJS.RemoteArray "companies/#{@id}/customers", params, (json) =>
       FirehoseJS.Customer.customerWithID( json.id, this )
     if params.sort == 'newest_first'

@@ -853,7 +853,7 @@ FirehoseJS.Company = (function(_super) {
       filter: (criteria.everything != null) && criteria.everything ? "everything" : "unresolved",
       channel: criteria.channels != null ? criteria.channels.join(",") : void 0,
       sort: criteria.sort != null ? criteria.sort : "newest_first",
-      search_text: criteria.searchString ? criteria.searchString : void 0
+      search_text: criteria.searchString ? encodeURIComponent(criteria.searchString) : void 0
     };
     customers = new FirehoseJS.RemoteArray("companies/" + this.id + "/customers", params, function(json) {
       return FirehoseJS.Customer.customerWithID(json.id, _this);
