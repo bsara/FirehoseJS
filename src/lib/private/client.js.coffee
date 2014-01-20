@@ -116,6 +116,7 @@ class FirehoseJS.Client
       browserURL    : "https://firehoseapp.com"
       marketingURL  : "https://getfirehose.com"
       billingURL    : "https://billing.firehoseapp.com"
+      settingsURL   : "https://settings.firehoseapp.com"
       stripeKey     : "pk_live_CGPaLboKkpr7tqswA4elf8NQ"
       pusherKey     : "d3e373f7fac89de7bde8"
     development:
@@ -123,6 +124,7 @@ class FirehoseJS.Client
       browserURL    : "http://localhost:3001"
       marketingURL  : "http://localhost:3002"
       billingURL    : "http://localhost:3003"
+      settingsURL    : "http://localhost:3004"
       stripeKey     : "pk_test_oIyMNHil987ug1v8owRhuJwr"
       pusherKey     : "2f64ac0434cc8a94526e"
     test:
@@ -130,6 +132,7 @@ class FirehoseJS.Client
       browserURL    : "http://localhost:3011"
       marketingURL  : "http://localhost:3012"
       billingURL    : "http://localhost:3013"
+      settingsURL    : "http://localhost:3014"
       stripeKey     : "pk_test_oIyMNHil987ug1v8owRhuJwr"
       pusherKey     : "2f64ac0434cc8a94526e"
     
@@ -139,12 +142,19 @@ class FirehoseJS.Client
     anchor = document.createElement "a"
     anchor.href = document.URL
     if anchor.hostname == "localhost"
-      if anchor.port == "3011"
+      
+      # running an app at 301* runs the browser app locally but points to local test servers
+      if anchor.port[2] == "1"
         this.setEnvironment "test"
-      if anchor.port == "3021"
+        
+      # running an app at 302* runs the browser app locally but points to production servers      
+      if anchor.port[2] == "2"
         this.setEnvironment "production"
+        
+      # otherwise, a browser app run in development points to local development servers
       else
         this.setEnvironment "development"
+        
     else
       this.setEnvironment "production"
 
