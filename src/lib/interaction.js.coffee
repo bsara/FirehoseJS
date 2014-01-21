@@ -1,5 +1,7 @@
 class FirehoseJS.Interaction extends FirehoseJS.Object
       
+      
+  firehoseType: "Interaction"
   
   customer: null
   
@@ -59,11 +61,11 @@ class FirehoseJS.Interaction extends FirehoseJS.Object
     
   
   subject: ->
-    if this.constructor == FirehoseJS.EmailInteraction    
+    if this.firehoseType == "EmailInteraction"
       return this.emailSubject
-    else if this.constructor == FirehoseJS.TwitterInteraction
+    else if this.firehoseType == "TwitterInteraction"
       return if this.inReplyToScreenName then "Reply to #{this.inReplyToScreenName}" else "Mention of #{this.toScreenName}"
-    else if this.constructor == FirehoseJS.FacebookInteraction
+    else if this.firehoseType == "FacebookInteraction"
       return this.type[0].toUpperCase() + this.type.slice(1)
   
   

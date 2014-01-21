@@ -1,6 +1,8 @@
 class FirehoseJS.TwitterInteraction extends FirehoseJS.Interaction
   
   
+  firehoseType: "TwitterInteraction"
+  
   favorited: false
   
   tweetId: null

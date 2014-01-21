@@ -1,6 +1,8 @@
 class FirehoseJS.Notification extends FirehoseJS.Object
     
   
+  firehoseType: "Notification"
+  
   company: null
   
   title: null

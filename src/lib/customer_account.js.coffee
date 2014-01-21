@@ -1,5 +1,7 @@
 class FirehoseJS.CustomerAccount extends FirehoseJS.Object
-      
+  
+  
+  firehoseType: "CustomerAccount"
   
   customer: null
   

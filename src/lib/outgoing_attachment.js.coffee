@@ -1,6 +1,8 @@
 class FirehoseJS.OutgoingAttachment extends FirehoseJS.Object
   
   
+  firehoseType: "OutgoingAttachment"
+  
   filename: null
   
   MIMEType: null

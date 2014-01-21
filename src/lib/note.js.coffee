@@ -1,6 +1,8 @@
 class FirehoseJS.Note extends FirehoseJS.Object
   
   
+  firehoseType: "Note"
+  
   interaction: null
   
   body: null

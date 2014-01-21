@@ -1,6 +1,8 @@
 class FirehoseJS.CreditCard extends FirehoseJS.Object
   
   
+  firehoseType: "CreditCard"
+  
   company: null
   
   number: null 

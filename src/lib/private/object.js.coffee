@@ -1,6 +1,8 @@
 class FirehoseJS.Object 
   
   
+  firehoseType: "Object"
+  
   id: null
 
   createdAt: null
@@ -33,7 +35,7 @@ class FirehoseJS.Object
     id = properties.id
     if id
       for obj in @_objects
-        if obj.id and obj.id == id and obj.constructor == klass
+        if obj.id and obj.id == id and obj.firehoseType == klass.prototype.firehoseType
           return obj
     obj = new klass properties
     obj.setup()

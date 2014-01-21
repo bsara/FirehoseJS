@@ -1,6 +1,8 @@
 class FirehoseJS.TwitterAccount extends FirehoseJS.Object
   
   
+  firehoseType: "TwitterAccount"
+  
   company: null
   
   screenName: null

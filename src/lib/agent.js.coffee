@@ -1,6 +1,8 @@
 class FirehoseJS.Agent extends FirehoseJS.Object
   
   
+  firehoseType: "Agent"
+  
   @loggedInAgent: null
   
   accessToken: null

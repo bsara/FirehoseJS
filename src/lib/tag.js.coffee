@@ -1,6 +1,8 @@
 class FirehoseJS.Tag extends FirehoseJS.Object
   
   
+  firehoseType: "Tag"
+  
   company: null
   
   label: null

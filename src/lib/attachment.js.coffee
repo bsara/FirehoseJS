@@ -1,6 +1,8 @@
 class FirehoseJS.Attachment extends FirehoseJS.Object
   
   
+  firehoseType: "Attachment"
+  
   emailInteraction: null
   
   filename: null

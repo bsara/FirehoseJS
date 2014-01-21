@@ -1,6 +1,10 @@
 (function(){var e,t,n,r,i,s={}.hasOwnProperty,o=function(e,t){function r(){this.constructor=e}for(var n in t)s.call(t,n)&&(e[n]=t[n]);return r.prototype=t.prototype,e.prototype=new r,e.__super__=t.prototype,e},u=this;this.Stripe=function(){function e(){}return e.version=2,e.endpoint="https://api.stripe.com/v1",e.setPublishableKey=function(t){e.key=t},e.complete=function(t){return function(n,r,i){var s;if(n!=="success")return s=Math.round((new Date).getTime()/1e3),(new Image).src="http://q.stripe.com?event=stripejs-error&type="+n+"&key="+e.key+"&timestamp="+s,typeof t=="function"?t(500,{error:{code:n,type:n,message:"An unexpected error has occurred submitting your credit\ncard to our secure credit card processor. This may be\ndue to network connectivity issues, so you should try\nagain (you won't be charged twice). If this problem\npersists, please let us know!"}}):void 0}},e}.call(this),e=this.Stripe,this.Stripe.token=function(){function t(){}return t.validate=function(e,t){if(!e)throw t+" required";if(typeof e!="object")throw t+" invalid"},t.formatData=function(t,n){return e.utils.isElement(t)&&(t=e.utils.paramsFromForm(t,n)),e.utils.underscoreKeys(t),t},t.create=function(t,n){return t.key||(t.key=e.key||e.publishableKey),e.utils.validateKey(t.key),e.ajaxJSONP({url:""+e.endpoint+"/tokens",data:t,method:"POST",success:function(e,t){return typeof n=="function"?n(t,e):void 0},complete:e.complete(n),timeout:4e4})},t.get=function(t,n){if(!t)throw"token required";return e.utils.validateKey(e.key),e.ajaxJSONP({url:""+e.endpoint+"/tokens/"+t,data:{key:e.key},success:function(e,t){return typeof n=="function"?n(t,e):void 0},complete:e.complete(n),timeout:4e4})},t}.call(this),this.Stripe.card=function(t){function n(){return n.__super__.constructor.apply(this,arguments)}return o(n,t),n.tokenName="card",n.whitelistedAttrs=["number","cvc","exp_month","exp_year","name","address_line1","address_line2","address_city","address_state","address_zip","address_country"],n.createToken=function(t,r,i){var s;return r==null&&(r={}),e.token.validate(t,"card"),typeof r=="function"?(i=r,r={}):typeof r!="object"&&(s=parseInt(r,10),r={},s>0&&(r.amount=s)),r[n.tokenName]=e.token.formatData(t,n.whitelistedAttrs),e.token.create(r,i)},n.getToken=function(t,n){return e.token.get(t,n)},n.validateCardNumber=function(e){return e=(e+"").replace(/\s+|-/g,""),e.length>=10&&e.length<=16&&n.luhnCheck(e)},n.validateCVC=function(t){return t=e.utils.trim(t),/^\d+$/.test(t)&&t.length>=3&&t.length<=4},n.validateExpiry=function(t,n){var r,i;return t=e.utils.trim(t),n=e.utils.trim(n),/^\d+$/.test(t)?/^\d+$/.test(n)?parseInt(t,10)<=12?(i=new Date(n,t),r=new Date,i.setMonth(i.getMonth()-1),i.setMonth(i.getMonth()+1,1),i>r):!1:!1:!1},n.luhnCheck=function(e){var t,n,r,i,s,o;r=!0,i=0,n=(e+"").split("").reverse();for(s=0,o=n.length;s<o;s++){t=n[s],t=parseInt(t,10);if(r=!r)t*=2;t>9&&(t-=9),i+=t}return i%10===0},n.cardType=function(e){return n.cardTypes[e.slice(0,2)]||"Unknown"},n.cardTypes=function(){var e,t,n,r;t={};for(e=n=40;n<=49;e=++n)t[e]="Visa";for(e=r=50;r<=59;e=++r)t[e]="MasterCard";return t[34]=t[37]="American Express",t[60]=t[62]=t[64]=t[65]="Discover",t[35]="JCB",t[30]=t[36]=t[38]=t[39]="Diners Club",t}(),n}.call(this,this.Stripe.token),this.Stripe.bankAccount=function(t){function n(){return n.__super__.constructor.apply(this,arguments)}return o(n,t),n.tokenName="bank_account",n.whitelistedAttrs=["country","routing_number","account_number"],n.createToken=function(t,r,i){return r==null&&(r={}),e.token.validate(t,"bank account"),typeof r=="function"&&(i=r,r={}),r[n.tokenName]=e.token.formatData(t,n.whitelistedAttrs),e.token.create(r,i)},n.getToken=function(t,n){return e.token.get(t,n)},n.validateRoutingNumber=function(t,r){t=e.utils.trim(t);switch(r){case"US":return/^\d+$/.test(t)&&t.length===9&&n.routingChecksum(t);case"CA":return/\d{5}\-\d{3}/.test(t)&&t.length===9;default:return!0}},n.validateAccountNumber=function(t,n){t=e.utils.trim(t);switch(n){case"US":return/^\d+$/.test(t)&&t.length>=1&&t.length<=17;default:return!0}},n.routingChecksum=function(e){var t,n,r,i,s,o;r=0,t=(e+"").split(""),o=[0,3,6];for(i=0,s=o.length;i<s;i++)n=o[i],r+=parseInt(t[n])*3,r+=parseInt(t[n+1])*7,r+=parseInt(t[n+2]);return r!==0&&r%10===0},n}.call(this,this.Stripe.token),t=["createToken","getToken","cardType","validateExpiry","validateCVC","validateCardNumber"];for(r=0,i=t.length;r<i;r++)n=t[r],this.Stripe[n]=this.Stripe.card[n];typeof module!="undefined"&&module!==null&&(module.exports=this.Stripe),typeof define=="function"&&define("stripe",[],function(){return u.Stripe})}).call(this),function(){var e,t,n,r=[].slice;e=encodeURIComponent,t=(new Date).getTime(),n=function(t,r,i){var s,o;r==null&&(r=[]);for(s in t)o=t[s],i&&(s=""+i+"["+s+"]"),typeof o=="object"?n(o,r,s):r.push(""+s+"="+e(o));return r.join("&").replace(/%20/g,"+")},this.Stripe.ajaxJSONP=function(e){var i,s,o,u,a,f;return e==null&&(e={}),o="sjsonp"+ ++t,a=document.createElement("script"),s=null,i=function(t){var n;return t==null&&(t="abort"),clearTimeout(s),(n=a.parentNode)!=null&&n.removeChild(a),o in window&&(window[o]=function(){}),typeof e.complete=="function"?e.complete(t,f,e):void 0},f={abort:i},a.onerror=function(){return f.abort(),typeof e.error=="function"?e.error(f,e):void 0},window[o]=function(){var t;t=1<=arguments.length?r.call(arguments,0):[],clearTimeout(s),a.parentNode.removeChild(a);try{delete window[o]}catch(n){window[o]=void 0}return typeof e.success=="function"&&e.success.apply(e,t),typeof e.complete=="function"?e.complete("success",f,e):void 0},e.data||(e.data={}),e.data.callback=o,e.method&&(e.data._method=e.method),a.src=e.url+"?"+n(e.data),u=document.getElementsByTagName("head")[0],u.appendChild(a),e.timeout>0&&(s=setTimeout(function(){return f.abort("timeout")},e.timeout)),f}}.call(this),function(){var e=[].indexOf||function(e){for(var t=0,n=this.length;t<n;t++)if(t in this&&this[t]===e)return t;return-1};this.Stripe.utils=function(){function t(){}return t.trim=function(e){return(e+"").replace(/^\s+|\s+$/g,"")},t.underscore=function(e){return(e+"").replace(/([A-Z])/g,function(e){return"_"+e.toLowerCase()}).replace(/-/g,"_")},t.underscoreKeys=function(e){var t,n,r;r=[];for(t in e)n=e[t],delete e[t],r.push(e[this.underscore(t)]=n);return r},t.isElement=function(e){return typeof e!="object"?!1:typeof jQuery!="undefined"&&jQuery!==null&&e instanceof jQuery?!0:e.nodeType===1},t.paramsFromForm=function(t,n){var r,i,s,o,u,a,f,l,c,h;n==null&&(n=[]),typeof jQuery!="undefined"&&jQuery!==null&&t instanceof jQuery&&(t=t[0]),s=t.getElementsByTagName("input"),u=t.getElementsByTagName("select"),a={};for(f=0,c=s.length;f<c;f++){i=s[f],r=this.underscore(i.getAttribute("data-stripe"));if(e.call(n,r)<0)continue;a[r]=i.value}for(l=0,h=u.length;l<h;l++){o=u[l],r=this.underscore(o.getAttribute("data-stripe"));if(e.call(n,r)<0)continue;o.selectedIndex!=null&&(a[r]=o.options[o.selectedIndex].value)}return a},t.validateKey=function(e){if(!e||typeof e!="string")throw new Error("You did not set a valid publishable key. Call Stripe.setPublishableKey() with your publishable key. For more info, see https://stripe.com/docs/stripe.js");if(/\s/g.test(e))throw new Error("Your key is invalid, as it contains whitespace. For more info, see https://stripe.com/docs/stripe.js");if(/^sk_/.test(e))throw new Error("You are using a secret key with Stripe.js, instead of the publishable one. For more info, see https://stripe.com/docs/stripe.js")},t}()}.call(this),function(){var e=[].indexOf||function(e){for(var t=0,n=this.length;t<n;t++)if(t in this&&this[t]===e)return t;return-1};this.Stripe.validator={"boolean":function(e,t){if(t!=="true"&&t!=="false")return"Enter a boolean string (true or false)"},integer:function(e,t){if(!/^\d+$/.test(t))return"Enter an integer"},positive:function(e,t){if(!(!this.integer(e,t)&&parseInt(t,10)>0))return"Enter a positive value"},range:function(t,n){var r;if(r=parseInt(n,10),e.call(t,r)<0)return"Needs to be between "+t[0]+" and "+t[t.length-1]},required:function(e,t){if(e&&(t==null||t===""))return"Required"},year:function(e,t){if(!/^\d{4}$/.test(t))return"Enter a 4-digit year"},birthYear:function(e,t){var n;n=this.year(e,t);if(n)return n;if(parseInt(t,10)>2e3)return"You must be over 18";if(parseInt(t,10)<1900)return"Enter your birth year"},month:function(e,t){if(this.integer(e,t))return"Please enter a month";if(this.range([1,2,3,4,5,6,7,8,9,10,11,12],t))return"Needs to be between 1 and 12"},choices:function(t,n){if(e.call(t,n)<0)return"Not an acceptable value for this field"},email:function(e,t){if(!/^[^@<\s>]+@[^@<\s>]+$/.test(t))return"That doesn't look like an email address"},url:function(e,t){if(!/^https?:\/\/.+\..+/.test(t))return"Not a valid url"},usTaxID:function(e,t){if(!/^\d{2}-?\d{1}-?\d{2}-?\d{4}$/.test(t))return"Not a valid tax ID"},ein:function(e,t){if(!/^\d{2}-?\d{7}$/.test(t))return"Not a valid EIN"},ssnLast4:function(e,t){if(!/^\d{4}$/.test(t))return"Not a valid last 4 digits for an SSN"},ownerPersonalID:function(e,t){var n;n=function(){switch(e){case"CA":return/^\d{3}-?\d{3}-?\d{3}$/.test(t);case"US":return!0}}();if(!n)return"Not a valid ID"},bizTaxID:function(e,t){var n,r,i,s,o,u,a,f;u={CA:["Tax ID",[/^\d{9}$/]],US:["EIN",[/^\d{2}-?\d{7}$/]]},o=u[e];if(o!=null){n=o[0],s=o[1],r=!1;for(a=0,f=s.length;a<f;a++){i=s[a];if(i.test(t)){r=!0;break}}if(!r)return"Not a valid "+n}},zip:function(e,t){var n;n=function(){switch(e.toUpperCase()){case"CA":return/^[\d\w]{6}$/.test(t!=null?t.replace(/\s+/g,""):void 0);case"US":return/^\d{5}$/.test(t)||/^\d{9}$/.test(t)}}();if(!n)return"Not a valid zip"},bankAccountNumber:function(e,t){if(!/^\d{1,17}$/.test(t))return"Invalid bank account number"},usRoutingNumber:function(e){var t,n,r,i,s,o,u;if(!/^\d{9}$/.test(e))return"Routing number must have 9 digits";s=0;for(t=o=0,u=e.length-1;o<=u;t=o+=3)n=parseInt(e.charAt(t),10)*3,r=parseInt(e.charAt(t+1),10)*7,i=parseInt(e.charAt(t+2),10),s+=n+r+i;if(s===0||s%10!==0)return"Invalid routing number"},caRoutingNumber:function(e){if(!/^\d{5}\-\d{3}$/.test(e))return"Invalid transit number"},routingNumber:function(e,t){switch(e.toUpperCase()){case"CA":return this.caRoutingNumber(t);case"US":return this.usRoutingNumber(t)}},phoneNumber:function(e,t){var n;n=t.replace(/[^0-9]/g,"");if(n.length!==10)return"Invalid phone number"},bizDBA:function(e,t){if(!/^.{1,23}$/.test(t))return"Statement descriptors can only have up to 23 characters"},nameLength:function(e,t){if(t.length===1)return"Names need to be longer than one character"}}}.call(this);
 window.FirehoseJS = {};
 
+FirehoseJS.rootFor = function(server) {
+  return FirehoseJS.client.serverAddress(server);
+};
+
 var __hasProp = {}.hasOwnProperty,
   __extends = function(child, parent) { for (var key in parent) { if (__hasProp.call(parent, key)) child[key] = parent[key]; } function ctor() { this.constructor = child; } ctor.prototype = parent.prototype; child.prototype = new ctor(); child.__super__ = parent.prototype; return child; };
 
@@ -319,6 +323,7 @@ FirehoseJS.Client = (function() {
       browserURL: "https://firehoseapp.com",
       marketingURL: "https://getfirehose.com",
       billingURL: "https://billing.firehoseapp.com",
+      settingsURL: "https://settings.firehoseapp.com",
       stripeKey: "pk_live_CGPaLboKkpr7tqswA4elf8NQ",
       pusherKey: "d3e373f7fac89de7bde8"
     },
@@ -327,6 +332,7 @@ FirehoseJS.Client = (function() {
       browserURL: "http://localhost:3001",
       marketingURL: "http://localhost:3002",
       billingURL: "http://localhost:3003",
+      settingsURL: "http://localhost:3004",
       stripeKey: "pk_test_oIyMNHil987ug1v8owRhuJwr",
       pusherKey: "2f64ac0434cc8a94526e"
     },
@@ -335,6 +341,7 @@ FirehoseJS.Client = (function() {
       browserURL: "http://localhost:3011",
       marketingURL: "http://localhost:3012",
       billingURL: "http://localhost:3013",
+      settingsURL: "http://localhost:3014",
       stripeKey: "pk_test_oIyMNHil987ug1v8owRhuJwr",
       pusherKey: "2f64ac0434cc8a94526e"
     }
@@ -348,10 +355,10 @@ FirehoseJS.Client = (function() {
     anchor = document.createElement("a");
     anchor.href = document.URL;
     if (anchor.hostname === "localhost") {
-      if (anchor.port === "3011") {
+      if (anchor.port[2] === "1") {
         this.setEnvironment("test");
       }
-      if (anchor.port === "3021") {
+      if (anchor.port[2] === "2") {
         return this.setEnvironment("production");
       } else {
         return this.setEnvironment("development");
@@ -399,6 +406,8 @@ FirehoseJS.Client = (function() {
 FirehoseJS.client = new FirehoseJS.Client;
 
 FirehoseJS.Object = (function() {
+  Object.prototype.firehoseType = "Object";
+
   Object.prototype.id = null;
 
   Object.prototype.createdAt = null;
@@ -435,7 +444,7 @@ FirehoseJS.Object = (function() {
       _ref = this._objects;
       for (_i = 0, _len = _ref.length; _i < _len; _i++) {
         obj = _ref[_i];
-        if (obj.id && obj.id === id && obj.constructor === klass) {
+        if (obj.id && obj.id === id && obj.firehoseType === klass.prototype.firehoseType) {
           return obj;
         }
       }
@@ -499,6 +508,8 @@ FirehoseJS.Agent = (function(_super) {
     _ref = Agent.__super__.constructor.apply(this, arguments);
     return _ref;
   }
+
+  Agent.prototype.firehoseType = "Agent";
 
   Agent.loggedInAgent = null;
 
@@ -715,6 +726,8 @@ FirehoseJS.Company = (function(_super) {
     _ref = Company.__super__.constructor.apply(this, arguments);
     return _ref;
   }
+
+  Company.prototype.firehoseType = "Company";
 
   Company.prototype.title = null;
 
@@ -1030,6 +1043,8 @@ FirehoseJS.Interaction = (function(_super) {
     return _ref;
   }
 
+  Interaction.prototype.firehoseType = "Interaction";
+
   Interaction.prototype.customer = null;
 
   Interaction.prototype.token = null;
@@ -1087,15 +1102,15 @@ FirehoseJS.Interaction = (function(_super) {
   };
 
   Interaction.prototype.subject = function() {
-    if (this.constructor === FirehoseJS.EmailInteraction) {
+    if (this.firehoseType === "EmailInteraction") {
       return this.emailSubject;
-    } else if (this.constructor === FirehoseJS.TwitterInteraction) {
+    } else if (this.firehoseType === "TwitterInteraction") {
       if (this.inReplyToScreenName) {
         return "Reply to " + this.inReplyToScreenName;
       } else {
         return "Mention of " + this.toScreenName;
       }
-    } else if (this.constructor === FirehoseJS.FacebookInteraction) {
+    } else if (this.firehoseType === "FacebookInteraction") {
       return this.type[0].toUpperCase() + this.type.slice(1);
     }
   };
@@ -1262,6 +1277,8 @@ FirehoseJS.AgentInvite = (function(_super) {
     return _ref;
   }
 
+  AgentInvite.prototype.firehoseType = "AgentInvite";
+
   AgentInvite.prototype.toEmail = null;
 
   AgentInvite.prototype.company = null;
@@ -1341,6 +1358,8 @@ FirehoseJS.Attachment = (function(_super) {
     return _ref;
   }
 
+  Attachment.prototype.firehoseType = "Attachment";
+
   Attachment.prototype.emailInteraction = null;
 
   Attachment.prototype.filename = null;
@@ -1375,6 +1394,8 @@ FirehoseJS.CannedResponse = (function(_super) {
     _ref = CannedResponse.__super__.constructor.apply(this, arguments);
     return _ref;
   }
+
+  CannedResponse.prototype.firehoseType = "CannedResponse";
 
   CannedResponse.prototype.company = null;
 
@@ -1463,6 +1484,8 @@ FirehoseJS.CreditCard = (function(_super) {
     _ref = CreditCard.__super__.constructor.apply(this, arguments);
     return _ref;
   }
+
+  CreditCard.prototype.firehoseType = "CreditCard";
 
   CreditCard.prototype.company = null;
 
@@ -1585,6 +1608,8 @@ FirehoseJS.Customer = (function(_super) {
     return _ref;
   }
 
+  Customer.prototype.firehoseType = "Customer";
+
   Customer.prototype.company = null;
 
   Customer.prototype.name = null;
@@ -1694,6 +1719,8 @@ FirehoseJS.CustomerAccount = (function(_super) {
     return _ref;
   }
 
+  CustomerAccount.prototype.firehoseType = "CustomerAccount";
+
   CustomerAccount.prototype.customer = null;
 
   CustomerAccount.prototype.username = null;
@@ -1740,6 +1767,8 @@ FirehoseJS.EmailAccount = (function(_super) {
     _ref = EmailAccount.__super__.constructor.apply(this, arguments);
     return _ref;
   }
+
+  EmailAccount.prototype.firehoseType = "EmailAccount";
 
   EmailAccount.prototype.company = null;
 
@@ -1949,6 +1978,8 @@ FirehoseJS.EmailInteraction = (function(_super) {
     return _ref;
   }
 
+  EmailInteraction.prototype.firehoseType = "EmailInteraction";
+
   EmailInteraction.prototype.emailSubject = null;
 
   EmailInteraction.prototype.replyTo = null;
@@ -2000,6 +2031,8 @@ FirehoseJS.FacebookAccount = (function(_super) {
     _ref = FacebookAccount.__super__.constructor.apply(this, arguments);
     return _ref;
   }
+
+  FacebookAccount.prototype.firehoseType = "FacebookAccount";
 
   FacebookAccount.prototype.company = null;
 
@@ -2064,6 +2097,8 @@ FirehoseJS.FacebookInteraction = (function(_super) {
     return _ref;
   }
 
+  FacebookInteraction.prototype.firehoseType = "FacebookInteraction";
+
   FacebookInteraction.prototype.fromUserId = null;
 
   FacebookInteraction.prototype.fromName = null;
@@ -2123,6 +2158,8 @@ FirehoseJS.FacebookPage = (function(_super) {
     return _ref;
   }
 
+  FacebookPage.prototype.firehoseType = "FacebookPage";
+
   FacebookPage.prototype.facebookAccount = null;
 
   FacebookPage.prototype.name = null;
@@ -2180,6 +2217,8 @@ FirehoseJS.Note = (function(_super) {
     _ref = Note.__super__.constructor.apply(this, arguments);
     return _ref;
   }
+
+  Note.prototype.firehoseType = "Note";
 
   Note.prototype.interaction = null;
 
@@ -2265,6 +2304,8 @@ FirehoseJS.Notification = (function(_super) {
     return _ref;
   }
 
+  Notification.prototype.firehoseType = "Notification";
+
   Notification.prototype.company = null;
 
   Notification.prototype.title = null;
@@ -2302,6 +2343,8 @@ FirehoseJS.OutgoingAttachment = (function(_super) {
     _ref = OutgoingAttachment.__super__.constructor.apply(this, arguments);
     return _ref;
   }
+
+  OutgoingAttachment.prototype.firehoseType = "OutgoingAttachment";
 
   OutgoingAttachment.prototype.filename = null;
 
@@ -2402,6 +2445,8 @@ FirehoseJS.Tag = (function(_super) {
     return _ref;
   }
 
+  Tag.prototype.firehoseType = "Tag";
+
   Tag.prototype.company = null;
 
   Tag.prototype.label = null;
@@ -2481,6 +2526,8 @@ FirehoseJS.TwitterAccount = (function(_super) {
     return _ref;
   }
 
+  TwitterAccount.prototype.firehoseType = "TwitterAccount";
+
   TwitterAccount.prototype.company = null;
 
   TwitterAccount.prototype.screenName = null;
@@ -2530,6 +2577,8 @@ FirehoseJS.TwitterInteraction = (function(_super) {
     _ref = TwitterInteraction.__super__.constructor.apply(this, arguments);
     return _ref;
   }
+
+  TwitterInteraction.prototype.firehoseType = "TwitterInteraction";
 
   TwitterInteraction.prototype.favorited = false;
 
@@ -2587,6 +2636,8 @@ FirehoseJS.Article = (function(_super) {
     _ref = Article.__super__.constructor.apply(this, arguments);
     return _ref;
   }
+
+  Article.prototype.firehoseType = "Article";
 
   Article.prototype.company = null;
 

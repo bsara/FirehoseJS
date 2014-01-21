@@ -1,5 +1,7 @@
 class FirehoseJS.EmailInteraction extends FirehoseJS.Interaction
 
+
+  firehoseType: "EmailInteraction"
   
   emailSubject: null
   
