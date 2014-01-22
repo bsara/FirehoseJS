@@ -79,7 +79,7 @@ class FirehoseJS.Agent extends FirehoseJS.Object
     FirehoseJS.client.post( params ).done (data) =>
       this._populateWithJSON data
       FirehoseJS.client.APIAccessToken  = @accessToken
-      FirehoseJS.client.URLToken        = @URLToken
+      FirehoseJS.client.URLToken        = @urlToken
       FirehoseJS.Agent.loggedInAgent = this
       
   
