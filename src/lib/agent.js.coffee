@@ -79,7 +79,7 @@ class FirehoseJS.Agent extends FirehoseJS.Object
     FirehoseJS.client.post( params ).done (data) =>
       this._populateWithJSON data
       FirehoseJS.client.APIAccessToken  = @accessToken
-      FirehoseJS.client.URLToken        = @urlToken
+      FirehoseJS.client.URLToken        = @URLToken
       FirehoseJS.Agent.loggedInAgent = this
       
   
@@ -152,7 +152,7 @@ class FirehoseJS.Agent extends FirehoseJS.Object
   
   _populateWithJSON: (json) ->
     this.setIfNotNull "accessToken", json.access_token unless @accessToken?
-    this.setIfNotNull "urlToken",    json.url_token    unless @URLToken?
+    this.setIfNotNull "URLToken",    json.url_token    unless @URLToken?
     this.setIfNotNull "firstName",   json.first_name
     this.setIfNotNull "lastName",    json.last_name
     this.setIfNotNull "email",       json.email
