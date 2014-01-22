@@ -1,7 +1,7 @@
 class FirehoseJS.Article extends FirehoseJS.Object
   
   
-  firehoseType: "Article"
+  @firehoseType: "Article"
   
   company: null
   

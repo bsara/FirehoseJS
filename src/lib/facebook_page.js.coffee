@@ -1,7 +1,7 @@
 class FirehoseJS.FacebookPage extends FirehoseJS.Object
   
   
-  firehoseType: "FacebookPage"
+  @firehoseType: "FacebookPage"
   
   facebookAccount: null
   

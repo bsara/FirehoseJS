@@ -1,7 +1,7 @@
 class FirehoseJS.EmailAccount extends FirehoseJS.Object
   
 
-  firehoseType: "EmailAccount"
+  @firehoseType: "EmailAccount"
 
   company: null
   

@@ -130,6 +130,9 @@ module.exports = (grunt) ->
       test:
         files: '<%= jshint.test.src %>'
         tasks: ['jshint:test', 'qunit']
+      build:
+        files: ['src/**/*.coffee']
+        tasks: ['clean', 'coffee:app', 'concat:all', 'uglify']
         
         
   grunt.event.on 'qunit.moduleStart', (name) ->

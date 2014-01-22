@@ -1,7 +1,7 @@
 class FirehoseJS.CannedResponse extends FirehoseJS.Object
   
   
-  firehoseType: "CannedResponse"
+  @firehoseType: "CannedResponse"
   
   company: null
   

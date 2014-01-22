@@ -1,7 +1,7 @@
 class FirehoseJS.FacebookAccount extends FirehoseJS.Object
   
   
-  firehoseType: "FacebookAccount"
+  @firehoseType: "FacebookAccount"
   
   company: null
   
@@ -29,7 +29,7 @@ class FirehoseJS.FacebookAccount extends FirehoseJS.Object
   
   
   @OAuthURLForCompanyWithCallback: (company, callback)  ->
-    "#{FirehoseJS.client.serverAddress()}/companies/#{company.id}/oauth_facebook?url_token=#{FirehoseJS.client.URLToken}&callback_url=#{callback}"
+    "#{FirehoseJS.rootFor('API')}/companies/#{company.id}/oauth_facebook?url_token=#{FirehoseJS.client.URLToken}&callback_url=#{callback}"
   
   
   destroy: ->

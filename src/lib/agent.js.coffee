@@ -1,7 +1,7 @@
 class FirehoseJS.Agent extends FirehoseJS.Object
   
   
-  firehoseType: "Agent"
+  @firehoseType: "Agent"
   
   @loggedInAgent: null
   
@@ -78,7 +78,8 @@ class FirehoseJS.Agent extends FirehoseJS.Object
         
     FirehoseJS.client.post( params ).done (data) =>
       this._populateWithJSON data
-      FirehoseJS.client.APIAccessToken = @accessToken
+      FirehoseJS.client.APIAccessToken  = @accessToken
+      FirehoseJS.client.URLToken        = @URLToken
       FirehoseJS.Agent.loggedInAgent = this
       
   
@@ -97,7 +98,8 @@ class FirehoseJS.Agent extends FirehoseJS.Object
     FirehoseJS.client.get( params ).done (data) =>
       this._populateWithJSON data
       FirehoseJS.client.APIAccessToken = @accessToken
-      FirehoseJS.Agent.loggedInAgent = this
+      FirehoseJS.client.URLToken       = @URLToken
+      FirehoseJS.Agent.loggedInAgent   = this
       
   
   save: ->

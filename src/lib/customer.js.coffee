@@ -1,7 +1,7 @@
 class FirehoseJS.Customer extends FirehoseJS.Object
   
   
-  firehoseType: "Customer"
+  @firehoseType: "Customer"
   
   company: null
   

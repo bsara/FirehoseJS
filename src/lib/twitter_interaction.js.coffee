@@ -1,7 +1,7 @@
 class FirehoseJS.TwitterInteraction extends FirehoseJS.Interaction
   
   
-  firehoseType: "TwitterInteraction"
+  @firehoseType: "TwitterInteraction"
   
   favorited: false
   
@@ -29,7 +29,7 @@ class FirehoseJS.TwitterInteraction extends FirehoseJS.Interaction
   
   _populateWithJSON: (json) ->
     if json.twitter_interaction?
-      twitterJSON           = json.twitter_interaction
+      twitterJSON = json.twitter_interaction
       this.setIfNotNull "favorited",           twitterJSON.favorited
       this.setIfNotNull "tweetId",             twitterJSON.tweet_id
       this.setIfNotNull "inReplyToScreenName", twitterJSON.in_reply_to_screen_name

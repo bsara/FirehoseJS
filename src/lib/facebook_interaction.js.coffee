@@ -1,7 +1,7 @@
 class FirehoseJS.FacebookInteraction extends FirehoseJS.Interaction
   
   
-  firehoseType: "FacebookInteraction"
+  @firehoseType: "FacebookInteraction"
   
   fromUserId: null
   

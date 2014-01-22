@@ -406,8 +406,6 @@ FirehoseJS.Client = (function() {
 FirehoseJS.client = new FirehoseJS.Client;
 
 FirehoseJS.Object = (function() {
-  Object.prototype.firehoseType = "Object";
-
   Object.prototype.id = null;
 
   Object.prototype.createdAt = null;
@@ -438,13 +436,16 @@ FirehoseJS.Object = (function() {
   };
 
   Object._objectOfClassWithID = function(klass, properties) {
-    var id, obj, _i, _len, _ref;
-    id = properties.id;
-    if (id) {
+    var obj, parsedID, _i, _len, _ref;
+    parsedID = parseInt(properties.id);
+    if (!isNaN(parsedID)) {
+      properties.id = parsedID;
+    }
+    if (parsedID) {
       _ref = this._objects;
       for (_i = 0, _len = _ref.length; _i < _len; _i++) {
         obj = _ref[_i];
-        if (obj.id && obj.id === id && obj.firehoseType === klass.prototype.firehoseType) {
+        if (obj.id && obj.id === parsedID && obj.constructor.firehoseType === klass.firehoseType) {
           return obj;
         }
       }
@@ -509,7 +510,7 @@ FirehoseJS.Agent = (function(_super) {
     return _ref;
   }
 
-  Agent.prototype.firehoseType = "Agent";
+  Agent.firehoseType = "Agent";
 
   Agent.loggedInAgent = null;
 
@@ -593,6 +594,7 @@ FirehoseJS.Agent = (function(_super) {
     return FirehoseJS.client.post(params).done(function(data) {
       _this._populateWithJSON(data);
       FirehoseJS.client.APIAccessToken = _this.accessToken;
+      FirehoseJS.client.URLToken = _this.URLToken;
       return FirehoseJS.Agent.loggedInAgent = _this;
     });
   };
@@ -615,6 +617,7 @@ FirehoseJS.Agent = (function(_super) {
     return FirehoseJS.client.get(params).done(function(data) {
       _this._populateWithJSON(data);
       FirehoseJS.client.APIAccessToken = _this.accessToken;
+      FirehoseJS.client.URLToken = _this.URLToken;
       return FirehoseJS.Agent.loggedInAgent = _this;
     });
   };
@@ -727,7 +730,7 @@ FirehoseJS.Company = (function(_super) {
     return _ref;
   }
 
-  Company.prototype.firehoseType = "Company";
+  Company.firehoseType = "Company";
 
   Company.prototype.title = null;
 
@@ -1043,7 +1046,7 @@ FirehoseJS.Interaction = (function(_super) {
     return _ref;
   }
 
-  Interaction.prototype.firehoseType = "Interaction";
+  Interaction.firehoseType = "Interaction";
 
   Interaction.prototype.customer = null;
 
@@ -1102,15 +1105,15 @@ FirehoseJS.Interaction = (function(_super) {
   };
 
   Interaction.prototype.subject = function() {
-    if (this.firehoseType === "EmailInteraction") {
+    if (this.constructor.firehoseType === "EmailInteraction") {
       return this.emailSubject;
-    } else if (this.firehoseType === "TwitterInteraction") {
+    } else if (this.constructor.firehoseType === "TwitterInteraction") {
       if (this.inReplyToScreenName) {
         return "Reply to " + this.inReplyToScreenName;
       } else {
         return "Mention of " + this.toScreenName;
       }
-    } else if (this.firehoseType === "FacebookInteraction") {
+    } else if (this.constructor.firehoseType === "FacebookInteraction") {
       return this.type[0].toUpperCase() + this.type.slice(1);
     }
   };
@@ -1277,7 +1280,7 @@ FirehoseJS.AgentInvite = (function(_super) {
     return _ref;
   }
 
-  AgentInvite.prototype.firehoseType = "AgentInvite";
+  AgentInvite.firehoseType = "AgentInvite";
 
   AgentInvite.prototype.toEmail = null;
 
@@ -1358,7 +1361,7 @@ FirehoseJS.Attachment = (function(_super) {
     return _ref;
   }
 
-  Attachment.prototype.firehoseType = "Attachment";
+  Attachment.firehoseType = "Attachment";
 
   Attachment.prototype.emailInteraction = null;
 
@@ -1395,7 +1398,7 @@ FirehoseJS.CannedResponse = (function(_super) {
     return _ref;
   }
 
-  CannedResponse.prototype.firehoseType = "CannedResponse";
+  CannedResponse.firehoseType = "CannedResponse";
 
   CannedResponse.prototype.company = null;
 
@@ -1485,7 +1488,7 @@ FirehoseJS.CreditCard = (function(_super) {
     return _ref;
   }
 
-  CreditCard.prototype.firehoseType = "CreditCard";
+  CreditCard.firehoseType = "CreditCard";
 
   CreditCard.prototype.company = null;
 
@@ -1608,7 +1611,7 @@ FirehoseJS.Customer = (function(_super) {
     return _ref;
   }
 
-  Customer.prototype.firehoseType = "Customer";
+  Customer.firehoseType = "Customer";
 
   Customer.prototype.company = null;
 
@@ -1719,7 +1722,7 @@ FirehoseJS.CustomerAccount = (function(_super) {
     return _ref;
   }
 
-  CustomerAccount.prototype.firehoseType = "CustomerAccount";
+  CustomerAccount.firehoseType = "CustomerAccount";
 
   CustomerAccount.prototype.customer = null;
 
@@ -1768,7 +1771,7 @@ FirehoseJS.EmailAccount = (function(_super) {
     return _ref;
   }
 
-  EmailAccount.prototype.firehoseType = "EmailAccount";
+  EmailAccount.firehoseType = "EmailAccount";
 
   EmailAccount.prototype.company = null;
 
@@ -1978,7 +1981,7 @@ FirehoseJS.EmailInteraction = (function(_super) {
     return _ref;
   }
 
-  EmailInteraction.prototype.firehoseType = "EmailInteraction";
+  EmailInteraction.firehoseType = "EmailInteraction";
 
   EmailInteraction.prototype.emailSubject = null;
 
@@ -2032,7 +2035,7 @@ FirehoseJS.FacebookAccount = (function(_super) {
     return _ref;
   }
 
-  FacebookAccount.prototype.firehoseType = "FacebookAccount";
+  FacebookAccount.firehoseType = "FacebookAccount";
 
   FacebookAccount.prototype.company = null;
 
@@ -2058,7 +2061,7 @@ FirehoseJS.FacebookAccount = (function(_super) {
   };
 
   FacebookAccount.OAuthURLForCompanyWithCallback = function(company, callback) {
-    return "" + (FirehoseJS.client.serverAddress()) + "/companies/" + company.id + "/oauth_facebook?url_token=" + FirehoseJS.client.URLToken + "&callback_url=" + callback;
+    return "" + (FirehoseJS.rootFor('API')) + "/companies/" + company.id + "/oauth_facebook?url_token=" + FirehoseJS.client.URLToken + "&callback_url=" + callback;
   };
 
   FacebookAccount.prototype.destroy = function() {
@@ -2097,7 +2100,7 @@ FirehoseJS.FacebookInteraction = (function(_super) {
     return _ref;
   }
 
-  FacebookInteraction.prototype.firehoseType = "FacebookInteraction";
+  FacebookInteraction.firehoseType = "FacebookInteraction";
 
   FacebookInteraction.prototype.fromUserId = null;
 
@@ -2158,7 +2161,7 @@ FirehoseJS.FacebookPage = (function(_super) {
     return _ref;
   }
 
-  FacebookPage.prototype.firehoseType = "FacebookPage";
+  FacebookPage.firehoseType = "FacebookPage";
 
   FacebookPage.prototype.facebookAccount = null;
 
@@ -2218,7 +2221,7 @@ FirehoseJS.Note = (function(_super) {
     return _ref;
   }
 
-  Note.prototype.firehoseType = "Note";
+  Note.firehoseType = "Note";
 
   Note.prototype.interaction = null;
 
@@ -2304,7 +2307,7 @@ FirehoseJS.Notification = (function(_super) {
     return _ref;
   }
 
-  Notification.prototype.firehoseType = "Notification";
+  Notification.firehoseType = "Notification";
 
   Notification.prototype.company = null;
 
@@ -2344,7 +2347,7 @@ FirehoseJS.OutgoingAttachment = (function(_super) {
     return _ref;
   }
 
-  OutgoingAttachment.prototype.firehoseType = "OutgoingAttachment";
+  OutgoingAttachment.firehoseType = "OutgoingAttachment";
 
   OutgoingAttachment.prototype.filename = null;
 
@@ -2445,7 +2448,7 @@ FirehoseJS.Tag = (function(_super) {
     return _ref;
   }
 
-  Tag.prototype.firehoseType = "Tag";
+  Tag.firehoseType = "Tag";
 
   Tag.prototype.company = null;
 
@@ -2526,7 +2529,7 @@ FirehoseJS.TwitterAccount = (function(_super) {
     return _ref;
   }
 
-  TwitterAccount.prototype.firehoseType = "TwitterAccount";
+  TwitterAccount.firehoseType = "TwitterAccount";
 
   TwitterAccount.prototype.company = null;
 
@@ -2544,7 +2547,7 @@ FirehoseJS.TwitterAccount = (function(_super) {
   };
 
   TwitterAccount.OAuthURLForCompanyWithCallback = function(company, callback) {
-    return "" + (FirehoseJS.client.serverAddress()) + "/companies/" + company.id + "/oauth_twitter?url_token=" + FirehoseJS.client.URLToken + "&callback_url=" + callback;
+    return "" + (FirehoseJS.rootFor('API')) + "/companies/" + company.id + "/oauth_twitter?url_token=" + FirehoseJS.client.URLToken + "&callback_url=" + callback;
   };
 
   TwitterAccount.prototype.destroy = function() {
@@ -2578,7 +2581,7 @@ FirehoseJS.TwitterInteraction = (function(_super) {
     return _ref;
   }
 
-  TwitterInteraction.prototype.firehoseType = "TwitterInteraction";
+  TwitterInteraction.firehoseType = "TwitterInteraction";
 
   TwitterInteraction.prototype.favorited = false;
 
@@ -2637,7 +2640,7 @@ FirehoseJS.Article = (function(_super) {
     return _ref;
   }
 
-  Article.prototype.firehoseType = "Article";
+  Article.firehoseType = "Article";
 
   Article.prototype.company = null;
 

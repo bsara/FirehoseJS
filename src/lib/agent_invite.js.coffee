@@ -1,7 +1,7 @@
 class FirehoseJS.AgentInvite extends FirehoseJS.Object
   
   
-  firehoseType: "AgentInvite"
+  @firehoseType: "AgentInvite"
   
   toEmail: null
   
