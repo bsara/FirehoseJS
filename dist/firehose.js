@@ -689,7 +689,7 @@ FirehoseJS.Agent = (function(_super) {
       this.setIfNotNull("accessToken", json.access_token);
     }
     if (this.URLToken == null) {
-      this.setIfNotNull("urlToken", json.url_token);
+      this.setIfNotNull("URLToken", json.url_token);
     }
     this.setIfNotNull("firstName", json.first_name);
     this.setIfNotNull("lastName", json.last_name);
