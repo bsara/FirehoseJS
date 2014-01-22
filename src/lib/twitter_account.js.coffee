@@ -19,7 +19,7 @@ class FirehoseJS.TwitterAccount extends FirehoseJS.Object
   
   
   @OAuthURLForCompanyWithCallback: (company, callback)  ->
-    "#{FirehoseJS.rootFor('API')}/companies/#{company.id}/oauth_twitter?url_token=#{FirehoseJS.client.URLToken}&callback_url=#{callback}"
+    "#{FirehoseJS.rootFor('API')}/companies/#{company.id}/oauth_twitter?url_token=#{FirehoseJS.client.URLToken}&callback_url=#{encodeURIComponent(callback)}"
   
   
   destroy: ->

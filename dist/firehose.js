@@ -2061,7 +2061,7 @@ FirehoseJS.FacebookAccount = (function(_super) {
   };
 
   FacebookAccount.OAuthURLForCompanyWithCallback = function(company, callback) {
-    return "" + (FirehoseJS.rootFor('API')) + "/companies/" + company.id + "/oauth_facebook?url_token=" + FirehoseJS.client.URLToken + "&callback_url=" + callback;
+    return "" + (FirehoseJS.rootFor('API')) + "/companies/" + company.id + "/oauth_facebook?url_token=" + FirehoseJS.client.URLToken + "&callback_url=" + (encodeURIComponent(callback));
   };
 
   FacebookAccount.prototype.destroy = function() {
@@ -2547,7 +2547,7 @@ FirehoseJS.TwitterAccount = (function(_super) {
   };
 
   TwitterAccount.OAuthURLForCompanyWithCallback = function(company, callback) {
-    return "" + (FirehoseJS.rootFor('API')) + "/companies/" + company.id + "/oauth_twitter?url_token=" + FirehoseJS.client.URLToken + "&callback_url=" + callback;
+    return "" + (FirehoseJS.rootFor('API')) + "/companies/" + company.id + "/oauth_twitter?url_token=" + FirehoseJS.client.URLToken + "&callback_url=" + (encodeURIComponent(callback));
   };
 
   TwitterAccount.prototype.destroy = function() {
