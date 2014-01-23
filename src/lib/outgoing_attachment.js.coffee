@@ -19,12 +19,32 @@ class FirehoseJS.OutgoingAttachment extends FirehoseJS.Object
   
     
   @outgoingAttachmentWithFile: (file) ->
-    FirehoseJS.Object._objectOfClassWithID FirehoseJS.OutgoingAttachment,
-      id:   id
-      file: file
+    @file = file
+      
+  
+  @openFilePicker: (completion) ->
+    # Make an unattached input tag to be garbage collected when we're done
+    fileEl = $('<input type="file"/>')
+
+    fileEl.bind "change", (e) =>
+      file = e.target.files[0]
+
+      # Can't upload file larger than 1 GB
+      if file.size > 1024*1024*1024
+        alert "Files must be smaller than 1GB."
+        return
+
+      if file.size > 300*1024*1024
+        alert "File sizes greater than 300MB have a higher chance of failure when uploaded from a browser. If you experience problems, perhaps try it from the Mac app."
+        return
+        
+      completion file
+        
+    fileEl.trigger 'click'
+ 
     
   
-  upload: (completionHandler, errorHandler, progressHandler) ->
+  upload: (options) ->
     params = 
       route: "companies/#{@id}/outgoing_attachments"
       body: this._toJSON()
@@ -41,13 +61,14 @@ class FirehoseJS.OutgoingAttachment extends FirehoseJS.Object
         xhr = new XDomainRequest()
         xhr.open('PUT', data.upload_url)
 
-      xhr.upload?.addEventListener 'progress', (event) ->
-        if event.lengthComputable
-          percentComplete = parseInt(event.loaded / event.total * 100, 10)
-          if percentComplete >= 95
-            progressHandler(95)
-          else
-            progressHandler(percentComplete)
+      if options.progress?
+        xhr.upload?.addEventListener 'progress', (event) ->
+          if event.lengthComputable
+            percentComplete = parseInt event.loaded / event.total * 100, 10
+            if percentComplete >= 95 
+              options.progress(95)
+            else
+              options.progress(percentComplete)
 
       # Essentially the 'done' callback, have to check for success
       xhr.onload = =>
@@ -60,11 +81,11 @@ class FirehoseJS.OutgoingAttachment extends FirehoseJS.Object
             route: "outgoing_attachments/#{data.id}"
             body: this._toJSON()
           FirehoseJS.client.post( params ).done ->
-            completionHandler()
+            options?.complete?( )
           .fail (jqXHR, textStatus, errorThrown) ->
-            errorHandler(errorThrown)
+            options?.error?(errorThrown)
         else
-          errorHandler("Your attachment failed to upload successfully, please try again. Please contact support@getfirehose.com if the problem persists and we'll get it fixed for you.")
+          options?.error?("Your attachment failed to upload successfully, please try again. Please contact support@getfirehose.com if the problem persists and we'll get it fixed for you.")
 
       # These have to match what the server does because it's part of the URL signature
       xhr.setRequestHeader('Content-Type', @file.type)

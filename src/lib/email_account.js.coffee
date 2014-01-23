@@ -63,7 +63,8 @@ class FirehoseJS.EmailAccount extends FirehoseJS.Object
   destroy: ->
     params = 
       route: "email_accounts/#{@id}"
-    FirehoseJS.client.delete( params )
+    FirehoseJS.client.delete( params ).done =>
+      @company.emailAccounts().dropObject this
     
     
   _popularServices: [

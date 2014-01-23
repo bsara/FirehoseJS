@@ -125,7 +125,8 @@ class FirehoseJS.Company extends FirehoseJS.Object
   destroy: ->
     params = 
       route: "companies/#{@id}"
-    FirehoseJS.client.delete( params )
+    FirehoseJS.client.delete( params ).done =>
+      FirehoseJS.Agent.loggedInAgent.companies.dropObject this
     
     
   customersWithCriteria: (criteria) ->

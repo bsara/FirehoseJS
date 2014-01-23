@@ -75,7 +75,8 @@ class FirehoseJS.CreditCard extends FirehoseJS.Object
     params = 
       server: "billing"
       route: "entities/#{@company.id}/credit_card"
-    FirehoseJS.client.delete( params )
+    FirehoseJS.client.delete( params ).done =>
+      @company.set 'creditCard', null
     
     
   _populateWithJSON: (json) ->

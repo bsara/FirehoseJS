@@ -632,11 +632,21 @@ FirehoseJS.Agent = (function(_super) {
   };
 
   Agent.prototype.destroy = function() {
-    var params;
+    var params,
+      _this = this;
     params = {
       route: "agents/" + this.id
     };
-    return FirehoseJS.client["delete"](params);
+    return FirehoseJS.client["delete"](params).done(function() {
+      var company, _i, _len, _ref1, _results;
+      _ref1 = _this.companies;
+      _results = [];
+      for (_i = 0, _len = _ref1.length; _i < _len; _i++) {
+        company = _ref1[_i];
+        _results.push(company.agents.dropObject(_this));
+      }
+      return _results;
+    });
   };
 
   Agent.prototype.dismissNotifications = function(notifications) {
@@ -852,11 +862,14 @@ FirehoseJS.Company = (function(_super) {
   };
 
   Company.prototype.destroy = function() {
-    var params;
+    var params,
+      _this = this;
     params = {
       route: "companies/" + this.id
     };
-    return FirehoseJS.client["delete"](params);
+    return FirehoseJS.client["delete"](params).done(function() {
+      return FirehoseJS.Agent.loggedInAgent.companies.dropObject(_this);
+    });
   };
 
   Company.prototype.customersWithCriteria = function(criteria) {
@@ -1567,13 +1580,16 @@ FirehoseJS.CreditCard = (function(_super) {
   };
 
   CreditCard.prototype.destroy = function() {
-    var params;
+    var params,
+      _this = this;
     FirehoseJS.client.billingAccessToken = this.company.token;
     params = {
       server: "billing",
       route: "entities/" + this.company.id + "/credit_card"
     };
-    return FirehoseJS.client["delete"](params);
+    return FirehoseJS.client["delete"](params).done(function() {
+      return _this.company.set('creditCard', null);
+    });
   };
 
   CreditCard.prototype._populateWithJSON = function(json) {
@@ -1668,11 +1684,15 @@ FirehoseJS.Customer = (function(_super) {
   };
 
   Customer.prototype.destroy = function() {
-    var params;
+    var params,
+      _this = this;
     params = {
       route: "customers/" + this.id
     };
-    return FirehoseJS.client["delete"](params);
+    return FirehoseJS.client["delete"](params).done(function() {
+      var _ref1;
+      return (_ref1 = _this.company._customers) != null ? _ref1.dropObject(_this) : void 0;
+    });
   };
 
   Customer.prototype.interactions = function() {
@@ -1857,11 +1877,14 @@ FirehoseJS.EmailAccount = (function(_super) {
   };
 
   EmailAccount.prototype.destroy = function() {
-    var params;
+    var params,
+      _this = this;
     params = {
       route: "email_accounts/" + this.id
     };
-    return FirehoseJS.client["delete"](params);
+    return FirehoseJS.client["delete"](params).done(function() {
+      return _this.company.emailAccounts().dropObject(_this);
+    });
   };
 
   EmailAccount.prototype._popularServices = [
@@ -2065,11 +2088,14 @@ FirehoseJS.FacebookAccount = (function(_super) {
   };
 
   FacebookAccount.prototype.destroy = function() {
-    var params;
+    var params,
+      _this = this;
     params = {
       route: "facebook_accounts/" + this.id
     };
-    return FirehoseJS.client["delete"](params);
+    return FirehoseJS.client["delete"](params).done(function() {
+      return _this.company.facebookAccounts().dropObject(_this);
+    });
   };
 
   FacebookAccount.prototype._populateWithJSON = function(json) {
@@ -2364,13 +2390,30 @@ FirehoseJS.OutgoingAttachment = (function(_super) {
   OutgoingAttachment.prototype.file = null;
 
   OutgoingAttachment.outgoingAttachmentWithFile = function(file) {
-    return FirehoseJS.Object._objectOfClassWithID(FirehoseJS.OutgoingAttachment, {
-      id: id,
-      file: file
-    });
+    return this.file = file;
   };
 
-  OutgoingAttachment.prototype.upload = function(completionHandler, errorHandler, progressHandler) {
+  OutgoingAttachment.openFilePicker = function(completion) {
+    var fileEl,
+      _this = this;
+    fileEl = $('<input type="file"/>');
+    fileEl.bind("change", function(e) {
+      var file;
+      file = e.target.files[0];
+      if (file.size > 1024 * 1024 * 1024) {
+        alert("Files must be smaller than 1GB.");
+        return;
+      }
+      if (file.size > 300 * 1024 * 1024) {
+        alert("File sizes greater than 300MB have a higher chance of failure when uploaded from a browser. If you experience problems, perhaps try it from the Mac app.");
+        return;
+      }
+      return completion(file);
+    });
+    return fileEl.trigger('click');
+  };
+
+  OutgoingAttachment.prototype.upload = function(options) {
     var params,
       _this = this;
     params = {
@@ -2386,18 +2429,20 @@ FirehoseJS.OutgoingAttachment = (function(_super) {
         xhr = new XDomainRequest();
         xhr.open('PUT', data.upload_url);
       }
-      if ((_ref1 = xhr.upload) != null) {
-        _ref1.addEventListener('progress', function(event) {
-          var percentComplete;
-          if (event.lengthComputable) {
-            percentComplete = parseInt(event.loaded / event.total * 100, 10);
-            if (percentComplete >= 95) {
-              return progressHandler(95);
-            } else {
-              return progressHandler(percentComplete);
+      if (options.progress != null) {
+        if ((_ref1 = xhr.upload) != null) {
+          _ref1.addEventListener('progress', function(event) {
+            var percentComplete;
+            if (event.lengthComputable) {
+              percentComplete = parseInt(event.loaded / event.total * 100, 10);
+              if (percentComplete >= 95) {
+                return options.progress(95);
+              } else {
+                return options.progress(percentComplete);
+              }
             }
-          }
-        });
+          });
+        }
       }
       xhr.onload = function() {
         if (xhr.status === 200) {
@@ -2406,12 +2451,12 @@ FirehoseJS.OutgoingAttachment = (function(_super) {
             body: _this._toJSON()
           };
           return FirehoseJS.client.post(params).done(function() {
-            return completionHandler();
+            return options != null ? typeof options.complete === "function" ? options.complete() : void 0 : void 0;
           }).fail(function(jqXHR, textStatus, errorThrown) {
-            return errorHandler(errorThrown);
+            return options != null ? typeof options.error === "function" ? options.error(errorThrown) : void 0 : void 0;
           });
         } else {
-          return errorHandler("Your attachment failed to upload successfully, please try again. Please contact support@getfirehose.com if the problem persists and we'll get it fixed for you.");
+          return options != null ? typeof options.error === "function" ? options.error("Your attachment failed to upload successfully, please try again. Please contact support@getfirehose.com if the problem persists and we'll get it fixed for you.") : void 0 : void 0;
         }
       };
       xhr.setRequestHeader('Content-Type', _this.file.type);
@@ -2551,11 +2596,14 @@ FirehoseJS.TwitterAccount = (function(_super) {
   };
 
   TwitterAccount.prototype.destroy = function() {
-    var params;
+    var params,
+      _this = this;
     params = {
-      route: "facebook_accounts/" + this.id
+      route: "twitter_accounts/" + this.id
     };
-    return FirehoseJS.client["delete"](params);
+    return FirehoseJS.client["delete"](params).done(function() {
+      return _this.company.twitterAccounts().dropObject(_this);
+    });
   };
 
   TwitterAccount.prototype._populateWithJSON = function(json) {

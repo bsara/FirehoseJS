@@ -112,7 +112,9 @@ class FirehoseJS.Agent extends FirehoseJS.Object
   destroy: ->
     params = 
       route: "agents/#{@id}"
-    FirehoseJS.client.delete( params )
+    FirehoseJS.client.delete( params ).done =>
+      for company in @companies
+        company.agents.dropObject this
     
   
   dismissNotifications: (notifications) ->

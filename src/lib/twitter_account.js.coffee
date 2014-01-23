@@ -24,8 +24,9 @@ class FirehoseJS.TwitterAccount extends FirehoseJS.Object
   
   destroy: ->
     params = 
-      route: "facebook_accounts/#{@id}"
-    FirehoseJS.client.delete( params )
+      route: "twitter_accounts/#{@id}"
+    FirehoseJS.client.delete( params ).done =>
+      @company.twitterAccounts().dropObject this
 
 
   _populateWithJSON: (json) ->

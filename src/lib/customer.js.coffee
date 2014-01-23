@@ -58,7 +58,8 @@ class FirehoseJS.Customer extends FirehoseJS.Object
   destroy: ->
     params = 
       route: "customers/#{@id}"
-    FirehoseJS.client.delete( params )
+    FirehoseJS.client.delete( params ).done =>
+      @company._customers?.dropObject this
   
   
   interactions: ->
