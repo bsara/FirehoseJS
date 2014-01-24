@@ -23,7 +23,7 @@ module.exports = (grunt) ->
       options:
         commitFiles: ['-a']
         pushTo: 'origin'
-    
+        
     coffee:
       app:
         options:
@@ -93,6 +93,8 @@ module.exports = (grunt) ->
         dest: 'build/test/firehosejs_tests.html'
             
     exec:
+      generate_docs:
+        command: 'coffeedoc --hide-private src'
       start_server:
         command: 'sh ./test/start_server.sh'
       kill_server: 
@@ -167,5 +169,5 @@ module.exports = (grunt) ->
   grunt.loadNpmTasks 'grunt-bump'
   
   # Default task.
-  grunt.registerTask 'default', ['clean', 'coffee', 'concat', 'copy', 'exec:start_server', 'connect:test', 'qunit', 'exec:kill_server', 'uglify', 'bump:minor']
+  grunt.registerTask 'default', ['clean', 'exec:generate_docs', 'coffee', 'concat', 'copy', 'exec:start_server', 'connect:test', 'qunit', 'exec:kill_server', 'uglify', 'bump:minor']
   grunt.registerTask 'debug', ['clean', 'coffee', 'concat', 'copy', 'exec:start_server', 'exec:open_browser', 'connect:debug']

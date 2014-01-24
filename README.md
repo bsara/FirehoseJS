@@ -3,22 +3,10 @@
 Javascript library for interacting with the Firehose API.
 
 ## Getting Started
-Download the [production version][min] or the [development version][max].
 
-[min]: https://raw.github.com/mysterioustrousers/FirehoseJS/master/dist/FirehoseJS.min.js
-[max]: https://raw.github.com/mysterioustrousers/FirehoseJS/master/dist/FirehoseJS.js
+Add this to your bower.json file:
 
-In your web page:
-
-```html
-<script src="jquery.js"></script>
-<script src="dist/FirehoseJS.min.js"></script>
-<script>
-jQuery(function($) {
-  $.awesome(); // "awesome"
-});
-</script>
-```
+    "firehosejs": "mysterioustrousers/FirehoseJS"
 
 ## Documentation
 _(Coming soon)_
@@ -26,5 +14,9 @@ _(Coming soon)_
 ## Examples
 _(Coming soon)_
 
-## Release History
-_(Nothing yet)_
+## Contributing
+
+Make sure you install the following npm packages:
+
+    sudo npm install -g coffeedoc
+    sudo npm install -g exec
