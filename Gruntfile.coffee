@@ -94,7 +94,7 @@ module.exports = (grunt) ->
             
     exec:
       generate_docs:
-        command: 'codo --private false'
+        command: 'codo'
       start_server:
         command: 'sh ./test/start_server.sh'
       kill_server: 
