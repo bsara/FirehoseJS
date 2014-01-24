@@ -18,6 +18,11 @@ module.exports = (grunt) ->
     
     clean:
       files: ['dist', 'build/src']
+      
+    bump:
+      options:
+        commitFiles: ['-a']
+        pushTo: 'origin'
     
     coffee:
       app:
@@ -159,7 +164,8 @@ module.exports = (grunt) ->
   grunt.loadNpmTasks 'grunt-contrib-copy'
   grunt.loadNpmTasks 'grunt-exec'
   grunt.loadNpmTasks 'grunt-contrib-connect'
+  grunt.loadNpmTasks 'grunt-bump'
   
   # Default task.
-  grunt.registerTask 'default', ['clean', 'coffee', 'concat', 'copy', 'exec:start_server', 'connect:test', 'qunit', 'exec:kill_server', 'uglify']
+  grunt.registerTask 'default', ['clean', 'coffee', 'concat', 'copy', 'exec:start_server', 'connect:test', 'qunit', 'exec:kill_server', 'uglify', 'bump:minor']
   grunt.registerTask 'debug', ['clean', 'coffee', 'concat', 'copy', 'exec:start_server', 'exec:open_browser', 'connect:debug']

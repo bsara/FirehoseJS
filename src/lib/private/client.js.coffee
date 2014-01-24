@@ -9,7 +9,7 @@ class FirehoseJS.Client
   
   env: null
   
-  _unauthorizedHandler: null
+  statusCodeHandlers: null
   
   
   constructor: ->
@@ -52,10 +52,6 @@ class FirehoseJS.Client
     @_environments[@env]["#{service}Key"]
     
   
-  setUnauthorizedHandler: (callback) ->
-    @_unauthorizedHandler = callback
-      
-    
   _sendRequest: (options) ->
     this._ensureEnvironment()
     
@@ -105,34 +101,34 @@ class FirehoseJS.Client
       dataType:     'json'
       headers:      headers
       contentType:  'application/json'
-      statusCode:
-        401: =>
-          @_unauthorizedHandler() if @_unauthorizedHandler?
-      
+      statusCode:   @statusCodeHandlers || {}
 
   _environments:
     production:
       APIURL        : "https://api.firehoseapp.com"
       browserURL    : "https://firehoseapp.com"
-      marketingURL  : "https://getfirehose.com"
       billingURL    : "https://billing.firehoseapp.com"
+      frhioURL      : "https://frh.io"
+      marketingURL  : "https://getfirehose.com"
       settingsURL   : "https://settings.firehoseapp.com"
       stripeKey     : "pk_live_CGPaLboKkpr7tqswA4elf8NQ"
       pusherKey     : "d3e373f7fac89de7bde8"
     development:
       APIURL        : "http://localhost:3000"
       browserURL    : "http://localhost:3001"
-      marketingURL  : "http://localhost:3002"
-      billingURL    : "http://localhost:3003"
-      settingsURL    : "http://localhost:3004"
+      billingURL    : "http://localhost:3002"
+      frhioURL      : "http://localhost:3003"
+      marketingURL  : "http://localhost:3004"
+      settingsURL   : "http://localhost:3005"
       stripeKey     : "pk_test_oIyMNHil987ug1v8owRhuJwr"
       pusherKey     : "2f64ac0434cc8a94526e"
     test:
       APIURL        : "http://localhost:3010"
       browserURL    : "http://localhost:3011"
-      marketingURL  : "http://localhost:3012"
-      billingURL    : "http://localhost:3013"
-      settingsURL    : "http://localhost:3014"
+      billingURL    : "http://localhost:3012"
+      frhioURL      : "http://localhost:3013"
+      marketingURL  : "http://localhost:3014"
+      settingsURL   : "http://localhost:3015"
       stripeKey     : "pk_test_oIyMNHil987ug1v8owRhuJwr"
       pusherKey     : "2f64ac0434cc8a94526e"
     

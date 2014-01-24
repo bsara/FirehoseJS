@@ -194,7 +194,7 @@ FirehoseJS.Client = (function() {
 
   Client.prototype.env = null;
 
-  Client.prototype._unauthorizedHandler = null;
+  Client.prototype.statusCodeHandlers = null;
 
   function Client() {
     this._firefoxHack();
@@ -244,13 +244,8 @@ FirehoseJS.Client = (function() {
     return this._environments[this.env]["" + service + "Key"];
   };
 
-  Client.prototype.setUnauthorizedHandler = function(callback) {
-    return this._unauthorizedHandler = callback;
-  };
-
   Client.prototype._sendRequest = function(options) {
-    var body, defaults, headers, key, method, page, paramStrings, params, perPage, route, server, url, value,
-      _this = this;
+    var body, defaults, headers, key, method, page, paramStrings, params, perPage, route, server, url, value;
     this._ensureEnvironment();
     defaults = {
       server: 'API',
@@ -307,13 +302,7 @@ FirehoseJS.Client = (function() {
       dataType: 'json',
       headers: headers,
       contentType: 'application/json',
-      statusCode: {
-        401: function() {
-          if (_this._unauthorizedHandler != null) {
-            return _this._unauthorizedHandler();
-          }
-        }
-      }
+      statusCode: this.statusCodeHandlers || {}
     });
   };
 
@@ -321,8 +310,9 @@ FirehoseJS.Client = (function() {
     production: {
       APIURL: "https://api.firehoseapp.com",
       browserURL: "https://firehoseapp.com",
-      marketingURL: "https://getfirehose.com",
       billingURL: "https://billing.firehoseapp.com",
+      frhioURL: "https://frh.io",
+      marketingURL: "https://getfirehose.com",
       settingsURL: "https://settings.firehoseapp.com",
       stripeKey: "pk_live_CGPaLboKkpr7tqswA4elf8NQ",
       pusherKey: "d3e373f7fac89de7bde8"
@@ -330,18 +320,20 @@ FirehoseJS.Client = (function() {
     development: {
       APIURL: "http://localhost:3000",
       browserURL: "http://localhost:3001",
-      marketingURL: "http://localhost:3002",
-      billingURL: "http://localhost:3003",
-      settingsURL: "http://localhost:3004",
+      billingURL: "http://localhost:3002",
+      frhioURL: "http://localhost:3003",
+      marketingURL: "http://localhost:3004",
+      settingsURL: "http://localhost:3005",
       stripeKey: "pk_test_oIyMNHil987ug1v8owRhuJwr",
       pusherKey: "2f64ac0434cc8a94526e"
     },
     test: {
       APIURL: "http://localhost:3010",
       browserURL: "http://localhost:3011",
-      marketingURL: "http://localhost:3012",
-      billingURL: "http://localhost:3013",
-      settingsURL: "http://localhost:3014",
+      billingURL: "http://localhost:3012",
+      frhioURL: "http://localhost:3013",
+      marketingURL: "http://localhost:3014",
+      settingsURL: "http://localhost:3015",
       stripeKey: "pk_test_oIyMNHil987ug1v8owRhuJwr",
       pusherKey: "2f64ac0434cc8a94526e"
     }
@@ -2375,9 +2367,7 @@ FirehoseJS.OutgoingAttachment = (function(_super) {
 
   OutgoingAttachment.firehoseType = "OutgoingAttachment";
 
-  OutgoingAttachment.prototype.filename = null;
-
-  OutgoingAttachment.prototype.MIMEType = null;
+  OutgoingAttachment.prototype.company = null;
 
   OutgoingAttachment.prototype.token = null;
 
@@ -2389,8 +2379,11 @@ FirehoseJS.OutgoingAttachment = (function(_super) {
 
   OutgoingAttachment.prototype.file = null;
 
-  OutgoingAttachment.outgoingAttachmentWithFile = function(file) {
-    return this.file = file;
+  OutgoingAttachment.outgoingAttachmentWithFile = function(file, company) {
+    return new FirehoseJS.OutgoingAttachment({
+      file: file,
+      company: company
+    });
   };
 
   OutgoingAttachment.openFilePicker = function(completion) {
@@ -2416,12 +2409,16 @@ FirehoseJS.OutgoingAttachment = (function(_super) {
   OutgoingAttachment.prototype.upload = function(options) {
     var params,
       _this = this;
+    if (options == null) {
+      options = {};
+    }
     params = {
-      route: "companies/" + this.id + "/outgoing_attachments",
+      route: "companies/" + this.company.id + "/outgoing_attachments",
       body: this._toJSON()
     };
     return FirehoseJS.client.post(params).done(function(data) {
       var xhr, _ref1;
+      _this._populateWithJSON(data);
       xhr = new XMLHttpRequest();
       if ("withCredentials" in xhr) {
         xhr.open('PUT', data.upload_url, true);
@@ -2446,32 +2443,42 @@ FirehoseJS.OutgoingAttachment = (function(_super) {
       }
       xhr.onload = function() {
         if (xhr.status === 200) {
+          _this.uploaded = true;
           params = {
             route: "outgoing_attachments/" + data.id,
             body: _this._toJSON()
           };
-          return FirehoseJS.client.post(params).done(function() {
-            return options != null ? typeof options.complete === "function" ? options.complete() : void 0 : void 0;
+          return FirehoseJS.client.put(params).done(function() {
+            return typeof options.success === "function" ? options.success(data.download_url) : void 0;
           }).fail(function(jqXHR, textStatus, errorThrown) {
-            return options != null ? typeof options.error === "function" ? options.error(errorThrown) : void 0 : void 0;
+            return typeof options.error === "function" ? options.error(errorThrown) : void 0;
           });
         } else {
-          return options != null ? typeof options.error === "function" ? options.error("Your attachment failed to upload successfully, please try again. Please contact support@getfirehose.com if the problem persists and we'll get it fixed for you.") : void 0 : void 0;
+          return typeof options.error === "function" ? options.error("Your attachment failed to upload successfully, please try again. Please contact support@getfirehose.com if the problem persists and we'll get it fixed for you.") : void 0;
         }
+      };
+      xhr.onerror = function(error) {
+        return typeof options.error === "function" ? options.error("Your attachment failed to upload successfully, please try again. Please contact support@getfirehose.com if the problem persists and we'll get it fixed for you.") : void 0;
       };
       xhr.setRequestHeader('Content-Type', _this.file.type);
       xhr.setRequestHeader('x-amz-acl', 'authenticated-read');
       return xhr.send(_this.file);
     }).fail(function(jqXHR, textStatus, errorThrown) {
-      return errorHandler(errorThrown);
+      return typeof options.error === "function" ? options.error(errorThrown) : void 0;
     });
+  };
+
+  OutgoingAttachment.prototype._populateWithJSON = function(json) {
+    this.setIfNotNull("downloadURL", json.download_url);
+    this.setIfNotNull("uploadURL", json.upload_url);
+    return OutgoingAttachment.__super__._populateWithJSON.call(this, json);
   };
 
   OutgoingAttachment.prototype._toJSON = function() {
     return {
       outgoing_attachment: {
-        filename: this.filename,
-        mimetype: this.MIMEType,
+        filename: this.file.name,
+        mimetype: this.file.type || "application/zip",
         uploaded: this.uploaded
       }
     };

@@ -74,10 +74,10 @@ class FirehoseJS.EmailAccount extends FirehoseJS.Object
                         port    : 993
                         server  : "imap.googlemail.com"
                       ,
-                        domain  : "hotmail.com",
-                        kind    : "POP",
-                        SSL     : true,
-                        port    : 995,
+                        domain  : "hotmail.com"
+                        kind    : "POP"
+                        SSL     : true
+                        port    : 995
                         server  : "pop3.live.com"
                       ,
                         domain  : "aol.com"

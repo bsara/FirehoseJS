@@ -120,9 +120,10 @@ firehoseTest 'Destroy', 1, (agent) ->
   .fail ->
     start()   
     
-firehoseTest 'Unauthorized Handler', 1, (agent) ->
-  FirehoseJS.client.setUnauthorizedHandler ->
-    ok true
-    start()
+firehoseTest 'Status Code Handlers', 1, (agent) ->
+  FirehoseJS.client.statusCodeHandlers =
+    401: ->
+      ok true
+      start()
   FirehoseJS.client.APIAccessToken = "blah"
   agent.fetch()

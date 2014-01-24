@@ -3,9 +3,7 @@ class FirehoseJS.OutgoingAttachment extends FirehoseJS.Object
   
   @firehoseType: "OutgoingAttachment"
   
-  filename: null
-  
-  MIMEType: null
+  company: null
   
   token: null
   
@@ -18,9 +16,11 @@ class FirehoseJS.OutgoingAttachment extends FirehoseJS.Object
   file: null
   
     
-  @outgoingAttachmentWithFile: (file) ->
-    @file = file
-      
+  @outgoingAttachmentWithFile: (file, company) ->
+    new FirehoseJS.OutgoingAttachment
+      file:    file
+      company: company
+    
   
   @openFilePicker: (completion) ->
     # Make an unattached input tag to be garbage collected when we're done
@@ -44,31 +44,33 @@ class FirehoseJS.OutgoingAttachment extends FirehoseJS.Object
  
     
   
-  upload: (options) ->
+  upload: (options = {}) ->
     params = 
-      route: "companies/#{@id}/outgoing_attachments"
+      route: "companies/#{@company.id}/outgoing_attachments"
       body: this._toJSON()
     FirehoseJS.client.post( params ).done (data) =>
+      
+      this._populateWithJSON data
       
       # Because we can't use jquery exactly, we have to do a bit of tomfoolery
       # to create the xhr object
       xhr = new XMLHttpRequest()
       
-      if ("withCredentials" of xhr) 
-        xhr.open('PUT', data.upload_url, true)
+      if "withCredentials" of xhr
+        xhr.open 'PUT', data.upload_url, true
         
-      else if (typeof XDomainRequest != "undefined") 
+      else if typeof XDomainRequest != "undefined"
         xhr = new XDomainRequest()
-        xhr.open('PUT', data.upload_url)
+        xhr.open 'PUT', data.upload_url
 
       if options.progress?
         xhr.upload?.addEventListener 'progress', (event) ->
           if event.lengthComputable
             percentComplete = parseInt event.loaded / event.total * 100, 10
             if percentComplete >= 95 
-              options.progress(95)
+              options.progress 95
             else
-              options.progress(percentComplete)
+              options.progress percentComplete
 
       # Essentially the 'done' callback, have to check for success
       xhr.onload = =>
@@ -77,27 +79,37 @@ class FirehoseJS.OutgoingAttachment extends FirehoseJS.Object
           # Let the server know that it was uploaded. Important for later when
           # we might want to show users their uploaded attachments, we don't want
           # to show them attachments that were never uploaded correctly.
+          @uploaded = true
           params = 
             route: "outgoing_attachments/#{data.id}"
             body: this._toJSON()
-          FirehoseJS.client.post( params ).done ->
-            options?.complete?( )
+          FirehoseJS.client.put( params ).done ->
+            options.success? data.download_url
           .fail (jqXHR, textStatus, errorThrown) ->
-            options?.error?(errorThrown)
+            options.error? errorThrown
         else
-          options?.error?("Your attachment failed to upload successfully, please try again. Please contact support@getfirehose.com if the problem persists and we'll get it fixed for you.")
+          options.error? "Your attachment failed to upload successfully, please try again. Please contact support@getfirehose.com if the problem persists and we'll get it fixed for you."
+          
+      xhr.onerror = (error) =>
+        options.error? "Your attachment failed to upload successfully, please try again. Please contact support@getfirehose.com if the problem persists and we'll get it fixed for you."
 
       # These have to match what the server does because it's part of the URL signature
-      xhr.setRequestHeader('Content-Type', @file.type)
-      xhr.setRequestHeader('x-amz-acl', 'authenticated-read')
-      xhr.send(@file) 
+      xhr.setRequestHeader 'Content-Type', @file.type
+      xhr.setRequestHeader 'x-amz-acl', 'authenticated-read'
+      xhr.send @file
     
     .fail (jqXHR, textStatus, errorThrown) ->
-      errorHandler(errorThrown)
+      options.error? errorThrown
+      
+    
+  _populateWithJSON: (json) ->
+    this.setIfNotNull "downloadURL", json.download_url
+    this.setIfNotNull "uploadURL", json.upload_url
+    super json
     
     
   _toJSON: ->
     outgoing_attachment:
-      filename: @filename
-      mimetype: @MIMEType
+      filename: @file.name
+      mimetype: @file.type || "application/zip"
       uploaded: @uploaded
