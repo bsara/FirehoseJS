@@ -1,7 +1,8 @@
 class FirehoseJS.TwitterInteraction extends FirehoseJS.Interaction
   
   
-  @firehoseType: "TwitterInteraction"
+  # @nodoc
+  @_firehoseType: "TwitterInteraction"
   
   favorited: false
   
@@ -22,22 +23,24 @@ class FirehoseJS.TwitterInteraction extends FirehoseJS.Interaction
   fromUserId: null
   
   
+  # @nodoc
   @_twitterInteractionWithID: (id) ->
     FirehoseJS.Object._objectOfClassWithID FirehoseJS.TwitterInteraction,
       id: id
   
   
+  # @nodoc
   _populateWithJSON: (json) ->
     if json.twitter_interaction?
       twitterJSON = json.twitter_interaction
-      this.setIfNotNull "favorited",           twitterJSON.favorited
-      this.setIfNotNull "tweetId",             twitterJSON.tweet_id
-      this.setIfNotNull "inReplyToScreenName", twitterJSON.in_reply_to_screen_name
-      this.setIfNotNull "inReplyToStatusId",   twitterJSON.in_reply_to_status_id
-      this.setIfNotNull "retweetCount",        twitterJSON.retweet_count
-      this.setIfNotNull "tweetSource",         twitterJSON.tweet_source
-      this.setIfNotNull "toUserId",            twitterJSON.to_user_id
-      this.setIfNotNull "toScreenName",        twitterJSON.twitter_account.screen_name
-      this.setIfNotNull "fromUserId",          twitterJSON.from_user_id
+      this._setIfNotNull "favorited",           twitterJSON.favorited
+      this._setIfNotNull "tweetId",             twitterJSON.tweet_id
+      this._setIfNotNull "inReplyToScreenName", twitterJSON.in_reply_to_screen_name
+      this._setIfNotNull "inReplyToStatusId",   twitterJSON.in_reply_to_status_id
+      this._setIfNotNull "retweetCount",        twitterJSON.retweet_count
+      this._setIfNotNull "tweetSource",         twitterJSON.tweet_source
+      this._setIfNotNull "toUserId",            twitterJSON.to_user_id
+      this._setIfNotNull "toScreenName",        twitterJSON.twitter_account.screen_name
+      this._setIfNotNull "fromUserId",          twitterJSON.from_user_id
     super json
  

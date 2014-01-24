@@ -1,7 +1,8 @@
 class FirehoseJS.Customer extends FirehoseJS.Object
   
   
-  @firehoseType: "Customer"
+  # @nodoc
+  @_firehoseType: "Customer"
   
   company: null
   
@@ -27,10 +28,12 @@ class FirehoseJS.Customer extends FirehoseJS.Object
   
   # remote arrays
   
+  # @nodoc
   _interactions: null
   
   
-  setup: ->
+  # @nodoc
+  _setup: ->
     @customerAccounts = new FirehoseJS.UniqueArray
     @customerFlaggedAgents = new FirehoseJS.UniqueArray
     @customerFlaggedAgents.sortOn "firstName"
@@ -64,19 +67,20 @@ class FirehoseJS.Customer extends FirehoseJS.Object
   
   interactions: ->
     unless @_interactions?
-      this.setIfNotNull "_interactions", new FirehoseJS.RemoteArray "customers/#{@id}/interactions", null, (json) =>
+      this._setIfNotNull "_interactions", new FirehoseJS.RemoteArray "customers/#{@id}/interactions", null, (json) =>
         FirehoseJS.Interaction._interactionWithJSON( json, this )
       @_interactions.sortOn "receivedAt"
     @_interactions
     
     
+  # @nodoc
   _populateWithJSON: (json) ->
-    this.setIfNotNull "name",                         json.name
-    this.setIfNotNull "location",                     json.location
-    this.setIfNotNull "timeZone",                     json.time_zone
-    this.setIfNotNull "newestInteractionId",          json.newest_interaction_id
-    this.setIfNotNull "newestInteractionExcerpt",     json.newest_interaction_excerpt
-    this.setIfNotNull "newestInteractionReceivedAt",  Date.parse json.newest_interaction_received_at
+    this._setIfNotNull "name",                         json.name
+    this._setIfNotNull "location",                     json.location
+    this._setIfNotNull "timeZone",                     json.time_zone
+    this._setIfNotNull "newestInteractionId",          json.newest_interaction_id
+    this._setIfNotNull "newestInteractionExcerpt",     json.newest_interaction_excerpt
+    this._setIfNotNull "newestInteractionReceivedAt",  Date.parse json.newest_interaction_received_at
     
     this._populateAssociatedObjects this, "customerAccounts", json.customer_accounts, (json) =>
       FirehoseJS.CustomerAccount._customerAccountWithID( json.id, this )

@@ -1,7 +1,8 @@
 class FirehoseJS.Tag extends FirehoseJS.Object
   
   
-  @firehoseType: "Tag"
+  # @nodoc
+  @_firehoseType: "Tag"
   
   company: null
   
@@ -14,6 +15,7 @@ class FirehoseJS.Tag extends FirehoseJS.Object
       company: company
 
 
+  # @nodoc
   @_tagWithID: (id, company) ->
     FirehoseJS.Object._objectOfClassWithID FirehoseJS.Tag,
       id:      id
@@ -42,11 +44,13 @@ class FirehoseJS.Tag extends FirehoseJS.Object
       @company.tags.dropObject this
     
 
+  # @nodoc
   _populateWithJSON: (json) ->
-    this.setIfNotNull "label", json.label
+    this._setIfNotNull "label", json.label
     super json
     
     
+  # @nodoc
   _toJSON: ->
     tag:
       label: @label

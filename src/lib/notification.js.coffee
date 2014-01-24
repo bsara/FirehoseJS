@@ -1,7 +1,8 @@
 class FirehoseJS.Notification extends FirehoseJS.Object
     
   
-  @firehoseType: "Notification"
+  # @nodoc
+  @_firehoseType: "Notification"
   
   company: null
   
@@ -12,14 +13,16 @@ class FirehoseJS.Notification extends FirehoseJS.Object
   level: 0
   
     
+  # @nodoc
   @_notificationWithID: (id, company) ->
     FirehoseJS.Object._objectOfClassWithID FirehoseJS.Notification,
       id:      id
       company: company
     
     
+  # @nodoc
   _populateWithJSON: (json) ->
-    this.setIfNotNull "title", json.title
-    this.setIfNotNull "text",  json.text
-    this.setIfNotNull "level", json.level
+    this._setIfNotNull "title", json.title
+    this._setIfNotNull "text",  json.text
+    this._setIfNotNull "level", json.level
     super json

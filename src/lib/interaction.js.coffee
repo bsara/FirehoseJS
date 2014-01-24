@@ -1,7 +1,7 @@
 class FirehoseJS.Interaction extends FirehoseJS.Object
       
-      
-  @firehoseType: "Interaction"
+  # @nodoc
+  @_firehoseType: "Interaction"
   
   customer: null
   
@@ -36,7 +36,8 @@ class FirehoseJS.Interaction extends FirehoseJS.Object
   flaggedAgents: null
   
   
-  setup: ->
+  # @nodoc
+  _setup: ->
     @responseInteractions = new FirehoseJS.UniqueArray
     @notes                = new FirehoseJS.UniqueArray
     @tags                 = new FirehoseJS.UniqueArray
@@ -47,6 +48,7 @@ class FirehoseJS.Interaction extends FirehoseJS.Object
     @flaggedAgents.sortOn "firstName"
     
     
+  # @nodoc
   @_interactionWithJSON: (json, customer) ->
     interaction = null
     if json.channel == "twitter"
@@ -61,11 +63,11 @@ class FirehoseJS.Interaction extends FirehoseJS.Object
     
   
   subject: ->
-    if this.constructor.firehoseType == "EmailInteraction"
+    if this.constructor._firehoseType == "EmailInteraction"
       return this.emailSubject
-    else if this.constructor.firehoseType == "TwitterInteraction"
+    else if this.constructor._firehoseType == "TwitterInteraction"
       return if this.inReplyToScreenName then "Reply to #{this.inReplyToScreenName}" else "Mention of #{this.toScreenName}"
-    else if this.constructor.firehoseType == "FacebookInteraction"
+    else if this.constructor._firehoseType == "FacebookInteraction"
       return this.type[0].toUpperCase() + this.type.slice(1)
   
   
@@ -77,10 +79,10 @@ class FirehoseJS.Interaction extends FirehoseJS.Object
       route: "interactions/#{@id}/reply"
       body:  body
     FirehoseJS.client.post( params ).done (data) =>
-      this.setIfNotNull "responseDraft", null
+      this._setIfNotNull "responseDraft", null
       response = FirehoseJS.Interaction._interactionWithJSON( data, @customer )
       @responseInteractions.insertObject response
-      response.setIfNotNull "agent", FirehoseJS.Agent.loggedInAgent
+      response._setIfNotNull "agent", FirehoseJS.Agent.loggedInAgent
       @responseInteractions.sort (interaction1, interaction2) ->
         interaction1.createdAt > interaction2.createdAt
     
@@ -136,19 +138,21 @@ class FirehoseJS.Interaction extends FirehoseJS.Object
       "Happy"
       
       
+  # @nodoc
   _setCustomer: (customer) ->
-    this.setIfNotNull "customer", customer
+    this._setIfNotNull "customer", customer
     
     
+  # @nodoc
   _populateWithJSON: (json) ->
-    this.setIfNotNull "token",         json.token unless @token?
-    this.setIfNotNull "body",          json.body
-    this.setIfNotNull "responseDraft", json.response_draft
-    this.setIfNotNull "channel",       json.channel
-    this.setIfNotNull "receivedAt",    Date.parse(json.received_at)
-    this.setIfNotNull "privateURL",    json.private_url
-    this.setIfNotNull "happiness",     json.happiness
-    this.setIfNotNull "resolved",      json.resolved
+    this._setIfNotNull "token",         json.token unless @token?
+    this._setIfNotNull "body",          json.body
+    this._setIfNotNull "responseDraft", json.response_draft
+    this._setIfNotNull "channel",       json.channel
+    this._setIfNotNull "receivedAt",    Date.parse(json.received_at)
+    this._setIfNotNull "privateURL",    json.private_url
+    this._setIfNotNull "happiness",     json.happiness
+    this._setIfNotNull "resolved",      json.resolved
     
     this._populateAssociatedObjectWithJSON this, "agent", json.agent, (json) ->
       FirehoseJS.Agent.agentWithID( json.id )
@@ -173,6 +177,7 @@ class FirehoseJS.Interaction extends FirehoseJS.Object
     super json
     
     
+  # @nodoc
   _toJSON: ->
     interaction:
       resolved:       @resolved

@@ -17,7 +17,7 @@ module.exports = (grunt) ->
     # Task configuration.
     
     clean:
-      files: ['dist', 'build/src']
+      files: ['dist', 'build/src', 'docs']
       
     bump:
       options:
@@ -94,7 +94,7 @@ module.exports = (grunt) ->
             
     exec:
       generate_docs:
-        command: 'coffeedoc --hide-private src'
+        command: 'codo --private false'
       start_server:
         command: 'sh ./test/start_server.sh'
       kill_server: 
@@ -169,5 +169,5 @@ module.exports = (grunt) ->
   grunt.loadNpmTasks 'grunt-bump'
   
   # Default task.
-  grunt.registerTask 'default', ['clean', 'exec:generate_docs', 'coffee', 'concat', 'copy', 'exec:start_server', 'connect:test', 'qunit', 'exec:kill_server', 'uglify', 'bump:minor']
+  grunt.registerTask 'default', ['clean', 'exec:generate_docs', 'coffee', 'concat', 'copy', 'exec:start_server', 'connect:test', 'qunit', 'exec:kill_server', 'uglify']
   grunt.registerTask 'debug', ['clean', 'coffee', 'concat', 'copy', 'exec:start_server', 'exec:open_browser', 'connect:debug']

@@ -1,7 +1,8 @@
 class FirehoseJS.CreditCard extends FirehoseJS.Object
   
   
-  @firehoseType: "CreditCard"
+  # @nodoc
+  @_firehoseType: "CreditCard"
   
   company: null
   
@@ -44,11 +45,11 @@ class FirehoseJS.CreditCard extends FirehoseJS.Object
       exp_year:   @expirationYear
     , (status, response) =>
       if not response.error
-        this.setIfNotNull "expirationMonth", response.card.exp_month
-        this.setIfNotNull "expirationYear",  response.card.exp_year
-        this.setIfNotNull "lastFour",        response.card.last4
-        this.setIfNotNull "stripeToken",     response.id
-        this.setIfNotNull "email",           FirehoseJS.Agent.loggedInAgent.email
+        this._setIfNotNull "expirationMonth", response.card.exp_month
+        this._setIfNotNull "expirationYear",  response.card.exp_year
+        this._setIfNotNull "lastFour",        response.card.last4
+        this._setIfNotNull "stripeToken",     response.id
+        this._setIfNotNull "email",           FirehoseJS.Agent.loggedInAgent.email
         callback()
       
     
@@ -79,13 +80,15 @@ class FirehoseJS.CreditCard extends FirehoseJS.Object
       @company.set 'creditCard', null
     
     
+  # @nodoc
   _populateWithJSON: (json) ->
-    this.setIfNotNull "expirationMonth", json.expiration_month
-    this.setIfNotNull "expirationYear",  json.expiration_year
-    this.setIfNotNull "lastFour",        json.last_four
+    this._setIfNotNull "expirationMonth", json.expiration_month
+    this._setIfNotNull "expirationYear",  json.expiration_year
+    this._setIfNotNull "lastFour",        json.last_four
     super json
 
 
+  # @nodoc
   _toJSON: ->
     credit_card:
       expiration_month: @expirationMonth

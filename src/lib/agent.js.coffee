@@ -1,7 +1,8 @@
 class FirehoseJS.Agent extends FirehoseJS.Object
   
   
-  @firehoseType: "Agent"
+  # @nodoc
+  @_firehoseType: "Agent"
   
   @loggedInAgent: null
   
@@ -17,6 +18,7 @@ class FirehoseJS.Agent extends FirehoseJS.Object
   
   currentCompany: null
   
+  # @nodoc
   _password: null
   
   # associations
@@ -24,7 +26,8 @@ class FirehoseJS.Agent extends FirehoseJS.Object
   companies: null 
   
   
-  setup: ->
+  # @nodoc
+  _setup: ->
     @companies = new FirehoseJS.UniqueArray
 
 
@@ -45,8 +48,8 @@ class FirehoseJS.Agent extends FirehoseJS.Object
     
   
   signUpWithFirstAndLastName: (firstName, lastName) ->
-    this.setIfNotNull "firstName", firstName
-    this.setIfNotNull "lastName",  lastName
+    this._setIfNotNull "firstName", firstName
+    this._setIfNotNull "lastName",  lastName
     
     params = 
       route: 'agents'
@@ -84,8 +87,8 @@ class FirehoseJS.Agent extends FirehoseJS.Object
       
   
   logout: ->
-    this.setIfNotNull "accessToken", null
-    this.setIfNotNull "URLToken", null
+    this._setIfNotNull "accessToken", null
+    this._setIfNotNull "URLToken", null
     FirehoseJS.Agent.loggedInAgent        = null
     FirehoseJS.client.APIAccessToken      = null
     FirehoseJS.client.URLToken            = null
@@ -145,29 +148,31 @@ class FirehoseJS.Agent extends FirehoseJS.Object
     
 
   setNewPassword: (newPassword) ->
-    this.setIfNotNull "_password", newPassword
+    this._setIfNotNull "_password", newPassword
 
 
   fullName: ->
     "#{@firstName} #{@lastName}"
   
   
+  # @nodoc
   _populateWithJSON: (json) ->
-    this.setIfNotNull "accessToken", json.access_token unless @accessToken?
-    this.setIfNotNull "URLToken",    json.url_token    unless @URLToken?
-    this.setIfNotNull "firstName",   json.first_name
-    this.setIfNotNull "lastName",    json.last_name
-    this.setIfNotNull "email",       json.email
+    this._setIfNotNull "accessToken", json.access_token unless @accessToken?
+    this._setIfNotNull "URLToken",    json.url_token    unless @URLToken?
+    this._setIfNotNull "firstName",   json.first_name
+    this._setIfNotNull "lastName",    json.last_name
+    this._setIfNotNull "email",       json.email
     
     this._populateAssociatedObjects this, "companies", json.companies, (json) =>
       FirehoseJS.Company.companyWithID( json.id, this )
       
     if @companies.length > 0 and not @currentCompany?
-      this.setIfNotNull "currentCompany", @companies[0]
+      this._setIfNotNull "currentCompany", @companies[0]
     
     super json
     
     
+  # @nodoc
   _toJSON: ->
     agent:
       first_name: @firstName

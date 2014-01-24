@@ -1,7 +1,8 @@
 class FirehoseJS.EmailAccount extends FirehoseJS.Object
   
 
-  @firehoseType: "EmailAccount"
+  # @nodoc
+  @_firehoseType: "EmailAccount"
 
   company: null
   
@@ -40,6 +41,7 @@ class FirehoseJS.EmailAccount extends FirehoseJS.Object
     FirehoseJS.Object._objectOfClassWithID FirehoseJS.EmailAccount, emailAccount
     
     
+  # @nodoc
   @_emailAccountWithID: (id, company) ->
     FirehoseJS.Object._objectOfClassWithID FirehoseJS.EmailAccount,
       id:      id
@@ -67,6 +69,7 @@ class FirehoseJS.EmailAccount extends FirehoseJS.Object
       @company.emailAccounts().dropObject this
     
     
+  # @nodoc
   _popularServices: [
                         domain  : "gmail.com"
                         kind    : "IMAP"
@@ -122,26 +125,28 @@ class FirehoseJS.EmailAccount extends FirehoseJS.Object
     for service in @_popularServices
       domain = "@#{service.domain}"
       if @username.indexOf( domain ) != -1
-        this.setIfNotNull "kind",   service.kind
-        this.setIfNotNull "SSL",    service.SSL
-        this.setIfNotNull "port",   service.port
-        this.setIfNotNull "server", service.server
+        this._setIfNotNull "kind",   service.kind
+        this._setIfNotNull "SSL",    service.SSL
+        this._setIfNotNull "port",   service.port
+        this._setIfNotNull "server", service.server
         return true
     return false
     
     
+  # @nodoc
   _populateWithJSON: (json) ->
-    this.setIfNotNull "emailAddress",     json.email
-    this.setIfNotNull "title",            json.title unless @title?
-    this.setIfNotNull "server",           json.incoming_server
-    this.setIfNotNull "SSL",              json.incoming_ssl
-    this.setIfNotNull "port",             json.incoming_port unless @port?
-    this.setIfNotNull "username",         json.incoming_username
-    this.setIfNotNull "kind",             json.kind
-    this.setIfNotNull "deleteFromServer", json.delete_from_server
+    this._setIfNotNull "emailAddress",     json.email
+    this._setIfNotNull "title",            json.title unless @title?
+    this._setIfNotNull "server",           json.incoming_server
+    this._setIfNotNull "SSL",              json.incoming_ssl
+    this._setIfNotNull "port",             json.incoming_port unless @port?
+    this._setIfNotNull "username",         json.incoming_username
+    this._setIfNotNull "kind",             json.kind
+    this._setIfNotNull "deleteFromServer", json.delete_from_server
     super json
     
     
+  # @nodoc
   _toJSON: ->
     email_account:
       email:              @emailAddress

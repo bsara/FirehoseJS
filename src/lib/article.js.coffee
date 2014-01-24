@@ -1,7 +1,8 @@
 class FirehoseJS.Article extends FirehoseJS.Object
   
   
-  @firehoseType: "Article"
+  # @nodoc
+  @_firehoseType: "Article"
   
   company: null
   
@@ -52,12 +53,14 @@ class FirehoseJS.Article extends FirehoseJS.Object
       @company.articles().dropObject this
     
 
+  # @nodoc
   _populateWithJSON: (json) ->
-    this.setIfNotNull "title", json.title
-    this.setIfNotNull "body",  json.body
+    this._setIfNotNull "title", json.title
+    this._setIfNotNull "body",  json.body
     super json
     
     
+  # @nodoc
   _toJSON: ->
     article:
       title:  @title

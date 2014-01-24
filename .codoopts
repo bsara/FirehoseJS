@@ -1,0 +1,6 @@
+--name       "FirehoseJS"
+--readme     README.md
+--private    false
+--title      "FirehoseJS Documentation"
+--output     ./docs
+./src

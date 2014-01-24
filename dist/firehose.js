@@ -1,5 +1,18 @@
 (function(){var e,t,n,r,i,s={}.hasOwnProperty,o=function(e,t){function r(){this.constructor=e}for(var n in t)s.call(t,n)&&(e[n]=t[n]);return r.prototype=t.prototype,e.prototype=new r,e.__super__=t.prototype,e},u=this;this.Stripe=function(){function e(){}return e.version=2,e.endpoint="https://api.stripe.com/v1",e.setPublishableKey=function(t){e.key=t},e.complete=function(t){return function(n,r,i){var s;if(n!=="success")return s=Math.round((new Date).getTime()/1e3),(new Image).src="http://q.stripe.com?event=stripejs-error&type="+n+"&key="+e.key+"&timestamp="+s,typeof t=="function"?t(500,{error:{code:n,type:n,message:"An unexpected error has occurred submitting your credit\ncard to our secure credit card processor. This may be\ndue to network connectivity issues, so you should try\nagain (you won't be charged twice). If this problem\npersists, please let us know!"}}):void 0}},e}.call(this),e=this.Stripe,this.Stripe.token=function(){function t(){}return t.validate=function(e,t){if(!e)throw t+" required";if(typeof e!="object")throw t+" invalid"},t.formatData=function(t,n){return e.utils.isElement(t)&&(t=e.utils.paramsFromForm(t,n)),e.utils.underscoreKeys(t),t},t.create=function(t,n){return t.key||(t.key=e.key||e.publishableKey),e.utils.validateKey(t.key),e.ajaxJSONP({url:""+e.endpoint+"/tokens",data:t,method:"POST",success:function(e,t){return typeof n=="function"?n(t,e):void 0},complete:e.complete(n),timeout:4e4})},t.get=function(t,n){if(!t)throw"token required";return e.utils.validateKey(e.key),e.ajaxJSONP({url:""+e.endpoint+"/tokens/"+t,data:{key:e.key},success:function(e,t){return typeof n=="function"?n(t,e):void 0},complete:e.complete(n),timeout:4e4})},t}.call(this),this.Stripe.card=function(t){function n(){return n.__super__.constructor.apply(this,arguments)}return o(n,t),n.tokenName="card",n.whitelistedAttrs=["number","cvc","exp_month","exp_year","name","address_line1","address_line2","address_city","address_state","address_zip","address_country"],n.createToken=function(t,r,i){var s;return r==null&&(r={}),e.token.validate(t,"card"),typeof r=="function"?(i=r,r={}):typeof r!="object"&&(s=parseInt(r,10),r={},s>0&&(r.amount=s)),r[n.tokenName]=e.token.formatData(t,n.whitelistedAttrs),e.token.create(r,i)},n.getToken=function(t,n){return e.token.get(t,n)},n.validateCardNumber=function(e){return e=(e+"").replace(/\s+|-/g,""),e.length>=10&&e.length<=16&&n.luhnCheck(e)},n.validateCVC=function(t){return t=e.utils.trim(t),/^\d+$/.test(t)&&t.length>=3&&t.length<=4},n.validateExpiry=function(t,n){var r,i;return t=e.utils.trim(t),n=e.utils.trim(n),/^\d+$/.test(t)?/^\d+$/.test(n)?parseInt(t,10)<=12?(i=new Date(n,t),r=new Date,i.setMonth(i.getMonth()-1),i.setMonth(i.getMonth()+1,1),i>r):!1:!1:!1},n.luhnCheck=function(e){var t,n,r,i,s,o;r=!0,i=0,n=(e+"").split("").reverse();for(s=0,o=n.length;s<o;s++){t=n[s],t=parseInt(t,10);if(r=!r)t*=2;t>9&&(t-=9),i+=t}return i%10===0},n.cardType=function(e){return n.cardTypes[e.slice(0,2)]||"Unknown"},n.cardTypes=function(){var e,t,n,r;t={};for(e=n=40;n<=49;e=++n)t[e]="Visa";for(e=r=50;r<=59;e=++r)t[e]="MasterCard";return t[34]=t[37]="American Express",t[60]=t[62]=t[64]=t[65]="Discover",t[35]="JCB",t[30]=t[36]=t[38]=t[39]="Diners Club",t}(),n}.call(this,this.Stripe.token),this.Stripe.bankAccount=function(t){function n(){return n.__super__.constructor.apply(this,arguments)}return o(n,t),n.tokenName="bank_account",n.whitelistedAttrs=["country","routing_number","account_number"],n.createToken=function(t,r,i){return r==null&&(r={}),e.token.validate(t,"bank account"),typeof r=="function"&&(i=r,r={}),r[n.tokenName]=e.token.formatData(t,n.whitelistedAttrs),e.token.create(r,i)},n.getToken=function(t,n){return e.token.get(t,n)},n.validateRoutingNumber=function(t,r){t=e.utils.trim(t);switch(r){case"US":return/^\d+$/.test(t)&&t.length===9&&n.routingChecksum(t);case"CA":return/\d{5}\-\d{3}/.test(t)&&t.length===9;default:return!0}},n.validateAccountNumber=function(t,n){t=e.utils.trim(t);switch(n){case"US":return/^\d+$/.test(t)&&t.length>=1&&t.length<=17;default:return!0}},n.routingChecksum=function(e){var t,n,r,i,s,o;r=0,t=(e+"").split(""),o=[0,3,6];for(i=0,s=o.length;i<s;i++)n=o[i],r+=parseInt(t[n])*3,r+=parseInt(t[n+1])*7,r+=parseInt(t[n+2]);return r!==0&&r%10===0},n}.call(this,this.Stripe.token),t=["createToken","getToken","cardType","validateExpiry","validateCVC","validateCardNumber"];for(r=0,i=t.length;r<i;r++)n=t[r],this.Stripe[n]=this.Stripe.card[n];typeof module!="undefined"&&module!==null&&(module.exports=this.Stripe),typeof define=="function"&&define("stripe",[],function(){return u.Stripe})}).call(this),function(){var e,t,n,r=[].slice;e=encodeURIComponent,t=(new Date).getTime(),n=function(t,r,i){var s,o;r==null&&(r=[]);for(s in t)o=t[s],i&&(s=""+i+"["+s+"]"),typeof o=="object"?n(o,r,s):r.push(""+s+"="+e(o));return r.join("&").replace(/%20/g,"+")},this.Stripe.ajaxJSONP=function(e){var i,s,o,u,a,f;return e==null&&(e={}),o="sjsonp"+ ++t,a=document.createElement("script"),s=null,i=function(t){var n;return t==null&&(t="abort"),clearTimeout(s),(n=a.parentNode)!=null&&n.removeChild(a),o in window&&(window[o]=function(){}),typeof e.complete=="function"?e.complete(t,f,e):void 0},f={abort:i},a.onerror=function(){return f.abort(),typeof e.error=="function"?e.error(f,e):void 0},window[o]=function(){var t;t=1<=arguments.length?r.call(arguments,0):[],clearTimeout(s),a.parentNode.removeChild(a);try{delete window[o]}catch(n){window[o]=void 0}return typeof e.success=="function"&&e.success.apply(e,t),typeof e.complete=="function"?e.complete("success",f,e):void 0},e.data||(e.data={}),e.data.callback=o,e.method&&(e.data._method=e.method),a.src=e.url+"?"+n(e.data),u=document.getElementsByTagName("head")[0],u.appendChild(a),e.timeout>0&&(s=setTimeout(function(){return f.abort("timeout")},e.timeout)),f}}.call(this),function(){var e=[].indexOf||function(e){for(var t=0,n=this.length;t<n;t++)if(t in this&&this[t]===e)return t;return-1};this.Stripe.utils=function(){function t(){}return t.trim=function(e){return(e+"").replace(/^\s+|\s+$/g,"")},t.underscore=function(e){return(e+"").replace(/([A-Z])/g,function(e){return"_"+e.toLowerCase()}).replace(/-/g,"_")},t.underscoreKeys=function(e){var t,n,r;r=[];for(t in e)n=e[t],delete e[t],r.push(e[this.underscore(t)]=n);return r},t.isElement=function(e){return typeof e!="object"?!1:typeof jQuery!="undefined"&&jQuery!==null&&e instanceof jQuery?!0:e.nodeType===1},t.paramsFromForm=function(t,n){var r,i,s,o,u,a,f,l,c,h;n==null&&(n=[]),typeof jQuery!="undefined"&&jQuery!==null&&t instanceof jQuery&&(t=t[0]),s=t.getElementsByTagName("input"),u=t.getElementsByTagName("select"),a={};for(f=0,c=s.length;f<c;f++){i=s[f],r=this.underscore(i.getAttribute("data-stripe"));if(e.call(n,r)<0)continue;a[r]=i.value}for(l=0,h=u.length;l<h;l++){o=u[l],r=this.underscore(o.getAttribute("data-stripe"));if(e.call(n,r)<0)continue;o.selectedIndex!=null&&(a[r]=o.options[o.selectedIndex].value)}return a},t.validateKey=function(e){if(!e||typeof e!="string")throw new Error("You did not set a valid publishable key. Call Stripe.setPublishableKey() with your publishable key. For more info, see https://stripe.com/docs/stripe.js");if(/\s/g.test(e))throw new Error("Your key is invalid, as it contains whitespace. For more info, see https://stripe.com/docs/stripe.js");if(/^sk_/.test(e))throw new Error("You are using a secret key with Stripe.js, instead of the publishable one. For more info, see https://stripe.com/docs/stripe.js")},t}()}.call(this),function(){var e=[].indexOf||function(e){for(var t=0,n=this.length;t<n;t++)if(t in this&&this[t]===e)return t;return-1};this.Stripe.validator={"boolean":function(e,t){if(t!=="true"&&t!=="false")return"Enter a boolean string (true or false)"},integer:function(e,t){if(!/^\d+$/.test(t))return"Enter an integer"},positive:function(e,t){if(!(!this.integer(e,t)&&parseInt(t,10)>0))return"Enter a positive value"},range:function(t,n){var r;if(r=parseInt(n,10),e.call(t,r)<0)return"Needs to be between "+t[0]+" and "+t[t.length-1]},required:function(e,t){if(e&&(t==null||t===""))return"Required"},year:function(e,t){if(!/^\d{4}$/.test(t))return"Enter a 4-digit year"},birthYear:function(e,t){var n;n=this.year(e,t);if(n)return n;if(parseInt(t,10)>2e3)return"You must be over 18";if(parseInt(t,10)<1900)return"Enter your birth year"},month:function(e,t){if(this.integer(e,t))return"Please enter a month";if(this.range([1,2,3,4,5,6,7,8,9,10,11,12],t))return"Needs to be between 1 and 12"},choices:function(t,n){if(e.call(t,n)<0)return"Not an acceptable value for this field"},email:function(e,t){if(!/^[^@<\s>]+@[^@<\s>]+$/.test(t))return"That doesn't look like an email address"},url:function(e,t){if(!/^https?:\/\/.+\..+/.test(t))return"Not a valid url"},usTaxID:function(e,t){if(!/^\d{2}-?\d{1}-?\d{2}-?\d{4}$/.test(t))return"Not a valid tax ID"},ein:function(e,t){if(!/^\d{2}-?\d{7}$/.test(t))return"Not a valid EIN"},ssnLast4:function(e,t){if(!/^\d{4}$/.test(t))return"Not a valid last 4 digits for an SSN"},ownerPersonalID:function(e,t){var n;n=function(){switch(e){case"CA":return/^\d{3}-?\d{3}-?\d{3}$/.test(t);case"US":return!0}}();if(!n)return"Not a valid ID"},bizTaxID:function(e,t){var n,r,i,s,o,u,a,f;u={CA:["Tax ID",[/^\d{9}$/]],US:["EIN",[/^\d{2}-?\d{7}$/]]},o=u[e];if(o!=null){n=o[0],s=o[1],r=!1;for(a=0,f=s.length;a<f;a++){i=s[a];if(i.test(t)){r=!0;break}}if(!r)return"Not a valid "+n}},zip:function(e,t){var n;n=function(){switch(e.toUpperCase()){case"CA":return/^[\d\w]{6}$/.test(t!=null?t.replace(/\s+/g,""):void 0);case"US":return/^\d{5}$/.test(t)||/^\d{9}$/.test(t)}}();if(!n)return"Not a valid zip"},bankAccountNumber:function(e,t){if(!/^\d{1,17}$/.test(t))return"Invalid bank account number"},usRoutingNumber:function(e){var t,n,r,i,s,o,u;if(!/^\d{9}$/.test(e))return"Routing number must have 9 digits";s=0;for(t=o=0,u=e.length-1;o<=u;t=o+=3)n=parseInt(e.charAt(t),10)*3,r=parseInt(e.charAt(t+1),10)*7,i=parseInt(e.charAt(t+2),10),s+=n+r+i;if(s===0||s%10!==0)return"Invalid routing number"},caRoutingNumber:function(e){if(!/^\d{5}\-\d{3}$/.test(e))return"Invalid transit number"},routingNumber:function(e,t){switch(e.toUpperCase()){case"CA":return this.caRoutingNumber(t);case"US":return this.usRoutingNumber(t)}},phoneNumber:function(e,t){var n;n=t.replace(/[^0-9]/g,"");if(n.length!==10)return"Invalid phone number"},bizDBA:function(e,t){if(!/^.{1,23}$/.test(t))return"Statement descriptors can only have up to 23 characters"},nameLength:function(e,t){if(t.length===1)return"Names need to be longer than one character"}}}.call(this);
+/*
+This is a module-level docstring, and will be displayed at the top of the module documentation.
+Documentation generated by [CoffeeDoc](http://github.com/omarkhan/coffeedoc)
+*/
+
 window.FirehoseJS = {};
+
+/*
+@param    server [string] The name of the server. Possible values: 'API', 'browser', 'billing', 'frhio', 'marketing', 'settings'
+@return   [string] The root url of the server based on the current environement.
+@example  Create a URL to the login page of the browser app.
+  "#{FirehoseJS.rootFor('browser')/pages/login"
+*/
+
 
 FirehoseJS.rootFor = function(server) {
   return FirehoseJS.client.serverAddress(server);
@@ -398,11 +411,32 @@ FirehoseJS.Client = (function() {
 FirehoseJS.client = new FirehoseJS.Client;
 
 FirehoseJS.Object = (function() {
+  /*
+  @property [Number] Unique ID of object
+  */
+
   Object.prototype.id = null;
+
+  /*
+  @property [Date] When the object was created on the server
+  */
+
 
   Object.prototype.createdAt = null;
 
+  /*
+  @property [Array<Object>] The static array that holds the entire object graph
+  @nodoc
+  */
+
+
   Object._objects = [];
+
+  /*
+  @note You never need to construct a `FirehoseJS.Object` object directly. Use a subclass' factory method.
+  @private
+  */
+
 
   function Object(properties) {
     var prop;
@@ -411,21 +445,40 @@ FirehoseJS.Object = (function() {
     }
   }
 
-  Object.prototype.setup = function() {};
+  /*
+  To be overridden by subclasses
+  @nodoc
+  */
+
+
+  Object.prototype._setup = function() {};
+
+  /*
+  A placeholder for third-party libraries to replace. (e.g Ember.js, Backbone.js)
+  @note A client-side library that uses observers often uses get/set methods. You can do `FirehoseJS.Object.set = Ember.Object.set` for example.
+  */
+
 
   Object.prototype.get = function(key) {
     return this[key];
   };
 
+  /*
+  A placeholder for third-party libraries to replace. (e.g Ember.js, Backbone.js)
+  @note A client-side library that uses observers often uses get/set methods. You can do `FirehoseJS.Object.get = Ember.Object.get` for example.
+  */
+
+
   Object.prototype.set = function(key, value) {
     return this[key] = value;
   };
 
-  Object.prototype.setIfNotNull = function(key, value) {
-    if (value != null) {
-      return this.set(key, value);
-    }
-  };
+  /*
+  Create an object to be cached
+  
+  @nodoc
+  */
+
 
   Object._objectOfClassWithID = function(klass, properties) {
     var obj, parsedID, _i, _len, _ref;
@@ -437,13 +490,13 @@ FirehoseJS.Object = (function() {
       _ref = this._objects;
       for (_i = 0, _len = _ref.length; _i < _len; _i++) {
         obj = _ref[_i];
-        if (obj.id && obj.id === parsedID && obj.constructor.firehoseType === klass.firehoseType) {
+        if (obj.id && obj.id === parsedID && obj.constructor._firehoseType === klass._firehoseType) {
           return obj;
         }
       }
     }
     obj = new klass(properties);
-    obj.setup();
+    obj._setup();
     this._objects.push(obj);
     return obj;
   };
@@ -479,10 +532,16 @@ FirehoseJS.Object = (function() {
 
   Object.prototype._populateWithJSON = function(json) {
     if (this.id == null) {
-      this.setIfNotNull("id", json.id);
+      this._setIfNotNull("id", json.id);
     }
     if (this.createdAt == null) {
-      return this.setIfNotNull("createdAt", Date.parse(json.created_at));
+      return this._setIfNotNull("createdAt", Date.parse(json.created_at));
+    }
+  };
+
+  Object.prototype._setIfNotNull = function(key, value) {
+    if (value != null) {
+      return this.set(key, value);
     }
   };
 
@@ -502,7 +561,7 @@ FirehoseJS.Agent = (function(_super) {
     return _ref;
   }
 
-  Agent.firehoseType = "Agent";
+  Agent._firehoseType = "Agent";
 
   Agent.loggedInAgent = null;
 
@@ -522,7 +581,7 @@ FirehoseJS.Agent = (function(_super) {
 
   Agent.prototype.companies = null;
 
-  Agent.prototype.setup = function() {
+  Agent.prototype._setup = function() {
     return this.companies = new FirehoseJS.UniqueArray;
   };
 
@@ -548,8 +607,8 @@ FirehoseJS.Agent = (function(_super) {
   Agent.prototype.signUpWithFirstAndLastName = function(firstName, lastName) {
     var params,
       _this = this;
-    this.setIfNotNull("firstName", firstName);
-    this.setIfNotNull("lastName", lastName);
+    this._setIfNotNull("firstName", firstName);
+    this._setIfNotNull("lastName", lastName);
     params = {
       route: 'agents',
       body: {
@@ -592,8 +651,8 @@ FirehoseJS.Agent = (function(_super) {
   };
 
   Agent.prototype.logout = function() {
-    this.setIfNotNull("accessToken", null);
-    this.setIfNotNull("URLToken", null);
+    this._setIfNotNull("accessToken", null);
+    this._setIfNotNull("URLToken", null);
     FirehoseJS.Agent.loggedInAgent = null;
     FirehoseJS.client.APIAccessToken = null;
     FirehoseJS.client.URLToken = null;
@@ -678,7 +737,7 @@ FirehoseJS.Agent = (function(_super) {
   };
 
   Agent.prototype.setNewPassword = function(newPassword) {
-    return this.setIfNotNull("_password", newPassword);
+    return this._setIfNotNull("_password", newPassword);
   };
 
   Agent.prototype.fullName = function() {
@@ -688,19 +747,19 @@ FirehoseJS.Agent = (function(_super) {
   Agent.prototype._populateWithJSON = function(json) {
     var _this = this;
     if (this.accessToken == null) {
-      this.setIfNotNull("accessToken", json.access_token);
+      this._setIfNotNull("accessToken", json.access_token);
     }
     if (this.URLToken == null) {
-      this.setIfNotNull("URLToken", json.url_token);
+      this._setIfNotNull("URLToken", json.url_token);
     }
-    this.setIfNotNull("firstName", json.first_name);
-    this.setIfNotNull("lastName", json.last_name);
-    this.setIfNotNull("email", json.email);
+    this._setIfNotNull("firstName", json.first_name);
+    this._setIfNotNull("lastName", json.last_name);
+    this._setIfNotNull("email", json.email);
     this._populateAssociatedObjects(this, "companies", json.companies, function(json) {
       return FirehoseJS.Company.companyWithID(json.id, _this);
     });
     if (this.companies.length > 0 && (this.currentCompany == null)) {
-      this.setIfNotNull("currentCompany", this.companies[0]);
+      this._setIfNotNull("currentCompany", this.companies[0]);
     }
     return Agent.__super__._populateWithJSON.call(this, json);
   };
@@ -732,7 +791,7 @@ FirehoseJS.Company = (function(_super) {
     return _ref;
   }
 
-  Company.firehoseType = "Company";
+  Company._firehoseType = "Company";
 
   Company.prototype.title = null;
 
@@ -790,7 +849,7 @@ FirehoseJS.Company = (function(_super) {
 
   Company.prototype._creator = null;
 
-  Company.prototype.setup = function() {
+  Company.prototype._setup = function() {
     this.agents = new FirehoseJS.UniqueArray;
     this.agentInvites = new FirehoseJS.UniqueArray;
     this.tags = new FirehoseJS.UniqueArray;
@@ -890,7 +949,7 @@ FirehoseJS.Company = (function(_super) {
   Company.prototype.notifications = function() {
     var _this = this;
     if (this._notifications == null) {
-      this.setIfNotNull("_notifications", new FirehoseJS.RemoteArray("companies/" + this.id + "/notifications", null, function(json) {
+      this._setIfNotNull("_notifications", new FirehoseJS.RemoteArray("companies/" + this.id + "/notifications", null, function(json) {
         return FirehoseJS.Notification._notificationWithID(json.id, _this);
       }));
       this._notifications.sortOn("title");
@@ -901,7 +960,7 @@ FirehoseJS.Company = (function(_super) {
   Company.prototype.twitterAccounts = function() {
     var _this = this;
     if (this._twitterAccounts == null) {
-      this.setIfNotNull("_twitterAccounts", new FirehoseJS.RemoteArray("companies/" + this.id + "/twitter_accounts", null, function(json) {
+      this._setIfNotNull("_twitterAccounts", new FirehoseJS.RemoteArray("companies/" + this.id + "/twitter_accounts", null, function(json) {
         return FirehoseJS.TwitterAccount._twitterAccountWithID(json.id, _this);
       }));
       this._twitterAccounts.sortOn("screenName");
@@ -912,7 +971,7 @@ FirehoseJS.Company = (function(_super) {
   Company.prototype.facebookAccounts = function() {
     var _this = this;
     if (this._facebookAccounts == null) {
-      this.setIfNotNull("_facebookAccounts", new FirehoseJS.RemoteArray("companies/" + this.id + "/facebook_accounts", null, function(json) {
+      this._setIfNotNull("_facebookAccounts", new FirehoseJS.RemoteArray("companies/" + this.id + "/facebook_accounts", null, function(json) {
         return FirehoseJS.FacebookAccount._facebookAccountWithID(json.id, _this);
       }));
       this._facebookAccounts.sortOn("name");
@@ -923,7 +982,7 @@ FirehoseJS.Company = (function(_super) {
   Company.prototype.emailAccounts = function() {
     var _this = this;
     if (this._emailAccounts == null) {
-      this.setIfNotNull("_emailAccounts", new FirehoseJS.RemoteArray("companies/" + this.id + "/email_accounts", null, function(json) {
+      this._setIfNotNull("_emailAccounts", new FirehoseJS.RemoteArray("companies/" + this.id + "/email_accounts", null, function(json) {
         return FirehoseJS.EmailAccount._emailAccountWithID(json.id, _this);
       }));
       this._emailAccounts.sortOn("username");
@@ -934,7 +993,7 @@ FirehoseJS.Company = (function(_super) {
   Company.prototype.articles = function() {
     var _this = this;
     if (this._articles == null) {
-      this.setIfNotNull("_articles", new FirehoseJS.RemoteArray("companies/" + this.id + "/articles", null, function(json) {
+      this._setIfNotNull("_articles", new FirehoseJS.RemoteArray("companies/" + this.id + "/articles", null, function(json) {
         return FirehoseJS.Article.articleWithID(json.id, _this);
       }));
       this._articles.sortOn("title");
@@ -976,12 +1035,12 @@ FirehoseJS.Company = (function(_super) {
       };
       return FirehoseJS.client.get(params).done(function(json) {
         if (json.credit_card != null) {
-          _this.setIfNotNull("creditCard", FirehoseJS.CreditCard.creditCardWithID(json.credit_card.id, _this));
+          _this._setIfNotNull("creditCard", FirehoseJS.CreditCard.creditCardWithID(json.credit_card.id, _this));
           _this.creditCard._populateWithJSON(json.credit_card);
         }
-        _this.setIfNotNull("billingEmail", json.email || FirehoseJS.Agent.loggedInAgent.email);
-        _this.setIfNotNull("billingRate", json.rate / 100.0);
-        return _this.setIfNotNull("trialExpirationDate", Date.parse(json.free_trial_expiration_date || new Date(+(new Date) + 12096e5)));
+        _this._setIfNotNull("billingEmail", json.email || FirehoseJS.Agent.loggedInAgent.email);
+        _this._setIfNotNull("billingRate", json.rate / 100.0);
+        return _this._setIfNotNull("trialExpirationDate", Date.parse(json.free_trial_expiration_date || new Date(+(new Date) + 12096e5)));
       });
     };
     if (this.token) {
@@ -995,18 +1054,18 @@ FirehoseJS.Company = (function(_super) {
 
   Company.prototype._populateWithJSON = function(json) {
     var _this = this;
-    this.setIfNotNull("title", json.title);
+    this._setIfNotNull("title", json.title);
     if (this.token == null) {
-      this.setIfNotNull("token", json.token);
+      this._setIfNotNull("token", json.token);
     }
-    this.setIfNotNull("fetchAutomatically", json.fetch_automatically);
-    this.setIfNotNull("lastFetchAt", json.last_fetch_at);
+    this._setIfNotNull("fetchAutomatically", json.fetch_automatically);
+    this._setIfNotNull("lastFetchAt", json.last_fetch_at);
     if (this.forwardingEmailAddress == null) {
-      this.setIfNotNull("forwardingEmailAddress", json.forwarding_email);
+      this._setIfNotNull("forwardingEmailAddress", json.forwarding_email);
     }
-    this.setIfNotNull("knowledgeBaseSubdomain", json.kb_subdomain);
-    this.setIfNotNull("unresolvedCount", json.unresolved_count);
-    this.setIfNotNull("numberOfAccounts", json.number_of_accounts);
+    this._setIfNotNull("knowledgeBaseSubdomain", json.kb_subdomain);
+    this._setIfNotNull("unresolvedCount", json.unresolved_count);
+    this._setIfNotNull("numberOfAccounts", json.number_of_accounts);
     this._populateAssociatedObjects(this, "agents", json.agents, function(json) {
       var agent;
       agent = FirehoseJS.Agent.agentWithID(json.id);
@@ -1051,7 +1110,7 @@ FirehoseJS.Interaction = (function(_super) {
     return _ref;
   }
 
-  Interaction.firehoseType = "Interaction";
+  Interaction._firehoseType = "Interaction";
 
   Interaction.prototype.customer = null;
 
@@ -1083,7 +1142,7 @@ FirehoseJS.Interaction = (function(_super) {
 
   Interaction.prototype.flaggedAgents = null;
 
-  Interaction.prototype.setup = function() {
+  Interaction.prototype._setup = function() {
     this.responseInteractions = new FirehoseJS.UniqueArray;
     this.notes = new FirehoseJS.UniqueArray;
     this.tags = new FirehoseJS.UniqueArray;
@@ -1110,15 +1169,15 @@ FirehoseJS.Interaction = (function(_super) {
   };
 
   Interaction.prototype.subject = function() {
-    if (this.constructor.firehoseType === "EmailInteraction") {
+    if (this.constructor._firehoseType === "EmailInteraction") {
       return this.emailSubject;
-    } else if (this.constructor.firehoseType === "TwitterInteraction") {
+    } else if (this.constructor._firehoseType === "TwitterInteraction") {
       if (this.inReplyToScreenName) {
         return "Reply to " + this.inReplyToScreenName;
       } else {
         return "Mention of " + this.toScreenName;
       }
-    } else if (this.constructor.firehoseType === "FacebookInteraction") {
+    } else if (this.constructor._firehoseType === "FacebookInteraction") {
       return this.type[0].toUpperCase() + this.type.slice(1);
     }
   };
@@ -1137,10 +1196,10 @@ FirehoseJS.Interaction = (function(_super) {
     };
     return FirehoseJS.client.post(params).done(function(data) {
       var response;
-      _this.setIfNotNull("responseDraft", null);
+      _this._setIfNotNull("responseDraft", null);
       response = FirehoseJS.Interaction._interactionWithJSON(data, _this.customer);
       _this.responseInteractions.insertObject(response);
-      response.setIfNotNull("agent", FirehoseJS.Agent.loggedInAgent);
+      response._setIfNotNull("agent", FirehoseJS.Agent.loggedInAgent);
       return _this.responseInteractions.sort(function(interaction1, interaction2) {
         return interaction1.createdAt > interaction2.createdAt;
       });
@@ -1222,21 +1281,21 @@ FirehoseJS.Interaction = (function(_super) {
   };
 
   Interaction.prototype._setCustomer = function(customer) {
-    return this.setIfNotNull("customer", customer);
+    return this._setIfNotNull("customer", customer);
   };
 
   Interaction.prototype._populateWithJSON = function(json) {
     var _this = this;
     if (this.token == null) {
-      this.setIfNotNull("token", json.token);
+      this._setIfNotNull("token", json.token);
     }
-    this.setIfNotNull("body", json.body);
-    this.setIfNotNull("responseDraft", json.response_draft);
-    this.setIfNotNull("channel", json.channel);
-    this.setIfNotNull("receivedAt", Date.parse(json.received_at));
-    this.setIfNotNull("privateURL", json.private_url);
-    this.setIfNotNull("happiness", json.happiness);
-    this.setIfNotNull("resolved", json.resolved);
+    this._setIfNotNull("body", json.body);
+    this._setIfNotNull("responseDraft", json.response_draft);
+    this._setIfNotNull("channel", json.channel);
+    this._setIfNotNull("receivedAt", Date.parse(json.received_at));
+    this._setIfNotNull("privateURL", json.private_url);
+    this._setIfNotNull("happiness", json.happiness);
+    this._setIfNotNull("resolved", json.resolved);
     this._populateAssociatedObjectWithJSON(this, "agent", json.agent, function(json) {
       return FirehoseJS.Agent.agentWithID(json.id);
     });
@@ -1285,7 +1344,7 @@ FirehoseJS.AgentInvite = (function(_super) {
     return _ref;
   }
 
-  AgentInvite.firehoseType = "AgentInvite";
+  AgentInvite._firehoseType = "AgentInvite";
 
   AgentInvite.prototype.toEmail = null;
 
@@ -1338,7 +1397,7 @@ FirehoseJS.AgentInvite = (function(_super) {
   };
 
   AgentInvite.prototype._populateWithJSON = function(json) {
-    this.setIfNotNull("email", json.email);
+    this._setIfNotNull("email", json.email);
     return AgentInvite.__super__._populateWithJSON.call(this, json);
   };
 
@@ -1366,7 +1425,7 @@ FirehoseJS.Attachment = (function(_super) {
     return _ref;
   }
 
-  Attachment.firehoseType = "Attachment";
+  Attachment._firehoseType = "Attachment";
 
   Attachment.prototype.emailInteraction = null;
 
@@ -1382,8 +1441,8 @@ FirehoseJS.Attachment = (function(_super) {
   };
 
   Attachment.prototype._populateWithJSON = function(json) {
-    this.setIfNotNull("filename", json.filename);
-    this.setIfNotNull("temporaryURL", json.temporary_url);
+    this._setIfNotNull("filename", json.filename);
+    this._setIfNotNull("temporaryURL", json.temporary_url);
     return Attachment.__super__._populateWithJSON.call(this, json);
   };
 
@@ -1403,15 +1462,44 @@ FirehoseJS.CannedResponse = (function(_super) {
     return _ref;
   }
 
-  CannedResponse.firehoseType = "CannedResponse";
+  CannedResponse._firehoseType = "CannedResponse";
+
+  /*
+  @property [Comany] The company this canned response belongs to.
+  */
+
 
   CannedResponse.prototype.company = null;
 
+  /*
+  @property [string] The name of this canned response.
+  */
+
+
   CannedResponse.prototype.name = null;
+
+  /*
+  @property [string] A string used for providing a fast shortcut that expands to the full canned response.
+  @deprecated
+  */
+
 
   CannedResponse.prototype.shortcut = null;
 
+  /*
+  @property [string] The actual text of the canned response.
+  */
+
+
   CannedResponse.prototype.text = null;
+
+  /*
+  The designated method of creating a new canned response.  
+  @param name [string] The short display name
+  @param text [string] The actual text of the canned response
+  @param company [Company] The company this canned response will belong to once saved to the server.
+  */
+
 
   CannedResponse.cannedResponseWithNameAndText = function(name, text, company) {
     return FirehoseJS.Object._objectOfClassWithID(FirehoseJS.CannedResponse, {
@@ -1427,6 +1515,17 @@ FirehoseJS.CannedResponse = (function(_super) {
       company: company
     });
   };
+
+  /*
+  Save the canned response to the server.
+  @return [Promise] A jqXHR Promise.
+  @note If it has never been saved, it creates it on the server. Otherwise it updates it.
+  @example Creating and saving a canned response.
+    cannedResponse = FirehoseJS.CannedResponse.cannedResponseWithNameAndText "Name", "Canned Response", company
+    cannedResponse.save().done ->
+      console.log "saved!"
+  */
+
 
   CannedResponse.prototype.save = function() {
     var params,
@@ -1449,6 +1548,12 @@ FirehoseJS.CannedResponse = (function(_super) {
     }
   };
 
+  /*
+  Destroy this canned response from the server.
+  @return [Promise] A jqXHR Promise.
+  */
+
+
   CannedResponse.prototype.destroy = function() {
     var params,
       _this = this;
@@ -1461,9 +1566,9 @@ FirehoseJS.CannedResponse = (function(_super) {
   };
 
   CannedResponse.prototype._populateWithJSON = function(json) {
-    this.setIfNotNull("name", json.name);
-    this.setIfNotNull("shortcut", json.shortcut);
-    this.setIfNotNull("text", json.text);
+    this._setIfNotNull("name", json.name);
+    this._setIfNotNull("shortcut", json.shortcut);
+    this._setIfNotNull("text", json.text);
     return CannedResponse.__super__._populateWithJSON.call(this, json);
   };
 
@@ -1493,7 +1598,7 @@ FirehoseJS.CreditCard = (function(_super) {
     return _ref;
   }
 
-  CreditCard.firehoseType = "CreditCard";
+  CreditCard._firehoseType = "CreditCard";
 
   CreditCard.prototype.company = null;
 
@@ -1537,11 +1642,11 @@ FirehoseJS.CreditCard = (function(_super) {
       exp_year: this.expirationYear
     }, function(status, response) {
       if (!response.error) {
-        _this.setIfNotNull("expirationMonth", response.card.exp_month);
-        _this.setIfNotNull("expirationYear", response.card.exp_year);
-        _this.setIfNotNull("lastFour", response.card.last4);
-        _this.setIfNotNull("stripeToken", response.id);
-        _this.setIfNotNull("email", FirehoseJS.Agent.loggedInAgent.email);
+        _this._setIfNotNull("expirationMonth", response.card.exp_month);
+        _this._setIfNotNull("expirationYear", response.card.exp_year);
+        _this._setIfNotNull("lastFour", response.card.last4);
+        _this._setIfNotNull("stripeToken", response.id);
+        _this._setIfNotNull("email", FirehoseJS.Agent.loggedInAgent.email);
         return callback();
       }
     });
@@ -1585,9 +1690,9 @@ FirehoseJS.CreditCard = (function(_super) {
   };
 
   CreditCard.prototype._populateWithJSON = function(json) {
-    this.setIfNotNull("expirationMonth", json.expiration_month);
-    this.setIfNotNull("expirationYear", json.expiration_year);
-    this.setIfNotNull("lastFour", json.last_four);
+    this._setIfNotNull("expirationMonth", json.expiration_month);
+    this._setIfNotNull("expirationYear", json.expiration_year);
+    this._setIfNotNull("lastFour", json.last_four);
     return CreditCard.__super__._populateWithJSON.call(this, json);
   };
 
@@ -1619,7 +1724,7 @@ FirehoseJS.Customer = (function(_super) {
     return _ref;
   }
 
-  Customer.firehoseType = "Customer";
+  Customer._firehoseType = "Customer";
 
   Customer.prototype.company = null;
 
@@ -1643,7 +1748,7 @@ FirehoseJS.Customer = (function(_super) {
 
   Customer.prototype._interactions = null;
 
-  Customer.prototype.setup = function() {
+  Customer.prototype._setup = function() {
     this.customerAccounts = new FirehoseJS.UniqueArray;
     this.customerFlaggedAgents = new FirehoseJS.UniqueArray;
     return this.customerFlaggedAgents.sortOn("firstName");
@@ -1690,7 +1795,7 @@ FirehoseJS.Customer = (function(_super) {
   Customer.prototype.interactions = function() {
     var _this = this;
     if (this._interactions == null) {
-      this.setIfNotNull("_interactions", new FirehoseJS.RemoteArray("customers/" + this.id + "/interactions", null, function(json) {
+      this._setIfNotNull("_interactions", new FirehoseJS.RemoteArray("customers/" + this.id + "/interactions", null, function(json) {
         return FirehoseJS.Interaction._interactionWithJSON(json, _this);
       }));
       this._interactions.sortOn("receivedAt");
@@ -1700,12 +1805,12 @@ FirehoseJS.Customer = (function(_super) {
 
   Customer.prototype._populateWithJSON = function(json) {
     var _this = this;
-    this.setIfNotNull("name", json.name);
-    this.setIfNotNull("location", json.location);
-    this.setIfNotNull("timeZone", json.time_zone);
-    this.setIfNotNull("newestInteractionId", json.newest_interaction_id);
-    this.setIfNotNull("newestInteractionExcerpt", json.newest_interaction_excerpt);
-    this.setIfNotNull("newestInteractionReceivedAt", Date.parse(json.newest_interaction_received_at));
+    this._setIfNotNull("name", json.name);
+    this._setIfNotNull("location", json.location);
+    this._setIfNotNull("timeZone", json.time_zone);
+    this._setIfNotNull("newestInteractionId", json.newest_interaction_id);
+    this._setIfNotNull("newestInteractionExcerpt", json.newest_interaction_excerpt);
+    this._setIfNotNull("newestInteractionReceivedAt", Date.parse(json.newest_interaction_received_at));
     this._populateAssociatedObjects(this, "customerAccounts", json.customer_accounts, function(json) {
       return FirehoseJS.CustomerAccount._customerAccountWithID(json.id, _this);
     });
@@ -1734,7 +1839,7 @@ FirehoseJS.CustomerAccount = (function(_super) {
     return _ref;
   }
 
-  CustomerAccount.firehoseType = "CustomerAccount";
+  CustomerAccount._firehoseType = "CustomerAccount";
 
   CustomerAccount.prototype.customer = null;
 
@@ -1758,12 +1863,12 @@ FirehoseJS.CustomerAccount = (function(_super) {
   };
 
   CustomerAccount.prototype._populateWithJSON = function(json) {
-    this.setIfNotNull("username", json.username);
-    this.setIfNotNull("followingUs", json.following_us);
-    this.setIfNotNull("imageURL", json.image_url);
-    this.setIfNotNull("description", json.description);
-    this.setIfNotNull("followersCount", json.followers_count);
-    this.setIfNotNull("channel", json.channel);
+    this._setIfNotNull("username", json.username);
+    this._setIfNotNull("followingUs", json.following_us);
+    this._setIfNotNull("imageURL", json.image_url);
+    this._setIfNotNull("description", json.description);
+    this._setIfNotNull("followersCount", json.followers_count);
+    this._setIfNotNull("channel", json.channel);
     return CustomerAccount.__super__._populateWithJSON.call(this, json);
   };
 
@@ -1783,7 +1888,7 @@ FirehoseJS.EmailAccount = (function(_super) {
     return _ref;
   }
 
-  EmailAccount.firehoseType = "EmailAccount";
+  EmailAccount._firehoseType = "EmailAccount";
 
   EmailAccount.prototype.company = null;
 
@@ -1938,10 +2043,10 @@ FirehoseJS.EmailAccount = (function(_super) {
       service = _ref1[_i];
       domain = "@" + service.domain;
       if (this.username.indexOf(domain) !== -1) {
-        this.setIfNotNull("kind", service.kind);
-        this.setIfNotNull("SSL", service.SSL);
-        this.setIfNotNull("port", service.port);
-        this.setIfNotNull("server", service.server);
+        this._setIfNotNull("kind", service.kind);
+        this._setIfNotNull("SSL", service.SSL);
+        this._setIfNotNull("port", service.port);
+        this._setIfNotNull("server", service.server);
         return true;
       }
     }
@@ -1949,18 +2054,18 @@ FirehoseJS.EmailAccount = (function(_super) {
   };
 
   EmailAccount.prototype._populateWithJSON = function(json) {
-    this.setIfNotNull("emailAddress", json.email);
+    this._setIfNotNull("emailAddress", json.email);
     if (this.title == null) {
-      this.setIfNotNull("title", json.title);
+      this._setIfNotNull("title", json.title);
     }
-    this.setIfNotNull("server", json.incoming_server);
-    this.setIfNotNull("SSL", json.incoming_ssl);
+    this._setIfNotNull("server", json.incoming_server);
+    this._setIfNotNull("SSL", json.incoming_ssl);
     if (this.port == null) {
-      this.setIfNotNull("port", json.incoming_port);
+      this._setIfNotNull("port", json.incoming_port);
     }
-    this.setIfNotNull("username", json.incoming_username);
-    this.setIfNotNull("kind", json.kind);
-    this.setIfNotNull("deleteFromServer", json.delete_from_server);
+    this._setIfNotNull("username", json.incoming_username);
+    this._setIfNotNull("kind", json.kind);
+    this._setIfNotNull("deleteFromServer", json.delete_from_server);
     return EmailAccount.__super__._populateWithJSON.call(this, json);
   };
 
@@ -1996,7 +2101,7 @@ FirehoseJS.EmailInteraction = (function(_super) {
     return _ref;
   }
 
-  EmailInteraction.firehoseType = "EmailInteraction";
+  EmailInteraction._firehoseType = "EmailInteraction";
 
   EmailInteraction.prototype.emailSubject = null;
 
@@ -2008,7 +2113,7 @@ FirehoseJS.EmailInteraction = (function(_super) {
 
   EmailInteraction.prototype.attachments = null;
 
-  EmailInteraction.prototype.setup = function() {
+  EmailInteraction.prototype._setup = function() {
     return this.attachments = new FirehoseJS.UniqueArray;
   };
 
@@ -2023,10 +2128,10 @@ FirehoseJS.EmailInteraction = (function(_super) {
       _this = this;
     if (json.email_interaction != null) {
       emailJSON = json.email_interaction;
-      this.setIfNotNull("emailSubject", emailJSON.subject);
-      this.setIfNotNull("replyTo", emailJSON.reply_to);
-      this.setIfNotNull("toEmail", emailJSON.to_email);
-      this.setIfNotNull("fromEmail", emailJSON.from_email);
+      this._setIfNotNull("emailSubject", emailJSON.subject);
+      this._setIfNotNull("replyTo", emailJSON.reply_to);
+      this._setIfNotNull("toEmail", emailJSON.to_email);
+      this._setIfNotNull("fromEmail", emailJSON.from_email);
       this._populateAssociatedObjects(this, "attachments", emailJSON.attachments, function(json) {
         return FirehoseJS.Attachment._attachmentWithID(json.id, _this);
       });
@@ -2050,7 +2155,7 @@ FirehoseJS.FacebookAccount = (function(_super) {
     return _ref;
   }
 
-  FacebookAccount.firehoseType = "FacebookAccount";
+  FacebookAccount._firehoseType = "FacebookAccount";
 
   FacebookAccount.prototype.company = null;
 
@@ -2064,7 +2169,7 @@ FirehoseJS.FacebookAccount = (function(_super) {
 
   FacebookAccount.prototype.facebookPages = null;
 
-  FacebookAccount.prototype.setup = function() {
+  FacebookAccount.prototype._setup = function() {
     return this.facebookPages = new FirehoseJS.UniqueArray;
   };
 
@@ -2092,10 +2197,10 @@ FirehoseJS.FacebookAccount = (function(_super) {
 
   FacebookAccount.prototype._populateWithJSON = function(json) {
     var _this = this;
-    this.setIfNotNull("username", json.username);
-    this.setIfNotNull("facebookUserId", json.facebook_user_id);
-    this.setIfNotNull("imageURL", json.image_url);
-    this.setIfNotNull("name", json.name);
+    this._setIfNotNull("username", json.username);
+    this._setIfNotNull("facebookUserId", json.facebook_user_id);
+    this._setIfNotNull("imageURL", json.image_url);
+    this._setIfNotNull("name", json.name);
     this._populateAssociatedObjects(this, "facebookPages", json.facebook_pages, function(json) {
       return FirehoseJS.FacebookPage._facebookPageWithID(json.id, _this);
     });
@@ -2118,7 +2223,7 @@ FirehoseJS.FacebookInteraction = (function(_super) {
     return _ref;
   }
 
-  FacebookInteraction.firehoseType = "FacebookInteraction";
+  FacebookInteraction._firehoseType = "FacebookInteraction";
 
   FacebookInteraction.prototype.fromUserId = null;
 
@@ -2150,15 +2255,15 @@ FirehoseJS.FacebookInteraction = (function(_super) {
     var facebookJSON;
     if (json.facebook_interaction != null) {
       facebookJSON = json.facebook_interaction;
-      this.setIfNotNull("fromUserId", facebookJSON.from_user_id);
-      this.setIfNotNull("fromName", facebookJSON.from_name);
-      this.setIfNotNull("toUserId", facebookJSON.to_user_id);
-      this.setIfNotNull("toName", facebookJSON.to_name);
-      this.setIfNotNull("postId", facebookJSON.post_id);
-      this.setIfNotNull("commentId", facebookJSON.comment_id);
-      this.setIfNotNull("postType", facebookJSON.post_type);
-      this.setIfNotNull("postExcerpt", facebookJSON.post_excerpt);
-      this.setIfNotNull("likeCount", facebookJSON.like_count);
+      this._setIfNotNull("fromUserId", facebookJSON.from_user_id);
+      this._setIfNotNull("fromName", facebookJSON.from_name);
+      this._setIfNotNull("toUserId", facebookJSON.to_user_id);
+      this._setIfNotNull("toName", facebookJSON.to_name);
+      this._setIfNotNull("postId", facebookJSON.post_id);
+      this._setIfNotNull("commentId", facebookJSON.comment_id);
+      this._setIfNotNull("postType", facebookJSON.post_type);
+      this._setIfNotNull("postExcerpt", facebookJSON.post_excerpt);
+      this._setIfNotNull("likeCount", facebookJSON.like_count);
     }
     return FacebookInteraction.__super__._populateWithJSON.call(this, json);
   };
@@ -2179,7 +2284,7 @@ FirehoseJS.FacebookPage = (function(_super) {
     return _ref;
   }
 
-  FacebookPage.firehoseType = "FacebookPage";
+  FacebookPage._firehoseType = "FacebookPage";
 
   FacebookPage.prototype.facebookAccount = null;
 
@@ -2208,10 +2313,10 @@ FirehoseJS.FacebookPage = (function(_super) {
   };
 
   FacebookPage.prototype._populateWithJSON = function(json) {
-    this.setIfNotNull("name", json.name);
-    this.setIfNotNull("category", json.category);
-    this.setIfNotNull("pageId", json.page_id);
-    this.setIfNotNull("active", json.active);
+    this._setIfNotNull("name", json.name);
+    this._setIfNotNull("category", json.category);
+    this._setIfNotNull("pageId", json.page_id);
+    this._setIfNotNull("active", json.active);
     return FacebookPage.__super__._populateWithJSON.call(this, json);
   };
 
@@ -2239,7 +2344,7 @@ FirehoseJS.Note = (function(_super) {
     return _ref;
   }
 
-  Note.firehoseType = "Note";
+  Note._firehoseType = "Note";
 
   Note.prototype.interaction = null;
 
@@ -2294,7 +2399,7 @@ FirehoseJS.Note = (function(_super) {
   };
 
   Note.prototype._populateWithJSON = function(json) {
-    this.setIfNotNull("body", json.body);
+    this._setIfNotNull("body", json.body);
     this._populateAssociatedObjectWithJSON(this, "agent", json.agent, function(json) {
       return FirehoseJS.Agent.agentWithID(json.id);
     });
@@ -2325,7 +2430,7 @@ FirehoseJS.Notification = (function(_super) {
     return _ref;
   }
 
-  Notification.firehoseType = "Notification";
+  Notification._firehoseType = "Notification";
 
   Notification.prototype.company = null;
 
@@ -2343,9 +2448,9 @@ FirehoseJS.Notification = (function(_super) {
   };
 
   Notification.prototype._populateWithJSON = function(json) {
-    this.setIfNotNull("title", json.title);
-    this.setIfNotNull("text", json.text);
-    this.setIfNotNull("level", json.level);
+    this._setIfNotNull("title", json.title);
+    this._setIfNotNull("text", json.text);
+    this._setIfNotNull("level", json.level);
     return Notification.__super__._populateWithJSON.call(this, json);
   };
 
@@ -2365,7 +2470,7 @@ FirehoseJS.OutgoingAttachment = (function(_super) {
     return _ref;
   }
 
-  OutgoingAttachment.firehoseType = "OutgoingAttachment";
+  OutgoingAttachment._firehoseType = "OutgoingAttachment";
 
   OutgoingAttachment.prototype.company = null;
 
@@ -2469,8 +2574,8 @@ FirehoseJS.OutgoingAttachment = (function(_super) {
   };
 
   OutgoingAttachment.prototype._populateWithJSON = function(json) {
-    this.setIfNotNull("downloadURL", json.download_url);
-    this.setIfNotNull("uploadURL", json.upload_url);
+    this._setIfNotNull("downloadURL", json.download_url);
+    this._setIfNotNull("uploadURL", json.upload_url);
     return OutgoingAttachment.__super__._populateWithJSON.call(this, json);
   };
 
@@ -2500,7 +2605,7 @@ FirehoseJS.Tag = (function(_super) {
     return _ref;
   }
 
-  Tag.firehoseType = "Tag";
+  Tag._firehoseType = "Tag";
 
   Tag.prototype.company = null;
 
@@ -2553,7 +2658,7 @@ FirehoseJS.Tag = (function(_super) {
   };
 
   Tag.prototype._populateWithJSON = function(json) {
-    this.setIfNotNull("label", json.label);
+    this._setIfNotNull("label", json.label);
     return Tag.__super__._populateWithJSON.call(this, json);
   };
 
@@ -2581,7 +2686,7 @@ FirehoseJS.TwitterAccount = (function(_super) {
     return _ref;
   }
 
-  TwitterAccount.firehoseType = "TwitterAccount";
+  TwitterAccount._firehoseType = "TwitterAccount";
 
   TwitterAccount.prototype.company = null;
 
@@ -2614,9 +2719,9 @@ FirehoseJS.TwitterAccount = (function(_super) {
   };
 
   TwitterAccount.prototype._populateWithJSON = function(json) {
-    this.setIfNotNull("screenName", json.screen_name);
-    this.setIfNotNull("twitterUserId", json.twitter_user_id);
-    this.setIfNotNull("imageURL", json.image_url);
+    this._setIfNotNull("screenName", json.screen_name);
+    this._setIfNotNull("twitterUserId", json.twitter_user_id);
+    this._setIfNotNull("imageURL", json.image_url);
     return TwitterAccount.__super__._populateWithJSON.call(this, json);
   };
 
@@ -2636,7 +2741,7 @@ FirehoseJS.TwitterInteraction = (function(_super) {
     return _ref;
   }
 
-  TwitterInteraction.firehoseType = "TwitterInteraction";
+  TwitterInteraction._firehoseType = "TwitterInteraction";
 
   TwitterInteraction.prototype.favorited = false;
 
@@ -2666,15 +2771,15 @@ FirehoseJS.TwitterInteraction = (function(_super) {
     var twitterJSON;
     if (json.twitter_interaction != null) {
       twitterJSON = json.twitter_interaction;
-      this.setIfNotNull("favorited", twitterJSON.favorited);
-      this.setIfNotNull("tweetId", twitterJSON.tweet_id);
-      this.setIfNotNull("inReplyToScreenName", twitterJSON.in_reply_to_screen_name);
-      this.setIfNotNull("inReplyToStatusId", twitterJSON.in_reply_to_status_id);
-      this.setIfNotNull("retweetCount", twitterJSON.retweet_count);
-      this.setIfNotNull("tweetSource", twitterJSON.tweet_source);
-      this.setIfNotNull("toUserId", twitterJSON.to_user_id);
-      this.setIfNotNull("toScreenName", twitterJSON.twitter_account.screen_name);
-      this.setIfNotNull("fromUserId", twitterJSON.from_user_id);
+      this._setIfNotNull("favorited", twitterJSON.favorited);
+      this._setIfNotNull("tweetId", twitterJSON.tweet_id);
+      this._setIfNotNull("inReplyToScreenName", twitterJSON.in_reply_to_screen_name);
+      this._setIfNotNull("inReplyToStatusId", twitterJSON.in_reply_to_status_id);
+      this._setIfNotNull("retweetCount", twitterJSON.retweet_count);
+      this._setIfNotNull("tweetSource", twitterJSON.tweet_source);
+      this._setIfNotNull("toUserId", twitterJSON.to_user_id);
+      this._setIfNotNull("toScreenName", twitterJSON.twitter_account.screen_name);
+      this._setIfNotNull("fromUserId", twitterJSON.from_user_id);
     }
     return TwitterInteraction.__super__._populateWithJSON.call(this, json);
   };
@@ -2695,7 +2800,7 @@ FirehoseJS.Article = (function(_super) {
     return _ref;
   }
 
-  Article.firehoseType = "Article";
+  Article._firehoseType = "Article";
 
   Article.prototype.company = null;
 
@@ -2762,8 +2867,8 @@ FirehoseJS.Article = (function(_super) {
   };
 
   Article.prototype._populateWithJSON = function(json) {
-    this.setIfNotNull("title", json.title);
-    this.setIfNotNull("body", json.body);
+    this._setIfNotNull("title", json.title);
+    this._setIfNotNull("body", json.body);
     return Article.__super__._populateWithJSON.call(this, json);
   };
 

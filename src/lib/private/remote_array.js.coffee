@@ -7,14 +7,19 @@ class FirehoseJS.RemoteArray extends FirehoseJS.UniqueArray
   
   totalRows: 0
   
+  # @nodoc
   _path: null
   
+  # @nodoc
   _params: null
   
+  # @nodoc
   _creationFunction: null
   
+  # @nodoc
   _fetchingFunction: null
   
+  # @nodoc
   _fresh: true
   
   

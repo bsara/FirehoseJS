@@ -1,7 +1,8 @@
 class FirehoseJS.TwitterAccount extends FirehoseJS.Object
   
   
-  @firehoseType: "TwitterAccount"
+  # @nodoc
+  @_firehoseType: "TwitterAccount"
   
   company: null
   
@@ -12,6 +13,7 @@ class FirehoseJS.TwitterAccount extends FirehoseJS.Object
   imageURL: null
   
     
+  # @nodoc
   @_twitterAccountWithID: (id, company) ->
     FirehoseJS.Object._objectOfClassWithID FirehoseJS.TwitterAccount,
       id:      id
@@ -29,8 +31,9 @@ class FirehoseJS.TwitterAccount extends FirehoseJS.Object
       @company.twitterAccounts().dropObject this
 
 
+  # @nodoc
   _populateWithJSON: (json) ->
-    this.setIfNotNull "screenName",    json.screen_name
-    this.setIfNotNull "twitterUserId", json.twitter_user_id
-    this.setIfNotNull "imageURL",      json.image_url
+    this._setIfNotNull "screenName",    json.screen_name
+    this._setIfNotNull "twitterUserId", json.twitter_user_id
+    this._setIfNotNull "imageURL",      json.image_url
     super json

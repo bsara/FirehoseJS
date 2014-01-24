@@ -1,7 +1,8 @@
 class FirehoseJS.Note extends FirehoseJS.Object
   
   
-  @firehoseType: "Note"
+  # @nodoc
+  @_firehoseType: "Note"
   
   interaction: null
   
@@ -16,6 +17,7 @@ class FirehoseJS.Note extends FirehoseJS.Object
       interaction: interaction
   
         
+  # @nodoc
   @_noteWithID: (id, interaction) ->
     FirehoseJS.Object._objectOfClassWithID FirehoseJS.Note,
       id:          id
@@ -44,8 +46,9 @@ class FirehoseJS.Note extends FirehoseJS.Object
       @interaction.notes.dropObject this
     
 
+  # @nodoc
   _populateWithJSON: (json) ->
-    this.setIfNotNull "body", json.body
+    this._setIfNotNull "body", json.body
     
     this._populateAssociatedObjectWithJSON this, "agent", json.agent, (json) ->
       FirehoseJS.Agent.agentWithID( json.id )
@@ -53,6 +56,7 @@ class FirehoseJS.Note extends FirehoseJS.Object
     super json
     
     
+  # @nodoc
   _toJSON: ->
     note:
       body: @body

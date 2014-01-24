@@ -1,8 +1,10 @@
 class FirehoseJS.UniqueArray extends Array
   
   
+  # @nodoc
   _sortOn: null
   
+  # @nodoc
   _sortDirection: 'asc'
   
   

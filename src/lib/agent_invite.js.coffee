@@ -1,7 +1,8 @@
 class FirehoseJS.AgentInvite extends FirehoseJS.Object
   
   
-  @firehoseType: "AgentInvite"
+  # @nodoc
+  @_firehoseType: "AgentInvite"
   
   toEmail: null
   
@@ -14,6 +15,7 @@ class FirehoseJS.AgentInvite extends FirehoseJS.Object
       company: company
 
 
+  # @nodoc
   @_agentInviteWithID: (id, company) ->
     FirehoseJS.Object._objectOfClassWithID FirehoseJS.AgentInvite,
       id:      id
@@ -42,11 +44,13 @@ class FirehoseJS.AgentInvite extends FirehoseJS.Object
       @company.agentInvites.dropObject this
     
 
+  # @nodoc
   _populateWithJSON: (json) ->
-    this.setIfNotNull "email", json.email
+    this._setIfNotNull "email", json.email
     super json
     
     
+  # @nodoc
   _toJSON: ->
     agent_invite:
       email: @toEmail

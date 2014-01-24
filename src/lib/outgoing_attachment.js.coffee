@@ -1,7 +1,8 @@
 class FirehoseJS.OutgoingAttachment extends FirehoseJS.Object
   
   
-  @firehoseType: "OutgoingAttachment"
+  # @nodoc
+  @_firehoseType: "OutgoingAttachment"
   
   company: null
   
@@ -102,14 +103,18 @@ class FirehoseJS.OutgoingAttachment extends FirehoseJS.Object
       options.error? errorThrown
       
     
+  # @nodoc
   _populateWithJSON: (json) ->
-    this.setIfNotNull "downloadURL", json.download_url
-    this.setIfNotNull "uploadURL", json.upload_url
+    this._setIfNotNull "downloadURL", json.download_url
+    this._setIfNotNull "uploadURL", json.upload_url
     super json
     
     
+  # @nodoc
   _toJSON: ->
     outgoing_attachment:
       filename: @file.name
       mimetype: @file.type || "application/zip"
       uploaded: @uploaded
+      
+      

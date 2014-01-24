@@ -1,7 +1,8 @@
 class FirehoseJS.Attachment extends FirehoseJS.Object
   
   
-  @firehoseType: "Attachment"
+  # @nodoc
+  @_firehoseType: "Attachment"
   
   emailInteraction: null
   
@@ -10,13 +11,15 @@ class FirehoseJS.Attachment extends FirehoseJS.Object
   temporaryURL: null
   
     
+  # @nodoc
   @_attachmentWithID: (id, emailInteraction) ->
     FirehoseJS.Object._objectOfClassWithID FirehoseJS.Attachment,
       id:               id
       emailInteraction: emailInteraction
     
     
+  # @nodoc
   _populateWithJSON: (json) ->
-    this.setIfNotNull "filename",     json.filename
-    this.setIfNotNull "temporaryURL", json.temporary_url
+    this._setIfNotNull "filename",     json.filename
+    this._setIfNotNull "temporaryURL", json.temporary_url
     super json

@@ -1,7 +1,8 @@
 class FirehoseJS.CustomerAccount extends FirehoseJS.Object
   
   
-  @firehoseType: "CustomerAccount"
+  # @nodoc
+  @_firehoseType: "CustomerAccount"
   
   customer: null
   
@@ -18,17 +19,19 @@ class FirehoseJS.CustomerAccount extends FirehoseJS.Object
   channel: null
   
   
+  # @nodoc
   @_customerAccountWithID: (id, customer) ->
     FirehoseJS.Object._objectOfClassWithID FirehoseJS.CustomerAccount,
       id:       id
       customer: customer
     
     
+  # @nodoc
   _populateWithJSON: (json) ->
-    this.setIfNotNull "username",       json.username
-    this.setIfNotNull "followingUs",    json.following_us
-    this.setIfNotNull "imageURL",       json.image_url
-    this.setIfNotNull "description",    json.description
-    this.setIfNotNull "followersCount", json.followers_count
-    this.setIfNotNull "channel",        json.channel
+    this._setIfNotNull "username",       json.username
+    this._setIfNotNull "followingUs",    json.following_us
+    this._setIfNotNull "imageURL",       json.image_url
+    this._setIfNotNull "description",    json.description
+    this._setIfNotNull "followersCount", json.followers_count
+    this._setIfNotNull "channel",        json.channel
     super json

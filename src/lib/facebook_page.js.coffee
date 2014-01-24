@@ -1,7 +1,8 @@
 class FirehoseJS.FacebookPage extends FirehoseJS.Object
   
   
-  @firehoseType: "FacebookPage"
+  # @nodoc
+  @_firehoseType: "FacebookPage"
   
   facebookAccount: null
   
@@ -14,6 +15,7 @@ class FirehoseJS.FacebookPage extends FirehoseJS.Object
   active: false
   
     
+  # @nodoc
   @_facebookPageWithID: (id, facebookAccount) ->
     FirehoseJS.Object._objectOfClassWithID FirehoseJS.FacebookPage,
       id:              id
@@ -27,14 +29,16 @@ class FirehoseJS.FacebookPage extends FirehoseJS.Object
     FirehoseJS.client.put( params )
     
     
+  # @nodoc
   _populateWithJSON: (json) ->
-    this.setIfNotNull "name",     json.name
-    this.setIfNotNull "category", json.category
-    this.setIfNotNull "pageId",   json.page_id
-    this.setIfNotNull "active",   json.active
+    this._setIfNotNull "name",     json.name
+    this._setIfNotNull "category", json.category
+    this._setIfNotNull "pageId",   json.page_id
+    this._setIfNotNull "active",   json.active
     super json
     
     
+  # @nodoc
   _toJSON: ->
     facebook_page:
       active: @active
