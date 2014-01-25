@@ -47,6 +47,17 @@ class FirehoseJS.Interaction extends FirehoseJS.Object
     @tags.sortOn "label"
     @flaggedAgents.sortOn "firstName"
     
+  
+  ###
+  Used to create a generic interaction that can then be fetched, without authentication, by the token.
+  @param token [string] 
+  @note: Any interactions is publicly visible with a token.
+  @return [Interaction] a generic interaction object.
+  ### 
+  @interactionWithToken: (token) ->
+    FirehoseJS.Object._objectOfClassWithID FirehoseJS.Interaction,
+      token: token
+    
     
   # @nodoc
   @_interactionWithJSON: (json, customer) ->
@@ -93,6 +104,18 @@ class FirehoseJS.Interaction extends FirehoseJS.Object
       body:  this._toJSON()
     FirehoseJS.client.put( params )
     
+    
+  ###
+  Fetches the latest data from the server and populates the object's properties with it.
+  @note: If an id is used, an access token is required and you will a more comprehensive JSON object in return. If no id is present, but a token is, it will fetch without authentication.
+  @return [Promise] a jqXHR Promise
+  ###
+  fetch: ->
+    params =
+      route: "interactions/#{@token || @id}"
+    FirehoseJS.client.get( params ).done (data) =>
+      this._populateWithJSON data
+      
     
   destroy: ->
     params = 

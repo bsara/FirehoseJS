@@ -130,6 +130,66 @@ firehoseTest 'Attachments', 4, (agent) ->
         start()
   .fail (jqXHR, textStatus, errorThrown) ->
     start()
+    
+firehoseTest 'Fetch With Token', 9, (agent) ->
+  company = agent.companies[0]
+  customers = company.customersWithCriteria( channels: ["email"] )
+  customers.next()
+  .done (data, textStatus) ->
+    customer = customers[0]
+    interactions = customer.interactions()
+    interactions.next()
+    .done (data, textStatus) ->
+      interaction = interactions[0]
+      interactionWithToken = FirehoseJS.Interaction.interactionWithToken interaction.token
+      interaction.fetch()
+      .done (data, textStatus) ->
+        ok textStatus == "success"
+        ok interaction.id?
+        ok interaction.body?
+        ok interaction.channel?
+        ok interaction.receivedAt?
+        ok interaction.createdAt?
+        ok interaction.customerAccount?
+        ok interaction.customerAccount.id?
+        ok interaction.customerAccount.createdAt?
+        start()
+      .fail (jqXHR, textStatus, errorThrown) ->
+        start()
+    .fail (jqXHR, textStatus, errorThrown) ->
+      start()
+  .fail (jqXHR, textStatus, errorThrown) ->
+    start()
+    
+firehoseTest 'Fetch With ID', 9, (agent) ->
+  company = agent.companies[0]
+  customers = company.customersWithCriteria( channels: ["email"] )
+  customers.next()
+  .done (data, textStatus) ->
+    customer = customers[0]
+    interactions = customer.interactions()
+    interactions.next()
+    .done (data, textStatus) ->
+      interaction = interactions[0]
+      interactionWithToken = FirehoseJS.Interaction.interactionWithToken interaction.token
+      interaction.fetch()
+      .done (data, textStatus) ->
+        ok textStatus == "success"
+        ok interaction.id?
+        ok interaction.body?
+        ok interaction.channel?
+        ok interaction.receivedAt?
+        ok interaction.createdAt?
+        ok interaction.customerAccount?
+        ok interaction.customerAccount.id?
+        ok interaction.customerAccount.createdAt?
+        start()
+      .fail (jqXHR, textStatus, errorThrown) ->
+        start()
+    .fail (jqXHR, textStatus, errorThrown) ->
+      start()
+  .fail (jqXHR, textStatus, errorThrown) ->
+    start()
   
 firehoseTest 'Update', 1, (agent) ->
   company = agent.companies[0]

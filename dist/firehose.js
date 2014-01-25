@@ -10,7 +10,7 @@ window.FirehoseJS = {};
 @param    server [string] The name of the server. Possible values: 'API', 'browser', 'billing', 'frhio', 'marketing', 'settings'
 @return   [string] The root url of the server based on the current environement.
 @example  Create a URL to the login page of the browser app.
-  "#{FirehoseJS.rootFor('browser')/pages/login"
+  "#{FirehoseJS.rootFor('browser')/home/login"
 */
 
 
@@ -327,6 +327,7 @@ FirehoseJS.Client = (function() {
       frhioURL: "https://frh.io",
       marketingURL: "https://getfirehose.com",
       settingsURL: "https://settings.firehoseapp.com",
+      tweetlongerURL: "https://tl.frh.io",
       stripeKey: "pk_live_CGPaLboKkpr7tqswA4elf8NQ",
       pusherKey: "d3e373f7fac89de7bde8"
     },
@@ -337,6 +338,7 @@ FirehoseJS.Client = (function() {
       frhioURL: "http://localhost:3003",
       marketingURL: "http://localhost:3004",
       settingsURL: "http://localhost:3005",
+      tweetlongerURL: "http://localhost:3006",
       stripeKey: "pk_test_oIyMNHil987ug1v8owRhuJwr",
       pusherKey: "2f64ac0434cc8a94526e"
     },
@@ -347,6 +349,7 @@ FirehoseJS.Client = (function() {
       frhioURL: "http://localhost:3013",
       marketingURL: "http://localhost:3014",
       settingsURL: "http://localhost:3015",
+      tweetlongerURL: "http://localhost:3016",
       stripeKey: "pk_test_oIyMNHil987ug1v8owRhuJwr",
       pusherKey: "2f64ac0434cc8a94526e"
     }
@@ -1153,6 +1156,20 @@ FirehoseJS.Interaction = (function(_super) {
     return this.flaggedAgents.sortOn("firstName");
   };
 
+  /*
+  Used to create a generic interaction that can then be fetched, without authentication, by the token.
+  @param token [string] 
+  @note: Any interactions is publicly visible with a token.
+  @return [Interaction] a generic interaction object.
+  */
+
+
+  Interaction.interactionWithToken = function(token) {
+    return FirehoseJS.Object._objectOfClassWithID(FirehoseJS.Interaction, {
+      token: token
+    });
+  };
+
   Interaction._interactionWithJSON = function(json, customer) {
     var interaction;
     interaction = null;
@@ -1213,6 +1230,24 @@ FirehoseJS.Interaction = (function(_super) {
       body: this._toJSON()
     };
     return FirehoseJS.client.put(params);
+  };
+
+  /*
+  Fetches the latest data from the server and populates the object's properties with it.
+  @note: If an id is used, an access token is required and you will a more comprehensive JSON object in return. If no id is present, but a token is, it will fetch without authentication.
+  @return [Promise] a jqXHR Promise
+  */
+
+
+  Interaction.prototype.fetch = function() {
+    var params,
+      _this = this;
+    params = {
+      route: "interactions/" + (this.token || this.id)
+    };
+    return FirehoseJS.client.get(params).done(function(data) {
+      return _this._populateWithJSON(data);
+    });
   };
 
   Interaction.prototype.destroy = function() {

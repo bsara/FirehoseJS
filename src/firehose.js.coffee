@@ -10,7 +10,7 @@ window.FirehoseJS = {}
 @param    server [string] The name of the server. Possible values: 'API', 'browser', 'billing', 'frhio', 'marketing', 'settings'
 @return   [string] The root url of the server based on the current environement.
 @example  Create a URL to the login page of the browser app.
-  "#{FirehoseJS.rootFor('browser')/pages/login"
+  "#{FirehoseJS.rootFor('browser')/home/login"
 ###
 FirehoseJS.rootFor = (server) ->
   FirehoseJS.client.serverAddress server

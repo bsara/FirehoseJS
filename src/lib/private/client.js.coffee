@@ -112,6 +112,7 @@ class FirehoseJS.Client
       frhioURL      : "https://frh.io"
       marketingURL  : "https://getfirehose.com"
       settingsURL   : "https://settings.firehoseapp.com"
+      tweetlongerURL: "https://tl.frh.io"
       stripeKey     : "pk_live_CGPaLboKkpr7tqswA4elf8NQ"
       pusherKey     : "d3e373f7fac89de7bde8"
     development:
@@ -121,6 +122,7 @@ class FirehoseJS.Client
       frhioURL      : "http://localhost:3003"
       marketingURL  : "http://localhost:3004"
       settingsURL   : "http://localhost:3005"
+      tweetlongerURL: "http://localhost:3006"
       stripeKey     : "pk_test_oIyMNHil987ug1v8owRhuJwr"
       pusherKey     : "2f64ac0434cc8a94526e"
     test:
@@ -130,6 +132,7 @@ class FirehoseJS.Client
       frhioURL      : "http://localhost:3013"
       marketingURL  : "http://localhost:3014"
       settingsURL   : "http://localhost:3015"
+      tweetlongerURL: "http://localhost:3016"
       stripeKey     : "pk_test_oIyMNHil987ug1v8owRhuJwr"
       pusherKey     : "2f64ac0434cc8a94526e"
     

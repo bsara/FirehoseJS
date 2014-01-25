@@ -179,6 +179,21 @@
     
   </dd>
 </dl>
+      <h2>Class Method Summary</h2>
+      <ul class='summary'>
+  <li>
+    <span class='signature'>
+      <a href='#interactionWithToken-static'>
+        .
+(Interaction)
+<b>interactionWithToken</b><span>(token)</span>
+      </a>
+    </span>
+    <span class='desc'>
+      Used to create a generic interaction that can then be fetched, without authentication, by the token. 
+    </span>
+  </li>
+</ul>
       <h2>Instance Method Summary</h2>
       <ul class='summary'>
   <li>
@@ -212,6 +227,18 @@
       </a>
     </span>
     <span class='desc'>
+    </span>
+  </li>
+  <li>
+    <span class='signature'>
+      <a href='#fetch-dynamic'>
+        #
+(Promise)
+<b>fetch</b><span>()</span>
+      </a>
+    </span>
+    <span class='desc'>
+      Fetches the latest data from the server and populates the object&#39;s properties with it. 
     </span>
   </li>
   <li>
@@ -292,6 +319,41 @@
           <a href='../../class/FirehoseJS/Object.html#set-dynamic'>#set</a>
         </p>
       </h2>
+      <h2>Class Method Details</h2>
+      <div class='methods'>
+  <div class='method_details'>
+    <p class='signature' id='interactionWithToken-static'>
+      .
+(Interaction)
+<b>interactionWithToken</b><span>(token)</span>
+      <br>
+    </p>
+    <div class='docstring'>
+  <p>Used to create a generic interaction that can then be fetched, without authentication, by the token.
+@note: Any interactions is publicly visible with a token.</p>
+</div>
+<div class='tags'>
+  <h3>Parameters:</h3>
+  <ul class='param'>
+    <li>
+      <span class='name'>token</span>
+      <span class='type'>
+        (<tt>string</tt>)
+      </span>
+    </li>
+  </ul>
+  <h3>Returns:</h3>
+  <ul class='return'>
+    <li>
+      <span class='type'></span>
+      (<tt>Interaction</tt>)
+      &mdash;
+      <span class='desc'>a generic interaction object. </span>
+    </li>
+  </ul>
+</div>
+  </div>
+</div>
       <h2>Instance Method Details</h2>
       <div class='methods'>
   <div class='method_details'>
@@ -320,6 +382,29 @@
       <br>
     </p>
     
+  </div>
+  <div class='method_details'>
+    <p class='signature' id='fetch-dynamic'>
+      #
+(Promise)
+<b>fetch</b><span>()</span>
+      <br>
+    </p>
+    <div class='docstring'>
+  <p>Fetches the latest data from the server and populates the object&#39;s properties with it.
+@note: If an id is used, an access token is required and you will a more comprehensive JSON object in return. If no id is present, but a token is, it will fetch without authentication.</p>
+</div>
+<div class='tags'>
+  <h3>Returns:</h3>
+  <ul class='return'>
+    <li>
+      <span class='type'></span>
+      (<tt>Promise</tt>)
+      &mdash;
+      <span class='desc'>a jqXHR Promise </span>
+    </li>
+  </ul>
+</div>
   </div>
   <div class='method_details'>
     <p class='signature' id='destroy-dynamic'>
@@ -378,7 +463,7 @@
 </div>
     </div>
     <div id='footer'>
-  January 24, 14 12:52:15 by
+  January 25, 14 16:50:17 by
   <a href='https://github.com/coffeedoc/codo' title='CoffeeScript API documentation generator'>
     Codo
   </a>
