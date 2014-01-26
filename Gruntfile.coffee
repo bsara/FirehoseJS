@@ -21,8 +21,9 @@ module.exports = (grunt) ->
       
     bump:
       options:
-        commitFiles: ['-a']
-        pushTo: 'origin'
+        commit: false
+        createTag: false
+        push: false
         
     coffee:
       app:
