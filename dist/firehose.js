@@ -747,6 +747,21 @@ FirehoseJS.Agent = (function(_super) {
     return "" + this.firstName + " " + this.lastName;
   };
 
+  /*
+  The agents gravatar given their email address.
+  @return [string] the url of the agent's gravatar.
+  */
+
+
+  Agent.prototype.gravatarURL = function() {
+    var e, hashedEmail;
+    if (this.email) {
+      e = this.email.trim().toLowerCase();
+      hashedEmail = md5(e);
+    }
+    return "https://www.gravatar.com/avatar/" + hashedEmail + "?d=identicon";
+  };
+
   Agent.prototype._populateWithJSON = function(json) {
     var _this = this;
     if (this.accessToken == null) {
@@ -1836,6 +1851,35 @@ FirehoseJS.Customer = (function(_super) {
       this._interactions.sortOn("receivedAt");
     }
     return this._interactions;
+  };
+
+  /*
+  The customer's avatar URL.
+  @return [string] the url of the customer's avatar.
+  */
+
+
+  Customer.prototype.avatarURL = function() {
+    var customerAccount, e, hashedEmail, _i, _j, _len, _len1, _ref1, _ref2;
+    _ref1 = this.customerAccounts;
+    for (_i = 0, _len = _ref1.length; _i < _len; _i++) {
+      customerAccount = _ref1[_i];
+      if (customerAccount.imageURL) {
+        return customerAccount.imageURL;
+      }
+    }
+    _ref2 = this.customerAccounts;
+    for (_j = 0, _len1 = _ref2.length; _j < _len1; _j++) {
+      customerAccount = _ref2[_j];
+      if (customerAccount.username.match(/^[A-Z0-9._%+-]+@[A-Z0-9.-]+\.[A-Z]{2,4}$/i)) {
+        e = customerAccount.username.trim().toLowerCase();
+        hashedEmail = md5(e);
+      }
+    }
+    if (!hashedEmail) {
+      hashedEmail = md5(customerAccount.username);
+    }
+    return "https://www.gravatar.com/avatar/" + hashedEmail + "?d=identicon";
   };
 
   Customer.prototype._populateWithJSON = function(json) {

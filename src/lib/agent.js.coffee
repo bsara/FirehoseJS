@@ -153,7 +153,18 @@ class FirehoseJS.Agent extends FirehoseJS.Object
 
   fullName: ->
     "#{@firstName} #{@lastName}"
-  
+    
+    
+  ###
+  The agents gravatar given their email address.
+  @return [string] the url of the agent's gravatar.
+  ###
+  gravatarURL: ->
+    if @email
+      e = @email.trim().toLowerCase()
+      hashedEmail = md5(e)
+    "https://www.gravatar.com/avatar/#{hashedEmail}?d=identicon"
+
   
   # @nodoc
   _populateWithJSON: (json) ->

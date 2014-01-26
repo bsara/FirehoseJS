@@ -120,6 +120,10 @@ firehoseTest 'Destroy', 1, (agent) ->
   .fail ->
     start()   
     
+firehoseTest 'Gravatar URL', 1, (agent) ->
+  ok agent.gravatarURL().length > 40 
+  start()
+    
 firehoseTest 'Status Code Handlers', 1, (agent) ->
   FirehoseJS.client.statusCodeHandlers =
     401: ->

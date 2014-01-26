@@ -226,3 +226,15 @@ firehoseTest 'Agent Has Dibs', 1, (agent) ->
       start()
   .fail (jqXHR, textStatus, errorThrown) ->
     start()
+    
+firehoseTest 'Avatar URL', 2, (agent) ->
+  company   = agent.companies[0]
+  customers = company.customersWithCriteria()
+  customers.next()
+  .done (data, textStatus) ->
+    customer = customers[0]
+    ok customer.avatarURL().length > 40
+    delete customer.customerAccounts[0].imageURL
+    ok customer.avatarURL().length > 40
+    start()
+

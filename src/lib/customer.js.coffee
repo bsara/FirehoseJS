@@ -73,6 +73,25 @@ class FirehoseJS.Customer extends FirehoseJS.Object
     @_interactions
     
     
+  ###
+  The customer's avatar URL.
+  @return [string] the url of the customer's avatar.
+  ###
+  avatarURL: ->
+    for customerAccount in @customerAccounts
+      if customerAccount.imageURL
+        return customerAccount.imageURL
+    
+    for customerAccount in @customerAccounts
+      if customerAccount.username.match /^[A-Z0-9._%+-]+@[A-Z0-9.-]+\.[A-Z]{2,4}$/i
+        e = customerAccount.username.trim().toLowerCase()
+        hashedEmail = md5 e
+        
+    hashedEmail = md5 customerAccount.username unless hashedEmail
+    "https://www.gravatar.com/avatar/#{hashedEmail}?d=identicon"
+
+    
+    
   # @nodoc
   _populateWithJSON: (json) ->
     this._setIfNotNull "name",                         json.name
