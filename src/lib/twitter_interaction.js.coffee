@@ -42,5 +42,9 @@ class FirehoseJS.TwitterInteraction extends FirehoseJS.Interaction
       this._setIfNotNull "toUserId",            twitterJSON.to_user_id
       this._setIfNotNull "toScreenName",        twitterJSON.twitter_account.screen_name
       this._setIfNotNull "fromUserId",          twitterJSON.from_user_id
+      
+      this._populateAssociatedObjectWithJSON this, "twitterAccount", json.twitter_account, (json) ->
+        FirehoseJS.TwitterAccount._twitterAccountWithID( json.id )
+
     super json
  

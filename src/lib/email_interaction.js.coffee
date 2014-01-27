@@ -39,6 +39,9 @@ class FirehoseJS.EmailInteraction extends FirehoseJS.Interaction
     
       this._populateAssociatedObjects this, "attachments", emailJSON.attachments, (json) =>
         FirehoseJS.Attachment._attachmentWithID( json.id, this )
+        
+      this._populateAssociatedObjectWithJSON this, "emailAccount", json.email_account, (json) ->
+        FirehoseJS.EmailAccount._emailAccountWithID( json.id )
       
     super json
   
