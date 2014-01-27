@@ -38,8 +38,8 @@ class FirehoseJS.Agent extends FirehoseJS.Object
       
   @agentWithEmailAndPassword: (email, password) ->
     FirehoseJS.Object._objectOfClassWithID FirehoseJS.Agent,
-      email:      email
-      _password:  password
+      email:        email
+      _password:    password
       
 
   @agentWithID: (id) ->
@@ -47,13 +47,14 @@ class FirehoseJS.Agent extends FirehoseJS.Object
       id: id
     
   
-  signUpWithFirstAndLastName: (firstName, lastName) ->
+  signUpWithFirstAndLastName: (firstName, lastName, inviteToken) ->
     this._setIfNotNull "firstName", firstName
     this._setIfNotNull "lastName",  lastName
     
     params = 
       route: 'agents'
       body:   
+        token: inviteToken if inviteToken?
         agent:
           email:      @email 
           password:   @_password

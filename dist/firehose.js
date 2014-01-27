@@ -622,7 +622,7 @@ FirehoseJS.Agent = (function(_super) {
     });
   };
 
-  Agent.prototype.signUpWithFirstAndLastName = function(firstName, lastName) {
+  Agent.prototype.signUpWithFirstAndLastName = function(firstName, lastName, inviteToken) {
     var params,
       _this = this;
     this._setIfNotNull("firstName", firstName);
@@ -630,6 +630,7 @@ FirehoseJS.Agent = (function(_super) {
     params = {
       route: 'agents',
       body: {
+        token: inviteToken != null ? inviteToken : void 0,
         agent: {
           email: this.email,
           password: this._password,
