@@ -14,3 +14,10 @@ window.FirehoseJS = {}
 ###
 FirehoseJS.rootFor = (server) ->
   FirehoseJS.client.serverAddress server
+  
+###
+Used to determine the current environment.
+@return [Hash] A hash of all possible environments and only the current environment will be defined. So you can do `FirehoseJS.env.production?` in coffeescript.
+###
+FirehoseJS.env = ->
+  FirehoseJS.client._currentEnvironment()

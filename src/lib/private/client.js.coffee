@@ -157,6 +157,11 @@ class FirehoseJS.Client
         
     else
       this.setEnvironment "production"
+      
+      
+  _currentEnvironment: ->
+    this._ensureEnvironment()
+    @env
 
     
   _firefoxHack: ->

@@ -18,6 +18,16 @@ FirehoseJS.rootFor = function(server) {
   return FirehoseJS.client.serverAddress(server);
 };
 
+/*
+Used to determine the current environment.
+@return [Hash] A hash of all possible environments and only the current environment will be defined. So you can do `FirehoseJS.env.production?` in coffeescript.
+*/
+
+
+FirehoseJS.env = function() {
+  return FirehoseJS.client._currentEnvironment();
+};
+
 var __hasProp = {}.hasOwnProperty,
   __extends = function(child, parent) { for (var key in parent) { if (__hasProp.call(parent, key)) child[key] = parent[key]; } function ctor() { this.constructor = child; } ctor.prototype = parent.prototype; child.prototype = new ctor(); child.__super__ = parent.prototype; return child; };
 
@@ -374,6 +384,11 @@ FirehoseJS.Client = (function() {
     } else {
       return this.setEnvironment("production");
     }
+  };
+
+  Client.prototype._currentEnvironment = function() {
+    this._ensureEnvironment();
+    return this.env;
   };
 
   Client.prototype._firefoxHack = function() {
