@@ -1939,7 +1939,7 @@ FirehoseJS.CustomerAccount = (function(_super) {
       return this.imageURL;
     }
     if (this.username.match(/^[A-Z0-9._%+-]+@[A-Z0-9.-]+\.[A-Z]{2,4}$/i)) {
-      e = customerAccount.username.trim().toLowerCase();
+      e = this.username.trim().toLowerCase();
       hashedEmail = md5(e);
     }
     if (!hashedEmail) {

@@ -36,7 +36,7 @@ class FirehoseJS.CustomerAccount extends FirehoseJS.Object
       return this.imageURL
     # if it's an email account, we try using gravatar
     if this.username.match /^[A-Z0-9._%+-]+@[A-Z0-9.-]+\.[A-Z]{2,4}$/i
-      e = customerAccount.username.trim().toLowerCase()
+      e = this.username.trim().toLowerCase()
       hashedEmail = md5 e
     # otherwise, we just hash the username and use whatever pretty design gravatar generates from the hash.
     hashedEmail = md5 this.username unless hashedEmail
