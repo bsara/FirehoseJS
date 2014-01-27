@@ -2221,7 +2221,7 @@ FirehoseJS.EmailInteraction = (function(_super) {
       this._populateAssociatedObjects(this, "attachments", emailJSON.attachments, function(json) {
         return FirehoseJS.Attachment._attachmentWithID(json.id, _this);
       });
-      this._populateAssociatedObjectWithJSON(this, "emailAccount", json.email_account, function(json) {
+      this._populateAssociatedObjectWithJSON(this, "emailAccount", emailJSON.email_account, function(json) {
         return FirehoseJS.EmailAccount._emailAccountWithID(json.id);
       });
     }
@@ -2353,7 +2353,7 @@ FirehoseJS.FacebookInteraction = (function(_super) {
       this._setIfNotNull("postType", facebookJSON.post_type);
       this._setIfNotNull("postExcerpt", facebookJSON.post_excerpt);
       this._setIfNotNull("likeCount", facebookJSON.like_count);
-      this._populateAssociatedObjectWithJSON(this, "facebookAccount", json.facebook_account, function(json) {
+      this._populateAssociatedObjectWithJSON(this, "facebookAccount", facebookJSON.facebook_account, function(json) {
         return FirehoseJS.FacebookAccount._facebookAccountWithID(json.id);
       });
     }
@@ -2872,7 +2872,7 @@ FirehoseJS.TwitterInteraction = (function(_super) {
       this._setIfNotNull("toUserId", twitterJSON.to_user_id);
       this._setIfNotNull("toScreenName", twitterJSON.twitter_account.screen_name);
       this._setIfNotNull("fromUserId", twitterJSON.from_user_id);
-      this._populateAssociatedObjectWithJSON(this, "twitterAccount", json.twitter_account, function(json) {
+      this._populateAssociatedObjectWithJSON(this, "twitterAccount", twitterJSON.twitter_account, function(json) {
         return FirehoseJS.TwitterAccount._twitterAccountWithID(json.id);
       });
     }

@@ -45,7 +45,7 @@ class FirehoseJS.FacebookInteraction extends FirehoseJS.Interaction
       this._setIfNotNull "postExcerpt",facebookJSON.post_excerpt
       this._setIfNotNull "likeCount",  facebookJSON.like_count
       
-      this._populateAssociatedObjectWithJSON this, "facebookAccount", json.facebook_account, (json) ->
+      this._populateAssociatedObjectWithJSON this, "facebookAccount", facebookJSON.facebook_account, (json) ->
         FirehoseJS.FacebookAccount._facebookAccountWithID( json.id )
         
     super json
