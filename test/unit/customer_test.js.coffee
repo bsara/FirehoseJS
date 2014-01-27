@@ -233,8 +233,9 @@ firehoseTest 'Avatar URL', 2, (agent) ->
   customers.next()
   .done (data, textStatus) ->
     customer = customers[0]
-    ok customer.avatarURL().length > 40
-    delete customer.customerAccounts[0].imageURL
-    ok customer.avatarURL().length > 40
+    customerAccount = customer.customerAccounts[0]
+    ok customerAccount.avatarURL().length > 40
+    delete customerAccount.imageURL
+    ok customerAccount.avatarURL().length > 40
     start()
 

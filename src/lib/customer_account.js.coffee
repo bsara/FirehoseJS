@@ -24,6 +24,23 @@ class FirehoseJS.CustomerAccount extends FirehoseJS.Object
     FirehoseJS.Object._objectOfClassWithID FirehoseJS.CustomerAccount,
       id:       id
       customer: customer
+      
+      
+  ###
+  The customer account's avatar URL.
+  @return [string] the url of the customer's avatar.
+  ###
+  avatarURL: ->
+    # if an image url is present from facebook or twitter
+    if this.imageURL
+      return this.imageURL
+    # if it's an email account, we try using gravatar
+    if this.username.match /^[A-Z0-9._%+-]+@[A-Z0-9.-]+\.[A-Z]{2,4}$/i
+      e = customerAccount.username.trim().toLowerCase()
+      hashedEmail = md5 e
+    # otherwise, we just hash the username and use whatever pretty design gravatar generates from the hash.
+    hashedEmail = md5 this.username unless hashedEmail
+    "https://www.gravatar.com/avatar/#{hashedEmail}?d=identicon"
     
     
   # @nodoc
