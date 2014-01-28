@@ -47,10 +47,30 @@ class FirehoseJS.Object
   set: (key, value) ->
     this[key] = value
     
+  ###
+  Uses the classes 'archivableProperties' to stringify this object and save it in localStorage.
+  @param key [string] an optional key to archive the object by if the 'id' is not available.
+  ###
+  archive: (key = @id) ->
+    index = "#{this.constructor._firehoseType}_#{key}"
+    localStorage[index] = JSON.stringify this._toArchivableJSON()
+    
+  ###
+  Unarchives the object from local storage.
+  @param key [string] an optional key to unarchive the object by if 'id' is not available.
+  @return [boolean] true if the object was in localStorage, false if it was not.
+  ###
+  unarchive: (key = @id) ->
+    index = "#{this.constructor._firehoseType}_#{key}"
+    if localStorage[index]?
+      json = $.parseJSON localStorage[index]
+      this._populateWithJSON json
+      true
+    else
+      false
     
   ###
   Create an object to be cached
-  
   @nodoc
   ###
   @_objectOfClassWithID: (klass, properties) ->
@@ -101,5 +121,9 @@ class FirehoseJS.Object
   _setIfNotNull: (key, value) ->
     if value?
       this.set key, value
+      
+  # @nodoc
+  _toArchivableJSON: ->
+    id:         @id
+    created_at: @createdAt
     
-  

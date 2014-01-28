@@ -69,11 +69,20 @@ class FirehoseJS.Agent extends FirehoseJS.Object
         
     FirehoseJS.client.post( params ).done (data) =>
       this._populateWithJSON data
-      FirehoseJS.client.APIAccessToken = @accessToken
-      FirehoseJS.Agent.loggedInAgent = this
+      this._handleSuccessfulLogin()
   
   
+  ###
+  Logs the agent in and stores the access token for all future requests.
+  @note If the username and password properties are set, they are used to log in and obtain an access token and populate the agent.
+        If no username or password is set, but the accessToken is set, it will login using the access token and populate the agent.
+  @return [Promise] A jqXHR Promise.
+  ###
   login: ->    
+    if @firstName? and @lastName and @email?
+      this._handleSuccessfulLogin()
+      return $.Deferred().resolve this._toArchivableJSON()
+      
     FirehoseJS.client.APIAccessToken = null
     
     params = 
@@ -88,11 +97,13 @@ class FirehoseJS.Agent extends FirehoseJS.Object
         
     FirehoseJS.client.post( params ).done (data) =>
       this._populateWithJSON data
-      FirehoseJS.client.APIAccessToken  = @accessToken
-      FirehoseJS.client.URLToken        = @URLToken
-      FirehoseJS.Agent.loggedInAgent = this
+      this._handleSuccessfulLogin()
       
   
+  ###
+  Makes no call to the server but simply nulls out all the stored credentials that are used to authenticate requests.
+  Any requests made after calling `logout()` on any agent will cause every request that requires authenticattion to fail.
+  ###
   logout: ->
     this._setIfNotNull "accessToken", null
     this._setIfNotNull "URLToken", null
@@ -102,16 +113,22 @@ class FirehoseJS.Agent extends FirehoseJS.Object
     FirehoseJS.client.billingAccessToken  = null
     
   
+  ###
+  Fetches the latest data about this agent from the server and populates the agent's properties.
+  @return [Promise] A jqXHR Promise.
+  ###
   fetch: ->
     params = 
       route: "agents/#{@id}"
     FirehoseJS.client.get( params ).done (data) =>
       this._populateWithJSON data
-      FirehoseJS.client.APIAccessToken = @accessToken
-      FirehoseJS.client.URLToken       = @URLToken
-      FirehoseJS.Agent.loggedInAgent   = this
+      this._handleSuccessfulLogin()
       
   
+  ###
+  Persists all properties that can be saved to the server.
+  @return [Promise] A jqXHR Promise.
+  ###
   save: ->
     params = 
       route: "agents/#{@id}"
@@ -119,6 +136,13 @@ class FirehoseJS.Agent extends FirehoseJS.Object
     FirehoseJS.client.put( params )
   
   
+  ###
+  Deletes this agent from the server.
+  @note The logic of what this does is somewhat complex. The rules are: Every company this agent belongs to where this is the only agent the company has will be destroyed
+        with the agent. Any company this agent belongs to that has other agents will not be destroyed and if the agent was the company's owner, the agent will still be 
+        destroyed and a new owner will be selected from remaining agents at random.
+  @return [Promise] A jqXHR Promise.
+  ###
   destroy: ->
     params = 
       route: "agents/#{@id}"
@@ -171,6 +195,14 @@ class FirehoseJS.Agent extends FirehoseJS.Object
       e = @email.trim().toLowerCase()
       hashedEmail = md5(e)
     "https://www.gravatar.com/avatar/#{hashedEmail}?d=identicon"
+    
+    
+  # @nodoc
+  _handleSuccessfulLogin: =>
+    FirehoseJS.client.APIAccessToken = @accessToken
+    FirehoseJS.client.URLToken       = @URLToken
+    FirehoseJS.Agent.loggedInAgent   = this
+    
 
   
   # @nodoc
@@ -198,4 +230,15 @@ class FirehoseJS.Agent extends FirehoseJS.Object
       email:      @email
       password:   @_password if @_password?
       
-      
+  # @nodoc
+  _toArchivableJSON: ->
+    $.extend super(),
+      access_token: @accessToken
+      url_token:    @URLToken
+      first_name:   @firstName
+      last_name:    @lastName
+      email:        @email
+      password:     @_password if @_password?
+      companies:    @companies?._toArchivableJSON()
+
+  

@@ -113,6 +113,30 @@
       A placeholder for third-party libraries to replace. 
     </span>
   </li>
+  <li>
+    <span class='signature'>
+      <a href='#archive-dynamic'>
+        #
+(void)
+<b>archive</b><span>(key = @id)</span>
+      </a>
+    </span>
+    <span class='desc'>
+      Uses the classes &#39;archivableProperties&#39; to stringify this object and save it in localStorage. 
+    </span>
+  </li>
+  <li>
+    <span class='signature'>
+      <a href='#unarchive-dynamic'>
+        #
+(boolean)
+<b>unarchive</b><span>(key = @id)</span>
+      </a>
+    </span>
+    <span class='desc'>
+      Unarchives the object from local storage. 
+    </span>
+  </li>
 </ul>
       <h2>Constructor Details</h2>
       <div class='methods'>
@@ -171,10 +195,67 @@
 <div class='tags'>
 </div>
   </div>
+  <div class='method_details'>
+    <p class='signature' id='archive-dynamic'>
+      #
+(void)
+<b>archive</b><span>(key = @id)</span>
+      <br>
+    </p>
+    <div class='docstring'>
+  <p>Uses the classes &#39;archivableProperties&#39; to stringify this object and save it in localStorage.</p>
+</div>
+<div class='tags'>
+  <h3>Parameters:</h3>
+  <ul class='param'>
+    <li>
+      <span class='name'>key</span>
+      <span class='type'>
+        (<tt>string</tt>)
+      </span>
+      &mdash;
+      <span class='desc'>an optional key to archive the object by if the &#39;id&#39; is not available. </span>
+    </li>
+  </ul>
+</div>
+  </div>
+  <div class='method_details'>
+    <p class='signature' id='unarchive-dynamic'>
+      #
+(boolean)
+<b>unarchive</b><span>(key = @id)</span>
+      <br>
+    </p>
+    <div class='docstring'>
+  <p>Unarchives the object from local storage.</p>
+</div>
+<div class='tags'>
+  <h3>Parameters:</h3>
+  <ul class='param'>
+    <li>
+      <span class='name'>key</span>
+      <span class='type'>
+        (<tt>string</tt>)
+      </span>
+      &mdash;
+      <span class='desc'>an optional key to unarchive the object by if &#39;id&#39; is not available. </span>
+    </li>
+  </ul>
+  <h3>Returns:</h3>
+  <ul class='return'>
+    <li>
+      <span class='type'></span>
+      (<tt>boolean</tt>)
+      &mdash;
+      <span class='desc'>true if the object was in localStorage, false if it was not. </span>
+    </li>
+  </ul>
+</div>
+  </div>
 </div>
     </div>
     <div id='footer'>
-  January 28, 14 12:25:30 by
+  January 28, 14 16:21:41 by
   <a href='https://github.com/coffeedoc/codo' title='CoffeeScript API documentation generator'>
     Codo
   </a>

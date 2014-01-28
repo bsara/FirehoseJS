@@ -193,11 +193,12 @@
     <span class='signature'>
       <a href='#login-dynamic'>
         #
-(void)
+(Promise)
 <b>login</b><span>()</span>
       </a>
     </span>
     <span class='desc'>
+      Logs the agent in and stores the access token for all future requests. 
     </span>
   </li>
   <li>
@@ -209,39 +210,43 @@
       </a>
     </span>
     <span class='desc'>
+      Makes no call to the server but simply nulls out all the stored credentials that are used to authenticate requests. 
     </span>
   </li>
   <li>
     <span class='signature'>
       <a href='#fetch-dynamic'>
         #
-(void)
+(Promise)
 <b>fetch</b><span>()</span>
       </a>
     </span>
     <span class='desc'>
+      Fetches the latest data about this agent from the server and populates the agent&#39;s properties. 
     </span>
   </li>
   <li>
     <span class='signature'>
       <a href='#save-dynamic'>
         #
-(void)
+(Promise)
 <b>save</b><span>()</span>
       </a>
     </span>
     <span class='desc'>
+      Persists all properties that can be saved to the server. 
     </span>
   </li>
   <li>
     <span class='signature'>
       <a href='#destroy-dynamic'>
         #
-(void)
+(Promise)
 <b>destroy</b><span>()</span>
       </a>
     </span>
     <span class='desc'>
+      Deletes this agent from the server. 
     </span>
   </li>
   <li>
@@ -299,6 +304,8 @@
         <p class='inherited'>
           <a href='../../class/FirehoseJS/Object.html#get-dynamic'>#get</a>
           <a href='../../class/FirehoseJS/Object.html#set-dynamic'>#set</a>
+          <a href='../../class/FirehoseJS/Object.html#archive-dynamic'>#archive</a>
+          <a href='../../class/FirehoseJS/Object.html#unarchive-dynamic'>#unarchive</a>
         </p>
       </h2>
       <h2>Class Method Details</h2>
@@ -403,11 +410,29 @@
   <div class='method_details'>
     <p class='signature' id='login-dynamic'>
       #
-(void)
+(Promise)
 <b>login</b><span>()</span>
       <br>
     </p>
-    
+    <div class='docstring'>
+  <div class='note'>
+    <strong>Note:</strong>
+    If the username and password properties are set, they are used to log in and obtain an access token and populate the agent. 
+  </div>
+  <p>Logs the agent in and stores the access token for all future requests.
+      If no username or password is set, but the accessToken is set, it will login using the access token and populate the agent.</p>
+</div>
+<div class='tags'>
+  <h3>Returns:</h3>
+  <ul class='return'>
+    <li>
+      <span class='type'></span>
+      (<tt>Promise</tt>)
+      &mdash;
+      <span class='desc'>A jqXHR Promise. </span>
+    </li>
+  </ul>
+</div>
   </div>
   <div class='method_details'>
     <p class='signature' id='logout-dynamic'>
@@ -416,34 +441,84 @@
 <b>logout</b><span>()</span>
       <br>
     </p>
-    
+    <div class='docstring'>
+  <p>Makes no call to the server but simply nulls out all the stored credentials that are used to authenticate requests.
+Any requests made after calling <code>logout()</code> on any agent will cause every request that requires authenticattion to fail.</p>
+</div>
+<div class='tags'>
+</div>
   </div>
   <div class='method_details'>
     <p class='signature' id='fetch-dynamic'>
       #
-(void)
+(Promise)
 <b>fetch</b><span>()</span>
       <br>
     </p>
-    
+    <div class='docstring'>
+  <p>Fetches the latest data about this agent from the server and populates the agent&#39;s properties.</p>
+</div>
+<div class='tags'>
+  <h3>Returns:</h3>
+  <ul class='return'>
+    <li>
+      <span class='type'></span>
+      (<tt>Promise</tt>)
+      &mdash;
+      <span class='desc'>A jqXHR Promise. </span>
+    </li>
+  </ul>
+</div>
   </div>
   <div class='method_details'>
     <p class='signature' id='save-dynamic'>
       #
-(void)
+(Promise)
 <b>save</b><span>()</span>
       <br>
     </p>
-    
+    <div class='docstring'>
+  <p>Persists all properties that can be saved to the server.</p>
+</div>
+<div class='tags'>
+  <h3>Returns:</h3>
+  <ul class='return'>
+    <li>
+      <span class='type'></span>
+      (<tt>Promise</tt>)
+      &mdash;
+      <span class='desc'>A jqXHR Promise. </span>
+    </li>
+  </ul>
+</div>
   </div>
   <div class='method_details'>
     <p class='signature' id='destroy-dynamic'>
       #
-(void)
+(Promise)
 <b>destroy</b><span>()</span>
       <br>
     </p>
-    
+    <div class='docstring'>
+  <div class='note'>
+    <strong>Note:</strong>
+    The logic of what this does is somewhat complex. The rules are: Every company this agent belongs to where this is the only agent the company has will be destroyed 
+  </div>
+  <p>Deletes this agent from the server.
+      with the agent. Any company this agent belongs to that has other agents will not be destroyed and if the agent was the company&#39;s owner, the agent will still be 
+      destroyed and a new owner will be selected from remaining agents at random.</p>
+</div>
+<div class='tags'>
+  <h3>Returns:</h3>
+  <ul class='return'>
+    <li>
+      <span class='type'></span>
+      (<tt>Promise</tt>)
+      &mdash;
+      <span class='desc'>A jqXHR Promise. </span>
+    </li>
+  </ul>
+</div>
   </div>
   <div class='method_details'>
     <p class='signature' id='dismissNotifications-dynamic'>
@@ -497,7 +572,7 @@
 </div>
     </div>
     <div id='footer'>
-  January 28, 14 12:25:30 by
+  January 28, 14 16:21:41 by
   <a href='https://github.com/coffeedoc/codo' title='CoffeeScript API documentation generator'>
     Codo
   </a>

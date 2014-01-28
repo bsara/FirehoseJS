@@ -125,6 +125,16 @@ FirehoseJS.UniqueArray = (function(_super) {
     }
   };
 
+  UniqueArray.prototype._toArchivableJSON = function() {
+    var archiveArray, obj, _i, _len;
+    archiveArray = [];
+    for (_i = 0, _len = this.length; _i < _len; _i++) {
+      obj = this[_i];
+      archiveArray.push(obj._toArchivableJSON());
+    }
+    return archiveArray;
+  };
+
   return UniqueArray;
 
 })(Array);
@@ -509,8 +519,44 @@ FirehoseJS.Object = (function() {
   };
 
   /*
+  Uses the classes 'archivableProperties' to stringify this object and save it in localStorage.
+  @param key [string] an optional key to archive the object by if the 'id' is not available.
+  */
+
+
+  Object.prototype.archive = function(key) {
+    var index;
+    if (key == null) {
+      key = this.id;
+    }
+    index = "" + this.constructor._firehoseType + "_" + key;
+    return localStorage[index] = JSON.stringify(this._toArchivableJSON());
+  };
+
+  /*
+  Unarchives the object from local storage.
+  @param key [string] an optional key to unarchive the object by if 'id' is not available.
+  @return [boolean] true if the object was in localStorage, false if it was not.
+  */
+
+
+  Object.prototype.unarchive = function(key) {
+    var index, json;
+    if (key == null) {
+      key = this.id;
+    }
+    index = "" + this.constructor._firehoseType + "_" + key;
+    if (localStorage[index] != null) {
+      json = $.parseJSON(localStorage[index]);
+      this._populateWithJSON(json);
+      return true;
+    } else {
+      return false;
+    }
+  };
+
+  /*
   Create an object to be cached
-  
   @nodoc
   */
 
@@ -580,11 +626,19 @@ FirehoseJS.Object = (function() {
     }
   };
 
+  Object.prototype._toArchivableJSON = function() {
+    return {
+      id: this.id,
+      created_at: this.createdAt
+    };
+  };
+
   return Object;
 
 })();
 
 var _ref,
+  __bind = function(fn, me){ return function(){ return fn.apply(me, arguments); }; },
   __hasProp = {}.hasOwnProperty,
   __extends = function(child, parent) { for (var key in parent) { if (__hasProp.call(parent, key)) child[key] = parent[key]; } function ctor() { this.constructor = child; } ctor.prototype = parent.prototype; child.prototype = new ctor(); child.__super__ = parent.prototype; return child; };
 
@@ -592,6 +646,7 @@ FirehoseJS.Agent = (function(_super) {
   __extends(Agent, _super);
 
   function Agent() {
+    this._handleSuccessfulLogin = __bind(this._handleSuccessfulLogin, this);
     _ref = Agent.__super__.constructor.apply(this, arguments);
     return _ref;
   }
@@ -667,14 +722,25 @@ FirehoseJS.Agent = (function(_super) {
     };
     return FirehoseJS.client.post(params).done(function(data) {
       _this._populateWithJSON(data);
-      FirehoseJS.client.APIAccessToken = _this.accessToken;
-      return FirehoseJS.Agent.loggedInAgent = _this;
+      return _this._handleSuccessfulLogin();
     });
   };
+
+  /*
+  Logs the agent in and stores the access token for all future requests.
+  @note If the username and password properties are set, they are used to log in and obtain an access token and populate the agent.
+        If no username or password is set, but the accessToken is set, it will login using the access token and populate the agent.
+  @return [Promise] A jqXHR Promise.
+  */
+
 
   Agent.prototype.login = function() {
     var params,
       _this = this;
+    if ((this.firstName != null) && this.lastName && (this.email != null)) {
+      this._handleSuccessfulLogin();
+      return $.Deferred().resolve(this._toArchivableJSON());
+    }
     FirehoseJS.client.APIAccessToken = null;
     params = {
       route: 'login'
@@ -689,11 +755,15 @@ FirehoseJS.Agent = (function(_super) {
     }
     return FirehoseJS.client.post(params).done(function(data) {
       _this._populateWithJSON(data);
-      FirehoseJS.client.APIAccessToken = _this.accessToken;
-      FirehoseJS.client.URLToken = _this.URLToken;
-      return FirehoseJS.Agent.loggedInAgent = _this;
+      return _this._handleSuccessfulLogin();
     });
   };
+
+  /*
+  Makes no call to the server but simply nulls out all the stored credentials that are used to authenticate requests.
+  Any requests made after calling `logout()` on any agent will cause every request that requires authenticattion to fail.
+  */
+
 
   Agent.prototype.logout = function() {
     this._setIfNotNull("accessToken", null);
@@ -704,6 +774,12 @@ FirehoseJS.Agent = (function(_super) {
     return FirehoseJS.client.billingAccessToken = null;
   };
 
+  /*
+  Fetches the latest data about this agent from the server and populates the agent's properties.
+  @return [Promise] A jqXHR Promise.
+  */
+
+
   Agent.prototype.fetch = function() {
     var params,
       _this = this;
@@ -712,11 +788,15 @@ FirehoseJS.Agent = (function(_super) {
     };
     return FirehoseJS.client.get(params).done(function(data) {
       _this._populateWithJSON(data);
-      FirehoseJS.client.APIAccessToken = _this.accessToken;
-      FirehoseJS.client.URLToken = _this.URLToken;
-      return FirehoseJS.Agent.loggedInAgent = _this;
+      return _this._handleSuccessfulLogin();
     });
   };
+
+  /*
+  Persists all properties that can be saved to the server.
+  @return [Promise] A jqXHR Promise.
+  */
+
 
   Agent.prototype.save = function() {
     var params;
@@ -726,6 +806,15 @@ FirehoseJS.Agent = (function(_super) {
     };
     return FirehoseJS.client.put(params);
   };
+
+  /*
+  Deletes this agent from the server.
+  @note The logic of what this does is somewhat complex. The rules are: Every company this agent belongs to where this is the only agent the company has will be destroyed
+        with the agent. Any company this agent belongs to that has other agents will not be destroyed and if the agent was the company's owner, the agent will still be 
+        destroyed and a new owner will be selected from remaining agents at random.
+  @return [Promise] A jqXHR Promise.
+  */
+
 
   Agent.prototype.destroy = function() {
     var params,
@@ -804,6 +893,12 @@ FirehoseJS.Agent = (function(_super) {
     return "https://www.gravatar.com/avatar/" + hashedEmail + "?d=identicon";
   };
 
+  Agent.prototype._handleSuccessfulLogin = function() {
+    FirehoseJS.client.APIAccessToken = this.accessToken;
+    FirehoseJS.client.URLToken = this.URLToken;
+    return FirehoseJS.Agent.loggedInAgent = this;
+  };
+
   Agent.prototype._populateWithJSON = function(json) {
     var _this = this;
     if (this.accessToken == null) {
@@ -833,6 +928,19 @@ FirehoseJS.Agent = (function(_super) {
         password: this._password != null ? this._password : void 0
       }
     };
+  };
+
+  Agent.prototype._toArchivableJSON = function() {
+    var _ref1;
+    return $.extend(Agent.__super__._toArchivableJSON.call(this), {
+      access_token: this.accessToken,
+      url_token: this.URLToken,
+      first_name: this.firstName,
+      last_name: this.lastName,
+      email: this.email,
+      password: this._password != null ? this._password : void 0,
+      companies: (_ref1 = this.companies) != null ? _ref1._toArchivableJSON() : void 0
+    });
   };
 
   return Agent;
@@ -1152,6 +1260,22 @@ FirehoseJS.Company = (function(_super) {
         fetch_automatically: this.fetchAutomatically
       }
     };
+  };
+
+  Company.prototype._toArchivableJSON = function() {
+    return $.extend(Company.__super__._toArchivableJSON.call(this), {
+      title: this.title,
+      token: this.token,
+      fetch_automatically: this.fetchAutomatically,
+      last_fetch_at: this.lastFetchAt,
+      forwarding_email: this.forwardingEmailAddress,
+      kb_subdomain: this.knowledgeBaseSubdomain,
+      unresolved_count: this.unresolvedCount,
+      number_of_accounts: this.numberOfAccounts,
+      agent_invites: this.agentInvites._toArchivableJSON(),
+      tags: this.tags._toArchivableJSON(),
+      canned_responses: this.cannedResponses._toArchivableJSON()
+    });
   };
 
   return Company;
@@ -1505,6 +1629,12 @@ FirehoseJS.AgentInvite = (function(_super) {
     };
   };
 
+  AgentInvite.prototype._toArchivableJSON = function() {
+    return $.extend(AgentInvite.__super__._toArchivableJSON.call(this), {
+      email: this.toEmail
+    });
+  };
+
   return AgentInvite;
 
 })(FirehoseJS.Object);
@@ -1676,6 +1806,14 @@ FirehoseJS.CannedResponse = (function(_super) {
         text: this.text
       }
     };
+  };
+
+  CannedResponse.prototype._toArchivableJSON = function() {
+    return $.extend(CannedResponse.__super__._toArchivableJSON.call(this), {
+      name: this.name,
+      shortcut: this.shortcut,
+      text: this.text
+    });
   };
 
   return CannedResponse;
@@ -2791,6 +2929,12 @@ FirehoseJS.Tag = (function(_super) {
         label: this.label
       }
     };
+  };
+
+  Tag.prototype._toArchivableJSON = function() {
+    return $.extend(Tag.__super__._toArchivableJSON.call(this), {
+      label: this.label
+    });
   };
 
   return Tag;

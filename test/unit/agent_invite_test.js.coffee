@@ -58,3 +58,4 @@ firehoseTest 'Destroy', 1, (agent) ->
       start()
   .fail (jqXHR, textStatus, errorThrown) ->
     start()
+    

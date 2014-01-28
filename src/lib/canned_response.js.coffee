@@ -97,3 +97,9 @@ class FirehoseJS.CannedResponse extends FirehoseJS.Object
       text:     @text
 
  
+   # @nodoc
+  _toArchivableJSON: ->
+    $.extend super(),
+      name:     @name
+      shortcut: @shortcut
+      text:     @text

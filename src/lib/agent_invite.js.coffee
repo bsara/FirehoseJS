@@ -54,3 +54,8 @@ class FirehoseJS.AgentInvite extends FirehoseJS.Object
   _toJSON: ->
     agent_invite:
       email: @toEmail
+
+  # @nodoc
+  _toArchivableJSON: ->
+    $.extend super(),
+      email:                @toEmail

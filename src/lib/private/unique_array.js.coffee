@@ -59,3 +59,12 @@ class FirehoseJS.UniqueArray extends Array
       else
         0
     this.reverse() if @_sortDirection == 'desc'
+    
+    
+  # @nodoc
+  _toArchivableJSON: ->
+    archiveArray = []
+    for obj in this
+      archiveArray.push obj._toArchivableJSON()
+    archiveArray
+      

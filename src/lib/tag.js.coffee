@@ -54,3 +54,8 @@ class FirehoseJS.Tag extends FirehoseJS.Object
   _toJSON: ->
     tag:
       label: @label
+      
+    # @nodoc
+  _toArchivableJSON: ->
+    $.extend super(),
+      label: @label

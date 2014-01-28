@@ -36,19 +36,25 @@ asyncTest 'Sign Up', 8, ->
     start()
   .fail ->
     start()
-       
-firehoseTest 'Log In With un/pw', 8, (agent) ->
-  agent2 = FirehoseJS.Agent.agentWithEmailAndPassword( agent.email, "pw" )
-  agent2.login()
+
+### 
+# Test of login w un/pw occurs with every test
+###
+
+firehoseTest 'Test Immediate Login', 11, (agent) ->
+  ok agent.firstName?
+  ok agent.lastName?
+  ok agent.email?
+  agent.login()
   .done (data, textStatus) ->
-    equal textStatus, "success"
-    ok agent2.firstName?
-    ok agent2.lastName?
-    ok agent2.email?
-    ok agent2.id?
-    ok agent2.createdAt?
-    equal agent2.companies.length, 1
-    ok agent2.currentCompany?
+    ok not textStatus?
+    ok agent.firstName?
+    ok agent.lastName?
+    ok agent.email?
+    ok agent.id?
+    ok agent.createdAt?
+    equal agent.companies.length, 1
+    ok agent.currentCompany?
     start()
   .fail ->
     start()
@@ -131,3 +137,17 @@ firehoseTest 'Status Code Handlers', 1, (agent) ->
       start()
   FirehoseJS.client.APIAccessToken = "blah"
   agent.fetch()
+  
+firehoseTest 'Archive/Unarchive', 8, (agent) ->
+  agent.archive()
+  agent2 = FirehoseJS.Agent.agentWithID agent.id
+  agent2.unarchive()
+  ok agent.id == agent2.id
+  ok agent.createdAt == agent2.createdAt
+  ok agent.firstName == agent2.firstName
+  ok agent.lastName == agent2.lastName
+  ok agent.email == agent2.email
+  ok agent.accessToken == agent2.accessToken
+  ok agent.URLToken == agent2.URLToken
+  ok agent.companies.length == agent2.companies.length
+  start()

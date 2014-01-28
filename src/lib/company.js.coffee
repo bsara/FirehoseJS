@@ -273,3 +273,19 @@ class FirehoseJS.Company extends FirehoseJS.Object
       title:                @title
       fetch_automatically:  @fetchAutomatically
       
+
+  # @nodoc
+  _toArchivableJSON: ->
+    $.extend super(),
+      title:                @title
+      token:                @token
+      fetch_automatically:  @fetchAutomatically
+      last_fetch_at:        @lastFetchAt
+      forwarding_email:     @forwardingEmailAddress
+      kb_subdomain:         @knowledgeBaseSubdomain
+      unresolved_count:     @unresolvedCount
+      number_of_accounts:   @numberOfAccounts
+      # agents:               @agents._toArchivableJSON()   # gotta figure out how to imp this so it doesn't recurse infinitely
+      agent_invites:        @agentInvites._toArchivableJSON()
+      tags:                 @tags._toArchivableJSON()
+      canned_responses:     @cannedResponses._toArchivableJSON()
