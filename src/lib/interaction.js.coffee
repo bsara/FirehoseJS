@@ -27,6 +27,8 @@ class FirehoseJS.Interaction extends FirehoseJS.Object
   
   # associations
   
+  originalInteraction: null
+  
   responseInteractions: null
   
   notes: null
@@ -186,7 +188,8 @@ class FirehoseJS.Interaction extends FirehoseJS.Object
     
     this._populateAssociatedObjects this, "responseInteractions", json.response_interactions, (json) =>
       json.channel = @channel
-      FirehoseJS.Interaction._interactionWithJSON( json, @customer )
+      interaction = FirehoseJS.Interaction._interactionWithJSON( json, @customer )
+      interaction.set 'originalInteraction', this
       
     this._populateAssociatedObjects this, "notes", json.notes, (json) =>
       FirehoseJS.Note._noteWithID( json.id, this )

@@ -1194,6 +1194,8 @@ FirehoseJS.Interaction = (function(_super) {
 
   Interaction.prototype.agent = null;
 
+  Interaction.prototype.originalInteraction = null;
+
   Interaction.prototype.responseInteractions = null;
 
   Interaction.prototype.notes = null;
@@ -1396,8 +1398,10 @@ FirehoseJS.Interaction = (function(_super) {
       return FirehoseJS.CustomerAccount._customerAccountWithID(json.id, _this.customer);
     });
     this._populateAssociatedObjects(this, "responseInteractions", json.response_interactions, function(json) {
+      var interaction;
       json.channel = _this.channel;
-      return FirehoseJS.Interaction._interactionWithJSON(json, _this.customer);
+      interaction = FirehoseJS.Interaction._interactionWithJSON(json, _this.customer);
+      return interaction.set('originalInteraction', _this);
     });
     this._populateAssociatedObjects(this, "notes", json.notes, function(json) {
       return FirehoseJS.Note._noteWithID(json.id, _this);
