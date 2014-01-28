@@ -46,7 +46,13 @@ class FirehoseJS.Agent extends FirehoseJS.Object
     FirehoseJS.Object._objectOfClassWithID FirehoseJS.Agent,
       id: id
     
-  
+  ###
+  Create a new agent.
+  @param firstName [string] The first name of the agent that will be shown in the interace and to customers.
+  @param lastName [string] The last name of the agent.
+  @param inviteToken [string] If The user is accepting an invite from an email, the invite token will be in the url and you can pass it in here to link this agent to that company when they sign up.
+  @return [Promise] a jqXHR Promise.
+  ###
   signUpWithFirstAndLastName: (firstName, lastName, inviteToken) ->
     this._setIfNotNull "firstName", firstName
     this._setIfNotNull "lastName",  lastName

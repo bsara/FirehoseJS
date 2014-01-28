@@ -181,11 +181,12 @@
     <span class='signature'>
       <a href='#signUpWithFirstAndLastName-dynamic'>
         #
-(void)
+(Promise)
 <b>signUpWithFirstAndLastName</b><span>(firstName, lastName, inviteToken)</span>
       </a>
     </span>
     <span class='desc'>
+      Create a new agent. 
     </span>
   </li>
   <li>
@@ -353,11 +354,51 @@
   <div class='method_details'>
     <p class='signature' id='signUpWithFirstAndLastName-dynamic'>
       #
-(void)
+(Promise)
 <b>signUpWithFirstAndLastName</b><span>(firstName, lastName, inviteToken)</span>
       <br>
     </p>
-    
+    <div class='docstring'>
+  <p>Create a new agent.</p>
+</div>
+<div class='tags'>
+  <h3>Parameters:</h3>
+  <ul class='param'>
+    <li>
+      <span class='name'>firstName</span>
+      <span class='type'>
+        (<tt>string</tt>)
+      </span>
+      &mdash;
+      <span class='desc'>The first name of the agent that will be shown in the interace and to customers. </span>
+    </li>
+    <li>
+      <span class='name'>lastName</span>
+      <span class='type'>
+        (<tt>string</tt>)
+      </span>
+      &mdash;
+      <span class='desc'>The last name of the agent. </span>
+    </li>
+    <li>
+      <span class='name'>inviteToken</span>
+      <span class='type'>
+        (<tt>string</tt>)
+      </span>
+      &mdash;
+      <span class='desc'>If The user is accepting an invite from an email, the invite token will be in the url and you can pass it in here to link this agent to that company when they sign up. </span>
+    </li>
+  </ul>
+  <h3>Returns:</h3>
+  <ul class='return'>
+    <li>
+      <span class='type'></span>
+      (<tt>Promise</tt>)
+      &mdash;
+      <span class='desc'>a jqXHR Promise. </span>
+    </li>
+  </ul>
+</div>
   </div>
   <div class='method_details'>
     <p class='signature' id='login-dynamic'>
@@ -456,7 +497,7 @@
 </div>
     </div>
     <div id='footer'>
-  January 27, 14 15:15:22 by
+  January 28, 14 08:02:56 by
   <a href='https://github.com/coffeedoc/codo' title='CoffeeScript API documentation generator'>
     Codo
   </a>

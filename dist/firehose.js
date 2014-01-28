@@ -338,6 +338,19 @@ FirehoseJS.Client = (function() {
       marketingURL: "https://getfirehose.com",
       settingsURL: "https://settings.firehoseapp.com",
       tweetlongerURL: "https://tl.frh.io",
+      kbURL: "https://firehosehelp.com",
+      stripeKey: "pk_live_CGPaLboKkpr7tqswA4elf8NQ",
+      pusherKey: "d3e373f7fac89de7bde8"
+    },
+    staging: {
+      APIURL: "https://api.firehoseapp.com",
+      browserURL: "https://staging.firehoseapp.com",
+      billingURL: "https://staging.billing.firehoseapp.com",
+      frhioURL: "https://frh.io",
+      marketingURL: "https://staging.getfirehose.com",
+      settingsURL: "https://staging.settings.firehoseapp.com",
+      tweetlongerURL: "https://staging.tl.frh.io",
+      kbURL: "https://staging.firehosehelp.com",
       stripeKey: "pk_live_CGPaLboKkpr7tqswA4elf8NQ",
       pusherKey: "d3e373f7fac89de7bde8"
     },
@@ -349,6 +362,7 @@ FirehoseJS.Client = (function() {
       marketingURL: "http://localhost:3004",
       settingsURL: "http://localhost:3005",
       tweetlongerURL: "http://localhost:3006",
+      kbURL: "http://localhost:3007",
       stripeKey: "pk_test_oIyMNHil987ug1v8owRhuJwr",
       pusherKey: "2f64ac0434cc8a94526e"
     },
@@ -360,6 +374,7 @@ FirehoseJS.Client = (function() {
       marketingURL: "http://localhost:3014",
       settingsURL: "http://localhost:3015",
       tweetlongerURL: "http://localhost:3016",
+      kbURL: "http://localhost:3017",
       stripeKey: "pk_test_oIyMNHil987ug1v8owRhuJwr",
       pusherKey: "2f64ac0434cc8a94526e"
     }
@@ -381,6 +396,8 @@ FirehoseJS.Client = (function() {
       } else {
         return this.setEnvironment("development");
       }
+    } else if (anchor.hostname.match(/staging/)) {
+      return this.setEnvironment('staging');
     } else {
       return this.setEnvironment("production");
     }
@@ -621,6 +638,15 @@ FirehoseJS.Agent = (function(_super) {
       id: id
     });
   };
+
+  /*
+  Create a new agent.
+  @param firstName [string] The first name of the agent that will be shown in the interace and to customers.
+  @param lastName [string] The last name of the agent.
+  @param inviteToken [string] If The user is accepting an invite from an email, the invite token will be in the url and you can pass it in here to link this agent to that company when they sign up.
+  @return [Promise] a jqXHR Promise.
+  */
+
 
   Agent.prototype.signUpWithFirstAndLastName = function(firstName, lastName, inviteToken) {
     var params,
