@@ -19,6 +19,16 @@ FirehoseJS.rootFor = function(server) {
 };
 
 /*
+@param    service [string] The name of the service. Possible values: 'pusher', 'stripe'
+@return   [string] The token/key used for that service's library.
+*/
+
+
+FirehoseJS.tokenFor = function(service) {
+  return FirehoseJS.client.serviceToken(service);
+};
+
+/*
 Used to determine the current environment.
 @return [Hash] A hash of all possible environments and only the current environment will be defined. So you can do `FirehoseJS.env.production?` in coffeescript.
 */
