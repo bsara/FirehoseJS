@@ -8,6 +8,8 @@ class FirehoseJS.EmailAccount extends FirehoseJS.Object
   
   emailAddress: null
   
+  isForwarding: false
+  
   title: null
   
   kind: 'IMAP'
@@ -125,10 +127,11 @@ class FirehoseJS.EmailAccount extends FirehoseJS.Object
     for service in @_popularServices
       domain = "@#{service.domain}"
       if @username.indexOf( domain ) != -1
-        this._setIfNotNull "kind",   service.kind
-        this._setIfNotNull "SSL",    service.SSL
-        this._setIfNotNull "port",   service.port
-        this._setIfNotNull "server", service.server
+        this._setIfNotNull "kind",          service.kind
+        this._setIfNotNull "SSL",           service.SSL
+        this._setIfNotNull "port",          service.port
+        this._setIfNotNull "server",        service.server
+        this._setIfNotNull "isForwarding",  false
         return true
     return false
     
@@ -137,6 +140,7 @@ class FirehoseJS.EmailAccount extends FirehoseJS.Object
   _populateWithJSON: (json) ->
     this._setIfNotNull "emailAddress",     json.email
     this._setIfNotNull "title",            json.title unless @title?
+    this._setIfNotNull "isForwarding",     json.forwarding
     this._setIfNotNull "server",           json.incoming_server
     this._setIfNotNull "SSL",              json.incoming_ssl
     this._setIfNotNull "port",             json.incoming_port unless @port?
@@ -151,6 +155,7 @@ class FirehoseJS.EmailAccount extends FirehoseJS.Object
     email_account:
       email:              @emailAddress
       title:              @title
+      forwarding:         @isForwarding
       incoming_server:    @server
       incoming_ssl:       @SSL
       incoming_port:      @port

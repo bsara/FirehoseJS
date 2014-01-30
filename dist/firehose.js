@@ -2159,6 +2159,8 @@ FirehoseJS.EmailAccount = (function(_super) {
 
   EmailAccount.prototype.emailAddress = null;
 
+  EmailAccount.prototype.isForwarding = false;
+
   EmailAccount.prototype.title = null;
 
   EmailAccount.prototype.kind = 'IMAP';
@@ -2312,6 +2314,7 @@ FirehoseJS.EmailAccount = (function(_super) {
         this._setIfNotNull("SSL", service.SSL);
         this._setIfNotNull("port", service.port);
         this._setIfNotNull("server", service.server);
+        this._setIfNotNull("isForwarding", false);
         return true;
       }
     }
@@ -2323,6 +2326,7 @@ FirehoseJS.EmailAccount = (function(_super) {
     if (this.title == null) {
       this._setIfNotNull("title", json.title);
     }
+    this._setIfNotNull("isForwarding", json.forwarding);
     this._setIfNotNull("server", json.incoming_server);
     this._setIfNotNull("SSL", json.incoming_ssl);
     if (this.port == null) {
@@ -2339,6 +2343,7 @@ FirehoseJS.EmailAccount = (function(_super) {
       email_account: {
         email: this.emailAddress,
         title: this.title,
+        forwarding: this.isForwarding,
         incoming_server: this.server,
         incoming_ssl: this.SSL,
         incoming_port: this.port,

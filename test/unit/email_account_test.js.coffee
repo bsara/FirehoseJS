@@ -21,7 +21,7 @@ FirehoseJS.client.setEnvironment('test')
 
 module "Email Account"
 
-firehoseTest 'Create', 3, (agent) ->
+firehoseTest 'Create', 4, (agent) ->
   company = agent.companies[0]
   emailAccount = FirehoseJS.EmailAccount.emailAccountWithSettings company,
     emailAddress: Faker.Internet.email()
@@ -37,6 +37,7 @@ firehoseTest 'Create', 3, (agent) ->
     equal textStatus, "success"
     ok emailAccount.emailAddress?
     ok emailAccount.title?
+    ok emailAccount.isForwarding?
     start()
   .fail (jqXHR, textStatus, errorThrown) ->
     start()
