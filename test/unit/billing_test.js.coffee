@@ -21,6 +21,13 @@ FirehoseJS.client.setEnvironment('test')
 
 module "Billing"
 
+
+###
+I honestly can't remember why all these tests need to use agent1, but when I tried to just use the passed in agent, they all failed with this error:
+Called start() while already started (QUnit.config.semaphore was 0 already)
+and only 2 or so of the assertions would run. I remember there being a reason and this was my solution, but can't remember it now.
+###
+
 firehoseTest 'Fetch Billing Info', 2, (agent) ->
   firstAgent = FirehoseJS.Agent.agentWithEmailAndPassword( "agent1@example.com", "pw" )
   firstAgent.login()
@@ -42,7 +49,7 @@ firehoseTest 'Add', 6, (agent) ->
   firstAgent.login()
   .done (data, textStatus) ->
     company = firstAgent.companies[0]
-    creditCard = FirehoseJS.CreditCard.creditCardWithNumber( "4242424242424242", 888, 4, 2014, company )
+    creditCard = FirehoseJS.CreditCard.creditCardWithNumber( "4242424242424242", 888, 4, 2014, firstAgent.email, company )
     creditCard.submitToStripe ->
       company.token = "entity_token_#{company.id}"
       creditCard.save()
@@ -64,7 +71,7 @@ firehoseTest 'Fetch', 6, (agent) ->
   firstAgent.login()
   .done (data, textStatus) ->
     company = firstAgent.companies[0]
-    creditCard = FirehoseJS.CreditCard.creditCardWithNumber( "4242424242424242", 888, 4, 2014, company )
+    creditCard = FirehoseJS.CreditCard.creditCardWithNumber( "4242424242424242", 888, 4, 2014, firstAgent.email, company )
     creditCard.submitToStripe ->
       company.token = "entity_token_#{company.id}"
       creditCard.save()
@@ -90,7 +97,7 @@ firehoseTest 'Remove', 1, (agent) ->
   firstAgent.login()
   .done (data, textStatus) ->
     company = firstAgent.companies[0]
-    creditCard = FirehoseJS.CreditCard.creditCardWithNumber( "4242424242424242", 888, 4, 2014, company )
+    creditCard = FirehoseJS.CreditCard.creditCardWithNumber( "4242424242424242", 888, 4, 2014, firstAgent.email, company )
     creditCard.submitToStripe ->
       company.token = "entity_token_#{company.id}"
       creditCard.save()

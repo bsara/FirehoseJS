@@ -21,12 +21,13 @@ class FirehoseJS.CreditCard extends FirehoseJS.Object
   email: null
     
     
-  @creditCardWithNumber: (number, cvc, expMonth, expYear, company) ->
+  @creditCardWithNumber: (number, cvc, expMonth, expYear, email, company) ->
     FirehoseJS.Object._objectOfClassWithID FirehoseJS.CreditCard, 
     number:          number
     cvc:             cvc
     expirationMonth: expMonth
     expirationYear:  expYear
+    email:           email
     company:         company
      
   

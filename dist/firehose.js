@@ -1860,12 +1860,13 @@ FirehoseJS.CreditCard = (function(_super) {
 
   CreditCard.prototype.email = null;
 
-  CreditCard.creditCardWithNumber = function(number, cvc, expMonth, expYear, company) {
+  CreditCard.creditCardWithNumber = function(number, cvc, expMonth, expYear, email, company) {
     return FirehoseJS.Object._objectOfClassWithID(FirehoseJS.CreditCard, {
       number: number,
       cvc: cvc,
       expirationMonth: expMonth,
       expirationYear: expYear,
+      email: email,
       company: company
     });
   };
