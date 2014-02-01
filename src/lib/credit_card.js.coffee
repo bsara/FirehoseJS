@@ -53,7 +53,7 @@ class FirehoseJS.CreditCard extends FirehoseJS.Object
         this._setIfNotNull "email",           FirehoseJS.Agent.loggedInAgent.email
         callback()
       else
-        callback status, response
+        callback response.error
       
     
   save: ->
