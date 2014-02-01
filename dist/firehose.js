@@ -1893,6 +1893,8 @@ FirehoseJS.CreditCard = (function(_super) {
         _this._setIfNotNull("stripeToken", response.id);
         _this._setIfNotNull("email", FirehoseJS.Agent.loggedInAgent.email);
         return callback();
+      } else {
+        return callback(status, response);
       }
     });
   };
