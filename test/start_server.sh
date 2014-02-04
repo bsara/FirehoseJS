@@ -1,7 +1,6 @@
 # load in bash profile and change to firehose rails directory
 source ~/.bash_profile
 
-
 # start API server
 cd $FH_API_PATH
 # kill any previously running rails server

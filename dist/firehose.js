@@ -1900,14 +1900,17 @@ FirehoseJS.CreditCard = (function(_super) {
   };
 
   CreditCard.prototype.save = function() {
-    var params;
+    var params,
+      _this = this;
     FirehoseJS.client.billingAccessToken = this.company.token;
     params = {
       server: "billing",
       route: "entities/" + this.company.id + "/credit_card",
       body: this._toJSON()
     };
-    return FirehoseJS.client.put(params);
+    return FirehoseJS.client.put(params).done(function() {
+      return _this.company.set('creditCard', _this);
+    });
   };
 
   CreditCard.prototype.fetch = function() {

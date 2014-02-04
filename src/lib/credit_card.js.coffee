@@ -62,7 +62,8 @@ class FirehoseJS.CreditCard extends FirehoseJS.Object
       server: "billing"
       route:  "entities/#{@company.id}/credit_card"
       body:   this._toJSON()
-    FirehoseJS.client.put( params )
+    FirehoseJS.client.put( params ).done =>
+      @company.set 'creditCard', this
     
     
   fetch: ->

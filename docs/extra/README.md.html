@@ -37,11 +37,13 @@
         <h1 id="firehosejs">firehosejs</h1><p>Javascript library for interacting with the Firehose API.</p><h2 id="getting-started">Getting Started</h2><p>Add this to your bower.json file:</p><pre><code>&quot;firehosejs&quot;: &quot;mysterioustrousers/FirehoseJS&quot;
 </code></pre><h2 id="documentation">Documentation</h2><p><em>(Coming soon)</em></p><h2 id="examples">Examples</h2><p><em>(Coming soon)</em></p><h2 id="contributing">Contributing</h2><p>Make sure you install the following npm packages:</p><pre><code>sudo npm install -g coffeedoc
 sudo npm install -g exec
-</code></pre>
+</code></pre><p>Make sure these two env vars are set in your .bash_profile:</p><pre><code>export FH_API_PATH=&#39;/Users/adamkirk/mt/projects/firehose/firehose&#39;
+export FH_BILLING_PATH=&#39;/Users/adamkirk/mt/projects/firehose/billing&#39;
+</code></pre><p>So that the start_server.sh script knows where your apps are to start them for testing.</p><p>You must also make sure that both your local API and billing apps have <code>rake db:create RAILS_ENV=testclient</code> and <code>rake db:migrate RAILS_ENV=testclient</code></p>
       </div>
     </div>
     <div id='footer'>
-  January 31, 14 21:06:30 by
+  February 04, 14 15:48:27 by
   <a href='https://github.com/coffeedoc/codo' title='CoffeeScript API documentation generator'>
     Codo
   </a>
