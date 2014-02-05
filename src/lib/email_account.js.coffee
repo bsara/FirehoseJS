@@ -62,6 +62,8 @@ class FirehoseJS.EmailAccount extends FirehoseJS.Object
         body:  this._toJSON()
       FirehoseJS.client.post( params ).done (data) =>
         this._populateWithJSON data
+        @company.emailAccounts().insertObject this
+        
     
     
   destroy: ->

@@ -2272,7 +2272,8 @@ FirehoseJS.EmailAccount = (function(_super) {
         body: this._toJSON()
       };
       return FirehoseJS.client.post(params).done(function(data) {
-        return _this._populateWithJSON(data);
+        _this._populateWithJSON(data);
+        return _this.company.emailAccounts().insertObject(_this);
       });
     }
   };
