@@ -36,7 +36,7 @@ class FirehoseJS.EmailAccount extends FirehoseJS.Object
       emailAccount.kind             = settings.kind             if settings.kind?
       emailAccount.server           = settings.server           if settings.server?
       emailAccount.port             = settings.port             if settings.port?
-      emailAccount.username         = settings.username         if settings.username?
+      emailAccount.username         = settings.username || settings.emailAddress
       emailAccount.password         = settings.password         if settings.password?
       emailAccount.SSL              = settings.SSL              if settings.SSL?
       emailAccount.deleteFromServer = settings.deleteFromServer if settings.deleteFromServer?

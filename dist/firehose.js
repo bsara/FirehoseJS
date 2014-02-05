@@ -2234,9 +2234,7 @@ FirehoseJS.EmailAccount = (function(_super) {
       if (settings.port != null) {
         emailAccount.port = settings.port;
       }
-      if (settings.username != null) {
-        emailAccount.username = settings.username;
-      }
+      emailAccount.username = settings.username || settings.emailAddress;
       if (settings.password != null) {
         emailAccount.password = settings.password;
       }
