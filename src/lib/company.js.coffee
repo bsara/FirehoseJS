@@ -63,6 +63,8 @@ class FirehoseJS.Company extends FirehoseJS.Object
   
   trialExpirationDate: null
   
+  discounts: null
+  
   nextBillingDate: null
   
   isGracePeriodOver: false
@@ -211,6 +213,14 @@ class FirehoseJS.Company extends FirehoseJS.Object
       @agents.dropObject agent
     
     
+  ###
+  Fetches the billing info for the company from the billing server.
+  This will populate `discounts` with a list of discount objects each having the follower properties:
+    name: [string] The name of the discount.
+    applyType: [string] either "percentage" or "fixed amount"
+    amount: [number] The percentage or fixed amount to discount from the total price.
+    expirationDate: [Date] When the discount expires and should not longer be applied to the monthly billing.
+  ###
   fetchBillingInfo: ->
     fetchBlock = =>
       FirehoseJS.client.billingAccessToken = @token 
@@ -221,15 +231,21 @@ class FirehoseJS.Company extends FirehoseJS.Object
         if json.credit_card?
           this._setIfNotNull "creditCard", FirehoseJS.CreditCard.creditCardWithID( json.credit_card.id, this )
           @creditCard._populateWithJSON json.credit_card
-        this._setIfNotNull "billingEmail",        json.email || FirehoseJS.Agent.loggedInAgent.email
-        this._setIfNotNull "billingRate",         json.rate / 100.0
-        this._setIfNotNull "trialExpirationDate", Date.parse json.free_trial_expiration_date || new Date(+new Date + 12096e5) # 14 days away
-        # nextBillingDate        = Date.parse json.next_bill_date
-        # @isGracePeriodOver      = json.grace_period_over
-        # @daysLeftInGracePeriod  = json.days_left_in_grace_period
-        # @isCurrent              = json.current
-        # @hasSuccessfulBilling   = json.has_successful_billing
-        
+        this._setIfNotNull "billingEmail",          json.email || FirehoseJS.Agent.loggedInAgent.email
+        this._setIfNotNull "billingRate",           (json.rate / 100.0).toFixed(2)
+        this._setIfNotNull "trialExpirationDate",   Date.parse( json.free_trial_expiration_date ) || new Date(+new Date + 12096e5) # 14 days away
+        this._setIfNotNull "nextBillingDate",       if json.next_bill_date then Date.parse( json.next_bill_date )
+        this._setIfNotNull "isGracePeriodOver",     json.grace_period_over
+        this._setIfNotNull "daysLeftInGracePeriod", json.days_left_in_grace_period
+        this._setIfNotNull "isCurrent",             json.current
+        this._setIfNotNull "hasSuccessfulBilling",  json.has_successful_billing
+        @discounts = []
+        for discount in json.discount_list
+          @discounts.push
+            name:           discount.name
+            applyType:      discount.apply_type
+            amount:         discount.amount
+            expirationDate: if discount.expiration_date then Date.parse( discount.expiration_date )
     if @token
       fetchBlock()
     else

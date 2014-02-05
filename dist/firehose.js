@@ -1015,6 +1015,8 @@ FirehoseJS.Company = (function(_super) {
 
   Company.prototype.trialExpirationDate = null;
 
+  Company.prototype.discounts = null;
+
   Company.prototype.nextBillingDate = null;
 
   Company.prototype.isGracePeriodOver = false;
@@ -1201,6 +1203,16 @@ FirehoseJS.Company = (function(_super) {
     });
   };
 
+  /*
+  Fetches the billing info for the company from the billing server.
+  This will populate `discounts` with a list of discount objects each having the follower properties:
+    name: [string] The name of the discount.
+    applyType: [string] either "percentage" or "fixed amount"
+    amount: [number] The percentage or fixed amount to discount from the total price.
+    expirationDate: [Date] When the discount expires and should not longer be applied to the monthly billing.
+  */
+
+
   Company.prototype.fetchBillingInfo = function() {
     var fetchBlock,
       _this = this;
@@ -1212,13 +1224,32 @@ FirehoseJS.Company = (function(_super) {
         route: "entities/" + _this.id
       };
       return FirehoseJS.client.get(params).done(function(json) {
+        var discount, _i, _len, _ref1, _results;
         if (json.credit_card != null) {
           _this._setIfNotNull("creditCard", FirehoseJS.CreditCard.creditCardWithID(json.credit_card.id, _this));
           _this.creditCard._populateWithJSON(json.credit_card);
         }
         _this._setIfNotNull("billingEmail", json.email || FirehoseJS.Agent.loggedInAgent.email);
-        _this._setIfNotNull("billingRate", json.rate / 100.0);
-        return _this._setIfNotNull("trialExpirationDate", Date.parse(json.free_trial_expiration_date || new Date(+(new Date) + 12096e5)));
+        _this._setIfNotNull("billingRate", (json.rate / 100.0).toFixed(2));
+        _this._setIfNotNull("trialExpirationDate", Date.parse(json.free_trial_expiration_date) || new Date(+(new Date) + 12096e5));
+        _this._setIfNotNull("nextBillingDate", json.next_bill_date ? Date.parse(json.next_bill_date) : void 0);
+        _this._setIfNotNull("isGracePeriodOver", json.grace_period_over);
+        _this._setIfNotNull("daysLeftInGracePeriod", json.days_left_in_grace_period);
+        _this._setIfNotNull("isCurrent", json.current);
+        _this._setIfNotNull("hasSuccessfulBilling", json.has_successful_billing);
+        _this.discounts = [];
+        _ref1 = json.discount_list;
+        _results = [];
+        for (_i = 0, _len = _ref1.length; _i < _len; _i++) {
+          discount = _ref1[_i];
+          _results.push(_this.discounts.push({
+            name: discount.name,
+            applyType: discount.apply_type,
+            amount: discount.amount,
+            expirationDate: discount.expiration_date ? Date.parse(discount.expiration_date) : void 0
+          }));
+        }
+        return _results;
       });
     };
     if (this.token) {
