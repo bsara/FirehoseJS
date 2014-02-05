@@ -161,6 +161,8 @@ FirehoseJS.RemoteArray = (function(_super) {
 
   RemoteArray.prototype.totalRows = 0;
 
+  RemoteArray.prototype.onceParams = null;
+
   RemoteArray.prototype._path = null;
 
   RemoteArray.prototype._params = null;
@@ -173,17 +175,21 @@ FirehoseJS.RemoteArray = (function(_super) {
 
   function RemoteArray(path, params, creationFunction) {
     var _this = this;
+    if (params == null) {
+      params = {};
+    }
     this._path = path;
-    this._params = params || {};
+    this._params = params;
     this._creationFunction = creationFunction;
     this._fetchingFunction = function(page) {
       var options;
       options = {
         route: _this._path,
-        params: _this._params,
+        params: _this.onceParams ? $.extend(_this.onceParams, _this._params) : _this._params,
         page: page,
         perPage: _this.perPage
       };
+      _this.onceParams = null;
       return FirehoseJS.client.get(options).done(function(data) {
         var aggregate, json, object, _i, _len;
         if (data.constructor === Array && data.length > 0) {
@@ -1122,6 +1128,11 @@ FirehoseJS.Company = (function(_super) {
       customers.sortOn("newestInteractionReceivedAt", "desc");
     } else {
       customers.sortOn("newestInteractionReceivedAt", "asc");
+    }
+    if (criteria.preFetch != null) {
+      customers.onceParams = {
+        pre_fetch: criteria.preFetch
+      };
     }
     return customers;
   };

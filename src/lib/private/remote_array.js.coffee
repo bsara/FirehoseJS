@@ -7,6 +7,8 @@ class FirehoseJS.RemoteArray extends FirehoseJS.UniqueArray
   
   totalRows: 0
   
+  onceParams: null
+  
   # @nodoc
   _path: null
   
@@ -23,16 +25,17 @@ class FirehoseJS.RemoteArray extends FirehoseJS.UniqueArray
   _fresh: true
   
   
-  constructor: (path, params, creationFunction) ->
+  constructor: (path, params = {}, creationFunction) ->
     @_path              = path
-    @_params            = params || {}
+    @_params            = params
     @_creationFunction  = creationFunction
     @_fetchingFunction  = (page) =>
       options = 
         route:    @_path
-        params:   @_params
+        params:   if @onceParams then $.extend( @onceParams, @_params ) else @_params
         page:     page
         perPage:  @perPage
+      @onceParams = null
       FirehoseJS.client.get( options ).done (data) =>
         if data.constructor == Array and data.length > 0
           @totalRows = data[0].total_rows

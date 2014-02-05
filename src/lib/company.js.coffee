@@ -153,6 +153,7 @@ class FirehoseJS.Company extends FirehoseJS.Object
       customers.sortOn "newestInteractionReceivedAt", "desc"
     else
       customers.sortOn "newestInteractionReceivedAt", "asc"
+    customers.onceParams = { pre_fetch: criteria.preFetch } if criteria.preFetch?
     customers
       
       
