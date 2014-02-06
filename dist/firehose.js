@@ -228,23 +228,14 @@ Firehose.Environment = (function() {
   function Environment() {}
 
   Environment.prototype.baseURLFor = function(app) {
-    var baseURL;
+    var isHostnameLocal;
     this._inferEnvironmentFromURL();
-    baseURL = "";
-    if (this._environmentSSL[this._environment]) {
-      baseURL += "https://";
+    isHostnameLocal = this._isLocalFor(app);
+    if (isHostnameLocal) {
+      return "http://localhost:" + (this._portFor(app));
     } else {
-      baseURL += "http://";
+      return "https://" + this._subdomainEnvironment[this._environment] + this._appHostNames[this._server][app];
     }
-    if (this._environmentLocalhost[this._environment]) {
-      baseURL += "localhost";
-    } else {
-      baseURL += this._appHostNames[app];
-    }
-    if (this._environmentPort[this._environment]) {
-      baseURL += ":" + (this._portFor(app));
-    }
-    return baseURL;
   };
 
   Environment.prototype.serviceToken = function(service) {
@@ -273,9 +264,7 @@ Firehose.Environment = (function() {
 
   Environment.prototype._environmentNumber = {
     development: 0,
-    test: 1,
-    beta: 3,
-    production: 4
+    test: 1
   };
 
   Environment.prototype._appNumber = {
@@ -290,14 +279,36 @@ Firehose.Environment = (function() {
   };
 
   Environment.prototype._appHostNames = {
-    API: "api.firehoseapp.com",
-    browser: "firehoseapp.com",
-    billing: "billing.firehoseapp.com",
-    frhio: "frh.io",
-    marketing: "getfirehose.com",
-    settings: "settings.firehoseapp.com",
-    tweetlonger: "tl.frh.io",
-    kb: "firehosehelp.com"
+    local: {
+      API: "localhost",
+      browser: "localhost",
+      billing: "localhost",
+      frhio: "locahost",
+      marketing: "localhost",
+      settings: "localhost",
+      tweetlonger: "localhost",
+      kb: "localhost"
+    },
+    mini: {
+      API: "199.19.84.171",
+      browser: "199.19.84.171",
+      billing: "199.19.84.171",
+      frhio: "199.19.84.171",
+      marketing: "199.19.84.171",
+      settings: "199.19.84.171",
+      tweetlonger: "199.19.84.171",
+      kb: "199.19.84.171"
+    },
+    production: {
+      API: "api.firehoseapp.com",
+      browser: "firehoseapp.com",
+      billing: "billing.firehoseapp.com",
+      frhio: "frh.io",
+      marketing: "getfirehose.com",
+      settings: "settings.firehoseapp.com",
+      tweetlonger: "tl.frh.io",
+      kb: "firehosehelp.com"
+    }
   };
 
   Environment.prototype._appTypes = {
@@ -309,27 +320,6 @@ Firehose.Environment = (function() {
     settings: "client",
     tweetlonger: "client",
     kb: "client"
-  };
-
-  Environment.prototype._environmentSSL = {
-    development: false,
-    test: false,
-    beta: true,
-    production: true
-  };
-
-  Environment.prototype._environmentPort = {
-    development: true,
-    test: true,
-    beta: false,
-    production: false
-  };
-
-  Environment.prototype._environmentLocalhost = {
-    development: true,
-    test: true,
-    beta: false,
-    production: false
   };
 
   Environment.prototype._serviceKeys = {
@@ -351,42 +341,65 @@ Firehose.Environment = (function() {
     }
   };
 
+  Environment.prototype._isEnvironmentLocal = {
+    development: true,
+    test: true,
+    beta: false,
+    production: false
+  };
+
+  Environment.prototype._subdomainEnvironment = {
+    development: '',
+    test: '',
+    beta: 'beta.',
+    production: ''
+  };
+
   Environment.prototype._inferEnvironmentFromURL = function() {
     var appHostName, appNumber, currentURL, environmentNumber, key, serverNumber, typeNumber, value, _ref, _ref1, _ref2, _ref3, _ref4, _results;
     currentURL = document.createElement("a");
-    currentURL.href = document.URL;
+    currentURL.href = window.unitTestDocumentURL || document.URL;
     if (currentURL.hostname === "localhost") {
-      typeNumber = parseInt(currentURL.port[0]);
-      _ref = this._typeNumber;
+      appNumber = parseInt(currentURL.port[3]);
+      _ref = this._appNumber;
       for (key in _ref) {
         value = _ref[key];
+        if (value === appNumber) {
+          this._app = key;
+        }
+      }
+      if (this._appTypes[this._app] !== "client") {
+        throw "You're running this app on the wrong port number digit app number. See this project's README for designated port numbers for each app.";
+      }
+      typeNumber = parseInt(currentURL.port[0]);
+      _ref1 = this._typeNumber;
+      for (key in _ref1) {
+        value = _ref1[key];
         if (value === typeNumber) {
+          if (typeNumber !== 4) {
+            throw "This is a client app, it must have the first port number digit be 4. (4***)";
+          }
           this._type = key;
         }
       }
       serverNumber = parseInt(currentURL.port[1]);
-      _ref1 = this._serverNumber;
-      for (key in _ref1) {
-        value = _ref1[key];
+      _ref2 = this._serverNumber;
+      for (key in _ref2) {
+        value = _ref2[key];
         if (value === serverNumber) {
           this._server = key;
         }
       }
       environmentNumber = parseInt(currentURL.port[2]);
-      _ref2 = this._environmentNumber;
-      for (key in _ref2) {
-        value = _ref2[key];
-        if (value === environmentNumber) {
-          this._environment = key;
-        }
-      }
-      appNumber = parseInt(currentURL.port[3]);
-      _ref3 = this._appNumber;
+      _ref3 = this._environmentNumber;
       _results = [];
       for (key in _ref3) {
         value = _ref3[key];
-        if (value === appNumber) {
-          _results.push(this._app = key);
+        if (value === environmentNumber) {
+          if (environmentNumber === 1 && this._server !== "local") {
+            throw "It doesn't make sense to point at a remote server when running in test environment.";
+          }
+          _results.push(this._environment = key);
         } else {
           _results.push(void 0);
         }
@@ -399,7 +412,7 @@ Firehose.Environment = (function() {
         this._environment = 'beta';
       }
       appHostName = currentURL.hostname;
-      _ref4 = this._appHostNames;
+      _ref4 = this._appHostNames[this._server];
       for (key in _ref4) {
         value = _ref4[key];
         if (value === appHostName) {
@@ -414,10 +427,20 @@ Firehose.Environment = (function() {
     var port;
     port = "";
     port += this._typeNumber[this._appTypes[app]];
-    port += this._serverNumber[this._server];
+    port += this._appTypes[app] === "client" ? this._serverNumber[this._server] : 0;
     port += this._environmentNumber[this._environment];
     port += this._appNumber[app];
     return port;
+  };
+
+  Environment.prototype._isLocalFor = function(app) {
+    if (this._appTypes[app] === "server" && this._server === "production") {
+      return false;
+    } else if (this._isEnvironmentLocal[this._environment]) {
+      return true;
+    } else {
+      return false;
+    }
   };
 
   return Environment;

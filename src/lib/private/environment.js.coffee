@@ -4,23 +4,11 @@ class Firehose.Environment
   
   baseURLFor: (app) ->
     this._inferEnvironmentFromURL()
-    
-    baseURL = ""
-    
-    if @_environmentSSL[@_environment]
-      baseURL += "https://"
+    isHostnameLocal = this._isLocalFor( app )
+    if isHostnameLocal
+      "http://localhost:#{this._portFor(app)}"
     else
-      baseURL += "http://"
-  
-    if @_environmentLocalhost[@_environment]
-      baseURL += "localhost"
-    else
-      baseURL += @_appHostNames[app]
-      
-    if @_environmentPort[@_environment]
-      baseURL += ":#{this._portFor(app)}"
-    
-    baseURL 
+      "https://#{@_subdomainEnvironment[@_environment]}#{@_appHostNames[@_server][app]}"
     
     
   serviceToken: (service) ->
@@ -56,8 +44,6 @@ class Firehose.Environment
   _environmentNumber:
     development : 0
     test        : 1
-    beta        : 3
-    production  : 4
     
   # The last digit in the port number
   _appNumber:
@@ -74,14 +60,33 @@ class Firehose.Environment
   ## Mappings
   
   _appHostNames:
-    API          : "api.firehoseapp.com"
-    browser      : "firehoseapp.com"
-    billing      : "billing.firehoseapp.com"
-    frhio        : "frh.io"
-    marketing    : "getfirehose.com"
-    settings     : "settings.firehoseapp.com"
-    tweetlonger  : "tl.frh.io"
-    kb           : "firehosehelp.com"
+    local:
+      API          : "localhost"
+      browser      : "localhost"
+      billing      : "localhost"
+      frhio        : "locahost"
+      marketing    : "localhost"
+      settings     : "localhost"
+      tweetlonger  : "localhost"
+      kb           : "localhost"
+    mini:
+      API          : "199.19.84.171"
+      browser      : "199.19.84.171"
+      billing      : "199.19.84.171"
+      frhio        : "199.19.84.171"
+      marketing    : "199.19.84.171"
+      settings     : "199.19.84.171"
+      tweetlonger  : "199.19.84.171"
+      kb           : "199.19.84.171"
+    production:
+      API          : "api.firehoseapp.com"
+      browser      : "firehoseapp.com"
+      billing      : "billing.firehoseapp.com"
+      frhio        : "frh.io"
+      marketing    : "getfirehose.com"
+      settings     : "settings.firehoseapp.com"
+      tweetlonger  : "tl.frh.io"
+      kb           : "firehosehelp.com"
     
   _appTypes:
     API          : "server"
@@ -92,24 +97,6 @@ class Firehose.Environment
     settings     : "client"
     tweetlonger  : "client"
     kb           : "client"
-    
-  _environmentSSL:
-    development : false
-    test        : false
-    beta        : true
-    production  : true
-    
-  _environmentPort:
-    development : true
-    test        : true
-    beta        : false
-    production  : false
-  
-  _environmentLocalhost:
-    development : true
-    test        : true
-    beta        : false
-    production  : false
   
   _serviceKeys:
     development:
@@ -124,19 +111,39 @@ class Firehose.Environment
     production:
       stripe  : "pk_live_CGPaLboKkpr7tqswA4elf8NQ"
       pusher  : "d3e373f7fac89de7bde8"
+      
+  _isEnvironmentLocal:
+    development:  true
+    test:         true
+    beta:         false
+    production:   false
     
+  _subdomainEnvironment:
+    development: ''
+    test: ''
+    beta: 'beta.'
+    production: ''
     
+      
     
-    
-    
-  _inferEnvironmentFromURL: ->
+  _inferEnvironmentFromURL: () ->
     currentURL      = document.createElement "a"
-    currentURL.href = document.URL
+    currentURL.href = window.unitTestDocumentURL || document.URL
     
     if currentURL.hostname == "localhost" 
+      appNumber = parseInt currentURL.port[3]
+      for key, value of @_appNumber
+        if value == appNumber
+          @_app = key
+          
+      if @_appTypes[@_app] != "client" 
+        throw "You're running this app on the wrong port number digit app number. See this project's README for designated port numbers for each app."
+      
       typeNumber = parseInt currentURL.port[0]
       for key, value of @_typeNumber
         if value == typeNumber
+          if typeNumber != 4
+            throw "This is a client app, it must have the first port number digit be 4. (4***)"
           @_type = key
           
       serverNumber = parseInt currentURL.port[1]
@@ -147,13 +154,10 @@ class Firehose.Environment
       environmentNumber = parseInt currentURL.port[2]
       for key, value of @_environmentNumber
         if value == environmentNumber
+          if environmentNumber == 1 and @_server != "local"
+            throw "It doesn't make sense to point at a remote server when running in test environment."
           @_environment = key
           
-      appNumber = parseInt currentURL.port[3]
-      for key, value of @_appNumber
-        if value == appNumber
-          @_app = key
-      
     else
       @_environment = 'production'
       @_server = 'production'
@@ -162,7 +166,7 @@ class Firehose.Environment
         @_environment = 'beta'
 
       appHostName = currentURL.hostname
-      for key, value of @_appHostNames
+      for key, value of @_appHostNames[@_server]
         if value == appHostName
           @_app = key
           
@@ -173,11 +177,17 @@ class Firehose.Environment
   _portFor: (app) ->
     port = "" 
     port += @_typeNumber[@_appTypes[app]]     
-    port += @_serverNumber[@_server]
+    port += if @_appTypes[app] == "client" then @_serverNumber[@_server] else 0
     port += @_environmentNumber[@_environment]
     port += @_appNumber[app]
     port
       
       
+  _isLocalFor: (app) ->
+    if @_appTypes[app] == "server" and @_server == "production"
+      false
+    else if @_isEnvironmentLocal[@_environment]
+      true
+    else
+      false
       
-  

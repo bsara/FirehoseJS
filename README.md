@@ -39,12 +39,10 @@ of the browser client.
     	1. mini
     	2. production
     
-* **[3]** The environment. Because the environment is usually inferred from the hostname, this is an optional override for when you are developing a browser client locally. For example, the test suite of Firehose.js runs on port `4011` to pose as if it's the browser app, but pointing to the local server and its test environment. You could run `http://localhost:4047` and the kb browser client would think it was running in production. Any links to any other browser clients would be to their production URLs.
+* **[3]** The environment. Because the environment is usually inferred from the hostname, this is an optional override for when you are developing a browser client locally. For example, the test suite of Firehose.js runs on port `4011` to pose as if it's the browser app, but pointing to the local server and its test environment. This only makes sense for running in dev or test.
 
 		0: development
 		1: test
-		2: beta
-		3: production
 		
 * **[4]** The app. Running marketing on port \*\*\*1 would change nothing, except that Firehose.js assumes everything is running on it's designated port. So if the billing app was running on \*\*\*7, and you took some action that resulted in the browser app redirecting you to the marketing app, it would try to send you to \*\*\*4, because that's where it assumes it is running. In this scenario of not following the rules, it would say server could not be found because nothing is running at \*\*\*4. So, it's just in your best interest to learn these and run apps locally on the right fourth digit port number.
 

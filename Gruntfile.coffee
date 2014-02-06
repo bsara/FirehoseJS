@@ -173,3 +173,5 @@ module.exports = (grunt) ->
   # Default task.
   grunt.registerTask 'default', ['clean', 'exec:generate_docs', 'coffee', 'concat', 'copy', 'exec:start_server', 'connect:test', 'qunit', 'exec:kill_server', 'uglify']
   grunt.registerTask 'debug', ['clean', 'coffee', 'concat', 'copy', 'exec:start_server', 'exec:open_browser', 'connect:debug']
+  # grunt.registerTask 'noserver', ['clean', 'coffee', 'concat', 'copy', 'connect:test', 'qunit' ]
+  grunt.registerTask 'noserver', ['clean', 'coffee', 'concat', 'copy', 'exec:open_browser', 'connect:debug' ]
