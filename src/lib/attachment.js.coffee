@@ -1,4 +1,4 @@
-class FirehoseJS.Attachment extends FirehoseJS.Object
+class Firehose.Attachment extends Firehose.Object
   
   
   # @nodoc
@@ -13,7 +13,7 @@ class FirehoseJS.Attachment extends FirehoseJS.Object
     
   # @nodoc
   @_attachmentWithID: (id, emailInteraction) ->
-    FirehoseJS.Object._objectOfClassWithID FirehoseJS.Attachment,
+    Firehose.Object._objectOfClassWithID Firehose.Attachment,
       id:               id
       emailInteraction: emailInteraction
     

@@ -1,4 +1,4 @@
-class FirehoseJS.Customer extends FirehoseJS.Object
+class Firehose.Customer extends Firehose.Object
   
   
   # @nodoc
@@ -34,13 +34,13 @@ class FirehoseJS.Customer extends FirehoseJS.Object
   
   # @nodoc
   _setup: ->
-    @customerAccounts = new FirehoseJS.UniqueArray
-    @customerFlaggedAgents = new FirehoseJS.UniqueArray
+    @customerAccounts = new Firehose.UniqueArray
+    @customerFlaggedAgents = new Firehose.UniqueArray
     @customerFlaggedAgents.sortOn "firstName"
   
     
   @customerWithID: (id, company) ->
-    FirehoseJS.Object._objectOfClassWithID FirehoseJS.Customer,
+    Firehose.Object._objectOfClassWithID Firehose.Customer,
       id:      id
       company: company
   
@@ -48,27 +48,27 @@ class FirehoseJS.Customer extends FirehoseJS.Object
   fetch: ->
     params = 
       route: "customers/#{@id}"
-    FirehoseJS.client.get( params ).done (data) =>
+    Firehose.client.get( params ).done (data) =>
       this._populateWithJSON data
     
     
   resolveAllInteractions: ->
     params = 
       route: "customers/#{@id}/resolve_all_interactions"
-    FirehoseJS.client.put( params )
+    Firehose.client.put( params )
     
     
   destroy: ->
     params = 
       route: "customers/#{@id}"
-    FirehoseJS.client.delete( params ).done =>
+    Firehose.client.delete( params ).done =>
       @company._customers?.dropObject this
   
   
   interactions: ->
     unless @_interactions?
-      this._setIfNotNull "_interactions", new FirehoseJS.RemoteArray "customers/#{@id}/interactions", null, (json) =>
-        FirehoseJS.Interaction._interactionWithJSON( json, this )
+      this._setIfNotNull "_interactions", new Firehose.RemoteArray "customers/#{@id}/interactions", null, (json) =>
+        Firehose.Interaction._interactionWithJSON( json, this )
       @_interactions.sortOn "receivedAt"
     @_interactions
     
@@ -84,13 +84,13 @@ class FirehoseJS.Customer extends FirehoseJS.Object
     this._setIfNotNull "newestInteractionReceivedAt",  Date.parse json.newest_interaction_received_at
     
     this._populateAssociatedObjects this, "customerAccounts", json.customer_accounts, (json) =>
-      FirehoseJS.CustomerAccount._customerAccountWithID( json.id, this )
+      Firehose.CustomerAccount._customerAccountWithID( json.id, this )
       
     this._populateAssociatedObjects this, "interactionFlaggedAgents", json.interaction_flagged_agents, (json) ->
-      FirehoseJS.Agent.agentWithID( json.id )
+      Firehose.Agent.agentWithID( json.id )
     
     this._populateAssociatedObjectWithJSON this, "agentWithDibs", json.agent_with_dibs, (json) ->
-      FirehoseJS.Agent.agentWithID( json.id )
+      Firehose.Agent.agentWithID( json.id )
     
     super json
   

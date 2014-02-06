@@ -1,4 +1,4 @@
-class FirehoseJS.Tag extends FirehoseJS.Object
+class Firehose.Tag extends Firehose.Object
   
   
   # @nodoc
@@ -10,14 +10,14 @@ class FirehoseJS.Tag extends FirehoseJS.Object
   
   
   @tagWithLabel: (label, company) ->
-    FirehoseJS.Object._objectOfClassWithID FirehoseJS.Tag,
+    Firehose.Object._objectOfClassWithID Firehose.Tag,
       label:   label
       company: company
 
 
   # @nodoc
   @_tagWithID: (id, company) ->
-    FirehoseJS.Object._objectOfClassWithID FirehoseJS.Tag,
+    Firehose.Object._objectOfClassWithID Firehose.Tag,
       id:      id
       company: company
       
@@ -27,12 +27,12 @@ class FirehoseJS.Tag extends FirehoseJS.Object
       params = 
         route: "tags/#{@id}"
         body:  this._toJSON()
-      FirehoseJS.client.put( params )
+      Firehose.client.put( params )
     else
       params = 
         route: "companies/#{@company.id}/tags"
         body:  this._toJSON()
-      FirehoseJS.client.post( params ).done (data) =>
+      Firehose.client.post( params ).done (data) =>
         this._populateWithJSON data
         @company.tags.insertObject this
       
@@ -40,7 +40,7 @@ class FirehoseJS.Tag extends FirehoseJS.Object
   destroy: ->
     params = 
       route: "tags/#{@id}"
-    FirehoseJS.client.delete( params ).done =>
+    Firehose.client.delete( params ).done =>
       @company.tags.dropObject this
     
 

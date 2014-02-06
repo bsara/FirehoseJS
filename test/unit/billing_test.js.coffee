@@ -1,24 +1,3 @@
-# ======== A Handy Little QUnit Reference ========
-# http://api.qunitjs.com/
-
-# Test methods:
-#   module(name, {[setup][ ,teardown]})
-#   test(name, callback)
-#   expect(numberOfAssertions)
-#   stop(increment)
-#   start(decrement)
-# Test assertions:
-#   ok(value, [message])
-#   equal(actual, expected, [message])
-#   notEqual(actual, expected, [message])
-#   deepEqual(actual, expected, [message])
-#   notDeepEqual(actual, expected, [message])
-#   strictEqual(actual, expected, [message])
-#   notStrictEqual(actual, expected, [message])
-#   throws(block, [expected], [message])
-
-FirehoseJS.client.setEnvironment('test')
-
 module "Billing"
 
 
@@ -29,7 +8,7 @@ and only 2 or so of the assertions would run. I remember there being a reason an
 ###
 
 firehoseTest 'Fetch Billing Info', 14, (agent) ->
-  firstAgent = FirehoseJS.Agent.agentWithEmailAndPassword( "agent1@example.com", "pw" )
+  firstAgent = Firehose.Agent.agentWithEmailAndPassword( "agent1@example.com", "pw" )
   firstAgent.login()
   .done (data, textStatus) ->
     company = firstAgent.companies[0]
@@ -57,11 +36,11 @@ firehoseTest 'Fetch Billing Info', 14, (agent) ->
     start()
 
 firehoseTest 'Add', 6, (agent) ->
-  firstAgent = FirehoseJS.Agent.agentWithEmailAndPassword( "agent1@example.com", "pw" )
+  firstAgent = Firehose.Agent.agentWithEmailAndPassword( "agent1@example.com", "pw" )
   firstAgent.login()
   .done (data, textStatus) ->
     company = firstAgent.companies[0]
-    creditCard = FirehoseJS.CreditCard.creditCardWithNumber( "4242424242424242", 888, 4, 2014, firstAgent.email, company )
+    creditCard = Firehose.CreditCard.creditCardWithNumber( "4242424242424242", 888, 4, 2014, firstAgent.email, company )
     creditCard.submitToStripe ->
       company.token = "entity_token_#{company.id}"
       creditCard.save()
@@ -79,11 +58,11 @@ firehoseTest 'Add', 6, (agent) ->
     start()
     
 firehoseTest 'Fetch', 6, (agent) ->
-  firstAgent = FirehoseJS.Agent.agentWithEmailAndPassword( "agent1@example.com", "pw" )
+  firstAgent = Firehose.Agent.agentWithEmailAndPassword( "agent1@example.com", "pw" )
   firstAgent.login()
   .done (data, textStatus) ->
     company = firstAgent.companies[0]
-    creditCard = FirehoseJS.CreditCard.creditCardWithNumber( "4242424242424242", 888, 4, 2014, firstAgent.email, company )
+    creditCard = Firehose.CreditCard.creditCardWithNumber( "4242424242424242", 888, 4, 2014, firstAgent.email, company )
     creditCard.submitToStripe ->
       company.token = "entity_token_#{company.id}"
       creditCard.save()
@@ -105,11 +84,11 @@ firehoseTest 'Fetch', 6, (agent) ->
     start()
 
 firehoseTest 'Remove', 1, (agent) ->
-  firstAgent = FirehoseJS.Agent.agentWithEmailAndPassword( "agent1@example.com", "pw" )
+  firstAgent = Firehose.Agent.agentWithEmailAndPassword( "agent1@example.com", "pw" )
   firstAgent.login()
   .done (data, textStatus) ->
     company = firstAgent.companies[0]
-    creditCard = FirehoseJS.CreditCard.creditCardWithNumber( "4242424242424242", 888, 4, 2014, firstAgent.email, company )
+    creditCard = Firehose.CreditCard.creditCardWithNumber( "4242424242424242", 888, 4, 2014, firstAgent.email, company )
     creditCard.submitToStripe ->
       company.token = "entity_token_#{company.id}"
       creditCard.save()

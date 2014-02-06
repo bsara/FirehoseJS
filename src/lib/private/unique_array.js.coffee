@@ -1,4 +1,4 @@
-class FirehoseJS.UniqueArray extends Array
+class Firehose.UniqueArray extends Array
   
   
   # @nodoc

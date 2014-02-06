@@ -1,4 +1,4 @@
-class FirehoseJS.CustomerAccount extends FirehoseJS.Object
+class Firehose.CustomerAccount extends Firehose.Object
   
   
   # @nodoc
@@ -21,7 +21,7 @@ class FirehoseJS.CustomerAccount extends FirehoseJS.Object
   
   # @nodoc
   @_customerAccountWithID: (id, customer) ->
-    FirehoseJS.Object._objectOfClassWithID FirehoseJS.CustomerAccount,
+    Firehose.Object._objectOfClassWithID Firehose.CustomerAccount,
       id:       id
       customer: customer
       

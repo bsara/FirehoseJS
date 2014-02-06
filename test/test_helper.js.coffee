@@ -1,12 +1,12 @@
 window.nextTestAgent = (callback) ->
   window.testAgentNumber ||= 1
-  nextAgent = FirehoseJS.Agent.agentWithEmailAndPassword( "agent#{window.testAgentNumber++}@example.com", "pw")
+  nextAgent = Firehose.Agent.agentWithEmailAndPassword( "agent#{window.testAgentNumber++}@example.com", "pw")
   nextAgent.login().then ->
     callback(nextAgent)
     
     
 window.realTestAgent = (callback) ->
-  realAgent = FirehoseJS.Agent.agentWithEmailAndPassword( "real@example.com", "pw")
+  realAgent = Firehose.Agent.agentWithEmailAndPassword( "real@example.com", "pw")
   realAgent.login().then ->
     callback(realAgent)
   

@@ -17,13 +17,11 @@
 #   notStrictEqual(actual, expected, [message])
 #   throws(block, [expected], [message])
 
-FirehoseJS.client.setEnvironment('test')
-
 module "Agent Invite"
 
 firehoseTest 'Create', 1, (agent) ->
   company = agent.companies[0]
-  agentInvite = FirehoseJS.AgentInvite.agentInviteWithEmail( Faker.Lorem.words(1).join(" "), company)
+  agentInvite = Firehose.AgentInvite.agentInviteWithEmail( Faker.Lorem.words(1).join(" "), company)
   agentInvite.save()
   .done (data, textStatus) ->
     equal textStatus, "success"
@@ -33,7 +31,7 @@ firehoseTest 'Create', 1, (agent) ->
 
 firehoseTest 'Resend', 1, (agent) ->
   company = agent.companies[0]
-  agentInvite = FirehoseJS.AgentInvite.agentInviteWithEmail( Faker.Lorem.words(1).join(" "), company)
+  agentInvite = Firehose.AgentInvite.agentInviteWithEmail( Faker.Lorem.words(1).join(" "), company)
   agentInvite.save()
   .done (data, textStatus) ->
     agentInvite.resend()
@@ -47,7 +45,7 @@ firehoseTest 'Resend', 1, (agent) ->
 
 firehoseTest 'Destroy', 1, (agent) ->
   company = agent.companies[0]
-  agentInvite = FirehoseJS.AgentInvite.agentInviteWithEmail( Faker.Lorem.words(1).join(" "), company)
+  agentInvite = Firehose.AgentInvite.agentInviteWithEmail( Faker.Lorem.words(1).join(" "), company)
   agentInvite.save()
   .done (data, textStatus) ->
     agentInvite.destroy()

@@ -1,4 +1,4 @@
-class FirehoseJS.FacebookPage extends FirehoseJS.Object
+class Firehose.FacebookPage extends Firehose.Object
   
   
   # @nodoc
@@ -17,7 +17,7 @@ class FirehoseJS.FacebookPage extends FirehoseJS.Object
     
   # @nodoc
   @_facebookPageWithID: (id, facebookAccount) ->
-    FirehoseJS.Object._objectOfClassWithID FirehoseJS.FacebookPage,
+    Firehose.Object._objectOfClassWithID Firehose.FacebookPage,
       id:              id
       facebookAccount: facebookAccount
     
@@ -26,7 +26,7 @@ class FirehoseJS.FacebookPage extends FirehoseJS.Object
     params = 
       route: "facebook_pages/#{@id}"
       body:  this._toJSON()
-    FirehoseJS.client.put( params )
+    Firehose.client.put( params )
     
     
   # @nodoc

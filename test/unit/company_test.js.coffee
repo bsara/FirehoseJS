@@ -1,28 +1,7 @@
-# ======== A Handy Little QUnit Reference ========
-# http://api.qunitjs.com/
-
-# Test methods:
-#   module(name, {[setup][ ,teardown]})
-#   test(name, callback)
-#   expect(numberOfAssertions)
-#   stop(increment)
-#   start(decrement)
-# Test assertions:
-#   ok(value, [message])
-#   equal(actual, expected, [message])
-#   notEqual(actual, expected, [message])
-#   deepEqual(actual, expected, [message])
-#   notDeepEqual(actual, expected, [message])
-#   strictEqual(actual, expected, [message])
-#   notStrictEqual(actual, expected, [message])
-#   throws(block, [expected], [message])
-
-FirehoseJS.client.setEnvironment('test')
-
 module "Company"
 
 firehoseTest 'Create', 13, (agent) ->
-  company = FirehoseJS.Company.companyWithTitle( Faker.Lorem.words(1).join(" "), agent )
+  company = Firehose.Company.companyWithTitle( Faker.Lorem.words(1).join(" "), agent )
   company.save()
   .done (data, textStatus) ->
     equal textStatus, "success"
@@ -80,7 +59,7 @@ firehoseTest 'Update', 3, (agent) ->
     start()
     
 firehoseTest 'Destroy', 1, (agent) ->
-  company = FirehoseJS.Company.companyWithTitle( Faker.Lorem.words(1).join(" "), agent )
+  company = Firehose.Company.companyWithTitle( Faker.Lorem.words(1).join(" "), agent )
   company.save()
   .done (data, textStatus) ->
     company.destroy()

@@ -1,4 +1,4 @@
-class FirehoseJS.Agent extends FirehoseJS.Object
+class Firehose.Agent extends Firehose.Object
   
   
   # @nodoc
@@ -28,22 +28,22 @@ class FirehoseJS.Agent extends FirehoseJS.Object
   
   # @nodoc
   _setup: ->
-    @companies = new FirehoseJS.UniqueArray
+    @companies = new Firehose.UniqueArray
 
 
   @agentWithAccessToken: (accessToken) ->
-    FirehoseJS.Object._objectOfClassWithID FirehoseJS.Agent,
+    Firehose.Object._objectOfClassWithID Firehose.Agent,
       accessToken: accessToken
       
       
   @agentWithEmailAndPassword: (email, password) ->
-    FirehoseJS.Object._objectOfClassWithID FirehoseJS.Agent,
+    Firehose.Object._objectOfClassWithID Firehose.Agent,
       email:        email
       _password:    password
       
 
   @agentWithID: (id) ->
-    FirehoseJS.Object._objectOfClassWithID FirehoseJS.Agent,
+    Firehose.Object._objectOfClassWithID Firehose.Agent,
       id: id
     
   ###
@@ -67,7 +67,7 @@ class FirehoseJS.Agent extends FirehoseJS.Object
           first_name: @firstName
           last_name:  @lastName
         
-    FirehoseJS.client.post( params ).done (data) =>
+    Firehose.client.post( params ).done (data) =>
       this._populateWithJSON data
       this._handleSuccessfulLogin()
   
@@ -83,7 +83,7 @@ class FirehoseJS.Agent extends FirehoseJS.Object
       this._handleSuccessfulLogin()
       return $.Deferred().resolve this._toArchivableJSON()
       
-    FirehoseJS.client.APIAccessToken = null
+    Firehose.client.APIAccessToken = null
     
     params = 
       route: 'login'
@@ -93,9 +93,9 @@ class FirehoseJS.Agent extends FirehoseJS.Object
         email:    @email      
         password: @_password  
     else if @accessToken?
-      FirehoseJS.client.APIAccessToken = @accessToken
+      Firehose.client.APIAccessToken = @accessToken
         
-    FirehoseJS.client.post( params ).done (data) =>
+    Firehose.client.post( params ).done (data) =>
       this._populateWithJSON data
       this._handleSuccessfulLogin()
       
@@ -107,10 +107,10 @@ class FirehoseJS.Agent extends FirehoseJS.Object
   logout: ->
     this._setIfNotNull "accessToken", null
     this._setIfNotNull "URLToken", null
-    FirehoseJS.Agent.loggedInAgent        = null
-    FirehoseJS.client.APIAccessToken      = null
-    FirehoseJS.client.URLToken            = null
-    FirehoseJS.client.billingAccessToken  = null
+    Firehose.Agent.loggedInAgent        = null
+    Firehose.client.APIAccessToken      = null
+    Firehose.client.URLToken            = null
+    Firehose.client.billingAccessToken  = null
     
   
   ###
@@ -120,7 +120,7 @@ class FirehoseJS.Agent extends FirehoseJS.Object
   fetch: ->
     params = 
       route: "agents/#{@id}"
-    FirehoseJS.client.get( params ).done (data) =>
+    Firehose.client.get( params ).done (data) =>
       this._populateWithJSON data
       this._handleSuccessfulLogin()
       
@@ -133,7 +133,7 @@ class FirehoseJS.Agent extends FirehoseJS.Object
     params = 
       route: "agents/#{@id}"
       body:  this._toJSON()
-    FirehoseJS.client.put( params )
+    Firehose.client.put( params )
   
   
   ###
@@ -146,7 +146,7 @@ class FirehoseJS.Agent extends FirehoseJS.Object
   destroy: ->
     params = 
       route: "agents/#{@id}"
-    FirehoseJS.client.delete( params ).done =>
+    Firehose.client.delete( params ).done =>
       for company in @companies
         company.agents.dropObject this
     
@@ -158,7 +158,7 @@ class FirehoseJS.Agent extends FirehoseJS.Object
     
     params = 
       route: "agents/#{@id}/notifications/#{ids.join(',')}"
-    FirehoseJS.client.put( params )
+    Firehose.client.put( params )
         
         
   @requestPasswordReset: (email) ->
@@ -166,7 +166,7 @@ class FirehoseJS.Agent extends FirehoseJS.Object
       route: "request_reset_password"
       body:
         email: email
-    FirehoseJS.client.post( params )
+    Firehose.client.post( params )
     
   
   @resetPassword: (token, newPassword) ->
@@ -175,7 +175,7 @@ class FirehoseJS.Agent extends FirehoseJS.Object
       body:
         token:    token
         password: newPassword
-    FirehoseJS.client.post( params )
+    Firehose.client.post( params )
     
 
   setNewPassword: (newPassword) ->
@@ -199,9 +199,9 @@ class FirehoseJS.Agent extends FirehoseJS.Object
     
   # @nodoc
   _handleSuccessfulLogin: =>
-    FirehoseJS.client.APIAccessToken = @accessToken
-    FirehoseJS.client.URLToken       = @URLToken
-    FirehoseJS.Agent.loggedInAgent   = this
+    Firehose.client.APIAccessToken = @accessToken
+    Firehose.client.URLToken       = @URLToken
+    Firehose.Agent.loggedInAgent   = this
     
 
   
@@ -214,7 +214,7 @@ class FirehoseJS.Agent extends FirehoseJS.Object
     this._setIfNotNull "email",       json.email
     
     this._populateAssociatedObjects this, "companies", json.companies, (json) =>
-      FirehoseJS.Company.companyWithID( json.id, this )
+      Firehose.Company.companyWithID( json.id, this )
       
     if @companies.length > 0 and not @currentCompany?
       this._setIfNotNull "currentCompany", @companies[0]

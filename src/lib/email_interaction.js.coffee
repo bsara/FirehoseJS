@@ -1,4 +1,4 @@
-class FirehoseJS.EmailInteraction extends FirehoseJS.Interaction
+class Firehose.EmailInteraction extends Firehose.Interaction
 
 
   # @nodoc
@@ -19,12 +19,12 @@ class FirehoseJS.EmailInteraction extends FirehoseJS.Interaction
     
   # @nodoc
   _setup: ->
-    @attachments = new FirehoseJS.UniqueArray
+    @attachments = new Firehose.UniqueArray
     
     
   # @nodoc
   @_emailInteractionWithID: (id) ->
-    FirehoseJS.Object._objectOfClassWithID FirehoseJS.EmailInteraction,
+    Firehose.Object._objectOfClassWithID Firehose.EmailInteraction,
       id: id
     
   
@@ -38,10 +38,10 @@ class FirehoseJS.EmailInteraction extends FirehoseJS.Interaction
       this._setIfNotNull "fromEmail",    emailJSON.from_email
     
       this._populateAssociatedObjects this, "attachments", emailJSON.attachments, (json) =>
-        FirehoseJS.Attachment._attachmentWithID( json.id, this )
+        Firehose.Attachment._attachmentWithID( json.id, this )
         
       this._populateAssociatedObjectWithJSON this, "emailAccount", emailJSON.email_account, (json) ->
-        FirehoseJS.EmailAccount._emailAccountWithID( json.id )
+        Firehose.EmailAccount._emailAccountWithID( json.id )
       
     super json
   

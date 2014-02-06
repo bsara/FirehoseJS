@@ -1,24 +1,3 @@
-# ======== A Handy Little QUnit Reference ========
-# http://api.qunitjs.com/
-
-# Test methods:
-#   module(name, {[setup][ ,teardown]})
-#   test(name, callback)
-#   expect(numberOfAssertions)
-#   stop(increment)
-#   start(decrement)
-# Test assertions:
-#   ok(value, [message])
-#   equal(actual, expected, [message])
-#   notEqual(actual, expected, [message])
-#   deepEqual(actual, expected, [message])
-#   notDeepEqual(actual, expected, [message])
-#   strictEqual(actual, expected, [message])
-#   notStrictEqual(actual, expected, [message])
-#   throws(block, [expected], [message])
-
-FirehoseJS.client.setEnvironment('test')
-
 module "Interaction"
 
 firehoseTest 'Index', 1, (agent) ->
@@ -141,7 +120,7 @@ firehoseTest 'Fetch With Token', 9, (agent) ->
     interactions.next()
     .done (data, textStatus) ->
       interaction = interactions[0]
-      interactionWithToken = FirehoseJS.Interaction.interactionWithToken interaction.token
+      interactionWithToken = Firehose.Interaction.interactionWithToken interaction.token
       interaction.fetch()
       .done (data, textStatus) ->
         ok textStatus == "success"
@@ -171,7 +150,7 @@ firehoseTest 'Fetch With ID', 9, (agent) ->
     interactions.next()
     .done (data, textStatus) ->
       interaction = interactions[0]
-      interactionWithToken = FirehoseJS.Interaction.interactionWithToken interaction.token
+      interactionWithToken = Firehose.Interaction.interactionWithToken interaction.token
       interaction.fetch()
       .done (data, textStatus) ->
         ok textStatus == "success"
@@ -246,7 +225,7 @@ firehoseTest 'Add And Remove Interaction Tag', 4, (agent) ->
     .done (data, textStatus) ->
       interaction = interactions[0]
       tagCount = interaction.tags.length
-      tag = FirehoseJS.Tag.tagWithLabel( Faker.Lorem.words(1).join(" "), company)
+      tag = Firehose.Tag.tagWithLabel( Faker.Lorem.words(1).join(" "), company)
       tag.save()
       .done (data, textStatus) ->
         interaction.addTag( tag )  

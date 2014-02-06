@@ -1,4 +1,4 @@
-class FirehoseJS.Note extends FirehoseJS.Object
+class Firehose.Note extends Firehose.Object
   
   
   # @nodoc
@@ -12,14 +12,14 @@ class FirehoseJS.Note extends FirehoseJS.Object
   
   
   @noteWithBody: (body, interaction) ->
-    FirehoseJS.Object._objectOfClassWithID FirehoseJS.Note,
+    Firehose.Object._objectOfClassWithID Firehose.Note,
       body:        body
       interaction: interaction
   
         
   # @nodoc
   @_noteWithID: (id, interaction) ->
-    FirehoseJS.Object._objectOfClassWithID FirehoseJS.Note,
+    Firehose.Object._objectOfClassWithID Firehose.Note,
       id:          id
       interaction: interaction
     
@@ -29,12 +29,12 @@ class FirehoseJS.Note extends FirehoseJS.Object
       params = 
         route: "notes/#{@id}"
         body:  this._toJSON()
-      FirehoseJS.client.put( params )
+      Firehose.client.put( params )
     else
       params = 
         route: "interactions/#{@interaction.id}/notes"
         body:  this._toJSON()
-      FirehoseJS.client.post( params ).done (data) =>
+      Firehose.client.post( params ).done (data) =>
         this._populateWithJSON data
         @interaction.notes.insertObject this
         
@@ -42,7 +42,7 @@ class FirehoseJS.Note extends FirehoseJS.Object
   destroy: ->
     params = 
       route: "notes/#{@id}"
-    FirehoseJS.client.delete( params ).done =>
+    Firehose.client.delete( params ).done =>
       @interaction.notes.dropObject this
     
 
@@ -51,7 +51,7 @@ class FirehoseJS.Note extends FirehoseJS.Object
     this._setIfNotNull "body", json.body
     
     this._populateAssociatedObjectWithJSON this, "agent", json.agent, (json) ->
-      FirehoseJS.Agent.agentWithID( json.id )
+      Firehose.Agent.agentWithID( json.id )
       
     super json
     

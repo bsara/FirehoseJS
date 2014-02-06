@@ -2,7 +2,7 @@
 <html>
   <head>
   <meta charset='UTF-8'>
-  <title>FirehoseJS Documentation</title>
+  <title>Firehose Documentation</title>
   <script src='../../javascript/application.js'></script>
   <script src='../../javascript/search.js'></script>
   <link rel='stylesheet' href='../../stylesheets/application.css' type='text/css'>
@@ -11,40 +11,40 @@
     <div id='base' data-path='../../'></div>
 <div id='header'>
   <div id='menu'>
-    <a href='../../extra/README.md.html' title='FirehoseJS'>
-      FirehoseJS
+    <a href='../../extra/README.md.html' title='Firehose'>
+      Firehose
     </a>
     &raquo;
     <a href='../../alphabetical_index.html' title='Index'>
       Index
     </a>
     &raquo;
-    <span class='title'>FirehoseJS</span>
+    <span class='title'>Firehose</span>
     &raquo;
-    <span class='title'>EmailAccount</span>
+    <span class='title'>FacebookAccount</span>
   </div>
 </div>
     <div id='content'>
       <h1>
         Class:
-        FirehoseJS.EmailAccount
+        Firehose.FacebookAccount
       </h1>
       <table class='box'>
         <tr>
           <td>Defined in:</td>
-          <td>src&#47;lib&#47;email_account.js.coffee</td>
+          <td>src&#47;lib&#47;facebook_account.js.coffee</td>
         </tr>
         <tr>
           <td>Inherits:</td>
           <td>
-            <a href='../../class/FirehoseJS/Object.html'>FirehoseJS.Object</a>
+            <a href='../../class/Firehose/Object.html'>Firehose.Object</a>
           </td>
         </tr>
       </table>
       <h2>Property Summary</h2>
       <h3 class='inherited'>
         Properties inherited from
-        <a href='../../class/FirehoseJS/Object.html'>FirehoseJS.Object</a>
+        <a href='../../class/Firehose/Object.html'>Firehose.Object</a>
       </h3>
       <p class='inherited'>
         <a href='[object Object]'>id</a>
@@ -60,54 +60,6 @@
     <pre><code class='coffeescript'>null</code></pre>
     
   </dd>
-  <dt id='emailAddress-variable'>
-    emailAddress
-    =
-  </dt>
-  <dd>
-    <pre><code class='coffeescript'>null</code></pre>
-    
-  </dd>
-  <dt id='isForwarding-variable'>
-    isForwarding
-    =
-  </dt>
-  <dd>
-    <pre><code class='coffeescript'>false</code></pre>
-    
-  </dd>
-  <dt id='title-variable'>
-    title
-    =
-  </dt>
-  <dd>
-    <pre><code class='coffeescript'>null</code></pre>
-    
-  </dd>
-  <dt id='kind-variable'>
-    kind
-    =
-  </dt>
-  <dd>
-    <pre><code class='coffeescript'>&#39;IMAP&#39;</code></pre>
-    
-  </dd>
-  <dt id='server-variable'>
-    server
-    =
-  </dt>
-  <dd>
-    <pre><code class='coffeescript'>null</code></pre>
-    
-  </dd>
-  <dt id='port-variable'>
-    port
-    =
-  </dt>
-  <dd>
-    <pre><code class='coffeescript'>null</code></pre>
-    
-  </dd>
   <dt id='username-variable'>
     username
     =
@@ -116,28 +68,36 @@
     <pre><code class='coffeescript'>null</code></pre>
     
   </dd>
-  <dt id='password-variable'>
-    password
+  <dt id='facebookUserId-variable'>
+    facebookUserId
     =
   </dt>
   <dd>
     <pre><code class='coffeescript'>null</code></pre>
     
   </dd>
-  <dt id='SSL-variable'>
-    SSL
+  <dt id='imageURL-variable'>
+    imageURL
     =
   </dt>
   <dd>
-    <pre><code class='coffeescript'>true</code></pre>
+    <pre><code class='coffeescript'>null</code></pre>
     
   </dd>
-  <dt id='deleteFromServer-variable'>
-    deleteFromServer
+  <dt id='name-variable'>
+    name
     =
   </dt>
   <dd>
-    <pre><code class='coffeescript'>false</code></pre>
+    <pre><code class='coffeescript'>null</code></pre>
+    
+  </dd>
+  <dt id='facebookPages-variable'>
+    facebookPages
+    =
+  </dt>
+  <dd>
+    <pre><code class='coffeescript'>null</code></pre>
     
   </dd>
 </dl>
@@ -145,10 +105,10 @@
       <ul class='summary'>
   <li>
     <span class='signature'>
-      <a href='#emailAccountWithSettings-static'>
+      <a href='#OAuthURLForCompanyWithCallback-static'>
         .
 (void)
-<b>emailAccountWithSettings</b><span>(company, settings)</span>
+<b>OAuthURLForCompanyWithCallback</b><span>(company, callback)</span>
       </a>
     </span>
     <span class='desc'>
@@ -157,17 +117,6 @@
 </ul>
       <h2>Instance Method Summary</h2>
       <ul class='summary'>
-  <li>
-    <span class='signature'>
-      <a href='#save-dynamic'>
-        #
-(void)
-<b>save</b><span>()</span>
-      </a>
-    </span>
-    <span class='desc'>
-    </span>
-  </li>
   <li>
     <span class='signature'>
       <a href='#destroy-dynamic'>
@@ -179,38 +128,27 @@
     <span class='desc'>
     </span>
   </li>
-  <li>
-    <span class='signature'>
-      <a href='#guessFieldsFromEmail-dynamic'>
-        #
-(void)
-<b>guessFieldsFromEmail</b><span>()</span>
-      </a>
-    </span>
-    <span class='desc'>
-    </span>
-  </li>
 </ul>
       <h2>
         <small>Inherited Method Summary</small>
         <h3 class='inherited'>
           Methods inherited from
-          <a href='../../class/FirehoseJS/Object.html'>FirehoseJS.Object</a>
+          <a href='../../class/Firehose/Object.html'>Firehose.Object</a>
         </h3>
         <p class='inherited'>
-          <a href='../../class/FirehoseJS/Object.html#get-dynamic'>#get</a>
-          <a href='../../class/FirehoseJS/Object.html#set-dynamic'>#set</a>
-          <a href='../../class/FirehoseJS/Object.html#archive-dynamic'>#archive</a>
-          <a href='../../class/FirehoseJS/Object.html#unarchive-dynamic'>#unarchive</a>
+          <a href='../../class/Firehose/Object.html#get-dynamic'>#get</a>
+          <a href='../../class/Firehose/Object.html#set-dynamic'>#set</a>
+          <a href='../../class/Firehose/Object.html#archive-dynamic'>#archive</a>
+          <a href='../../class/Firehose/Object.html#unarchive-dynamic'>#unarchive</a>
         </p>
       </h2>
       <h2>Class Method Details</h2>
       <div class='methods'>
   <div class='method_details'>
-    <p class='signature' id='emailAccountWithSettings-static'>
+    <p class='signature' id='OAuthURLForCompanyWithCallback-static'>
       .
 (void)
-<b>emailAccountWithSettings</b><span>(company, settings)</span>
+<b>OAuthURLForCompanyWithCallback</b><span>(company, callback)</span>
       <br>
     </p>
     
@@ -218,15 +156,6 @@
 </div>
       <h2>Instance Method Details</h2>
       <div class='methods'>
-  <div class='method_details'>
-    <p class='signature' id='save-dynamic'>
-      #
-(void)
-<b>save</b><span>()</span>
-      <br>
-    </p>
-    
-  </div>
   <div class='method_details'>
     <p class='signature' id='destroy-dynamic'>
       #
@@ -236,19 +165,10 @@
     </p>
     
   </div>
-  <div class='method_details'>
-    <p class='signature' id='guessFieldsFromEmail-dynamic'>
-      #
-(void)
-<b>guessFieldsFromEmail</b><span>()</span>
-      <br>
-    </p>
-    
-  </div>
 </div>
     </div>
     <div id='footer'>
-  February 05, 14 16:17:43 by
+  February 06, 14 12:02:57 by
   <a href='https://github.com/coffeedoc/codo' title='CoffeeScript API documentation generator'>
     Codo
   </a>

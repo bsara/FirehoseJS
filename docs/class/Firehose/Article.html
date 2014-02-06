@@ -2,7 +2,7 @@
 <html>
   <head>
   <meta charset='UTF-8'>
-  <title>FirehoseJS Documentation</title>
+  <title>Firehose Documentation</title>
   <script src='../../javascript/application.js'></script>
   <script src='../../javascript/search.js'></script>
   <link rel='stylesheet' href='../../stylesheets/application.css' type='text/css'>
@@ -11,40 +11,40 @@
     <div id='base' data-path='../../'></div>
 <div id='header'>
   <div id='menu'>
-    <a href='../../extra/README.md.html' title='FirehoseJS'>
-      FirehoseJS
+    <a href='../../extra/README.md.html' title='Firehose'>
+      Firehose
     </a>
     &raquo;
     <a href='../../alphabetical_index.html' title='Index'>
       Index
     </a>
     &raquo;
-    <span class='title'>FirehoseJS</span>
+    <span class='title'>Firehose</span>
     &raquo;
-    <span class='title'>CreditCard</span>
+    <span class='title'>Article</span>
   </div>
 </div>
     <div id='content'>
       <h1>
         Class:
-        FirehoseJS.CreditCard
+        Firehose.Article
       </h1>
       <table class='box'>
         <tr>
           <td>Defined in:</td>
-          <td>src&#47;lib&#47;credit_card.js.coffee</td>
+          <td>src&#47;lib&#47;article.js.coffee</td>
         </tr>
         <tr>
           <td>Inherits:</td>
           <td>
-            <a href='../../class/FirehoseJS/Object.html'>FirehoseJS.Object</a>
+            <a href='../../class/Firehose/Object.html'>Firehose.Object</a>
           </td>
         </tr>
       </table>
       <h2>Property Summary</h2>
       <h3 class='inherited'>
         Properties inherited from
-        <a href='../../class/FirehoseJS/Object.html'>FirehoseJS.Object</a>
+        <a href='../../class/Firehose/Object.html'>Firehose.Object</a>
       </h3>
       <p class='inherited'>
         <a href='[object Object]'>id</a>
@@ -60,56 +60,16 @@
     <pre><code class='coffeescript'>null</code></pre>
     
   </dd>
-  <dt id='number-variable'>
-    number
+  <dt id='title-variable'>
+    title
     =
   </dt>
   <dd>
     <pre><code class='coffeescript'>null</code></pre>
     
   </dd>
-  <dt id='cvc-variable'>
-    cvc
-    =
-  </dt>
-  <dd>
-    <pre><code class='coffeescript'>null</code></pre>
-    
-  </dd>
-  <dt id='expirationMonth-variable'>
-    expirationMonth
-    =
-  </dt>
-  <dd>
-    <pre><code class='coffeescript'>null</code></pre>
-    
-  </dd>
-  <dt id='expirationYear-variable'>
-    expirationYear
-    =
-  </dt>
-  <dd>
-    <pre><code class='coffeescript'>null</code></pre>
-    
-  </dd>
-  <dt id='lastFour-variable'>
-    lastFour
-    =
-  </dt>
-  <dd>
-    <pre><code class='coffeescript'>null</code></pre>
-    
-  </dd>
-  <dt id='stripeToken-variable'>
-    stripeToken
-    =
-  </dt>
-  <dd>
-    <pre><code class='coffeescript'>null</code></pre>
-    
-  </dd>
-  <dt id='email-variable'>
-    email
+  <dt id='body-variable'>
+    body
     =
   </dt>
   <dd>
@@ -121,10 +81,10 @@
       <ul class='summary'>
   <li>
     <span class='signature'>
-      <a href='#creditCardWithNumber-static'>
+      <a href='#articleWithTitleBodyAndCompany-static'>
         .
 (void)
-<b>creditCardWithNumber</b><span>(number, cvc, expMonth, expYear, email, company)</span>
+<b>articleWithTitleBodyAndCompany</b><span>(title, body, company)</span>
       </a>
     </span>
     <span class='desc'>
@@ -132,10 +92,10 @@
   </li>
   <li>
     <span class='signature'>
-      <a href='#creditCardWithID-static'>
+      <a href='#articleWithID-static'>
         .
 (void)
-<b>creditCardWithID</b><span>(id, company)</span>
+<b>articleWithID</b><span>(id, company)</span>
       </a>
     </span>
     <span class='desc'>
@@ -146,10 +106,10 @@
       <ul class='summary'>
   <li>
     <span class='signature'>
-      <a href='#submitToStripe-dynamic'>
+      <a href='#fetch-dynamic'>
         #
 (void)
-<b>submitToStripe</b><span>(callback)</span>
+<b>fetch</b><span>()</span>
       </a>
     </span>
     <span class='desc'>
@@ -161,17 +121,6 @@
         #
 (void)
 <b>save</b><span>()</span>
-      </a>
-    </span>
-    <span class='desc'>
-    </span>
-  </li>
-  <li>
-    <span class='signature'>
-      <a href='#fetch-dynamic'>
-        #
-(void)
-<b>fetch</b><span>()</span>
       </a>
     </span>
     <span class='desc'>
@@ -193,31 +142,31 @@
         <small>Inherited Method Summary</small>
         <h3 class='inherited'>
           Methods inherited from
-          <a href='../../class/FirehoseJS/Object.html'>FirehoseJS.Object</a>
+          <a href='../../class/Firehose/Object.html'>Firehose.Object</a>
         </h3>
         <p class='inherited'>
-          <a href='../../class/FirehoseJS/Object.html#get-dynamic'>#get</a>
-          <a href='../../class/FirehoseJS/Object.html#set-dynamic'>#set</a>
-          <a href='../../class/FirehoseJS/Object.html#archive-dynamic'>#archive</a>
-          <a href='../../class/FirehoseJS/Object.html#unarchive-dynamic'>#unarchive</a>
+          <a href='../../class/Firehose/Object.html#get-dynamic'>#get</a>
+          <a href='../../class/Firehose/Object.html#set-dynamic'>#set</a>
+          <a href='../../class/Firehose/Object.html#archive-dynamic'>#archive</a>
+          <a href='../../class/Firehose/Object.html#unarchive-dynamic'>#unarchive</a>
         </p>
       </h2>
       <h2>Class Method Details</h2>
       <div class='methods'>
   <div class='method_details'>
-    <p class='signature' id='creditCardWithNumber-static'>
+    <p class='signature' id='articleWithTitleBodyAndCompany-static'>
       .
 (void)
-<b>creditCardWithNumber</b><span>(number, cvc, expMonth, expYear, email, company)</span>
+<b>articleWithTitleBodyAndCompany</b><span>(title, body, company)</span>
       <br>
     </p>
     
   </div>
   <div class='method_details'>
-    <p class='signature' id='creditCardWithID-static'>
+    <p class='signature' id='articleWithID-static'>
       .
 (void)
-<b>creditCardWithID</b><span>(id, company)</span>
+<b>articleWithID</b><span>(id, company)</span>
       <br>
     </p>
     
@@ -226,10 +175,10 @@
       <h2>Instance Method Details</h2>
       <div class='methods'>
   <div class='method_details'>
-    <p class='signature' id='submitToStripe-dynamic'>
+    <p class='signature' id='fetch-dynamic'>
       #
 (void)
-<b>submitToStripe</b><span>(callback)</span>
+<b>fetch</b><span>()</span>
       <br>
     </p>
     
@@ -239,15 +188,6 @@
       #
 (void)
 <b>save</b><span>()</span>
-      <br>
-    </p>
-    
-  </div>
-  <div class='method_details'>
-    <p class='signature' id='fetch-dynamic'>
-      #
-(void)
-<b>fetch</b><span>()</span>
       <br>
     </p>
     
@@ -264,7 +204,7 @@
 </div>
     </div>
     <div id='footer'>
-  February 05, 14 16:17:43 by
+  February 06, 14 12:02:57 by
   <a href='https://github.com/coffeedoc/codo' title='CoffeeScript API documentation generator'>
     Codo
   </a>

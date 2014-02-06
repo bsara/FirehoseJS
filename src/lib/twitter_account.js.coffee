@@ -1,4 +1,4 @@
-class FirehoseJS.TwitterAccount extends FirehoseJS.Object
+class Firehose.TwitterAccount extends Firehose.Object
   
   
   # @nodoc
@@ -15,19 +15,19 @@ class FirehoseJS.TwitterAccount extends FirehoseJS.Object
     
   # @nodoc
   @_twitterAccountWithID: (id, company) ->
-    FirehoseJS.Object._objectOfClassWithID FirehoseJS.TwitterAccount,
+    Firehose.Object._objectOfClassWithID Firehose.TwitterAccount,
       id:      id
       company: company
   
   
   @OAuthURLForCompanyWithCallback: (company, callback)  ->
-    "#{FirehoseJS.rootFor('API')}/companies/#{company.id}/oauth_twitter?url_token=#{FirehoseJS.client.URLToken}&callback_url=#{encodeURIComponent(callback)}"
+    "#{Firehose.baseURLFor('API')}/companies/#{company.id}/oauth_twitter?url_token=#{Firehose.client.URLToken}&callback_url=#{encodeURIComponent(callback)}"
   
   
   destroy: ->
     params = 
       route: "twitter_accounts/#{@id}"
-    FirehoseJS.client.delete( params ).done =>
+    Firehose.client.delete( params ).done =>
       @company.twitterAccounts().dropObject this
 
 

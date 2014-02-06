@@ -1,4 +1,4 @@
-class FirehoseJS.OutgoingAttachment extends FirehoseJS.Object
+class Firehose.OutgoingAttachment extends Firehose.Object
   
   
   # @nodoc
@@ -18,7 +18,7 @@ class FirehoseJS.OutgoingAttachment extends FirehoseJS.Object
   
     
   @outgoingAttachmentWithFile: (file, company) ->
-    new FirehoseJS.OutgoingAttachment
+    new Firehose.OutgoingAttachment
       file:    file
       company: company
     
@@ -49,7 +49,7 @@ class FirehoseJS.OutgoingAttachment extends FirehoseJS.Object
     params = 
       route: "companies/#{@company.id}/outgoing_attachments"
       body: this._toJSON()
-    FirehoseJS.client.post( params ).done (data) =>
+    Firehose.client.post( params ).done (data) =>
       
       this._populateWithJSON data
       
@@ -84,7 +84,7 @@ class FirehoseJS.OutgoingAttachment extends FirehoseJS.Object
           params = 
             route: "outgoing_attachments/#{data.id}"
             body: this._toJSON()
-          FirehoseJS.client.put( params ).done ->
+          Firehose.client.put( params ).done ->
             options.success? data.download_url
           .fail (jqXHR, textStatus, errorThrown) ->
             options.error? errorThrown

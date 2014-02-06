@@ -1,4 +1,4 @@
-class FirehoseJS.RemoteArray extends FirehoseJS.UniqueArray
+class Firehose.RemoteArray extends Firehose.UniqueArray
   
   
   perPage: -1
@@ -36,7 +36,7 @@ class FirehoseJS.RemoteArray extends FirehoseJS.UniqueArray
         page:     page
         perPage:  @perPage
       @onceParams = null
-      FirehoseJS.client.get( options ).done (data) =>
+      Firehose.client.get( options ).done (data) =>
         if data.constructor == Array and data.length > 0
           @totalRows = data[0].total_rows
           aggregate = []

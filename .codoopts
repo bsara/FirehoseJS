@@ -1,5 +1,5 @@
---name       "FirehoseJS"
+--name       "Firehose"
 --readme     README.md
---title      "FirehoseJS Documentation"
+--title      "Firehose Documentation"
 --output     ./docs
 ./src

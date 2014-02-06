@@ -1,4 +1,4 @@
-class FirehoseJS.AgentInvite extends FirehoseJS.Object
+class Firehose.AgentInvite extends Firehose.Object
   
   
   # @nodoc
@@ -10,14 +10,14 @@ class FirehoseJS.AgentInvite extends FirehoseJS.Object
   
   
   @agentInviteWithEmail: (email, company) ->
-    FirehoseJS.Object._objectOfClassWithID FirehoseJS.AgentInvite,
+    Firehose.Object._objectOfClassWithID Firehose.AgentInvite,
       toEmail: email
       company: company
 
 
   # @nodoc
   @_agentInviteWithID: (id, company) ->
-    FirehoseJS.Object._objectOfClassWithID FirehoseJS.AgentInvite,
+    Firehose.Object._objectOfClassWithID Firehose.AgentInvite,
       id:      id
       company: company
     
@@ -26,7 +26,7 @@ class FirehoseJS.AgentInvite extends FirehoseJS.Object
     params = 
       route: "companies/#{@company.id}/agent_invites"
       body:  this._toJSON()
-    FirehoseJS.client.post( params ).done (data) =>
+    Firehose.client.post( params ).done (data) =>
       this._populateWithJSON data
       @company.agentInvites.insertObject this
       
@@ -34,13 +34,13 @@ class FirehoseJS.AgentInvite extends FirehoseJS.Object
   resend: ->
     params = 
       route: "agent_invites/#{@id}/resend"
-    FirehoseJS.client.put( params )
+    Firehose.client.put( params )
       
       
   destroy: ->
     params = 
       route: "agent_invites/#{@id}"
-    FirehoseJS.client.delete( params ).done =>
+    Firehose.client.delete( params ).done =>
       @company.agentInvites.dropObject this
     
 

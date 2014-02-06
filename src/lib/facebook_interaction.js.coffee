@@ -1,4 +1,4 @@
-class FirehoseJS.FacebookInteraction extends FirehoseJS.Interaction
+class Firehose.FacebookInteraction extends Firehose.Interaction
   
   
   # @nodoc
@@ -27,7 +27,7 @@ class FirehoseJS.FacebookInteraction extends FirehoseJS.Interaction
     
   # @nodoc
   @_facebookInteractionWithID: (id) ->
-    FirehoseJS.Object._objectOfClassWithID FirehoseJS.FacebookInteraction,
+    Firehose.Object._objectOfClassWithID Firehose.FacebookInteraction,
       id: id
   
   
@@ -46,7 +46,7 @@ class FirehoseJS.FacebookInteraction extends FirehoseJS.Interaction
       this._setIfNotNull "likeCount",  facebookJSON.like_count
       
       this._populateAssociatedObjectWithJSON this, "facebookAccount", facebookJSON.facebook_account, (json) ->
-        FirehoseJS.FacebookAccount._facebookAccountWithID( json.id )
+        Firehose.FacebookAccount._facebookAccountWithID( json.id )
         
     super json
   

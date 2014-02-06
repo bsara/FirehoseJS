@@ -1,4 +1,4 @@
-class FirehoseJS.Notification extends FirehoseJS.Object
+class Firehose.Notification extends Firehose.Object
     
   
   # @nodoc
@@ -15,7 +15,7 @@ class FirehoseJS.Notification extends FirehoseJS.Object
     
   # @nodoc
   @_notificationWithID: (id, company) ->
-    FirehoseJS.Object._objectOfClassWithID FirehoseJS.Notification,
+    Firehose.Object._objectOfClassWithID Firehose.Notification,
       id:      id
       company: company
     

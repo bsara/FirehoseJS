@@ -1,4 +1,4 @@
-class FirehoseJS.TwitterInteraction extends FirehoseJS.Interaction
+class Firehose.TwitterInteraction extends Firehose.Interaction
   
   
   # @nodoc
@@ -25,7 +25,7 @@ class FirehoseJS.TwitterInteraction extends FirehoseJS.Interaction
   
   # @nodoc
   @_twitterInteractionWithID: (id) ->
-    FirehoseJS.Object._objectOfClassWithID FirehoseJS.TwitterInteraction,
+    Firehose.Object._objectOfClassWithID Firehose.TwitterInteraction,
       id: id
   
   
@@ -44,7 +44,7 @@ class FirehoseJS.TwitterInteraction extends FirehoseJS.Interaction
       this._setIfNotNull "fromUserId",          twitterJSON.from_user_id
       
       this._populateAssociatedObjectWithJSON this, "twitterAccount", twitterJSON.twitter_account, (json) ->
-        FirehoseJS.TwitterAccount._twitterAccountWithID( json.id )
+        Firehose.TwitterAccount._twitterAccountWithID( json.id )
 
     super json
  

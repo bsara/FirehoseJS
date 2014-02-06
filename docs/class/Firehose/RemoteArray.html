@@ -2,7 +2,7 @@
 <html>
   <head>
   <meta charset='UTF-8'>
-  <title>FirehoseJS Documentation</title>
+  <title>Firehose Documentation</title>
   <script src='../../javascript/application.js'></script>
   <script src='../../javascript/search.js'></script>
   <link rel='stylesheet' href='../../stylesheets/application.css' type='text/css'>
@@ -11,48 +11,71 @@
     <div id='base' data-path='../../'></div>
 <div id='header'>
   <div id='menu'>
-    <a href='../../extra/README.md.html' title='FirehoseJS'>
-      FirehoseJS
+    <a href='../../extra/README.md.html' title='Firehose'>
+      Firehose
     </a>
     &raquo;
     <a href='../../alphabetical_index.html' title='Index'>
       Index
     </a>
     &raquo;
-    <span class='title'>FirehoseJS</span>
+    <span class='title'>Firehose</span>
     &raquo;
-    <span class='title'>UniqueArray</span>
+    <span class='title'>RemoteArray</span>
   </div>
 </div>
     <div id='content'>
       <h1>
         Class:
-        FirehoseJS.UniqueArray
+        Firehose.RemoteArray
       </h1>
       <table class='box'>
         <tr>
           <td>Defined in:</td>
-          <td>src&#47;lib&#47;private&#47;unique_array.js.coffee</td>
+          <td>src&#47;lib&#47;private&#47;remote_array.js.coffee</td>
         </tr>
         <tr>
           <td>Inherits:</td>
           <td>
-            Array
+            <a href='../../class/Firehose/UniqueArray.html'>Firehose.UniqueArray</a>
           </td>
         </tr>
       </table>
-      <h2>Direct Known Subclasses</h2>
-      <p class='children'>
-        <a href='../../class/FirehoseJS/RemoteArray.html'>FirehoseJS.RemoteArray</a>
-      </p>
+      <h2>Variables Summary</h2>
+      <dl class='constants'>
+  <dt id='page-variable'>
+    page
+    =
+  </dt>
+  <dd>
+    <pre><code class='coffeescript'>1</code></pre>
+    
+  </dd>
+  <dt id='totalRows-variable'>
+    totalRows
+    =
+  </dt>
+  <dd>
+    <pre><code class='coffeescript'>0</code></pre>
+    
+  </dd>
+  <dt id='onceParams-variable'>
+    onceParams
+    =
+  </dt>
+  <dd>
+    <pre><code class='coffeescript'>null</code></pre>
+    
+  </dd>
+</dl>
       <h2>Instance Method Summary</h2>
       <ul class='summary'>
   <li>
     <span class='signature'>
-      <a href='#appendObject-dynamic'>
+      <a href='#isAllLoaded-dynamic'>
         #
 (void)
-<b>appendObject</b><span>()</span>
+<b>isAllLoaded</b><span>()</span>
       </a>
     </span>
     <span class='desc'>
@@ -60,10 +83,10 @@
   </li>
   <li>
     <span class='signature'>
-      <a href='#appendObjects-dynamic'>
+      <a href='#next-dynamic'>
         #
 (void)
-<b>appendObjects</b><span>(objects)</span>
+<b>next</b><span>()</span>
       </a>
     </span>
     <span class='desc'>
@@ -71,10 +94,10 @@
   </li>
   <li>
     <span class='signature'>
-      <a href='#insertObject-dynamic'>
+      <a href='#empty-dynamic'>
         #
 (void)
-<b>insertObject</b><span>()</span>
+<b>empty</b><span>()</span>
       </a>
     </span>
     <span class='desc'>
@@ -82,67 +105,40 @@
   </li>
   <li>
     <span class='signature'>
-      <a href='#insertObjects-dynamic'>
+      <a href='#reset-dynamic'>
         #
 (void)
-<b>insertObjects</b><span>(objects)</span>
-      </a>
-    </span>
-    <span class='desc'>
-    </span>
-  </li>
-  <li>
-    <span class='signature'>
-      <a href='#dropObject-dynamic'>
-        #
-(void)
-<b>dropObject</b><span>()</span>
-      </a>
-    </span>
-    <span class='desc'>
-    </span>
-  </li>
-  <li>
-    <span class='signature'>
-      <a href='#dropObjects-dynamic'>
-        #
-(void)
-<b>dropObjects</b><span>(objects)</span>
-      </a>
-    </span>
-    <span class='desc'>
-    </span>
-  </li>
-  <li>
-    <span class='signature'>
-      <a href='#sortOn-dynamic'>
-        #
-(void)
-<b>sortOn</b><span>(property, direction)</span>
-      </a>
-    </span>
-    <span class='desc'>
-    </span>
-  </li>
-  <li>
-    <span class='signature'>
-      <a href='#sortObjects-dynamic'>
-        #
-(void)
-<b>sortObjects</b><span>()</span>
+<b>reset</b><span>()</span>
       </a>
     </span>
     <span class='desc'>
     </span>
   </li>
 </ul>
+      <h2>
+        <small>Inherited Method Summary</small>
+        <h3 class='inherited'>
+          Methods inherited from
+          <a href='../../class/Firehose/UniqueArray.html'>Firehose.UniqueArray</a>
+        </h3>
+        <p class='inherited'>
+          <a href='../../class/Firehose/UniqueArray.html#appendObject-dynamic'>#appendObject</a>
+          <a href='../../class/Firehose/UniqueArray.html#appendObjects-dynamic'>#appendObjects</a>
+          <a href='../../class/Firehose/UniqueArray.html#insertObject-dynamic'>#insertObject</a>
+          <a href='../../class/Firehose/UniqueArray.html#insertObjects-dynamic'>#insertObjects</a>
+          <a href='../../class/Firehose/UniqueArray.html#dropObject-dynamic'>#dropObject</a>
+          <a href='../../class/Firehose/UniqueArray.html#dropObjects-dynamic'>#dropObjects</a>
+          <a href='../../class/Firehose/UniqueArray.html#sortOn-dynamic'>#sortOn</a>
+          <a href='../../class/Firehose/UniqueArray.html#sortObjects-dynamic'>#sortObjects</a>
+        </p>
+      </h2>
       <h2>Constructor Details</h2>
       <div class='methods'>
   <div class='method_details'>
     <p class='signature' id='constructor-dynamic'>
       #
 (void)
-<b>constructor</b><span>()</span>
+<b>constructor</b><span>(path, params = {}, creationFunction)</span>
       <br>
     </p>
     
@@ -151,73 +147,37 @@
       <h2>Instance Method Details</h2>
       <div class='methods'>
   <div class='method_details'>
-    <p class='signature' id='appendObject-dynamic'>
+    <p class='signature' id='isAllLoaded-dynamic'>
       #
 (void)
-<b>appendObject</b><span>()</span>
+<b>isAllLoaded</b><span>()</span>
       <br>
     </p>
     
   </div>
   <div class='method_details'>
-    <p class='signature' id='appendObjects-dynamic'>
+    <p class='signature' id='next-dynamic'>
       #
 (void)
-<b>appendObjects</b><span>(objects)</span>
+<b>next</b><span>()</span>
       <br>
     </p>
     
   </div>
   <div class='method_details'>
-    <p class='signature' id='insertObject-dynamic'>
+    <p class='signature' id='empty-dynamic'>
       #
 (void)
-<b>insertObject</b><span>()</span>
+<b>empty</b><span>()</span>
       <br>
     </p>
     
   </div>
   <div class='method_details'>
-    <p class='signature' id='insertObjects-dynamic'>
+    <p class='signature' id='reset-dynamic'>
       #
 (void)
-<b>insertObjects</b><span>(objects)</span>
-      <br>
-    </p>
-    
-  </div>
-  <div class='method_details'>
-    <p class='signature' id='dropObject-dynamic'>
-      #
-(void)
-<b>dropObject</b><span>()</span>
-      <br>
-    </p>
-    
-  </div>
-  <div class='method_details'>
-    <p class='signature' id='dropObjects-dynamic'>
-      #
-(void)
-<b>dropObjects</b><span>(objects)</span>
-      <br>
-    </p>
-    
-  </div>
-  <div class='method_details'>
-    <p class='signature' id='sortOn-dynamic'>
-      #
-(void)
-<b>sortOn</b><span>(property, direction)</span>
-      <br>
-    </p>
-    
-  </div>
-  <div class='method_details'>
-    <p class='signature' id='sortObjects-dynamic'>
-      #
-(void)
-<b>sortObjects</b><span>()</span>
+<b>reset</b><span>()</span>
       <br>
     </p>
     
@@ -225,7 +185,7 @@
 </div>
     </div>
     <div id='footer'>
-  February 05, 14 16:17:43 by
+  February 06, 14 12:02:57 by
   <a href='https://github.com/coffeedoc/codo' title='CoffeeScript API documentation generator'>
     Codo
   </a>

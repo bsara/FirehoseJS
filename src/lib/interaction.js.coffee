@@ -1,4 +1,4 @@
-class FirehoseJS.Interaction extends FirehoseJS.Object
+class Firehose.Interaction extends Firehose.Object
       
   # @nodoc
   @_firehoseType: "Interaction"
@@ -40,10 +40,10 @@ class FirehoseJS.Interaction extends FirehoseJS.Object
   
   # @nodoc
   _setup: ->
-    @responseInteractions = new FirehoseJS.UniqueArray
-    @notes                = new FirehoseJS.UniqueArray
-    @tags                 = new FirehoseJS.UniqueArray
-    @flaggedAgents        = new FirehoseJS.UniqueArray
+    @responseInteractions = new Firehose.UniqueArray
+    @notes                = new Firehose.UniqueArray
+    @tags                 = new Firehose.UniqueArray
+    @flaggedAgents        = new Firehose.UniqueArray
     @responseInteractions.sortOn "receivedAt"
     @notes.sortOn "createdAt"
     @tags.sortOn "label"
@@ -57,7 +57,7 @@ class FirehoseJS.Interaction extends FirehoseJS.Object
   @return [Interaction] a generic interaction object.
   ### 
   @interactionWithToken: (token) ->
-    FirehoseJS.Object._objectOfClassWithID FirehoseJS.Interaction,
+    Firehose.Object._objectOfClassWithID Firehose.Interaction,
       token: token
     
     
@@ -65,11 +65,11 @@ class FirehoseJS.Interaction extends FirehoseJS.Object
   @_interactionWithJSON: (json, customer) ->
     interaction = null
     if json.channel == "twitter"
-      interaction = FirehoseJS.TwitterInteraction._twitterInteractionWithID( json.id )
+      interaction = Firehose.TwitterInteraction._twitterInteractionWithID( json.id )
     else if json.channel == "facebook"    
-      interaction = FirehoseJS.FacebookInteraction._facebookInteractionWithID( json.id )
+      interaction = Firehose.FacebookInteraction._facebookInteractionWithID( json.id )
     else if json.channel == "email"
-      interaction = FirehoseJS.EmailInteraction._emailInteractionWithID( json.id )
+      interaction = Firehose.EmailInteraction._emailInteractionWithID( json.id )
     interaction._setCustomer customer
     interaction._populateWithJSON json
     interaction
@@ -91,11 +91,11 @@ class FirehoseJS.Interaction extends FirehoseJS.Object
     params = 
       route: "interactions/#{@id}/reply"
       body:  body
-    FirehoseJS.client.post( params ).done (data) =>
+    Firehose.client.post( params ).done (data) =>
       this._setIfNotNull "responseDraft", null
-      response = FirehoseJS.Interaction._interactionWithJSON( data, @customer )
+      response = Firehose.Interaction._interactionWithJSON( data, @customer )
       @responseInteractions.insertObject response
-      response._setIfNotNull "agent", FirehoseJS.Agent.loggedInAgent
+      response._setIfNotNull "agent", Firehose.Agent.loggedInAgent
       @responseInteractions.sort (interaction1, interaction2) ->
         interaction1.createdAt > interaction2.createdAt
     
@@ -104,7 +104,7 @@ class FirehoseJS.Interaction extends FirehoseJS.Object
     params = 
       route: "interactions/#{@id}"
       body:  this._toJSON()
-    FirehoseJS.client.put( params )
+    Firehose.client.put( params )
     
     
   ###
@@ -115,42 +115,42 @@ class FirehoseJS.Interaction extends FirehoseJS.Object
   fetch: ->
     params =
       route: "interactions/#{@token || @id}"
-    FirehoseJS.client.get( params ).done (data) =>
+    Firehose.client.get( params ).done (data) =>
       this._populateWithJSON data
       
     
   destroy: ->
     params = 
       route: "interactions/#{@id}"
-    FirehoseJS.client.delete( params ).done =>
+    Firehose.client.delete( params ).done =>
       @customer.interactions().dropObject this
     
     
   addTag: (tag) ->
     params = 
       route: "interactions/#{@id}/tags/#{tag.id}"
-    FirehoseJS.client.put( params ).done =>
+    Firehose.client.put( params ).done =>
       @tags.insertObject tag
     
     
   removeTag: (tag) ->
     params = 
       route: "interactions/#{@id}/tags/#{tag.id}"
-    FirehoseJS.client.delete( params ).done =>
+    Firehose.client.delete( params ).done =>
       @tags.dropObject tag
     
     
   flagAgent: (agent) ->
     params = 
       route: "interactions/#{@id}/agents/#{agent.id}"
-    FirehoseJS.client.put( params ).done =>
+    Firehose.client.put( params ).done =>
       @flaggedAgents.insertObject agent
     
   
   unflagAgent: (agent) ->
     params = 
       route: "interactions/#{@id}/agents/#{agent.id}"
-    FirehoseJS.client.delete( params ).done =>
+    Firehose.client.delete( params ).done =>
       @flaggedAgents.dropObject agent
     
   
@@ -180,25 +180,25 @@ class FirehoseJS.Interaction extends FirehoseJS.Object
     this._setIfNotNull "resolved",      json.resolved
     
     this._populateAssociatedObjectWithJSON this, "agent", json.agent, (json) ->
-      FirehoseJS.Agent.agentWithID( json.id )
+      Firehose.Agent.agentWithID( json.id )
       
     this._populateAssociatedObjectWithJSON this, "customerAccount", json.customer_account, (json) =>
       json.channel = @channel
-      FirehoseJS.CustomerAccount._customerAccountWithID( json.id, @customer )
+      Firehose.CustomerAccount._customerAccountWithID( json.id, @customer )
     
     this._populateAssociatedObjects this, "responseInteractions", json.response_interactions, (json) =>
       json.channel = @channel
-      interaction = FirehoseJS.Interaction._interactionWithJSON( json, @customer )
+      interaction = Firehose.Interaction._interactionWithJSON( json, @customer )
       interaction.set 'originalInteraction', this
       
     this._populateAssociatedObjects this, "notes", json.notes, (json) =>
-      FirehoseJS.Note._noteWithID( json.id, this )
+      Firehose.Note._noteWithID( json.id, this )
       
     this._populateAssociatedObjects this, "tags", json.tags, (json) =>
-      FirehoseJS.Tag._tagWithID( json.id, @customer.company )
+      Firehose.Tag._tagWithID( json.id, @customer.company )
       
     this._populateAssociatedObjects this, "flaggedAgents", json.flagged_agents, (json) =>
-      FirehoseJS.Agent.agentWithID( json.id )
+      Firehose.Agent.agentWithID( json.id )
       
     super json
     

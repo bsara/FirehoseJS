@@ -1,5 +1,5 @@
-# Base class for FirehoseJS API Objects
-class FirehoseJS.Object 
+# Base class for Firehose API Objects
+class Firehose.Object 
   
   ###
   @property [Number] Unique ID of object
@@ -19,7 +19,7 @@ class FirehoseJS.Object
   
   
   ###
-  @note You never need to construct a `FirehoseJS.Object` object directly. Use a subclass' factory method.
+  @note You never need to construct a `Firehose.Object` object directly. Use a subclass' factory method.
   @private
   ###
   constructor: (properties) ->
@@ -35,14 +35,14 @@ class FirehoseJS.Object
     
   ###
   A placeholder for third-party libraries to replace. (e.g Ember.js, Backbone.js)
-  @note A client-side library that uses observers often uses get/set methods. You can do `FirehoseJS.Object.set = Ember.Object.set` for example.
+  @note A client-side library that uses observers often uses get/set methods. You can do `Firehose.Object.set = Ember.Object.set` for example.
   ###
   get: (key) ->
     this[key]
   
   ###
   A placeholder for third-party libraries to replace. (e.g Ember.js, Backbone.js)
-  @note A client-side library that uses observers often uses get/set methods. You can do `FirehoseJS.Object.get = Ember.Object.get` for example.
+  @note A client-side library that uses observers often uses get/set methods. You can do `Firehose.Object.get = Ember.Object.get` for example.
   ###
   set: (key, value) ->
     this[key] = value
@@ -89,7 +89,7 @@ class FirehoseJS.Object
   # @nodoc
   _populateAssociatedObjects: (owner, association, json, creation) ->
     if json?
-      objects = new FirehoseJS.UniqueArray
+      objects = new Firehose.UniqueArray
       owner.set association, objects
       aggregate = []
       for objectJSON in json

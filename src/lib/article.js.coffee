@@ -1,4 +1,4 @@
-class FirehoseJS.Article extends FirehoseJS.Object
+class Firehose.Article extends Firehose.Object
   
   
   # @nodoc
@@ -12,14 +12,14 @@ class FirehoseJS.Article extends FirehoseJS.Object
     
     
   @articleWithTitleBodyAndCompany: (title, body, company) ->
-    FirehoseJS.Object._objectOfClassWithID FirehoseJS.Article,
+    Firehose.Object._objectOfClassWithID Firehose.Article,
       title:    title
       body:     body
       company:  company
   
   
   @articleWithID: (id, company) ->
-    FirehoseJS.Object._objectOfClassWithID FirehoseJS.Article,
+    Firehose.Object._objectOfClassWithID Firehose.Article,
       id:      id
       company: company
   
@@ -27,7 +27,7 @@ class FirehoseJS.Article extends FirehoseJS.Object
   fetch: ->
     params = 
       route: "articles/#{@id}"
-    FirehoseJS.client.get( params ).done (data) =>
+    Firehose.client.get( params ).done (data) =>
       this._populateWithJSON data
 
 
@@ -36,12 +36,12 @@ class FirehoseJS.Article extends FirehoseJS.Object
       params = 
         route: "articles/#{@id}"
         body:  this._toJSON()
-      FirehoseJS.client.put( params )
+      Firehose.client.put( params )
     else
       params = 
         route: "companies/#{@company.id}/articles"
         body:  this._toJSON()
-      FirehoseJS.client.post( params ).done (data) =>
+      Firehose.client.post( params ).done (data) =>
         this._populateWithJSON data
         @company.articles().insertObject this
       
@@ -49,7 +49,7 @@ class FirehoseJS.Article extends FirehoseJS.Object
   destroy: ->
     params = 
       route: "articles/#{@id}"
-    FirehoseJS.client.delete( params ).done =>
+    Firehose.client.delete( params ).done =>
       @company.articles().dropObject this
     
 

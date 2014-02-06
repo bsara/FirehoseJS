@@ -1,28 +1,7 @@
-# ======== A Handy Little QUnit Reference ========
-# http://api.qunitjs.com/
-
-# Test methods:
-#   module(name, {[setup][ ,teardown]})
-#   test(name, callback)
-#   expect(numberOfAssertions)
-#   stop(increment)
-#   start(decrement)
-# Test assertions:
-#   ok(value, [message])
-#   equal(actual, expected, [message])
-#   notEqual(actual, expected, [message])
-#   deepEqual(actual, expected, [message])
-#   notDeepEqual(actual, expected, [message])
-#   strictEqual(actual, expected, [message])
-#   notStrictEqual(actual, expected, [message])
-#   throws(block, [expected], [message])
-
-FirehoseJS.client.setEnvironment('test')
-
 module "Agent"
 
 asyncTest 'Sign Up', 8, ->
-  agent = FirehoseJS.Agent.agentWithEmailAndPassword(Faker.Internet.email(), Faker.Name.firstName())
+  agent = Firehose.Agent.agentWithEmailAndPassword(Faker.Internet.email(), Faker.Name.firstName())
   agent.signUpWithFirstAndLastName( Faker.Name.firstName(), Faker.Name.lastName() )
   .done (data, textStatus) ->
     equal textStatus, "success"
@@ -131,16 +110,16 @@ firehoseTest 'Gravatar URL', 1, (agent) ->
   start()
     
 firehoseTest 'Status Code Handlers', 1, (agent) ->
-  FirehoseJS.client.statusCodeHandlers =
+  Firehose.client.statusCodeHandlers =
     401: ->
       ok true
       start()
-  FirehoseJS.client.APIAccessToken = "blah"
+  Firehose.client.APIAccessToken = "blah"
   agent.fetch()
   
 firehoseTest 'Archive/Unarchive', 8, (agent) ->
   agent.archive()
-  agent2 = FirehoseJS.Agent.agentWithID agent.id
+  agent2 = Firehose.Agent.agentWithID agent.id
   agent2.unarchive()
   ok agent.id == agent2.id
   ok agent.createdAt == agent2.createdAt

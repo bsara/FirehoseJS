@@ -1,4 +1,4 @@
-class FirehoseJS.EmailAccount extends FirehoseJS.Object
+class Firehose.EmailAccount extends Firehose.Object
   
 
   # @nodoc
@@ -40,12 +40,12 @@ class FirehoseJS.EmailAccount extends FirehoseJS.Object
       emailAccount.password         = settings.password         if settings.password?
       emailAccount.SSL              = settings.SSL              if settings.SSL?
       emailAccount.deleteFromServer = settings.deleteFromServer if settings.deleteFromServer?
-    FirehoseJS.Object._objectOfClassWithID FirehoseJS.EmailAccount, emailAccount
+    Firehose.Object._objectOfClassWithID Firehose.EmailAccount, emailAccount
     
     
   # @nodoc
   @_emailAccountWithID: (id, company) ->
-    FirehoseJS.Object._objectOfClassWithID FirehoseJS.EmailAccount,
+    Firehose.Object._objectOfClassWithID Firehose.EmailAccount,
       id:      id
       company: company
     
@@ -55,12 +55,12 @@ class FirehoseJS.EmailAccount extends FirehoseJS.Object
       params = 
         route: "email_accounts/#{@id}"
         body:  this._toJSON()
-      FirehoseJS.client.put( params )
+      Firehose.client.put( params )
     else
       params = 
         route: "companies/#{@company.id}/email_accounts"
         body:  this._toJSON()
-      FirehoseJS.client.post( params ).done (data) =>
+      Firehose.client.post( params ).done (data) =>
         this._populateWithJSON data
         @company.emailAccounts().insertObject this
         
@@ -69,7 +69,7 @@ class FirehoseJS.EmailAccount extends FirehoseJS.Object
   destroy: ->
     params = 
       route: "email_accounts/#{@id}"
-    FirehoseJS.client.delete( params ).done =>
+    Firehose.client.delete( params ).done =>
       @company.emailAccounts().dropObject this
     
     

@@ -1,4 +1,4 @@
-class FirehoseJS.Company extends FirehoseJS.Object
+class Firehose.Company extends Firehose.Object
   
   
   # @nodoc
@@ -84,10 +84,10 @@ class FirehoseJS.Company extends FirehoseJS.Object
     
   # @nodoc
   _setup: ->
-    @agents           = new FirehoseJS.UniqueArray
-    @agentInvites     = new FirehoseJS.UniqueArray
-    @tags             = new FirehoseJS.UniqueArray
-    @cannedResponses  = new FirehoseJS.UniqueArray
+    @agents           = new Firehose.UniqueArray
+    @agentInvites     = new Firehose.UniqueArray
+    @tags             = new Firehose.UniqueArray
+    @cannedResponses  = new Firehose.UniqueArray
 
     @agents.sortOn "firstName"
     @tags.sortOn "label"
@@ -95,13 +95,13 @@ class FirehoseJS.Company extends FirehoseJS.Object
     
     
   @companyWithTitle: (title, creator) ->
-    FirehoseJS.Object._objectOfClassWithID FirehoseJS.Company,
+    Firehose.Object._objectOfClassWithID Firehose.Company,
       title:    title
       _creator: creator
   
   
   @companyWithID: (id, creator) ->
-    FirehoseJS.Object._objectOfClassWithID FirehoseJS.Company,
+    Firehose.Object._objectOfClassWithID Firehose.Company,
       id:       id
       _creator: creator
     
@@ -109,7 +109,7 @@ class FirehoseJS.Company extends FirehoseJS.Object
   fetch: ->
     params = 
       route: "companies/#{@id}"
-    FirehoseJS.client.get( params ).done (data) =>
+    Firehose.client.get( params ).done (data) =>
       this._populateWithJSON data
  
   
@@ -118,26 +118,26 @@ class FirehoseJS.Company extends FirehoseJS.Object
       params = 
         route: "companies/#{@id}"
         body:  this._toJSON()
-      FirehoseJS.client.put( params )
+      Firehose.client.put( params )
     else
       params = 
         route: "agents/#{@_creator.id}/companies"
         body:  this._toJSON()
-      FirehoseJS.client.post( params ).done (data) =>
+      Firehose.client.post( params ).done (data) =>
         this._populateWithJSON data
     
     
   forceChannelsFetch: ->
     params = 
       route: "companies/#{@id}/force_channels_fetch"
-    FirehoseJS.client.put( params )
+    Firehose.client.put( params )
     
     
   destroy: ->
     params = 
       route: "companies/#{@id}"
-    FirehoseJS.client.delete( params ).done =>
-      FirehoseJS.Agent.loggedInAgent.companies.dropObject this
+    Firehose.client.delete( params ).done =>
+      Firehose.Agent.loggedInAgent.companies.dropObject this
     
     
   customersWithCriteria: (criteria) ->
@@ -147,8 +147,8 @@ class FirehoseJS.Company extends FirehoseJS.Object
       channel:      criteria.channels.join(",") if criteria.channels?
       sort:         if criteria.sort? then criteria.sort else "newest_first"
       search_text:  encodeURIComponent( criteria.searchString ) if criteria.searchString
-    customers = new FirehoseJS.RemoteArray "companies/#{@id}/customers", params, (json) =>
-      FirehoseJS.Customer.customerWithID( json.id, this )
+    customers = new Firehose.RemoteArray "companies/#{@id}/customers", params, (json) =>
+      Firehose.Customer.customerWithID( json.id, this )
     if params.sort == 'newest_first'
       customers.sortOn "newestInteractionReceivedAt", "desc"
     else
@@ -159,8 +159,8 @@ class FirehoseJS.Company extends FirehoseJS.Object
       
   notifications: ->
     unless @_notifications?
-      this._setIfNotNull "_notifications", new FirehoseJS.RemoteArray "companies/#{@id}/notifications", null, (json) =>
-        FirehoseJS.Notification._notificationWithID( json.id, this )
+      this._setIfNotNull "_notifications", new Firehose.RemoteArray "companies/#{@id}/notifications", null, (json) =>
+        Firehose.Notification._notificationWithID( json.id, this )
       @_notifications.sortOn "title"
     @_notifications
     
@@ -170,32 +170,32 @@ class FirehoseJS.Company extends FirehoseJS.Object
   # @return [RemoteArray<TwitterAccount>] the Twitter accounts
   twitterAccounts: ->
     unless @_twitterAccounts?
-      this._setIfNotNull "_twitterAccounts", new FirehoseJS.RemoteArray "companies/#{@id}/twitter_accounts", null, (json) =>
-        FirehoseJS.TwitterAccount._twitterAccountWithID( json.id, this )
+      this._setIfNotNull "_twitterAccounts", new Firehose.RemoteArray "companies/#{@id}/twitter_accounts", null, (json) =>
+        Firehose.TwitterAccount._twitterAccountWithID( json.id, this )
       @_twitterAccounts.sortOn "screenName"
     @_twitterAccounts
     
   
   facebookAccounts: ->
     unless @_facebookAccounts?
-      this._setIfNotNull "_facebookAccounts", new FirehoseJS.RemoteArray "companies/#{@id}/facebook_accounts", null, (json) =>
-        FirehoseJS.FacebookAccount._facebookAccountWithID( json.id, this )
+      this._setIfNotNull "_facebookAccounts", new Firehose.RemoteArray "companies/#{@id}/facebook_accounts", null, (json) =>
+        Firehose.FacebookAccount._facebookAccountWithID( json.id, this )
       @_facebookAccounts.sortOn "name"
     @_facebookAccounts
     
     
   emailAccounts: ->
     unless @_emailAccounts?
-      this._setIfNotNull "_emailAccounts", new FirehoseJS.RemoteArray "companies/#{@id}/email_accounts", null, (json) =>
-        FirehoseJS.EmailAccount._emailAccountWithID( json.id, this )
+      this._setIfNotNull "_emailAccounts", new Firehose.RemoteArray "companies/#{@id}/email_accounts", null, (json) =>
+        Firehose.EmailAccount._emailAccountWithID( json.id, this )
       @_emailAccounts.sortOn "username"
     @_emailAccounts
     
     
   articles: ->
     unless @_articles?
-      this._setIfNotNull "_articles", new FirehoseJS.RemoteArray "companies/#{@id}/articles", null, (json) =>
-        FirehoseJS.Article.articleWithID( json.id, this )
+      this._setIfNotNull "_articles", new Firehose.RemoteArray "companies/#{@id}/articles", null, (json) =>
+        Firehose.Article.articleWithID( json.id, this )
       @_articles.sortOn "title"
     @_articles
              
@@ -203,14 +203,14 @@ class FirehoseJS.Company extends FirehoseJS.Object
   addAgent: (agent) ->
     params = 
       route: "companies/#{@id}/agents/#{agent.id}"
-    FirehoseJS.client.put( params ).done =>
+    Firehose.client.put( params ).done =>
       @agents.insertObject agent
     
   
   removeAgent: (agent) ->
     params = 
       route: "companies/#{@id}/agents/#{agent.id}"
-    FirehoseJS.client.delete( params ).done =>
+    Firehose.client.delete( params ).done =>
       @agents.dropObject agent
     
     
@@ -224,15 +224,15 @@ class FirehoseJS.Company extends FirehoseJS.Object
   ###
   fetchBillingInfo: ->
     fetchBlock = =>
-      FirehoseJS.client.billingAccessToken = @token 
+      Firehose.client.billingAccessToken = @token 
       params = 
         server: "billing"
         route: "entities/#{@id}"
-      FirehoseJS.client.get( params ).done (json) =>
+      Firehose.client.get( params ).done (json) =>
         if json.credit_card?
-          this._setIfNotNull "creditCard", FirehoseJS.CreditCard.creditCardWithID( json.credit_card.id, this )
+          this._setIfNotNull "creditCard", Firehose.CreditCard.creditCardWithID( json.credit_card.id, this )
           @creditCard._populateWithJSON json.credit_card
-        this._setIfNotNull "billingEmail",          json.email || FirehoseJS.Agent.loggedInAgent.email
+        this._setIfNotNull "billingEmail",          json.email || Firehose.Agent.loggedInAgent.email
         this._setIfNotNull "billingRate",           (json.rate / 100.0).toFixed(2)
         this._setIfNotNull "trialExpirationDate",   Date.parse( json.free_trial_expiration_date ) || new Date(+new Date + 12096e5) # 14 days away
         this._setIfNotNull "nextBillingDate",       if json.next_bill_date then Date.parse( json.next_bill_date )
@@ -266,20 +266,20 @@ class FirehoseJS.Company extends FirehoseJS.Object
     this._setIfNotNull "numberOfAccounts",       json.number_of_accounts
     
     this._populateAssociatedObjects this, "agents", json.agents, (json) =>
-      agent = FirehoseJS.Agent.agentWithID( json.id )
+      agent = Firehose.Agent.agentWithID( json.id )
       agent.companies.insertObject this
       agent
       
     this._populateAssociatedObjects this, "agentInvites", json.agent_invites, (json) =>
-      FirehoseJS.AgentInvite._agentInviteWithID( json.id, this )
+      Firehose.AgentInvite._agentInviteWithID( json.id, this )
       
     this._populateAssociatedObjects this, "tags", json.tags, (json) =>
-      FirehoseJS.Tag._tagWithID( json.id, this )
+      Firehose.Tag._tagWithID( json.id, this )
       
     this._populateAssociatedObjects this, "cannedResponses", json.canned_responses, (json) =>
-      FirehoseJS.CannedResponse._cannedResponseWithID( json.id, this )
+      Firehose.CannedResponse._cannedResponseWithID( json.id, this )
       
-    FirehoseJS.client.billingAccessToken = @token
+    Firehose.client.billingAccessToken = @token
     
     super json
     

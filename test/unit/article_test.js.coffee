@@ -1,29 +1,8 @@
-# ======== A Handy Little QUnit Reference ========
-# http://api.qunitjs.com/
-
-# Test methods:
-#   module(name, {[setup][ ,teardown]})
-#   test(name, callback)
-#   expect(numberOfAssertions)
-#   stop(increment)
-#   start(decrement)
-# Test assertions:
-#   ok(value, [message])
-#   equal(actual, expected, [message])
-#   notEqual(actual, expected, [message])
-#   deepEqual(actual, expected, [message])
-#   notDeepEqual(actual, expected, [message])
-#   strictEqual(actual, expected, [message])
-#   notStrictEqual(actual, expected, [message])
-#   throws(block, [expected], [message])
-
-FirehoseJS.client.setEnvironment('test')
-
 module "Article"
 
 firehoseTest 'Create', 1, (agent) ->
   company = agent.companies[0]
-  article = FirehoseJS.Article.articleWithTitleBodyAndCompany( Faker.Lorem.words(4).join(" "), Faker.Lorem.words(10).join(" "), company)
+  article = Firehose.Article.articleWithTitleBodyAndCompany( Faker.Lorem.words(4).join(" "), Faker.Lorem.words(10).join(" "), company)
   article.save()
   .done (data, textStatus) ->
     equal textStatus, "success"
@@ -33,7 +12,7 @@ firehoseTest 'Create', 1, (agent) ->
     
 firehoseTest 'Fetch', 5, (agent) ->
   company = agent.companies[0]
-  article = FirehoseJS.Article.articleWithTitleBodyAndCompany( Faker.Lorem.words(4).join(" "), Faker.Lorem.words(10).join(" "), company)
+  article = Firehose.Article.articleWithTitleBodyAndCompany( Faker.Lorem.words(4).join(" "), Faker.Lorem.words(10).join(" "), company)
   article.save()
   .done (data, textStatus) ->
     article.fetch()
@@ -50,7 +29,7 @@ firehoseTest 'Fetch', 5, (agent) ->
 
 firehoseTest 'Update', 1, (agent) ->
   company = agent.companies[0]
-  article = FirehoseJS.Article.articleWithTitleBodyAndCompany( Faker.Lorem.words(4).join(" "), Faker.Lorem.words(10).join(" "), company)
+  article = Firehose.Article.articleWithTitleBodyAndCompany( Faker.Lorem.words(4).join(" "), Faker.Lorem.words(10).join(" "), company)
   article.save()
   .done (data, textStatus) ->
     article.title = Faker.Lorem.words(10).join(" ")
@@ -66,7 +45,7 @@ firehoseTest 'Update', 1, (agent) ->
 
 firehoseTest 'Destroy', 1, (agent) ->
   company = agent.companies[0]
-  article = FirehoseJS.Article.articleWithTitleBodyAndCompany( Faker.Lorem.words(4).join(" "), Faker.Lorem.words(10).join(" "), company)
+  article = Firehose.Article.articleWithTitleBodyAndCompany( Faker.Lorem.words(4).join(" "), Faker.Lorem.words(10).join(" "), company)
   article.save()
   .done (data, textStatus) ->
     article.destroy()

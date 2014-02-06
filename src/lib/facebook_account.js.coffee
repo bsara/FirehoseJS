@@ -1,4 +1,4 @@
-class FirehoseJS.FacebookAccount extends FirehoseJS.Object
+class Firehose.FacebookAccount extends Firehose.Object
   
   
   # @nodoc
@@ -21,24 +21,24 @@ class FirehoseJS.FacebookAccount extends FirehoseJS.Object
   
   # @nodoc
   _setup: ->
-    @facebookPages = new FirehoseJS.UniqueArray
+    @facebookPages = new Firehose.UniqueArray
   
   
   # @nodoc
   @_facebookAccountWithID: (id, company) ->
-    FirehoseJS.Object._objectOfClassWithID FirehoseJS.FacebookAccount,
+    Firehose.Object._objectOfClassWithID Firehose.FacebookAccount,
       id:      id
       company: company
   
   
   @OAuthURLForCompanyWithCallback: (company, callback)  ->
-    "#{FirehoseJS.rootFor('API')}/companies/#{company.id}/oauth_facebook?url_token=#{FirehoseJS.client.URLToken}&callback_url=#{encodeURIComponent(callback)}"
+    "#{Firehose.baseURLFor('API')}/companies/#{company.id}/oauth_facebook?url_token=#{Firehose.client.URLToken}&callback_url=#{encodeURIComponent(callback)}"
   
   
   destroy: ->
     params = 
       route: "facebook_accounts/#{@id}"
-    FirehoseJS.client.delete( params ).done =>
+    Firehose.client.delete( params ).done =>
       @company.facebookAccounts().dropObject this
 
 
@@ -50,7 +50,7 @@ class FirehoseJS.FacebookAccount extends FirehoseJS.Object
     this._setIfNotNull "name",           json.name
     
     this._populateAssociatedObjects this, "facebookPages", json.facebook_pages, (json) =>
-      FirehoseJS.FacebookPage._facebookPageWithID( json.id, this )
+      Firehose.FacebookPage._facebookPageWithID( json.id, this )
       
     super json
     

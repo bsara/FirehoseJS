@@ -1,4 +1,4 @@
-class FirehoseJS.CreditCard extends FirehoseJS.Object
+class Firehose.CreditCard extends Firehose.Object
   
   
   # @nodoc
@@ -22,7 +22,7 @@ class FirehoseJS.CreditCard extends FirehoseJS.Object
     
     
   @creditCardWithNumber: (number, cvc, expMonth, expYear, email, company) ->
-    FirehoseJS.Object._objectOfClassWithID FirehoseJS.CreditCard, 
+    Firehose.Object._objectOfClassWithID Firehose.CreditCard, 
     number:          number
     cvc:             cvc
     expirationMonth: expMonth
@@ -33,7 +33,7 @@ class FirehoseJS.CreditCard extends FirehoseJS.Object
   
     
   @creditCardWithID: (id, company) ->
-    FirehoseJS.Object._objectOfClassWithID FirehoseJS.CreditCard,
+    Firehose.Object._objectOfClassWithID Firehose.CreditCard,
       id:      id
       company: company
     
@@ -50,37 +50,37 @@ class FirehoseJS.CreditCard extends FirehoseJS.Object
         this._setIfNotNull "expirationYear",  response.card.exp_year
         this._setIfNotNull "lastFour",        response.card.last4
         this._setIfNotNull "stripeToken",     response.id
-        this._setIfNotNull "email",           FirehoseJS.Agent.loggedInAgent.email
+        this._setIfNotNull "email",           Firehose.Agent.loggedInAgent.email
         callback()
       else
         callback response.error
       
     
   save: ->
-    FirehoseJS.client.billingAccessToken = @company.token 
+    Firehose.client.billingAccessToken = @company.token 
     params = 
       server: "billing"
       route:  "entities/#{@company.id}/credit_card"
       body:   this._toJSON()
-    FirehoseJS.client.put( params ).done =>
+    Firehose.client.put( params ).done =>
       @company.set 'creditCard', this
     
     
   fetch: ->
-    FirehoseJS.client.billingAccessToken = @company.token 
+    Firehose.client.billingAccessToken = @company.token 
     params = 
       server: "billing"
       route: "entities/#{@company.id}/credit_card"
-    FirehoseJS.client.get( params ).done (data) =>
+    Firehose.client.get( params ).done (data) =>
       this._populateWithJSON data
     
     
   destroy: ->
-    FirehoseJS.client.billingAccessToken = @company.token 
+    Firehose.client.billingAccessToken = @company.token 
     params = 
       server: "billing"
       route: "entities/#{@company.id}/credit_card"
-    FirehoseJS.client.delete( params ).done =>
+    Firehose.client.delete( params ).done =>
       @company.set 'creditCard', null
     
     

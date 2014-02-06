@@ -57,6 +57,7 @@ module.exports = (grunt) ->
           files.push "firehose"
           files.push "lib/private/unique_array"
           files.push "lib/private/remote_array"
+          files.push "lib/private/environment"
           files.push "lib/private/client"
           files.push "lib/private/object"
           files.push "lib/agent"
@@ -101,16 +102,16 @@ module.exports = (grunt) ->
       kill_server: 
         command: 'sh ./test/kill_server.sh'
       open_browser:
-        command: 'open http://localhost:9001/build/test/firehosejs_tests.html'
+        command: 'open http://localhost:4011/build/test/firehosejs_tests.html'
         
     connect:
       test:
         options:
-          port: 9001
+          port: 4011
           base: '.'
       debug:
         options:
-          port: 9001
+          port: 4011
           base: '.'
           keepalive: true
       
@@ -118,7 +119,7 @@ module.exports = (grunt) ->
       all:
         options:
           timeout: 10000
-          urls: ['http://localhost:9001/build/test/firehosejs_tests.html']
+          urls: ['http://localhost:4011/build/test/firehosejs_tests.html']
       
     uglify:
       options:
