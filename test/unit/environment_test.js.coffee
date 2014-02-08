@@ -5,34 +5,26 @@ module "Environment",
 test 'infer browser development', ->
   window.unitTestDocumentURL = "http://localhost:4001"
   Firehose.client.environment._inferEnvironmentFromURL()
-  ok Firehose.client.environment._type == 'client'
   ok Firehose.client.environment._environment == 'development'
   ok Firehose.client.environment._server == 'local'
-  ok Firehose.client.environment._app == 'browser'
   
 test 'infer browser production', ->
   window.unitTestDocumentURL = "https://firehoseapp.com"
   Firehose.client.environment._inferEnvironmentFromURL()
-  ok Firehose.client.environment._type == 'client'
   ok Firehose.client.environment._environment == 'production'
   ok Firehose.client.environment._server == 'production'
-  ok Firehose.client.environment._app == 'browser'
   
 test 'infer browser development -> production', ->
   window.unitTestDocumentURL = "http://localhost:4201"
   Firehose.client.environment._inferEnvironmentFromURL()
-  ok Firehose.client.environment._type == 'client'
   ok Firehose.client.environment._environment == 'development'
   ok Firehose.client.environment._server == 'production'
-  ok Firehose.client.environment._app == 'browser'
   
 test 'infer browser development -> mini', ->
   window.unitTestDocumentURL = "http://localhost:4101"
   Firehose.client.environment._inferEnvironmentFromURL()
-  ok Firehose.client.environment._type == 'client'
   ok Firehose.client.environment._environment == 'development'
   ok Firehose.client.environment._server == 'mini'
-  ok Firehose.client.environment._app == 'browser'
   
 test 'infer client app with server number (throws)', ->
   window.unitTestDocumentURL = "http://locahost:3000"
@@ -45,10 +37,8 @@ test 'infer client app with server number (throws)', ->
 test 'infer browser development port overrides to test', ->
   window.unitTestDocumentURL = "http://localhost:4011"
   Firehose.client.environment._inferEnvironmentFromURL()
-  ok Firehose.client.environment._type == 'client'
   ok Firehose.client.environment._environment == 'test'
   ok Firehose.client.environment._server == 'local'
-  ok Firehose.client.environment._app == 'browser'
   
   
   
@@ -85,3 +75,25 @@ test 'produce browser development pointing at production URL', ->
   ok Firehose.baseURLFor('settings') == "http://localhost:4205"
   ok Firehose.baseURLFor('tweetlonger') == "http://localhost:4206"
   ok Firehose.baseURLFor('kb') == "http://localhost:4207"
+  
+test 'produce browser development pointing at production URL', ->
+  window.unitTestDocumentURL = "https://getfirehose.com"
+  ok Firehose.baseURLFor('API') == "https://api.firehoseapp.com"
+  ok Firehose.baseURLFor('browser') == "https://firehoseapp.com"
+  ok Firehose.baseURLFor('billing') == "https://billing.firehoseapp.com"
+  ok Firehose.baseURLFor('frhio') == "https://frh.io"
+  ok Firehose.baseURLFor('marketing') == "https://getfirehose.com"
+  ok Firehose.baseURLFor('settings') == "https://settings.firehoseapp.com"
+  ok Firehose.baseURLFor('tweetlonger') == "https://tl.frh.io"
+  ok Firehose.baseURLFor('kb') == "https://firehosehelp.com"
+
+test 'produce browser beta URLs', ->
+  window.unitTestDocumentURL = "https://beta.firehoseapp.com"
+  ok Firehose.baseURLFor('API') == "https://api.firehoseapp.com"
+  ok Firehose.baseURLFor('browser') == "https://beta.firehoseapp.com"
+  ok Firehose.baseURLFor('billing') == "https://billing.firehoseapp.com"
+  ok Firehose.baseURLFor('frhio') == "https://frh.io"
+  ok Firehose.baseURLFor('marketing') == "https://beta.getfirehose.com"
+  ok Firehose.baseURLFor('settings') == "https://beta.settings.firehoseapp.com"
+  ok Firehose.baseURLFor('tweetlonger') == "https://beta.tl.frh.io"
+  ok Firehose.baseURLFor('kb') == "https://beta.firehosehelp.com"

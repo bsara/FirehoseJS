@@ -8,7 +8,7 @@ class Firehose.Environment
     if isHostnameLocal
       "http://localhost:#{this._portFor(app)}"
     else
-      "https://#{@_subdomainEnvironment[@_environment]}#{@_appHostNames[@_server][app]}"
+      "https://#{this._subdomainFor(app)}#{@_appHostNames[@_server][app]}"
     
     
   serviceToken: (service) ->
@@ -18,13 +18,9 @@ class Firehose.Environment
   
   # private
   
-  _type: null
-  
   _server: null
   
   _environment: null
-  
-  _app: null
   
   
   ## Port Numbers
@@ -131,21 +127,6 @@ class Firehose.Environment
     currentURL.href = window.unitTestDocumentURL || document.URL
     
     if currentURL.hostname == "localhost" 
-      appNumber = parseInt currentURL.port[3]
-      for key, value of @_appNumber
-        if value == appNumber
-          @_app = key
-          
-      if @_appTypes[@_app] != "client" 
-        throw "You're running this app on the wrong port number digit app number. See this project's README for designated port numbers for each app."
-      
-      typeNumber = parseInt currentURL.port[0]
-      for key, value of @_typeNumber
-        if value == typeNumber
-          if typeNumber != 4
-            throw "This is a client app, it must have the first port number digit be 4. (4***)"
-          @_type = key
-          
       serverNumber = parseInt currentURL.port[1]
       for key, value of @_serverNumber
         if value == serverNumber
@@ -159,18 +140,10 @@ class Firehose.Environment
           @_environment = key
           
     else
-      @_environment = 'production'
       @_server = 'production'
-      
+      @_environment = 'production'
       if currentURL.hostname.match /beta/
         @_environment = 'beta'
-
-      appHostName = currentURL.hostname
-      for key, value of @_appHostNames[@_server]
-        if value == appHostName
-          @_app = key
-          
-      @_type = @_appTypes[@_app]
       
           
     
@@ -181,6 +154,13 @@ class Firehose.Environment
     port += @_environmentNumber[@_environment]
     port += @_appNumber[app]
     port
+    
+  
+  _subdomainFor: (app) ->
+    if @_appTypes[app] == "server" and @_server == "production"
+      ""
+    else
+      @_subdomainEnvironment[@_environment]
       
       
   _isLocalFor: (app) ->

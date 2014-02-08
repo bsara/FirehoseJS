@@ -234,7 +234,7 @@ Firehose.Environment = (function() {
     if (isHostnameLocal) {
       return "http://localhost:" + (this._portFor(app));
     } else {
-      return "https://" + this._subdomainEnvironment[this._environment] + this._appHostNames[this._server][app];
+      return "https://" + (this._subdomainFor(app)) + this._appHostNames[this._server][app];
     }
   };
 
@@ -243,13 +243,9 @@ Firehose.Environment = (function() {
     return this._serviceKeys[this._environment][service];
   };
 
-  Environment.prototype._type = null;
-
   Environment.prototype._server = null;
 
   Environment.prototype._environment = null;
-
-  Environment.prototype._app = null;
 
   Environment.prototype._typeNumber = {
     server: 3,
@@ -356,45 +352,23 @@ Firehose.Environment = (function() {
   };
 
   Environment.prototype._inferEnvironmentFromURL = function() {
-    var appHostName, appNumber, currentURL, environmentNumber, key, serverNumber, typeNumber, value, _ref, _ref1, _ref2, _ref3, _ref4, _results;
+    var currentURL, environmentNumber, key, serverNumber, value, _ref, _ref1, _results;
     currentURL = document.createElement("a");
     currentURL.href = window.unitTestDocumentURL || document.URL;
     if (currentURL.hostname === "localhost") {
-      appNumber = parseInt(currentURL.port[3]);
-      _ref = this._appNumber;
+      serverNumber = parseInt(currentURL.port[1]);
+      _ref = this._serverNumber;
       for (key in _ref) {
         value = _ref[key];
-        if (value === appNumber) {
-          this._app = key;
-        }
-      }
-      if (this._appTypes[this._app] !== "client") {
-        throw "You're running this app on the wrong port number digit app number. See this project's README for designated port numbers for each app.";
-      }
-      typeNumber = parseInt(currentURL.port[0]);
-      _ref1 = this._typeNumber;
-      for (key in _ref1) {
-        value = _ref1[key];
-        if (value === typeNumber) {
-          if (typeNumber !== 4) {
-            throw "This is a client app, it must have the first port number digit be 4. (4***)";
-          }
-          this._type = key;
-        }
-      }
-      serverNumber = parseInt(currentURL.port[1]);
-      _ref2 = this._serverNumber;
-      for (key in _ref2) {
-        value = _ref2[key];
         if (value === serverNumber) {
           this._server = key;
         }
       }
       environmentNumber = parseInt(currentURL.port[2]);
-      _ref3 = this._environmentNumber;
+      _ref1 = this._environmentNumber;
       _results = [];
-      for (key in _ref3) {
-        value = _ref3[key];
+      for (key in _ref1) {
+        value = _ref1[key];
         if (value === environmentNumber) {
           if (environmentNumber === 1 && this._server !== "local") {
             throw "It doesn't make sense to point at a remote server when running in test environment.";
@@ -406,20 +380,11 @@ Firehose.Environment = (function() {
       }
       return _results;
     } else {
-      this._environment = 'production';
       this._server = 'production';
+      this._environment = 'production';
       if (currentURL.hostname.match(/beta/)) {
-        this._environment = 'beta';
+        return this._environment = 'beta';
       }
-      appHostName = currentURL.hostname;
-      _ref4 = this._appHostNames[this._server];
-      for (key in _ref4) {
-        value = _ref4[key];
-        if (value === appHostName) {
-          this._app = key;
-        }
-      }
-      return this._type = this._appTypes[this._app];
     }
   };
 
@@ -431,6 +396,14 @@ Firehose.Environment = (function() {
     port += this._environmentNumber[this._environment];
     port += this._appNumber[app];
     return port;
+  };
+
+  Environment.prototype._subdomainFor = function(app) {
+    if (this._appTypes[app] === "server" && this._server === "production") {
+      return "";
+    } else {
+      return this._subdomainEnvironment[this._environment];
+    }
   };
 
   Environment.prototype._isLocalFor = function(app) {
@@ -718,18 +691,16 @@ Firehose.Object = (function() {
   };
 
   Object.prototype._populateAssociatedObjects = function(owner, association, json, creation) {
-    var aggregate, object, objectJSON, objects, _i, _len;
+    var object, objectJSON, objects, _i, _len;
     if (json != null) {
       objects = new Firehose.UniqueArray;
-      owner.set(association, objects);
-      aggregate = [];
       for (_i = 0, _len = json.length; _i < _len; _i++) {
         objectJSON = json[_i];
         object = creation(objectJSON);
         object._populateWithJSON(objectJSON);
-        aggregate.push(object);
+        objects.push(object);
       }
-      return objects.insertObjects(aggregate);
+      return owner.set(association, objects);
     }
   };
 
@@ -2225,7 +2196,7 @@ Firehose.Customer = (function(_super) {
     this._populateAssociatedObjects(this, "customerAccounts", json.customer_accounts, function(json) {
       return Firehose.CustomerAccount._customerAccountWithID(json.id, _this);
     });
-    this._populateAssociatedObjects(this, "interactionFlaggedAgents", json.interaction_flagged_agents, function(json) {
+    this._populateAssociatedObjects(this, "customerFlaggedAgents", json.interaction_flagged_agents, function(json) {
       return Firehose.Agent.agentWithID(json.id);
     });
     this._populateAssociatedObjectWithJSON(this, "agentWithDibs", json.agent_with_dibs, function(json) {

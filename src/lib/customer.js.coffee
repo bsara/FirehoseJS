@@ -86,7 +86,7 @@ class Firehose.Customer extends Firehose.Object
     this._populateAssociatedObjects this, "customerAccounts", json.customer_accounts, (json) =>
       Firehose.CustomerAccount._customerAccountWithID( json.id, this )
       
-    this._populateAssociatedObjects this, "interactionFlaggedAgents", json.interaction_flagged_agents, (json) ->
+    this._populateAssociatedObjects this, "customerFlaggedAgents", json.interaction_flagged_agents, (json) ->
       Firehose.Agent.agentWithID( json.id )
     
     this._populateAssociatedObjectWithJSON this, "agentWithDibs", json.agent_with_dibs, (json) ->

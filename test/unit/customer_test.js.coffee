@@ -26,7 +26,7 @@ firehoseTest 'Fetch', 8, (agent) ->
       ok customer.timeZone?
       ok customer.createdAt?
       ok customer.customerAccounts.length > 0
-      ok customer.interactionFlaggedAgents.length > 0
+      ok customer.customerFlaggedAgents.length > 0
       start()
     .fail (jqXHR, textStatus, errorThrown) ->
       start()

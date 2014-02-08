@@ -90,13 +90,11 @@ class Firehose.Object
   _populateAssociatedObjects: (owner, association, json, creation) ->
     if json?
       objects = new Firehose.UniqueArray
-      owner.set association, objects
-      aggregate = []
       for objectJSON in json
         object = creation objectJSON
         object._populateWithJSON objectJSON
-        aggregate.push object
-      objects.insertObjects aggregate 
+        objects.push object
+      owner.set association, objects
         
   
   # @nodoc
