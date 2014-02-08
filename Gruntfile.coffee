@@ -118,7 +118,7 @@ module.exports = (grunt) ->
     qunit:
       all:
         options:
-          timeout: 10000
+          timeout: 15000
           urls: ['http://localhost:4011/build/test/firehosejs_tests.html']
       
     uglify:

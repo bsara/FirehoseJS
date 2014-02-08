@@ -1448,6 +1448,8 @@ Firehose.Interaction = (function(_super) {
 
   Interaction.prototype.resolved = false;
 
+  Interaction.prototype.isOutgoing = null;
+
   Interaction.prototype.body = null;
 
   Interaction.prototype.privateURL = null;
@@ -1656,6 +1658,7 @@ Firehose.Interaction = (function(_super) {
     this._setIfNotNull("privateURL", json.private_url);
     this._setIfNotNull("happiness", json.happiness);
     this._setIfNotNull("resolved", json.resolved);
+    this._setIfNotNull("isOutgoing", json.outgoing);
     this._populateAssociatedObjectWithJSON(this, "agent", json.agent, function(json) {
       return Firehose.Agent.agentWithID(json.id);
     });

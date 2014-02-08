@@ -13,6 +13,8 @@ class Firehose.Interaction extends Firehose.Object
   
   resolved: false
   
+  isOutgoing: null
+  
   body: null
   
   privateURL: null
@@ -24,6 +26,7 @@ class Firehose.Interaction extends Firehose.Object
   customerAccount: null
   
   agent: null
+  
   
   # associations
   
@@ -178,6 +181,7 @@ class Firehose.Interaction extends Firehose.Object
     this._setIfNotNull "privateURL",    json.private_url
     this._setIfNotNull "happiness",     json.happiness
     this._setIfNotNull "resolved",      json.resolved
+    this._setIfNotNull "isOutgoing",    json.outgoing
     
     this._populateAssociatedObjectWithJSON this, "agent", json.agent, (json) ->
       Firehose.Agent.agentWithID( json.id )
