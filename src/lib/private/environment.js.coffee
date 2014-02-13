@@ -93,6 +93,16 @@ class Firehose.Environment
     settings     : "client"
     tweetlonger  : "client"
     kb           : "client"
+    
+  _appBetaPrefix:
+    API          : ""
+    browser      : "beta."
+    billing      : ""
+    frhio        : ""
+    marketing    : "beta."
+    settings     : "beta_"
+    tweetlonger  : "beta_"
+    kb           : "beta."
   
   _serviceKeys:
     development:
@@ -113,12 +123,6 @@ class Firehose.Environment
     test:         true
     beta:         false
     production:   false
-    
-  _subdomainEnvironment:
-    development: ''
-    test: ''
-    beta: 'beta.'
-    production: ''
     
       
     
@@ -157,10 +161,10 @@ class Firehose.Environment
     
   
   _subdomainFor: (app) ->
-    if @_appTypes[app] == "server" and @_server == "production"
-      ""
+    if @_appTypes[app] == "client" and @_environment == 'beta'
+      @_appBetaPrefix[app]
     else
-      @_subdomainEnvironment[@_environment]
+      ""
       
       
   _isLocalFor: (app) ->

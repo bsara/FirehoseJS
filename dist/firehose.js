@@ -318,6 +318,17 @@ Firehose.Environment = (function() {
     kb: "client"
   };
 
+  Environment.prototype._appBetaPrefix = {
+    API: "",
+    browser: "beta.",
+    billing: "",
+    frhio: "",
+    marketing: "beta.",
+    settings: "beta_",
+    tweetlonger: "beta_",
+    kb: "beta."
+  };
+
   Environment.prototype._serviceKeys = {
     development: {
       stripe: "pk_test_oIyMNHil987ug1v8owRhuJwr",
@@ -342,13 +353,6 @@ Firehose.Environment = (function() {
     test: true,
     beta: false,
     production: false
-  };
-
-  Environment.prototype._subdomainEnvironment = {
-    development: '',
-    test: '',
-    beta: 'beta.',
-    production: ''
   };
 
   Environment.prototype._inferEnvironmentFromURL = function() {
@@ -399,10 +403,10 @@ Firehose.Environment = (function() {
   };
 
   Environment.prototype._subdomainFor = function(app) {
-    if (this._appTypes[app] === "server" && this._server === "production") {
-      return "";
+    if (this._appTypes[app] === "client" && this._environment === 'beta') {
+      return this._appBetaPrefix[app];
     } else {
-      return this._subdomainEnvironment[this._environment];
+      return "";
     }
   };
 

@@ -94,6 +94,6 @@ test 'produce browser beta URLs', ->
   ok Firehose.baseURLFor('billing') == "https://billing.firehoseapp.com"
   ok Firehose.baseURLFor('frhio') == "https://frh.io"
   ok Firehose.baseURLFor('marketing') == "https://beta.getfirehose.com"
-  ok Firehose.baseURLFor('settings') == "https://beta.settings.firehoseapp.com"
-  ok Firehose.baseURLFor('tweetlonger') == "https://beta.tl.frh.io"
+  ok Firehose.baseURLFor('settings') == "https://beta_settings.firehoseapp.com"
+  ok Firehose.baseURLFor('tweetlonger') == "https://beta_tl.frh.io"
   ok Firehose.baseURLFor('kb') == "https://beta.firehosehelp.com"
