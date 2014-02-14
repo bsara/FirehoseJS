@@ -12,8 +12,8 @@ window.Firehose = {}
 @example  Create a URL to the login page of the browser app.
   "#{Firehose.baseURLFor('browser')/home/login"
 ###
-Firehose.baseURLFor = (app) ->
-  Firehose.client.environment.baseURLFor app
+Firehose.baseURLFor = (app, subdomain) ->
+  Firehose.client.environment.baseURLFor app, subdomain
   
   
 ###

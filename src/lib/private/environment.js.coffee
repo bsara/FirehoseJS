@@ -2,13 +2,13 @@
 class Firehose.Environment
   
   
-  baseURLFor: (app) ->
+  baseURLFor: (app, subdomain) ->
     this._inferEnvironmentFromURL()
     isHostnameLocal = this._isLocalFor( app )
     if isHostnameLocal
-      "http://localhost:#{this._portFor(app)}"
+      "http://#{subdomain && subdomain + "." || ""}#{@_appHostNames['local'][app]}:#{this._portFor(app)}"
     else
-      "https://#{this._subdomainFor(app)}#{@_appHostNames[@_server][app]}"
+      "https://#{this._hostnamePrefixFor(app)}#{@_appHostNames[@_server][app]}"
     
     
   serviceToken: (service) ->
@@ -21,6 +21,8 @@ class Firehose.Environment
   _server: null
   
   _environment: null
+  
+  _subdomain: null
   
   
   ## Port Numbers
@@ -60,11 +62,11 @@ class Firehose.Environment
       API          : "localhost"
       browser      : "localhost"
       billing      : "localhost"
-      frhio        : "locahost"
+      frhio        : "localhost"
       marketing    : "localhost"
       settings     : "localhost"
       tweetlonger  : "localhost"
-      kb           : "localhost"
+      kb           : "lvh.me"
     mini:
       API          : "199.19.84.171"
       browser      : "199.19.84.171"
@@ -103,6 +105,16 @@ class Firehose.Environment
     settings     : "beta_"
     tweetlonger  : "beta_"
     kb           : "beta."
+    
+  _appSpecialPort:
+    API          : false
+    browser      : false
+    billing      : false
+    frhio        : false
+    marketing    : false
+    settings     : false
+    tweetlonger  : false
+    kb           : 4567
   
   _serviceKeys:
     development:
@@ -129,8 +141,16 @@ class Firehose.Environment
   _inferEnvironmentFromURL: () ->
     currentURL      = document.createElement "a"
     currentURL.href = window.unitTestDocumentURL || document.URL
+      
+    if currentURL.hostname in @_values @_appHostNames['production']
+      @_server = 'production'
+      @_environment = 'production'
     
-    if currentURL.hostname == "localhost" 
+    else if currentURL.hostname.match /beta/
+      @_server = 'production'
+      @_environment = 'beta'
+      
+    else
       serverNumber = parseInt currentURL.port[1]
       for key, value of @_serverNumber
         if value == serverNumber
@@ -139,19 +159,12 @@ class Firehose.Environment
       environmentNumber = parseInt currentURL.port[2]
       for key, value of @_environmentNumber
         if value == environmentNumber
-          if environmentNumber == 1 and @_server != "local"
-            throw "It doesn't make sense to point at a remote server when running in test environment."
           @_environment = key
-          
-    else
-      @_server = 'production'
-      @_environment = 'production'
-      if currentURL.hostname.match /beta/
-        @_environment = 'beta'
       
           
     
   _portFor: (app) ->
+    return @_appSpecialPort[app] if @_appSpecialPort[app] != false
     port = "" 
     port += @_typeNumber[@_appTypes[app]]     
     port += if @_appTypes[app] == "client" then @_serverNumber[@_server] else 0
@@ -160,12 +173,11 @@ class Firehose.Environment
     port
     
   
-  _subdomainFor: (app) ->
+  _hostnamePrefixFor: (app) ->
     if @_appTypes[app] == "client" and @_environment == 'beta'
       @_appBetaPrefix[app]
     else
       ""
-      
       
   _isLocalFor: (app) ->
     if @_appTypes[app] == "server" and @_server == "production"
@@ -175,3 +187,8 @@ class Firehose.Environment
     else
       false
       
+  _values: (obj) ->
+    values  = []
+    for key, value of obj
+      values.push value
+    values

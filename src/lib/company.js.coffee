@@ -16,6 +16,8 @@ class Firehose.Company extends Firehose.Object
   
   knowledgeBaseSubdomain: null
   
+  knowledgeBaseCustomDomain: null
+  
   unresolvedCount: 0
   
   numberOfAccounts: 0
@@ -94,25 +96,81 @@ class Firehose.Company extends Firehose.Object
     @cannedResponses.sortOn "name"
     
     
+  ###
+  Create a brand new company with a title and an optional creator.
+  @param title [string] The title of the company.
+  @param creator [Agent] The creator of the company. You can leave blank and it will make the current agent the creator.
+  ###    
   @companyWithTitle: (title, creator) ->
     Firehose.Object._objectOfClassWithID Firehose.Company,
       title:    title
-      _creator: creator
+      _creator: creator || Firehose.Agent.loggedInAgent
   
   
+  ###
+  Create a company object when all you have is an id. You can then fetch articles or fetch the companies properties if you're authenticated as an agent of the company.
+  @param id [number] The id of the company.
+  @return [Company] Returns a company object. If a company object with this id already exists in the cache, it will be returned.
+  ###    
   @companyWithID: (id, creator) ->
     Firehose.Object._objectOfClassWithID Firehose.Company,
       id:       id
       _creator: creator
+      
+      
+  ###
+  Create a company object when all you have is the subdomain for the knowledge base. You can then call `fetch` to get the company's `id` and `title`.
+  @param subdomain [string] The subdomain of the company
+  @return [Company] Returns a company object you can then call `fetch` on.
+  ###    
+  @companyWithKBSubdomain: (subdomain) ->
+    Firehose.Object._objectOfClassWithID Firehose.Company,
+      knowledgeBaseSubdomain: subdomain
+      
+      
+  ###
+  Create a company object when all you have is the custom domain for the knowledge base. You can then call `fetch` to get the company's `id` and `title`.
+  @param subdomain [string] The subdomain of the company
+  @return [Company] Returns a company object you can then call `fetch` on.
+  ###    
+  @companyWithKBCustomDomain: (customDomain) ->
+    Firehose.Object._objectOfClassWithID Firehose.Company,
+      knowledgeBaseCustomDomain: customDomain
+      
     
-    
+  ###
+  Fetch a companies properties based on `id`, `knowledgeBaseSubdomain` or `knowledgeBaseCustomDomain`.
+  @returns [jqXHR Promise] Promise
+  ###
   fetch: ->
-    params = 
-      route: "companies/#{@id}"
-    Firehose.client.get( params ).done (data) =>
+    if @id?
+      request = 
+        route: "companies/#{@id}"
+        
+    else if @knowledgeBaseSubdomain
+      request = 
+        auth:   false
+        route:  "companies"
+        params: 
+          kb_subdomain: @knowledgeBaseSubdomain
+       
+    else if @knowledgeBaseCustomDomain
+      request = 
+        auth:   false
+        route:  "companies"
+        params: 
+          kb_custom_domain: @knowledgeBaseCustomDomain
+    
+    else
+      throw "You can't call 'fetch' on a company unless 'id', 'knowledgeBaseSubdomain' or 'knowledgeBaseCustomDomain' is set."
+      
+    Firehose.client.get( request ).done (data) =>
       this._populateWithJSON data
  
-  
+  ###
+  Persists any changes you've made to the company to the server. Properties that can be updated: `title`, `fetch_automatically`
+  @returns [jqXHR Promise] Promise
+  ###
   save: ->
     if @id?
       params = 
@@ -127,12 +185,21 @@ class Firehose.Company extends Firehose.Object
         this._populateWithJSON data
     
     
+  ###
+  Force a company to fetch it's accounts right now. (otherwise it's about every 10 minutes if `fetch_automatically` is true)
+  @returns [jqXHR Promise] Promise
+  ###
   forceChannelsFetch: ->
     params = 
       route: "companies/#{@id}/force_channels_fetch"
     Firehose.client.put( params )
     
     
+  ###
+  Destroy a company. This will destroy all data associated with the company, including customers, interactions, notes, etc. It is asynchronous, so it will
+  not be deleted immediately but in the background over the course of possibly an hour.
+  @returns [jqXHR Promise] Promise
+  ###
   destroy: ->
     params = 
       route: "companies/#{@id}"
@@ -166,7 +233,6 @@ class Firehose.Company extends Firehose.Object
     
     
   # The Twitter accounts of a company
-  #
   # @return [RemoteArray<TwitterAccount>] the Twitter accounts
   twitterAccounts: ->
     unless @_twitterAccounts?
@@ -194,8 +260,10 @@ class Firehose.Company extends Firehose.Object
     
   articles: ->
     unless @_articles?
-      this._setIfNotNull "_articles", new Firehose.RemoteArray "companies/#{@id}/articles", null, (json) =>
+      articlesRemoteArray = new Firehose.RemoteArray "companies/#{@id}/articles", null, (json) =>
         Firehose.Article.articleWithID( json.id, this )
+      articlesRemoteArray.auth = false
+      this._setIfNotNull "_articles", articlesRemoteArray
       @_articles.sortOn "title"
     @_articles
              
@@ -256,14 +324,15 @@ class Firehose.Company extends Firehose.Object
     
   # @nodoc
   _populateWithJSON: (json) ->
-    this._setIfNotNull "title",                  json.title
-    this._setIfNotNull "token",                  json.token               unless @token?
-    this._setIfNotNull "fetchAutomatically",     json.fetch_automatically
-    this._setIfNotNull "lastFetchAt",            json.last_fetch_at
-    this._setIfNotNull "forwardingEmailAddress", json.forwarding_email    unless @forwardingEmailAddress?
-    this._setIfNotNull "knowledgeBaseSubdomain", json.kb_subdomain
-    this._setIfNotNull "unresolvedCount",        json.unresolved_count
-    this._setIfNotNull "numberOfAccounts",       json.number_of_accounts
+    this._setIfNotNull "title",                     json.title
+    this._setIfNotNull "token",                     json.token                                   unless @token?
+    this._setIfNotNull "fetchAutomatically",        json.company_settings?.fetch_automatically
+    this._setIfNotNull "lastFetchAt",               json.last_fetch_at
+    this._setIfNotNull "forwardingEmailAddress",    json.forwarding_email                        unless @forwardingEmailAddress?
+    this._setIfNotNull "knowledgeBaseSubdomain",    json.company_settings?.kb_subdomain
+    this._setIfNotNull "knowledgeBaseCustomDomain", json.company_settings?.kb_custom_domain
+    this._setIfNotNull "unresolvedCount",           json.unresolved_count
+    this._setIfNotNull "numberOfAccounts",          json.number_of_accounts
     
     this._populateAssociatedObjects this, "agents", json.agents, (json) =>
       agent = Firehose.Agent.agentWithID( json.id )

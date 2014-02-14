@@ -100,6 +100,14 @@
     <pre><code class='coffeescript'>null</code></pre>
     
   </dd>
+  <dt id='knowledgeBaseCustomDomain-variable'>
+    knowledgeBaseCustomDomain
+    =
+  </dt>
+  <dd>
+    <pre><code class='coffeescript'>null</code></pre>
+    
+  </dd>
   <dt id='unresolvedCount-variable'>
     unresolvedCount
     =
@@ -232,17 +240,43 @@
       </a>
     </span>
     <span class='desc'>
+      Create a brand new company with a title and an optional creator. 
     </span>
   </li>
   <li>
     <span class='signature'>
       <a href='#companyWithID-static'>
         .
-(void)
+(Company)
 <b>companyWithID</b><span>(id, creator)</span>
       </a>
     </span>
     <span class='desc'>
+      Create a company object when all you have is an id. 
+    </span>
+  </li>
+  <li>
+    <span class='signature'>
+      <a href='#companyWithKBSubdomain-static'>
+        .
+(Company)
+<b>companyWithKBSubdomain</b><span>(subdomain)</span>
+      </a>
+    </span>
+    <span class='desc'>
+      Create a company object when all you have is the subdomain for the knowledge base. 
+    </span>
+  </li>
+  <li>
+    <span class='signature'>
+      <a href='#companyWithKBCustomDomain-static'>
+        .
+(Company)
+<b>companyWithKBCustomDomain</b><span>(customDomain)</span>
+      </a>
+    </span>
+    <span class='desc'>
+      Create a company object when all you have is the custom domain for the knowledge base. 
     </span>
   </li>
 </ul>
@@ -257,6 +291,7 @@
       </a>
     </span>
     <span class='desc'>
+      Fetch a companies properties based on <code>id</code>, <code>knowledgeBaseSubdomain</code> or <code>knowledgeBaseCustomDomain</code>. 
     </span>
   </li>
   <li>
@@ -268,6 +303,7 @@
       </a>
     </span>
     <span class='desc'>
+      Persists any changes you&#39;ve made to the company to the server. 
     </span>
   </li>
   <li>
@@ -279,6 +315,7 @@
       </a>
     </span>
     <span class='desc'>
+      Force a company to fetch it&#39;s accounts right now. 
     </span>
   </li>
   <li>
@@ -290,6 +327,7 @@
       </a>
     </span>
     <span class='desc'>
+      Destroy a company. 
     </span>
   </li>
   <li>
@@ -416,16 +454,129 @@
 <b>companyWithTitle</b><span>(title, creator)</span>
       <br>
     </p>
-    
+    <div class='docstring'>
+  <p>Create a brand new company with a title and an optional creator.</p>
+</div>
+<div class='tags'>
+  <h3>Parameters:</h3>
+  <ul class='param'>
+    <li>
+      <span class='name'>title</span>
+      <span class='type'>
+        (<tt>string</tt>)
+      </span>
+      &mdash;
+      <span class='desc'>The title of the company. </span>
+    </li>
+    <li>
+      <span class='name'>creator</span>
+      <span class='type'>
+        (<tt>Agent</tt>)
+      </span>
+      &mdash;
+      <span class='desc'>The creator of the company. You can leave blank and it will make the current agent the creator. </span>
+    </li>
+  </ul>
+</div>
   </div>
   <div class='method_details'>
     <p class='signature' id='companyWithID-static'>
       .
-(void)
+(Company)
 <b>companyWithID</b><span>(id, creator)</span>
       <br>
     </p>
-    
+    <div class='docstring'>
+  <p>Create a company object when all you have is an id. You can then fetch articles or fetch the companies properties if you&#39;re authenticated as an agent of the company.</p>
+</div>
+<div class='tags'>
+  <h3>Parameters:</h3>
+  <ul class='param'>
+    <li>
+      <span class='name'>id</span>
+      <span class='type'>
+        (<tt>number</tt>)
+      </span>
+      &mdash;
+      <span class='desc'>The id of the company. </span>
+    </li>
+  </ul>
+  <h3>Returns:</h3>
+  <ul class='return'>
+    <li>
+      <span class='type'></span>
+      (<tt>Company</tt>)
+      &mdash;
+      <span class='desc'>Returns a company object. If a company object with this id already exists in the cache, it will be returned. </span>
+    </li>
+  </ul>
+</div>
+  </div>
+  <div class='method_details'>
+    <p class='signature' id='companyWithKBSubdomain-static'>
+      .
+(Company)
+<b>companyWithKBSubdomain</b><span>(subdomain)</span>
+      <br>
+    </p>
+    <div class='docstring'>
+  <p>Create a company object when all you have is the subdomain for the knowledge base. You can then call <code>fetch</code> to get the company&#39;s <code>id</code> and <code>title</code>.</p>
+</div>
+<div class='tags'>
+  <h3>Parameters:</h3>
+  <ul class='param'>
+    <li>
+      <span class='name'>subdomain</span>
+      <span class='type'>
+        (<tt>string</tt>)
+      </span>
+      &mdash;
+      <span class='desc'>The subdomain of the company </span>
+    </li>
+  </ul>
+  <h3>Returns:</h3>
+  <ul class='return'>
+    <li>
+      <span class='type'></span>
+      (<tt>Company</tt>)
+      &mdash;
+      <span class='desc'>Returns a company object you can then call <code>fetch</code> on. </span>
+    </li>
+  </ul>
+</div>
+  </div>
+  <div class='method_details'>
+    <p class='signature' id='companyWithKBCustomDomain-static'>
+      .
+(Company)
+<b>companyWithKBCustomDomain</b><span>(customDomain)</span>
+      <br>
+    </p>
+    <div class='docstring'>
+  <p>Create a company object when all you have is the custom domain for the knowledge base. You can then call <code>fetch</code> to get the company&#39;s <code>id</code> and <code>title</code>.</p>
+</div>
+<div class='tags'>
+  <h3>Parameters:</h3>
+  <ul class='param'>
+    <li>
+      <span class='name'>subdomain</span>
+      <span class='type'>
+        (<tt>string</tt>)
+      </span>
+      &mdash;
+      <span class='desc'>The subdomain of the company </span>
+    </li>
+  </ul>
+  <h3>Returns:</h3>
+  <ul class='return'>
+    <li>
+      <span class='type'></span>
+      (<tt>Company</tt>)
+      &mdash;
+      <span class='desc'>Returns a company object you can then call <code>fetch</code> on. </span>
+    </li>
+  </ul>
+</div>
   </div>
 </div>
       <h2>Instance Method Details</h2>
@@ -437,7 +588,12 @@
 <b>fetch</b><span>()</span>
       <br>
     </p>
-    
+    <div class='docstring'>
+  <p>Fetch a companies properties based on <code>id</code>, <code>knowledgeBaseSubdomain</code> or <code>knowledgeBaseCustomDomain</code>.
+@returns [jqXHR Promise] Promise</p>
+</div>
+<div class='tags'>
+</div>
   </div>
   <div class='method_details'>
     <p class='signature' id='save-dynamic'>
@@ -446,7 +602,12 @@
 <b>save</b><span>()</span>
       <br>
     </p>
-    
+    <div class='docstring'>
+  <p>Persists any changes you&#39;ve made to the company to the server. Properties that can be updated: <code>title</code>, <code>fetch_automatically</code>
+@returns [jqXHR Promise] Promise</p>
+</div>
+<div class='tags'>
+</div>
   </div>
   <div class='method_details'>
     <p class='signature' id='forceChannelsFetch-dynamic'>
@@ -455,7 +616,12 @@
 <b>forceChannelsFetch</b><span>()</span>
       <br>
     </p>
-    
+    <div class='docstring'>
+  <p>Force a company to fetch it&#39;s accounts right now. (otherwise it&#39;s about every 10 minutes if <code>fetch_automatically</code> is true)
+@returns [jqXHR Promise] Promise</p>
+</div>
+<div class='tags'>
+</div>
   </div>
   <div class='method_details'>
     <p class='signature' id='destroy-dynamic'>
@@ -464,7 +630,13 @@
 <b>destroy</b><span>()</span>
       <br>
     </p>
-    
+    <div class='docstring'>
+  <p>Destroy a company. This will destroy all data associated with the company, including customers, interactions, notes, etc. It is asynchronous, so it will
+not be deleted immediately but in the background over the course of possibly an hour.
+@returns [jqXHR Promise] Promise</p>
+</div>
+<div class='tags'>
+</div>
   </div>
   <div class='method_details'>
     <p class='signature' id='customersWithCriteria-dynamic'>
@@ -568,7 +740,7 @@ This will populate <code>discounts</code> with a list of discount objects each h
 </div>
     </div>
     <div id='footer'>
-  February 12, 14 19:29:12 by
+  February 14, 14 10:23:25 by
   <a href='https://github.com/coffeedoc/codo' title='CoffeeScript API documentation generator'>
     Codo
   </a>

@@ -26,7 +26,8 @@ class Firehose.Article extends Firehose.Object
   
   fetch: ->
     params = 
-      route: "articles/#{@id}"
+      auth:   false
+      route:  "articles/#{@id}"
     Firehose.client.get( params ).done (data) =>
       this._populateWithJSON data
 

@@ -5,6 +5,8 @@ class Firehose.RemoteArray extends Firehose.UniqueArray
   
   page: 1
   
+  auth: true
+  
   totalRows: 0
   
   onceParams: null
@@ -32,6 +34,7 @@ class Firehose.RemoteArray extends Firehose.UniqueArray
     @_fetchingFunction  = (page) =>
       options = 
         route:    @_path
+        auth:     @auth
         params:   if @onceParams then $.extend( @onceParams, @_params ) else @_params
         page:     page
         perPage:  @perPage

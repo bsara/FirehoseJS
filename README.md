@@ -59,7 +59,8 @@ of the browser client.
 
 
 ## Examples
-_(Coming soon)_
+
+See the [Documentation](https://docs.firehoseapp.com/firehosejs)
 
 ## Contributing
 
@@ -76,3 +77,10 @@ Make sure these two env vars are set in your .bash_profile:
 So that the start_server.sh script knows where your apps are to start them for testing.
 
 You must also make sure that both your local API and billing apps have `rake db:create RAILS_ENV=testclient` and `rake db:migrate RAILS_ENV=testclient`
+
+
+#### Documentation
+
+If you've built and generated docs, you can push the `docs` submodule to:
+
+    git@mtmini.com:/mt/sites/production/docs/firehosejs

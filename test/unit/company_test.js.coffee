@@ -42,6 +42,49 @@ firehoseTest 'Fetch', 13, (agent) ->
   .fail (jqXHR, textStatus, errorThrown) ->
     start()
     
+firehoseTest 'Fetch Based on KB subdomain', 3, (agent) ->
+  company = agent.companies[0]
+  company.fetch()
+  .done (data, textStatus) ->
+    kbCompany = Firehose.Company.companyWithKBSubdomain company.knowledgeBaseSubdomain
+    kbCompany.fetch()
+    .done (data, textStatus) ->
+      equal textStatus, "success"
+      ok company.id?
+      ok company.title?
+      start()
+    .fail (jqXHR, textStatus, errorThrown) ->
+      start()
+  .fail (jqXHR, textStatus, errorThrown) ->
+    start()
+    
+firehoseTest 'Fetch Based on KB custom domain', 3, (agent) ->
+  company = agent.companies[0]
+  company.fetch()
+  .done (data, textStatus) ->
+    kbCompany = Firehose.Company.companyWithKBCustomDomain company.knowledgeBaseCustomDomain
+    kbCompany.fetch()
+    .done (data, textStatus) ->
+      equal textStatus, "success"
+      ok company.id?
+      ok company.title?
+      start()
+    .fail (jqXHR, textStatus, errorThrown) ->
+      start()
+  .fail (jqXHR, textStatus, errorThrown) ->
+    start()
+    
+firehoseTest 'Fetch (throws error because not enough info is set)', 1, (agent) ->
+  company = agent.companies[0]
+  company.fetch()
+  .done (data, textStatus) ->
+    kbCompany = Firehose.Company.companyWithKBCustomDomain company.knowledgeBaseCustomDomain
+    throws kbCompany.fetch()
+    start()
+  .fail (jqXHR, textStatus, errorThrown) ->
+    start()
+
+    
 firehoseTest 'Update', 3, (agent) ->
   company = agent.companies[0]
   company.title = "Adam's Company"

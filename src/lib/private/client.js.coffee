@@ -42,6 +42,7 @@ class Firehose.Client
   _sendRequest: (options) ->
     defaults =
       server:   'API'   
+      auth:     true
       route:    ''
       method:   'GET'
       page:     -1
@@ -52,6 +53,7 @@ class Firehose.Client
     $.extend defaults, options
     
     server  = defaults.server
+    auth    = defaults.auth
     route   = defaults.route
     method  = defaults.method
     page    = defaults.page 
@@ -65,7 +67,7 @@ class Firehose.Client
     paramStrings = []
     for key, value of params    
       continue unless value?
-      paramStrings.push "#{key}=#{value}"
+      paramStrings.push "#{key}=#{encodeURIComponent(value)}"
        
     url = "#{@environment.baseURLFor(server)}/#{route}"
     
@@ -73,10 +75,12 @@ class Firehose.Client
       url += "?#{paramStrings.join('&')}"
       
     headers = { "Accept" : "application/json" }
-    if @APIAccessToken? and server == 'API'
-      $.extend headers, { "Authorization" : "Token token=\"#{@APIAccessToken}\"" }
-    else if @billingAccessToken? and server == 'billing'
-      $.extend headers, { "Authorization" : "Token token=\"#{@billingAccessToken}\"" }
+    
+    if auth
+      if @APIAccessToken? and server == 'API'
+        $.extend headers, { "Authorization" : "Token token=\"#{@APIAccessToken}\"" }
+      else if @billingAccessToken? and server == 'billing'
+        $.extend headers, { "Authorization" : "Token token=\"#{@billingAccessToken}\"" }
       
     $.ajax
       type:         method

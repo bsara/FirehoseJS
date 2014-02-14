@@ -52,7 +52,7 @@ test 'produce browser development URL', ->
   ok Firehose.baseURLFor('marketing') == "http://localhost:4004"
   ok Firehose.baseURLFor('settings') == "http://localhost:4005"
   ok Firehose.baseURLFor('tweetlonger') == "http://localhost:4006"
-  ok Firehose.baseURLFor('kb') == "http://localhost:4007"
+  ok Firehose.baseURLFor('kb', 'mystrou') == "http://mystrou.lvh.me:4567"
   
 test 'produce browser development URL in test environment', ->
   window.unitTestDocumentURL = "http://localhost:4011"
@@ -63,7 +63,7 @@ test 'produce browser development URL in test environment', ->
   ok Firehose.baseURLFor('marketing') == "http://localhost:4014"
   ok Firehose.baseURLFor('settings') == "http://localhost:4015"
   ok Firehose.baseURLFor('tweetlonger') == "http://localhost:4016"
-  ok Firehose.baseURLFor('kb') == "http://localhost:4017"
+  ok Firehose.baseURLFor('kb', 'mt') == "http://mt.lvh.me:4567"
   
 test 'produce browser development pointing at production URL', ->
   window.unitTestDocumentURL = "http://localhost:4201"
@@ -74,7 +74,7 @@ test 'produce browser development pointing at production URL', ->
   ok Firehose.baseURLFor('marketing') == "http://localhost:4204"
   ok Firehose.baseURLFor('settings') == "http://localhost:4205"
   ok Firehose.baseURLFor('tweetlonger') == "http://localhost:4206"
-  ok Firehose.baseURLFor('kb') == "http://localhost:4207"
+  ok Firehose.baseURLFor('kb', 'mystrou') == "http://mystrou.lvh.me:4567"
   
 test 'produce browser development pointing at production URL', ->
   window.unitTestDocumentURL = "https://getfirehose.com"

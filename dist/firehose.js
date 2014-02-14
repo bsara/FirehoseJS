@@ -14,8 +14,8 @@ window.Firehose = {};
 */
 
 
-Firehose.baseURLFor = function(app) {
-  return Firehose.client.environment.baseURLFor(app);
+Firehose.baseURLFor = function(app, subdomain) {
+  return Firehose.client.environment.baseURLFor(app, subdomain);
 };
 
 /*
@@ -149,6 +149,8 @@ Firehose.RemoteArray = (function(_super) {
 
   RemoteArray.prototype.page = 1;
 
+  RemoteArray.prototype.auth = true;
+
   RemoteArray.prototype.totalRows = 0;
 
   RemoteArray.prototype.onceParams = null;
@@ -175,6 +177,7 @@ Firehose.RemoteArray = (function(_super) {
       var options;
       options = {
         route: _this._path,
+        auth: _this.auth,
         params: _this.onceParams ? $.extend(_this.onceParams, _this._params) : _this._params,
         page: page,
         perPage: _this.perPage
@@ -224,17 +227,19 @@ Firehose.RemoteArray = (function(_super) {
 
 })(Firehose.UniqueArray);
 
+var __indexOf = [].indexOf || function(item) { for (var i = 0, l = this.length; i < l; i++) { if (i in this && this[i] === item) return i; } return -1; };
+
 Firehose.Environment = (function() {
   function Environment() {}
 
-  Environment.prototype.baseURLFor = function(app) {
+  Environment.prototype.baseURLFor = function(app, subdomain) {
     var isHostnameLocal;
     this._inferEnvironmentFromURL();
     isHostnameLocal = this._isLocalFor(app);
     if (isHostnameLocal) {
-      return "http://localhost:" + (this._portFor(app));
+      return "http://" + (subdomain && subdomain + "." || "") + this._appHostNames['local'][app] + ":" + (this._portFor(app));
     } else {
-      return "https://" + (this._subdomainFor(app)) + this._appHostNames[this._server][app];
+      return "https://" + (this._hostnamePrefixFor(app)) + this._appHostNames[this._server][app];
     }
   };
 
@@ -246,6 +251,8 @@ Firehose.Environment = (function() {
   Environment.prototype._server = null;
 
   Environment.prototype._environment = null;
+
+  Environment.prototype._subdomain = null;
 
   Environment.prototype._typeNumber = {
     server: 3,
@@ -279,11 +286,11 @@ Firehose.Environment = (function() {
       API: "localhost",
       browser: "localhost",
       billing: "localhost",
-      frhio: "locahost",
+      frhio: "localhost",
       marketing: "localhost",
       settings: "localhost",
       tweetlonger: "localhost",
-      kb: "localhost"
+      kb: "lvh.me"
     },
     mini: {
       API: "199.19.84.171",
@@ -329,6 +336,17 @@ Firehose.Environment = (function() {
     kb: "beta."
   };
 
+  Environment.prototype._appSpecialPort = {
+    API: false,
+    browser: false,
+    billing: false,
+    frhio: false,
+    marketing: false,
+    settings: false,
+    tweetlonger: false,
+    kb: 4567
+  };
+
   Environment.prototype._serviceKeys = {
     development: {
       stripe: "pk_test_oIyMNHil987ug1v8owRhuJwr",
@@ -356,44 +374,44 @@ Firehose.Environment = (function() {
   };
 
   Environment.prototype._inferEnvironmentFromURL = function() {
-    var currentURL, environmentNumber, key, serverNumber, value, _ref, _ref1, _results;
+    var currentURL, environmentNumber, key, serverNumber, value, _ref, _ref1, _ref2, _results;
     currentURL = document.createElement("a");
     currentURL.href = window.unitTestDocumentURL || document.URL;
-    if (currentURL.hostname === "localhost") {
+    if (_ref = currentURL.hostname, __indexOf.call(this._values(this._appHostNames['production']), _ref) >= 0) {
+      this._server = 'production';
+      return this._environment = 'production';
+    } else if (currentURL.hostname.match(/beta/)) {
+      this._server = 'production';
+      return this._environment = 'beta';
+    } else {
       serverNumber = parseInt(currentURL.port[1]);
-      _ref = this._serverNumber;
-      for (key in _ref) {
-        value = _ref[key];
+      _ref1 = this._serverNumber;
+      for (key in _ref1) {
+        value = _ref1[key];
         if (value === serverNumber) {
           this._server = key;
         }
       }
       environmentNumber = parseInt(currentURL.port[2]);
-      _ref1 = this._environmentNumber;
+      _ref2 = this._environmentNumber;
       _results = [];
-      for (key in _ref1) {
-        value = _ref1[key];
+      for (key in _ref2) {
+        value = _ref2[key];
         if (value === environmentNumber) {
-          if (environmentNumber === 1 && this._server !== "local") {
-            throw "It doesn't make sense to point at a remote server when running in test environment.";
-          }
           _results.push(this._environment = key);
         } else {
           _results.push(void 0);
         }
       }
       return _results;
-    } else {
-      this._server = 'production';
-      this._environment = 'production';
-      if (currentURL.hostname.match(/beta/)) {
-        return this._environment = 'beta';
-      }
     }
   };
 
   Environment.prototype._portFor = function(app) {
     var port;
+    if (this._appSpecialPort[app] !== false) {
+      return this._appSpecialPort[app];
+    }
     port = "";
     port += this._typeNumber[this._appTypes[app]];
     port += this._appTypes[app] === "client" ? this._serverNumber[this._server] : 0;
@@ -402,7 +420,7 @@ Firehose.Environment = (function() {
     return port;
   };
 
-  Environment.prototype._subdomainFor = function(app) {
+  Environment.prototype._hostnamePrefixFor = function(app) {
     if (this._appTypes[app] === "client" && this._environment === 'beta') {
       return this._appBetaPrefix[app];
     } else {
@@ -418,6 +436,16 @@ Firehose.Environment = (function() {
     } else {
       return false;
     }
+  };
+
+  Environment.prototype._values = function(obj) {
+    var key, value, values;
+    values = [];
+    for (key in obj) {
+      value = obj[key];
+      values.push(value);
+    }
+    return values;
   };
 
   return Environment;
@@ -470,9 +498,10 @@ Firehose.Client = (function() {
   };
 
   Client.prototype._sendRequest = function(options) {
-    var body, defaults, headers, key, method, page, paramStrings, params, perPage, route, server, url, value;
+    var auth, body, defaults, headers, key, method, page, paramStrings, params, perPage, route, server, url, value;
     defaults = {
       server: 'API',
+      auth: true,
       route: '',
       method: 'GET',
       page: -1,
@@ -482,6 +511,7 @@ Firehose.Client = (function() {
     };
     $.extend(defaults, options);
     server = defaults.server;
+    auth = defaults.auth;
     route = defaults.route;
     method = defaults.method;
     page = defaults.page;
@@ -500,7 +530,7 @@ Firehose.Client = (function() {
       if (value == null) {
         continue;
       }
-      paramStrings.push("" + key + "=" + value);
+      paramStrings.push("" + key + "=" + (encodeURIComponent(value)));
     }
     url = "" + (this.environment.baseURLFor(server)) + "/" + route;
     if (paramStrings.length > 0) {
@@ -509,14 +539,16 @@ Firehose.Client = (function() {
     headers = {
       "Accept": "application/json"
     };
-    if ((this.APIAccessToken != null) && server === 'API') {
-      $.extend(headers, {
-        "Authorization": "Token token=\"" + this.APIAccessToken + "\""
-      });
-    } else if ((this.billingAccessToken != null) && server === 'billing') {
-      $.extend(headers, {
-        "Authorization": "Token token=\"" + this.billingAccessToken + "\""
-      });
+    if (auth) {
+      if ((this.APIAccessToken != null) && server === 'API') {
+        $.extend(headers, {
+          "Authorization": "Token token=\"" + this.APIAccessToken + "\""
+        });
+      } else if ((this.billingAccessToken != null) && server === 'billing') {
+        $.extend(headers, {
+          "Authorization": "Token token=\"" + this.billingAccessToken + "\""
+        });
+      }
     }
     return $.ajax({
       type: method,
@@ -1083,6 +1115,8 @@ Firehose.Company = (function(_super) {
 
   Company.prototype.knowledgeBaseSubdomain = null;
 
+  Company.prototype.knowledgeBaseCustomDomain = null;
+
   Company.prototype.unresolvedCount = 0;
 
   Company.prototype.numberOfAccounts = 0;
@@ -1139,12 +1173,26 @@ Firehose.Company = (function(_super) {
     return this.cannedResponses.sortOn("name");
   };
 
+  /*
+  Create a brand new company with a title and an optional creator.
+  @param title [string] The title of the company.
+  @param creator [Agent] The creator of the company. You can leave blank and it will make the current agent the creator.
+  */
+
+
   Company.companyWithTitle = function(title, creator) {
     return Firehose.Object._objectOfClassWithID(Firehose.Company, {
       title: title,
-      _creator: creator
+      _creator: creator || Firehose.Agent.loggedInAgent
     });
   };
+
+  /*
+  Create a company object when all you have is an id. You can then fetch articles or fetch the companies properties if you're authenticated as an agent of the company.
+  @param id [number] The id of the company.
+  @return [Company] Returns a company object. If a company object with this id already exists in the cache, it will be returned.
+  */
+
 
   Company.companyWithID = function(id, creator) {
     return Firehose.Object._objectOfClassWithID(Firehose.Company, {
@@ -1153,16 +1201,74 @@ Firehose.Company = (function(_super) {
     });
   };
 
+  /*
+  Create a company object when all you have is the subdomain for the knowledge base. You can then call `fetch` to get the company's `id` and `title`.
+  @param subdomain [string] The subdomain of the company
+  @return [Company] Returns a company object you can then call `fetch` on.
+  */
+
+
+  Company.companyWithKBSubdomain = function(subdomain) {
+    return Firehose.Object._objectOfClassWithID(Firehose.Company, {
+      knowledgeBaseSubdomain: subdomain
+    });
+  };
+
+  /*
+  Create a company object when all you have is the custom domain for the knowledge base. You can then call `fetch` to get the company's `id` and `title`.
+  @param subdomain [string] The subdomain of the company
+  @return [Company] Returns a company object you can then call `fetch` on.
+  */
+
+
+  Company.companyWithKBCustomDomain = function(customDomain) {
+    return Firehose.Object._objectOfClassWithID(Firehose.Company, {
+      knowledgeBaseCustomDomain: customDomain
+    });
+  };
+
+  /*
+  Fetch a companies properties based on `id`, `knowledgeBaseSubdomain` or `knowledgeBaseCustomDomain`.
+  @returns [jqXHR Promise] Promise
+  */
+
+
   Company.prototype.fetch = function() {
-    var params,
+    var request,
       _this = this;
-    params = {
-      route: "companies/" + this.id
-    };
-    return Firehose.client.get(params).done(function(data) {
+    if (this.id != null) {
+      request = {
+        route: "companies/" + this.id
+      };
+    } else if (this.knowledgeBaseSubdomain) {
+      request = {
+        auth: false,
+        route: "companies",
+        params: {
+          kb_subdomain: this.knowledgeBaseSubdomain
+        }
+      };
+    } else if (this.knowledgeBaseCustomDomain) {
+      request = {
+        auth: false,
+        route: "companies",
+        params: {
+          kb_custom_domain: this.knowledgeBaseCustomDomain
+        }
+      };
+    } else {
+      throw "You can't call 'fetch' on a company unless 'id', 'knowledgeBaseSubdomain' or 'knowledgeBaseCustomDomain' is set.";
+    }
+    return Firehose.client.get(request).done(function(data) {
       return _this._populateWithJSON(data);
     });
   };
+
+  /*
+  Persists any changes you've made to the company to the server. Properties that can be updated: `title`, `fetch_automatically`
+  @returns [jqXHR Promise] Promise
+  */
+
 
   Company.prototype.save = function() {
     var params,
@@ -1184,6 +1290,12 @@ Firehose.Company = (function(_super) {
     }
   };
 
+  /*
+  Force a company to fetch it's accounts right now. (otherwise it's about every 10 minutes if `fetch_automatically` is true)
+  @returns [jqXHR Promise] Promise
+  */
+
+
   Company.prototype.forceChannelsFetch = function() {
     var params;
     params = {
@@ -1191,6 +1303,13 @@ Firehose.Company = (function(_super) {
     };
     return Firehose.client.put(params);
   };
+
+  /*
+  Destroy a company. This will destroy all data associated with the company, including customers, interactions, notes, etc. It is asynchronous, so it will
+  not be deleted immediately but in the background over the course of possibly an hour.
+  @returns [jqXHR Promise] Promise
+  */
+
 
   Company.prototype.destroy = function() {
     var params,
@@ -1276,11 +1395,14 @@ Firehose.Company = (function(_super) {
   };
 
   Company.prototype.articles = function() {
-    var _this = this;
+    var articlesRemoteArray,
+      _this = this;
     if (this._articles == null) {
-      this._setIfNotNull("_articles", new Firehose.RemoteArray("companies/" + this.id + "/articles", null, function(json) {
+      articlesRemoteArray = new Firehose.RemoteArray("companies/" + this.id + "/articles", null, function(json) {
         return Firehose.Article.articleWithID(json.id, _this);
-      }));
+      });
+      articlesRemoteArray.auth = false;
+      this._setIfNotNull("_articles", articlesRemoteArray);
       this._articles.sortOn("title");
     }
     return this._articles;
@@ -1367,17 +1489,19 @@ Firehose.Company = (function(_super) {
   };
 
   Company.prototype._populateWithJSON = function(json) {
-    var _this = this;
+    var _ref1, _ref2, _ref3,
+      _this = this;
     this._setIfNotNull("title", json.title);
     if (this.token == null) {
       this._setIfNotNull("token", json.token);
     }
-    this._setIfNotNull("fetchAutomatically", json.fetch_automatically);
+    this._setIfNotNull("fetchAutomatically", (_ref1 = json.company_settings) != null ? _ref1.fetch_automatically : void 0);
     this._setIfNotNull("lastFetchAt", json.last_fetch_at);
     if (this.forwardingEmailAddress == null) {
       this._setIfNotNull("forwardingEmailAddress", json.forwarding_email);
     }
-    this._setIfNotNull("knowledgeBaseSubdomain", json.kb_subdomain);
+    this._setIfNotNull("knowledgeBaseSubdomain", (_ref2 = json.company_settings) != null ? _ref2.kb_subdomain : void 0);
+    this._setIfNotNull("knowledgeBaseCustomDomain", (_ref3 = json.company_settings) != null ? _ref3.kb_custom_domain : void 0);
     this._setIfNotNull("unresolvedCount", json.unresolved_count);
     this._setIfNotNull("numberOfAccounts", json.number_of_accounts);
     this._populateAssociatedObjects(this, "agents", json.agents, function(json) {
@@ -3256,6 +3380,7 @@ Firehose.Article = (function(_super) {
     var params,
       _this = this;
     params = {
+      auth: false,
       route: "articles/" + this.id
     };
     return Firehose.client.get(params).done(function(data) {
