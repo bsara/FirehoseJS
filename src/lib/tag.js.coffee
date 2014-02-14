@@ -4,8 +4,14 @@ class Firehose.Tag extends Firehose.Object
   # @nodoc
   @_firehoseType: "Tag"
   
+  ###
+  @property [Company] 
+  ###
   company: null
   
+  ###
+  @property [string] 
+  ###
   label: null
   
   

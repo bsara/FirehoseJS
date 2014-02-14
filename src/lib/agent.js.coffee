@@ -4,18 +4,40 @@ class Firehose.Agent extends Firehose.Object
   # @nodoc
   @_firehoseType: "Agent"
   
+  ###
+  @property [Agent] Once you call `login` or `signUPWith…` this will contain the logged in agent, available globally on the class.
+  @example Firehose.Agent.loggedInAgent
+  ###
   @loggedInAgent: null
   
+  ###
+  @property [string] Available once the agent is logged in. You can store this locally for automatic login on the user's next visit.
+  ###
   accessToken: null
   
+  ###
+  @property [string] 
+  ###
   URLToken: null
   
+  ###
+  @property [string] 
+  ###
   firstName: null
   
+  ###
+  @property [string] 
+  ###
   lastName: null
   
+  ###
+  @property [string] 
+  ###
   email: null
   
+  ###
+  @property [Company] 
+  ###
   currentCompany: null
   
   # @nodoc

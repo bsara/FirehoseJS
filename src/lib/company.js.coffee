@@ -4,33 +4,72 @@ class Firehose.Company extends Firehose.Object
   # @nodoc
   @_firehoseType: "Company"
   
+  ###
+  @property [string] 
+  ###
   title: null
   
+  ###
+  @property [string] 
+  ###
   token: null
   
+  ###
+  @property [Date] 
+  ###
   lastFetchAt: null
   
+  ###
+  @property [boolean] 
+  ###
   fetchAutomatically: true
   
+  ###
+  @property [string] 
+  ###
   forwardingEmailAddress: null
   
+  ###
+  @property [string] 
+  ###
   knowledgeBaseSubdomain: null
   
+  ###
+  @property [string] 
+  ###
   knowledgeBaseCustomDomain: null
   
+  ###
+  @property [integer] 
+  ###
   unresolvedCount: 0
   
+  ###
+  @property [integer] 
+  ###
   numberOfAccounts: 0
   
   
   # associations
   
+  ###
+  @property [Array<Agent>] 
+  ###
   agents: null
   
+  ###
+  @property [Array<AgentInvite>] 
+  ###
   agentInvites: null
   
+  ###
+  @property [Array<Tag>] 
+  ###
   tags: null
   
+  ###
+  @property [Array<CannedResponse>] 
+  ###
   cannedResponses: null
   
   
@@ -57,24 +96,54 @@ class Firehose.Company extends Firehose.Object
   
   # billing
   
+  ###
+  @property [CreditCard] 
+  ###
   creditCard: null
   
+  ###
+  @property [string] 
+  ###
   billingEmail: null
   
+  ###
+  @property [float] 
+  ###
   billingRate: 8.0
   
+  ###
+  @property [Date] 
+  ###
   trialExpirationDate: null
   
+  ###
+  @property [Array<Object>] Contains all the discounts for a billing account. Each object will have 4 keys: `name`, `applyType`, `amount`, `expirationDate`. `applyType` will be either `percentage` or `fixed amount`.
+  ###
   discounts: null
   
+  ###
+  @property [Date] 
+  ###
   nextBillingDate: null
   
+  ###
+  @property [boolean] 
+  ###
   isGracePeriodOver: false
   
+  ###
+  @property [integer] 
+  ###
   daysLeftInGracePeriod: -1
   
+  ###
+  @property [boolean] 
+  ###
   isCurrent: false
   
+  ###
+  @property [boolean] 
+  ###
   hasSuccessfulBilling: false
   
   

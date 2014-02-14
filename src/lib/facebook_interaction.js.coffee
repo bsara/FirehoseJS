@@ -4,25 +4,55 @@ class Firehose.FacebookInteraction extends Firehose.Interaction
   # @nodoc
   @_firehoseType: "FacebookInteraction"
   
+  ###
+  @property [FacebookAccount] 
+  ###
+  facebookAccount: null
+  
+  ###
+  @property [string] 
+  ###
   fromUserId: null
   
+  ###
+  @property [string] 
+  ###
   fromName: null
   
+  ###
+  @property [string] 
+  ###
   toUserId: null
   
+  ###
+  @property [string] 
+  ###
   toName: null
   
+  ###
+  @property [string] 
+  ###
   postId: null
   
+  ###
+  @property [string] 
+  ###
   commentId: null
   
+  ###
+  @property [string] either `post`, `comment` or `message`
+  ###
   postType: null
   
+  ###
+  @property [string] 
+  ###
   postExcerpt: null
   
+  ###
+  @property [integer] 
+  ###
   likeCount: 0
-  
-  type: null
   
     
   # @nodoc

@@ -4,8 +4,14 @@ class Firehose.AgentInvite extends Firehose.Object
   # @nodoc
   @_firehoseType: "AgentInvite"
   
+  ###
+  @property [string] 
+  ###
   toEmail: null
   
+  ###
+  @property [Company] 
+  ###
   company: null
   
   

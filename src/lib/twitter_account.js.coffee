@@ -4,12 +4,24 @@ class Firehose.TwitterAccount extends Firehose.Object
   # @nodoc
   @_firehoseType: "TwitterAccount"
   
+  ###
+  @property [Company] 
+  ###
   company: null
   
+  ###
+  @property [string] 
+  ###
   screenName: null
   
+  ###
+  @property [string] 
+  ###
   twitterUserId: null
   
+  ###
+  @property [string] 
+  ###
   imageURL: null
   
     

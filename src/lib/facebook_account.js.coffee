@@ -4,18 +4,36 @@ class Firehose.FacebookAccount extends Firehose.Object
   # @nodoc
   @_firehoseType: "FacebookAccount"
   
+  ###
+  @property [Company] 
+  ###
   company: null
   
+  ###
+  @property [string] 
+  ###
   username: null
   
+  ###
+  @property [string] 
+  ###
   facebookUserId: null
   
+  ###
+  @property [string] 
+  ###
   imageURL: null
   
+  ###
+  @property [string] 
+  ###
   name: null
   
   # associations
   
+  ###
+  @property [Array<FaceookPage>] 
+  ###
   facebookPages: null
   
   

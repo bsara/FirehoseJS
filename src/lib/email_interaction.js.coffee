@@ -4,16 +4,36 @@ class Firehose.EmailInteraction extends Firehose.Interaction
   # @nodoc
   @_firehoseType: "EmailInteraction"
   
+  ###
+  @property [EmailAccount] 
+  ###
+  emailAccount: null
+  
+  ###
+  @property [string] 
+  ###
   emailSubject: null
   
+  ###
+  @property [string] 
+  ###
   replyTo: null
   
+  ###
+  @property [string] 
+  ###
   toEmail: null
   
+  ###
+  @property [string] 
+  ###
   fromEmail: null
   
   # associations
   
+  ###
+  @property [Array<Attachment>] 
+  ###
   attachments: null
     
     

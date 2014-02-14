@@ -4,16 +4,34 @@ class Firehose.OutgoingAttachment extends Firehose.Object
   # @nodoc
   @_firehoseType: "OutgoingAttachment"
   
+  ###
+  @property [Company] 
+  ###
   company: null
   
+  ###
+  @property [string] 
+  ###
   token: null
   
+  ###
+  @property [string] 
+  ###
   downloadURL: null
   
+  ###
+  @property [string] 
+  ###
   uploadURL: null
   
+  ###
+  @property [boolean] 
+  ###
   uploaded: false
   
+  ###
+  @property [File] 
+  ###
   file: null
   
     

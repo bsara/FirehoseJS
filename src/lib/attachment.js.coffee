@@ -4,10 +4,19 @@ class Firehose.Attachment extends Firehose.Object
   # @nodoc
   @_firehoseType: "Attachment"
   
+  ###
+  @property [EmailInteraction] 
+  ###
   emailInteraction: null
   
+  ###
+  @property [string] 
+  ###
   filename: null
   
+  ###
+  @property [string] 
+  ###
   temporaryURL: null
   
     

@@ -4,22 +4,54 @@ class Firehose.TwitterInteraction extends Firehose.Interaction
   # @nodoc
   @_firehoseType: "TwitterInteraction"
   
+  ###
+  @property [TwitterAccount] 
+  ###
+  twitterAccount: null
+  
+  ###
+  @property [boolean] 
+  ###
   favorited: false
   
+  ###
+  @property [string] 
+  ###
   tweetId: null
   
+  ###
+  @property [string] 
+  ###
   inReplyToScreenName: null
   
+  ###
+  @property [string] 
+  ###
   inReplyToStatusId: null
   
+  ###
+  @property [number] 
+  ###
   retweetCount: 0
   
+  ###
+  @property [string] 
+  ###
   tweetSource: null
   
+  ###
+  @property [string] 
+  ###
   toUserId: null
   
+  ###
+  @property [string] 
+  ###
   toScreenName: null
   
+  ###
+  @property [string] 
+  ###
   fromUserId: null
   
   

@@ -4,12 +4,24 @@ class Firehose.Notification extends Firehose.Object
   # @nodoc
   @_firehoseType: "Notification"
   
+  ###
+  @property [Company] 
+  ###
   company: null
   
+  ###
+  @property [string] 
+  ###
   title: null
   
+  ###
+  @property [string] 
+  ###
   text: null
   
+  ###
+  @property [integer] 
+  ###
   level: 0
   
     

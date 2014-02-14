@@ -1,14 +1,28 @@
 class Firehose.RemoteArray extends Firehose.UniqueArray
   
-  
+  ###
+  @property [integer] 
+  ###
   perPage: -1
   
+  ###
+  @property [integer] 
+  ###
   page: 1
   
+  ###
+  @property [boolean] 
+  ###
   auth: true
   
+  ###
+  @property [integer] 
+  ###
   totalRows: 0
   
+  ###
+  @property [Object] query params you only want sent on the first `next()` call.
+  ###
   onceParams: null
   
   # @nodoc

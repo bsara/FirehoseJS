@@ -3,41 +3,93 @@ class Firehose.Interaction extends Firehose.Object
   # @nodoc
   @_firehoseType: "Interaction"
   
+  ###
+  @property [Customer] 
+  ###
   customer: null
   
+  ###
+  @property [string] 
+  ###
   token: null
   
+  ###
+  @property [string] 
+  ###
   responseDraft: null
   
+  ###
+  @property [integer] 1 = unhappy, 2 = satisfied, 3 = happy
+  @deprecated
+  ###
   happiness: null
   
+  ###
+  @property [boolean] 
+  ###
   resolved: false
   
+  ###
+  @property [boolean] 
+  ###
   isOutgoing: null
   
+  ###
+  @property [string] 
+  ###
   body: null
   
+  ###
+  @property [string] 
+  ###
   privateURL: null
   
+  ###
+  @property [string] 
+  ###
   channel: null
   
+  ###
+  @property [Date] 
+  ###
   receivedAt: null
   
+  ###
+  @property [CustomerAccount] 
+  ###
   customerAccount: null
   
+  ###
+  @property [Agent] 
+  ###
   agent: null
   
   
   # associations
   
+  ###
+  @property [Interaction] 
+  ###
   originalInteraction: null
   
+  ###
+  @property [Array<Interaction>] 
+  ###
   responseInteractions: null
   
+  ###
+  @property [Array<Note>] 
+  ###
   notes: null
   
+  ###
+  @property [Array<Tag>] 
+  ###
   tags: null
   
+  ###
+  @property [Array<Agent>] 
+  ###
   flaggedAgents: null
   
   

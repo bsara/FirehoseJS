@@ -4,10 +4,19 @@ class Firehose.Note extends Firehose.Object
   # @nodoc
   @_firehoseType: "Note"
   
+  ###
+  @property [Interaction] 
+  ###
   interaction: null
   
+  ###
+  @property [string] 
+  ###
   body: null
   
+  ###
+  @property [Agent] The agent that authored the note.
+  ###
   agent: null
   
   

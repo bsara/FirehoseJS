@@ -4,26 +4,59 @@ class Firehose.EmailAccount extends Firehose.Object
   # @nodoc
   @_firehoseType: "EmailAccount"
 
+  ###
+  @property [Company] 
+  ###
   company: null
   
+  ###
+  @property [string] 
+  ###
   emailAddress: null
   
+  ###
+  @property [boolean] 
+  ###
   isForwarding: false
   
+  ###
+  @property [string] 
+  ###
   title: null
   
+  ###
+  @property [string] Can be either `IMAP` or `POP`
+  ###
   kind: 'IMAP'
   
+  ###
+  @property [string] 
+  ###
   server: null
   
+  ###
+  @property [string] 
+  ###
   port: null
   
+  ###
+  @property [string] 
+  ###
   username: null
   
+  ###
+  @property [string] 
+  ###
   password: null
   
+  ###
+  @property [boolean] 
+  ###
   SSL: true
   
+  ###
+  @property [boolean] 
+  ###
   deleteFromServer: false
   
   

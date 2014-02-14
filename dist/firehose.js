@@ -145,13 +145,38 @@ var __hasProp = {}.hasOwnProperty,
 Firehose.RemoteArray = (function(_super) {
   __extends(RemoteArray, _super);
 
+  /*
+  @property [integer]
+  */
+
+
   RemoteArray.prototype.perPage = -1;
+
+  /*
+  @property [integer]
+  */
+
 
   RemoteArray.prototype.page = 1;
 
+  /*
+  @property [boolean]
+  */
+
+
   RemoteArray.prototype.auth = true;
 
+  /*
+  @property [integer]
+  */
+
+
   RemoteArray.prototype.totalRows = 0;
+
+  /*
+  @property [Object] query params you only want sent on the first `next()` call.
+  */
+
 
   RemoteArray.prototype.onceParams = null;
 
@@ -795,17 +820,53 @@ Firehose.Agent = (function(_super) {
 
   Agent._firehoseType = "Agent";
 
+  /*
+  @property [Agent] Once you call `login` or `signUPWith…` this will contain the logged in agent, available globally on the class.
+  @example Firehose.Agent.loggedInAgent
+  */
+
+
   Agent.loggedInAgent = null;
+
+  /*
+  @property [string] Available once the agent is logged in. You can store this locally for automatic login on the user's next visit.
+  */
+
 
   Agent.prototype.accessToken = null;
 
+  /*
+  @property [string]
+  */
+
+
   Agent.prototype.URLToken = null;
+
+  /*
+  @property [string]
+  */
+
 
   Agent.prototype.firstName = null;
 
+  /*
+  @property [string]
+  */
+
+
   Agent.prototype.lastName = null;
 
+  /*
+  @property [string]
+  */
+
+
   Agent.prototype.email = null;
+
+  /*
+  @property [Company]
+  */
+
 
   Agent.prototype.currentCompany = null;
 
@@ -1103,29 +1164,94 @@ Firehose.Company = (function(_super) {
 
   Company._firehoseType = "Company";
 
+  /*
+  @property [string]
+  */
+
+
   Company.prototype.title = null;
+
+  /*
+  @property [string]
+  */
+
 
   Company.prototype.token = null;
 
+  /*
+  @property [Date]
+  */
+
+
   Company.prototype.lastFetchAt = null;
+
+  /*
+  @property [boolean]
+  */
+
 
   Company.prototype.fetchAutomatically = true;
 
+  /*
+  @property [string]
+  */
+
+
   Company.prototype.forwardingEmailAddress = null;
+
+  /*
+  @property [string]
+  */
+
 
   Company.prototype.knowledgeBaseSubdomain = null;
 
+  /*
+  @property [string]
+  */
+
+
   Company.prototype.knowledgeBaseCustomDomain = null;
+
+  /*
+  @property [integer]
+  */
+
 
   Company.prototype.unresolvedCount = 0;
 
+  /*
+  @property [integer]
+  */
+
+
   Company.prototype.numberOfAccounts = 0;
+
+  /*
+  @property [Array<Agent>]
+  */
+
 
   Company.prototype.agents = null;
 
+  /*
+  @property [Array<AgentInvite>]
+  */
+
+
   Company.prototype.agentInvites = null;
 
+  /*
+  @property [Array<Tag>]
+  */
+
+
   Company.prototype.tags = null;
+
+  /*
+  @property [Array<CannedResponse>]
+  */
+
 
   Company.prototype.cannedResponses = null;
 
@@ -1141,23 +1267,73 @@ Firehose.Company = (function(_super) {
 
   Company.prototype._articles = null;
 
+  /*
+  @property [CreditCard]
+  */
+
+
   Company.prototype.creditCard = null;
+
+  /*
+  @property [string]
+  */
+
 
   Company.prototype.billingEmail = null;
 
+  /*
+  @property [float]
+  */
+
+
   Company.prototype.billingRate = 8.0;
+
+  /*
+  @property [Date]
+  */
+
 
   Company.prototype.trialExpirationDate = null;
 
+  /*
+  @property [Array<Object>] Contains all the discounts for a billing account. Each object will have 4 keys: `name`, `applyType`, `amount`, `expirationDate`. `applyType` will be either `percentage` or `fixed amount`.
+  */
+
+
   Company.prototype.discounts = null;
+
+  /*
+  @property [Date]
+  */
+
 
   Company.prototype.nextBillingDate = null;
 
+  /*
+  @property [boolean]
+  */
+
+
   Company.prototype.isGracePeriodOver = false;
+
+  /*
+  @property [integer]
+  */
+
 
   Company.prototype.daysLeftInGracePeriod = -1;
 
+  /*
+  @property [boolean]
+  */
+
+
   Company.prototype.isCurrent = false;
+
+  /*
+  @property [boolean]
+  */
+
 
   Company.prototype.hasSuccessfulBilling = false;
 
@@ -1566,37 +1742,123 @@ Firehose.Interaction = (function(_super) {
 
   Interaction._firehoseType = "Interaction";
 
+  /*
+  @property [Customer]
+  */
+
+
   Interaction.prototype.customer = null;
+
+  /*
+  @property [string]
+  */
+
 
   Interaction.prototype.token = null;
 
+  /*
+  @property [string]
+  */
+
+
   Interaction.prototype.responseDraft = null;
+
+  /*
+  @property [integer] 1 = unhappy, 2 = satisfied, 3 = happy
+  @deprecated
+  */
+
 
   Interaction.prototype.happiness = null;
 
+  /*
+  @property [boolean]
+  */
+
+
   Interaction.prototype.resolved = false;
+
+  /*
+  @property [boolean]
+  */
+
 
   Interaction.prototype.isOutgoing = null;
 
+  /*
+  @property [string]
+  */
+
+
   Interaction.prototype.body = null;
+
+  /*
+  @property [string]
+  */
+
 
   Interaction.prototype.privateURL = null;
 
+  /*
+  @property [string]
+  */
+
+
   Interaction.prototype.channel = null;
+
+  /*
+  @property [Date]
+  */
+
 
   Interaction.prototype.receivedAt = null;
 
+  /*
+  @property [CustomerAccount]
+  */
+
+
   Interaction.prototype.customerAccount = null;
+
+  /*
+  @property [Agent]
+  */
+
 
   Interaction.prototype.agent = null;
 
+  /*
+  @property [Interaction]
+  */
+
+
   Interaction.prototype.originalInteraction = null;
+
+  /*
+  @property [Array<Interaction>]
+  */
+
 
   Interaction.prototype.responseInteractions = null;
 
+  /*
+  @property [Array<Note>]
+  */
+
+
   Interaction.prototype.notes = null;
 
+  /*
+  @property [Array<Tag>]
+  */
+
+
   Interaction.prototype.tags = null;
+
+  /*
+  @property [Array<Agent>]
+  */
+
 
   Interaction.prototype.flaggedAgents = null;
 
@@ -1839,7 +2101,17 @@ Firehose.AgentInvite = (function(_super) {
 
   AgentInvite._firehoseType = "AgentInvite";
 
+  /*
+  @property [string]
+  */
+
+
   AgentInvite.prototype.toEmail = null;
+
+  /*
+  @property [Company]
+  */
+
 
   AgentInvite.prototype.company = null;
 
@@ -1926,9 +2198,24 @@ Firehose.Attachment = (function(_super) {
 
   Attachment._firehoseType = "Attachment";
 
+  /*
+  @property [EmailInteraction]
+  */
+
+
   Attachment.prototype.emailInteraction = null;
 
+  /*
+  @property [string]
+  */
+
+
   Attachment.prototype.filename = null;
+
+  /*
+  @property [string]
+  */
+
 
   Attachment.prototype.temporaryURL = null;
 
@@ -2107,19 +2394,59 @@ Firehose.CreditCard = (function(_super) {
 
   CreditCard._firehoseType = "CreditCard";
 
+  /*
+  @property [Company]
+  */
+
+
   CreditCard.prototype.company = null;
+
+  /*
+  @property [string] Only ever populated when set locally in preparation for submitting to Stripe.
+  */
+
 
   CreditCard.prototype.number = null;
 
+  /*
+  @property [string] Only ever populated when set locally in preparation for submitting to Stripe.
+  */
+
+
   CreditCard.prototype.cvc = null;
+
+  /*
+  @property [string]
+  */
+
 
   CreditCard.prototype.expirationMonth = null;
 
+  /*
+  @property [string]
+  */
+
+
   CreditCard.prototype.expirationYear = null;
+
+  /*
+  @property [string]
+  */
+
 
   CreditCard.prototype.lastFour = null;
 
+  /*
+  @property [string]
+  */
+
+
   CreditCard.prototype.stripeToken = null;
+
+  /*
+  @property [string] The e-mail receipts will be sent to.
+  */
+
 
   CreditCard.prototype.email = null;
 
@@ -2239,23 +2566,73 @@ Firehose.Customer = (function(_super) {
 
   Customer._firehoseType = "Customer";
 
+  /*
+  @property [Company]
+  */
+
+
   Customer.prototype.company = null;
+
+  /*
+  @property [string]
+  */
+
 
   Customer.prototype.name = null;
 
+  /*
+  @property [string]
+  */
+
+
   Customer.prototype.location = null;
+
+  /*
+  @property [string]
+  */
+
 
   Customer.prototype.timeZone = null;
 
+  /*
+  @property [integer]
+  */
+
+
   Customer.prototype.newestInteractionId = null;
+
+  /*
+  @property [string]
+  */
+
 
   Customer.prototype.newestInteractionExcerpt = null;
 
+  /*
+  @property [Date]
+  */
+
+
   Customer.prototype.newestInteractionReceivedAt = null;
+
+  /*
+  @property [Agent]
+  */
+
 
   Customer.prototype.agentWithDibs = null;
 
+  /*
+  @property [Array<CustomerAccount>]
+  */
+
+
   Customer.prototype.customerAccounts = null;
+
+  /*
+  @property [Array<Agent>]
+  */
+
 
   Customer.prototype.customerFlaggedAgents = null;
 
@@ -2354,17 +2731,52 @@ Firehose.CustomerAccount = (function(_super) {
 
   CustomerAccount._firehoseType = "CustomerAccount";
 
+  /*
+  @property [Customer]
+  */
+
+
   CustomerAccount.prototype.customer = null;
+
+  /*
+  @property [string]
+  */
+
 
   CustomerAccount.prototype.username = null;
 
+  /*
+  @property [boolean]
+  */
+
+
   CustomerAccount.prototype.followingUs = null;
+
+  /*
+  @property [string]
+  */
+
 
   CustomerAccount.prototype.imageURL = null;
 
+  /*
+  @property [string]
+  */
+
+
   CustomerAccount.prototype.description = null;
 
+  /*
+  @property [integer]
+  */
+
+
   CustomerAccount.prototype.followersCount = null;
+
+  /*
+  @property [string]
+  */
+
 
   CustomerAccount.prototype.channel = null;
 
@@ -2424,25 +2836,80 @@ Firehose.EmailAccount = (function(_super) {
 
   EmailAccount._firehoseType = "EmailAccount";
 
+  /*
+  @property [Company]
+  */
+
+
   EmailAccount.prototype.company = null;
+
+  /*
+  @property [string]
+  */
+
 
   EmailAccount.prototype.emailAddress = null;
 
+  /*
+  @property [boolean]
+  */
+
+
   EmailAccount.prototype.isForwarding = false;
+
+  /*
+  @property [string]
+  */
+
 
   EmailAccount.prototype.title = null;
 
+  /*
+  @property [string] Can be either `IMAP` or `POP`
+  */
+
+
   EmailAccount.prototype.kind = 'IMAP';
+
+  /*
+  @property [string]
+  */
+
 
   EmailAccount.prototype.server = null;
 
+  /*
+  @property [string]
+  */
+
+
   EmailAccount.prototype.port = null;
+
+  /*
+  @property [string]
+  */
+
 
   EmailAccount.prototype.username = null;
 
+  /*
+  @property [string]
+  */
+
+
   EmailAccount.prototype.password = null;
 
+  /*
+  @property [boolean]
+  */
+
+
   EmailAccount.prototype.SSL = true;
+
+  /*
+  @property [boolean]
+  */
+
 
   EmailAccount.prototype.deleteFromServer = false;
 
@@ -2641,13 +3108,45 @@ Firehose.EmailInteraction = (function(_super) {
 
   EmailInteraction._firehoseType = "EmailInteraction";
 
+  /*
+  @property [EmailAccount]
+  */
+
+
+  EmailInteraction.prototype.emailAccount = null;
+
+  /*
+  @property [string]
+  */
+
+
   EmailInteraction.prototype.emailSubject = null;
+
+  /*
+  @property [string]
+  */
+
 
   EmailInteraction.prototype.replyTo = null;
 
+  /*
+  @property [string]
+  */
+
+
   EmailInteraction.prototype.toEmail = null;
 
+  /*
+  @property [string]
+  */
+
+
   EmailInteraction.prototype.fromEmail = null;
+
+  /*
+  @property [Array<Attachment>]
+  */
+
 
   EmailInteraction.prototype.attachments = null;
 
@@ -2698,15 +3197,45 @@ Firehose.FacebookAccount = (function(_super) {
 
   FacebookAccount._firehoseType = "FacebookAccount";
 
+  /*
+  @property [Company]
+  */
+
+
   FacebookAccount.prototype.company = null;
+
+  /*
+  @property [string]
+  */
+
 
   FacebookAccount.prototype.username = null;
 
+  /*
+  @property [string]
+  */
+
+
   FacebookAccount.prototype.facebookUserId = null;
+
+  /*
+  @property [string]
+  */
+
 
   FacebookAccount.prototype.imageURL = null;
 
+  /*
+  @property [string]
+  */
+
+
   FacebookAccount.prototype.name = null;
+
+  /*
+  @property [Array<FaceookPage>]
+  */
+
 
   FacebookAccount.prototype.facebookPages = null;
 
@@ -2766,25 +3295,75 @@ Firehose.FacebookInteraction = (function(_super) {
 
   FacebookInteraction._firehoseType = "FacebookInteraction";
 
+  /*
+  @property [FacebookAccount]
+  */
+
+
+  FacebookInteraction.prototype.facebookAccount = null;
+
+  /*
+  @property [string]
+  */
+
+
   FacebookInteraction.prototype.fromUserId = null;
+
+  /*
+  @property [string]
+  */
+
 
   FacebookInteraction.prototype.fromName = null;
 
+  /*
+  @property [string]
+  */
+
+
   FacebookInteraction.prototype.toUserId = null;
+
+  /*
+  @property [string]
+  */
+
 
   FacebookInteraction.prototype.toName = null;
 
+  /*
+  @property [string]
+  */
+
+
   FacebookInteraction.prototype.postId = null;
+
+  /*
+  @property [string]
+  */
+
 
   FacebookInteraction.prototype.commentId = null;
 
+  /*
+  @property [string] either `post`, `comment` or `message`
+  */
+
+
   FacebookInteraction.prototype.postType = null;
+
+  /*
+  @property [string]
+  */
+
 
   FacebookInteraction.prototype.postExcerpt = null;
 
-  FacebookInteraction.prototype.likeCount = 0;
+  /*
+  @property [integer]
+  */
 
-  FacebookInteraction.prototype.type = null;
+
+  FacebookInteraction.prototype.likeCount = 0;
 
   FacebookInteraction._facebookInteractionWithID = function(id) {
     return Firehose.Object._objectOfClassWithID(Firehose.FacebookInteraction, {
@@ -2830,13 +3409,38 @@ Firehose.FacebookPage = (function(_super) {
 
   FacebookPage._firehoseType = "FacebookPage";
 
+  /*
+  @property [FacebookAccount]
+  */
+
+
   FacebookPage.prototype.facebookAccount = null;
+
+  /*
+  @property [string]
+  */
+
 
   FacebookPage.prototype.name = null;
 
+  /*
+  @property [string]
+  */
+
+
   FacebookPage.prototype.category = null;
 
+  /*
+  @property [string]
+  */
+
+
   FacebookPage.prototype.pageId = null;
+
+  /*
+  @property [boolean]
+  */
+
 
   FacebookPage.prototype.active = false;
 
@@ -2890,9 +3494,24 @@ Firehose.Note = (function(_super) {
 
   Note._firehoseType = "Note";
 
+  /*
+  @property [Interaction]
+  */
+
+
   Note.prototype.interaction = null;
 
+  /*
+  @property [string]
+  */
+
+
   Note.prototype.body = null;
+
+  /*
+  @property [Agent] The agent that authored the note.
+  */
+
 
   Note.prototype.agent = null;
 
@@ -2976,11 +3595,31 @@ Firehose.Notification = (function(_super) {
 
   Notification._firehoseType = "Notification";
 
+  /*
+  @property [Company]
+  */
+
+
   Notification.prototype.company = null;
+
+  /*
+  @property [string]
+  */
+
 
   Notification.prototype.title = null;
 
+  /*
+  @property [string]
+  */
+
+
   Notification.prototype.text = null;
+
+  /*
+  @property [integer]
+  */
+
 
   Notification.prototype.level = 0;
 
@@ -3016,15 +3655,45 @@ Firehose.OutgoingAttachment = (function(_super) {
 
   OutgoingAttachment._firehoseType = "OutgoingAttachment";
 
+  /*
+  @property [Company]
+  */
+
+
   OutgoingAttachment.prototype.company = null;
+
+  /*
+  @property [string]
+  */
+
 
   OutgoingAttachment.prototype.token = null;
 
+  /*
+  @property [string]
+  */
+
+
   OutgoingAttachment.prototype.downloadURL = null;
+
+  /*
+  @property [string]
+  */
+
 
   OutgoingAttachment.prototype.uploadURL = null;
 
+  /*
+  @property [boolean]
+  */
+
+
   OutgoingAttachment.prototype.uploaded = false;
+
+  /*
+  @property [File]
+  */
+
 
   OutgoingAttachment.prototype.file = null;
 
@@ -3151,7 +3820,17 @@ Firehose.Tag = (function(_super) {
 
   Tag._firehoseType = "Tag";
 
+  /*
+  @property [Company]
+  */
+
+
   Tag.prototype.company = null;
+
+  /*
+  @property [string]
+  */
+
 
   Tag.prototype.label = null;
 
@@ -3238,11 +3917,31 @@ Firehose.TwitterAccount = (function(_super) {
 
   TwitterAccount._firehoseType = "TwitterAccount";
 
+  /*
+  @property [Company]
+  */
+
+
   TwitterAccount.prototype.company = null;
+
+  /*
+  @property [string]
+  */
+
 
   TwitterAccount.prototype.screenName = null;
 
+  /*
+  @property [string]
+  */
+
+
   TwitterAccount.prototype.twitterUserId = null;
+
+  /*
+  @property [string]
+  */
+
 
   TwitterAccount.prototype.imageURL = null;
 
@@ -3293,21 +3992,73 @@ Firehose.TwitterInteraction = (function(_super) {
 
   TwitterInteraction._firehoseType = "TwitterInteraction";
 
+  /*
+  @property [TwitterAccount]
+  */
+
+
+  TwitterInteraction.prototype.twitterAccount = null;
+
+  /*
+  @property [boolean]
+  */
+
+
   TwitterInteraction.prototype.favorited = false;
+
+  /*
+  @property [string]
+  */
+
 
   TwitterInteraction.prototype.tweetId = null;
 
+  /*
+  @property [string]
+  */
+
+
   TwitterInteraction.prototype.inReplyToScreenName = null;
+
+  /*
+  @property [string]
+  */
+
 
   TwitterInteraction.prototype.inReplyToStatusId = null;
 
+  /*
+  @property [number]
+  */
+
+
   TwitterInteraction.prototype.retweetCount = 0;
+
+  /*
+  @property [string]
+  */
+
 
   TwitterInteraction.prototype.tweetSource = null;
 
+  /*
+  @property [string]
+  */
+
+
   TwitterInteraction.prototype.toUserId = null;
 
+  /*
+  @property [string]
+  */
+
+
   TwitterInteraction.prototype.toScreenName = null;
+
+  /*
+  @property [string]
+  */
+
 
   TwitterInteraction.prototype.fromUserId = null;
 
@@ -3355,9 +4106,24 @@ Firehose.Article = (function(_super) {
 
   Article._firehoseType = "Article";
 
+  /*
+  @property [Company]
+  */
+
+
   Article.prototype.company = null;
 
+  /*
+  @property [string]
+  */
+
+
   Article.prototype.title = null;
+
+  /*
+  @property [string]
+  */
+
 
   Article.prototype.body = null;
 

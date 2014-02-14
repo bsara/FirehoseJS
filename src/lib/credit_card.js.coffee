@@ -4,20 +4,44 @@ class Firehose.CreditCard extends Firehose.Object
   # @nodoc
   @_firehoseType: "CreditCard"
   
+  ###
+  @property [Company] 
+  ###
   company: null
   
+  ###
+  @property [string] Only ever populated when set locally in preparation for submitting to Stripe.
+  ###
   number: null 
   
+  ###
+  @property [string] Only ever populated when set locally in preparation for submitting to Stripe.
+  ###
   cvc: null
   
+  ###
+  @property [string] 
+  ###
   expirationMonth: null
   
+  ###
+  @property [string]
+  ###
   expirationYear: null
   
+  ###
+  @property [string]
+  ###
   lastFour: null
   
+  ###
+  @property [string]
+  ###
   stripeToken: null
   
+  ###
+  @property [string] The e-mail receipts will be sent to.
+  ###
   email: null
     
     

@@ -4,10 +4,19 @@ class Firehose.Article extends Firehose.Object
   # @nodoc
   @_firehoseType: "Article"
   
+  ###
+  @property [Company] 
+  ###
   company: null
   
+  ###
+  @property [string] 
+  ###
   title: null
   
+  ###
+  @property [string] 
+  ###
   body: null
     
     

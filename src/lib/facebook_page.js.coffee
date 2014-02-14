@@ -4,14 +4,29 @@ class Firehose.FacebookPage extends Firehose.Object
   # @nodoc
   @_firehoseType: "FacebookPage"
   
+  ###
+  @property [FacebookAccount] 
+  ###
   facebookAccount: null
   
+  ###
+  @property [string] 
+  ###
   name: null
   
+  ###
+  @property [string] 
+  ###
   category: null
   
+  ###
+  @property [string] 
+  ###
   pageId: null
   
+  ###
+  @property [boolean] 
+  ###
   active: false
   
     

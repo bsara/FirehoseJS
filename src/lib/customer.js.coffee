@@ -4,26 +4,56 @@ class Firehose.Customer extends Firehose.Object
   # @nodoc
   @_firehoseType: "Customer"
   
+  ###
+  @property [Company] 
+  ###
   company: null
   
+  ###
+  @property [string] 
+  ###
   name: null
   
+  ###
+  @property [string] 
+  ###
   location: null
   
+  ###
+  @property [string] 
+  ###
   timeZone: null
   
+  ###
+  @property [integer] 
+  ###
   newestInteractionId: null
   
+  ###
+  @property [string] 
+  ###
   newestInteractionExcerpt: null
   
+  ###
+  @property [Date] 
+  ###
   newestInteractionReceivedAt: null
   
+  ###
+  @property [Agent] 
+  ###
   agentWithDibs: null
   
   # associations
   
+  ###
+  @property [Array<CustomerAccount>] 
+  ###
   customerAccounts: null
   
+  ###
+  @property [Array<Agent>] 
+  ###
   customerFlaggedAgents: null
   
   # remote arrays

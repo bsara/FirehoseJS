@@ -4,18 +4,39 @@ class Firehose.CustomerAccount extends Firehose.Object
   # @nodoc
   @_firehoseType: "CustomerAccount"
   
+  ###
+  @property [Customer] 
+  ###
   customer: null
   
+  ###
+  @property [string] 
+  ###
   username: null
   
+  ###
+  @property [boolean] 
+  ###
   followingUs: null
   
+  ###
+  @property [string] 
+  ###
   imageURL: null
   
+  ###
+  @property [string] 
+  ###
   description: null
   
+  ###
+  @property [integer] 
+  ###
   followersCount: null
   
+  ###
+  @property [string] 
+  ###
   channel: null
   
   
