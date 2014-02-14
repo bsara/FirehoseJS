@@ -11,28 +11,17 @@ fi
 FH_CONFIG_FILE="$HOME/.firehoseconfig.sh"
   
 if [ ! -e $FH_CONFIG_FILE ] ; then
-  echo "You must have a $FH_CONFIG_FILE file that exports the following contents (adjusted for your system):\n"
   
-  PATHS_EXAMPLE="export FH_API_DIR=$HOME/mt/projects/firehose/api
-export FH_BROWSER_DIR=$HOME/mt/projects/firehose/browser
-export FH_BILLING_DIR=$HOME/mt/projects/firehose/billing
-export FH_TINY_URL_DIR=$HOME/mt/projects/firehose/tinyurl
-export FH_MARKETING_DIR=$HOME/mt/projects/firehose/marketing
-export FH_SETTINGS_DIR=$HOME/mt/projects/firehose/settings
-export FH_TWEET_LONGER_DIR=$HOME/mt/projects/firehose/tweetlonger
-export FH_KB_DIR=$HOME/mt/projects/firehose/kb"
-  
-  echo "$PATHS_EXAMPLE"
-  
-  echo ""
-  echo "NOTE: If any of those are not exported, the booting up of the server will be skipped. So you don't have to clone down and set up all of these, just the ones you need."
-  echo ""
-  echo "NOTE: Do not use ~ for your home directory, use \$HOME or the full path."
-  echo ""  
-  echo "NOTE: Create this file and rerun this script."
-  echo ""
-  
-  read -p "Hit enter to create and begin editing $FH_CONFIG_FILE "
+  PATHS_EXAMPLE="# Edit this file so each export points to the right directory. Save and run the script again.
+# Comment out the apps you don't want to start with the script.
+export FH_API_DIR=~/mt/projects/firehose/api
+export FH_BROWSER_DIR=~/mt/projects/firehose/browser
+export FH_BILLING_DIR=~/mt/projects/firehose/billing
+export FH_TINY_URL_DIR=~/mt/projects/firehose/tinyurl
+export FH_MARKETING_DIR=~/mt/projects/firehose/marketing
+export FH_SETTINGS_DIR=~/mt/projects/firehose/settings
+export FH_TWEET_LONGER_DIR=~/mt/projects/firehose/tweetlonger
+export FH_KB_DIR=~/mt/projects/firehose/kb"
   
   echo "$PATHS_EXAMPLE" > $FH_CONFIG_FILE
   chmod +x $FH_CONFIG_FILE
@@ -89,6 +78,6 @@ fi
 
 if [ FH_KB_DIR ] && [ -e $FH_KB_DIR ] ; then
   echo "-> Starting kb middleman server"
-  cd $FH_KB_DIR && middleman -p 4007 &
+  cd $FH_KB_DIR && middleman &
 fi
 
