@@ -32,7 +32,7 @@ class Firehose.FacebookAccount extends Firehose.Object
   # associations
   
   ###
-  @property [Array<FaceookPage>] 
+  @property [Array<FacebookPage>] 
   ###
   facebookPages: null
   

@@ -199,7 +199,7 @@ class Firehose.Company extends Firehose.Object
       
   ###
   Create a company object when all you have is the custom domain for the knowledge base. You can then call `fetch` to get the company's `id` and `title`.
-  @param subdomain [string] The subdomain of the company
+  @param customDomain [string] The custom domain that maps (via a CNAME DNS record) to the subdomain of the company's kb.
   @return [Company] Returns a company object you can then call `fetch` on.
   ###    
   @companyWithKBCustomDomain: (customDomain) ->
