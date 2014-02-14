@@ -83,4 +83,4 @@ You must also make sure that both your local API and billing apps have `rake db:
 
 If you've built and generated docs, you can push the `docs` submodule to:
 
-    git@mtmini.com:/mt/sites/production/docs/firehosejs
+    git@mtmini.com:/mt/git/production/docs/firehosejs.git
