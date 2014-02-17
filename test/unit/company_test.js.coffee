@@ -177,6 +177,41 @@ firehoseTest 'Fetch Articles', 2, (agent) ->
     start()
   .fail (jqXHR, textStatus, errorThrown) ->
     start()
+    
+firehoseTest 'Search Articles', 2, (agent) ->
+  company = agent.companies[0]
+  articles = company.articles()
+  articles.next()
+  .done (data, textStatus) ->
+    firstWord = articles[0].body.split(" ")[0]
+    searchedArticles = company.searchedArticles firstWord
+    searchedArticles.next()
+    .done (data, textStatus) ->
+      equal textStatus, "success"
+      ok searchedArticles.length > 0
+      start()
+    .fail (jqXHR, textStatus, errorThrown) ->
+      start()
+  .fail (jqXHR, textStatus, errorThrown) ->
+    start()
+    
+firehoseTest 'Search Articles (Abort)', 1, (agent) ->
+  company = agent.companies[0]
+  articles = company.articles()
+  articles.next()
+  .done (data, textStatus) ->
+    firstWord = articles[0].body.split(" ")[0]
+    searchedArticles = company.searchedArticles firstWord
+    searchedArticles.next()
+    .done (data, textStatus) ->
+      thow "shouldn't have gotten here"
+      start()
+    .fail (jqXHR, textStatus, errorThrown) ->
+      ok textStatus == 'abort'
+      start()
+    searchedArticles.abort()
+  .fail (jqXHR, textStatus, errorThrown) ->
+    start()
 
 firehoseTest 'Add and Remove Agent', 2, (agent) ->
   company = agent.companies[0]

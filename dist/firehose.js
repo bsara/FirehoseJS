@@ -190,6 +190,8 @@ Firehose.RemoteArray = (function(_super) {
 
   RemoteArray.prototype._fresh = true;
 
+  RemoteArray._currentXHR = null;
+
   function RemoteArray(path, params, creationFunction) {
     var _this = this;
     if (params == null) {
@@ -208,7 +210,7 @@ Firehose.RemoteArray = (function(_super) {
         perPage: _this.perPage
       };
       _this.onceParams = null;
-      return Firehose.client.get(options).done(function(data) {
+      return _this._currentXHR = Firehose.client.get(options).done(function(data) {
         var aggregate, json, object, _i, _len;
         if (data.constructor === Array && data.length > 0) {
           _this.totalRows = data[0].total_rows;
@@ -221,6 +223,8 @@ Firehose.RemoteArray = (function(_super) {
           }
           return _this.insertObjects(aggregate);
         }
+      }).always(function() {
+        return _this._currentXHR = null;
       });
     };
   }
@@ -235,6 +239,11 @@ Firehose.RemoteArray = (function(_super) {
     }
     this._fresh = false;
     return this._fetchingFunction(this.page++);
+  };
+
+  RemoteArray.prototype.abort = function() {
+    var _ref;
+    return (_ref = this._currentXHR) != null ? _ref.abort() : void 0;
   };
 
   RemoteArray.prototype.empty = function() {
@@ -1267,6 +1276,8 @@ Firehose.Company = (function(_super) {
 
   Company.prototype._articles = null;
 
+  Company.prototype._searchedArticles = null;
+
   /*
   @property [CreditCard]
   */
@@ -1392,7 +1403,7 @@ Firehose.Company = (function(_super) {
 
   /*
   Create a company object when all you have is the custom domain for the knowledge base. You can then call `fetch` to get the company's `id` and `title`.
-  @param subdomain [string] The subdomain of the company
+  @param customDomain [string] The custom domain that maps (via a CNAME DNS record) to the subdomain of the company's kb.
   @return [Company] Returns a company object you can then call `fetch` on.
   */
 
@@ -1579,9 +1590,36 @@ Firehose.Company = (function(_super) {
       });
       articlesRemoteArray.auth = false;
       this._setIfNotNull("_articles", articlesRemoteArray);
-      this._articles.sortOn("title");
     }
     return this._articles;
+  };
+
+  /*
+  Returns a remote array of articles found by searching for `text`.
+  @param text [string] The string of text you want to search for articles containing.
+  @note: Every time you call this on a company, you are creating a new remote array 
+  and any previously created have their network requests cancelled.
+  */
+
+
+  Company.prototype.searchedArticles = function(text) {
+    var articlesRemoteArray, currentSearchedArticles,
+      _this = this;
+    currentSearchedArticles = this.get('_searchedArticles');
+    if (currentSearchedArticles) {
+      currentSearchedArticles.abort();
+    }
+    articlesRemoteArray = new Firehose.RemoteArray("companies/" + this.id + "/article_search", {
+      q: text
+    }, function(json) {
+      var article;
+      article = Firehose.Article.articleWithID(json.id, _this);
+      article._populateWithJSON(json);
+      return article;
+    });
+    articlesRemoteArray.auth = false;
+    this._setIfNotNull("_searchedArticles", articlesRemoteArray);
+    return articlesRemoteArray;
   };
 
   Company.prototype.addAgent = function(agent) {
@@ -3233,7 +3271,7 @@ Firehose.FacebookAccount = (function(_super) {
   FacebookAccount.prototype.name = null;
 
   /*
-  @property [Array<FaceookPage>]
+  @property [Array<FacebookPage>]
   */
 
 

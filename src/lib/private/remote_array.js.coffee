@@ -1,5 +1,6 @@
 class Firehose.RemoteArray extends Firehose.UniqueArray
   
+  
   ###
   @property [integer] 
   ###
@@ -40,7 +41,11 @@ class Firehose.RemoteArray extends Firehose.UniqueArray
   # @nodoc
   _fresh: true
   
+  # @nodoc
+  @_currentXHR: null
   
+  
+  # @nodoc
   constructor: (path, params = {}, creationFunction) ->
     @_path              = path
     @_params            = params
@@ -53,7 +58,7 @@ class Firehose.RemoteArray extends Firehose.UniqueArray
         page:     page
         perPage:  @perPage
       @onceParams = null
-      Firehose.client.get( options ).done (data) =>
+      @_currentXHR = Firehose.client.get( options ).done (data) =>
         if data.constructor == Array and data.length > 0
           @totalRows = data[0].total_rows
           aggregate = []
@@ -62,7 +67,9 @@ class Firehose.RemoteArray extends Firehose.UniqueArray
             object._populateWithJSON json
             aggregate.push object
           this.insertObjects aggregate 
-      
+      .always =>
+        @_currentXHR = null
+        
       
   isAllLoaded: ->
     not @_fresh and parseInt(this.length) == parseInt(@totalRows)
@@ -74,10 +81,14 @@ class Firehose.RemoteArray extends Firehose.UniqueArray
     @_fetchingFunction( @page++ )
   
   
+  abort: ->
+    @_currentXHR?.abort() 
+  
+  
   empty: ->
     this.dropObjects this.splice(0)
     
-  
+    
   reset: ->
     this.empty()
     @totalRows  = 0

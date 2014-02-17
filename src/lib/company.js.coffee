@@ -93,6 +93,9 @@ class Firehose.Company extends Firehose.Object
   # @nodoc
   _articles: null
   
+  # @nodoc
+  _searchedArticles: null
+  
   
   # billing
   
@@ -333,10 +336,28 @@ class Firehose.Company extends Firehose.Object
         Firehose.Article.articleWithID( json.id, this )
       articlesRemoteArray.auth = false
       this._setIfNotNull "_articles", articlesRemoteArray
-      @_articles.sortOn "title"
     @_articles
-             
+    
   
+  ###
+  Returns a remote array of articles found by searching for `text`.
+  @param text [string] The string of text you want to search for articles containing.
+  @note: Every time you call this on a company, you are creating a new remote array 
+  and any previously created have their network requests cancelled.
+  ### 
+  searchedArticles: (text) ->
+    currentSearchedArticles = this.get '_searchedArticles'
+    if currentSearchedArticles
+      currentSearchedArticles.abort()
+    articlesRemoteArray = new Firehose.RemoteArray "companies/#{@id}/article_search", q: text, (json) =>
+      article = Firehose.Article.articleWithID( json.id, this )
+      article._populateWithJSON json
+      article
+    articlesRemoteArray.auth = false
+    this._setIfNotNull "_searchedArticles", articlesRemoteArray
+    articlesRemoteArray
+    
+             
   addAgent: (agent) ->
     params = 
       route: "companies/#{@id}/agents/#{agent.id}"
