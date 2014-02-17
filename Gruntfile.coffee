@@ -17,7 +17,7 @@ module.exports = (grunt) ->
     # Task configuration.
     
     clean:
-      files: ['dist', 'build/src', 'docs']
+      files: ['dist', 'build/src']
       
     bump:
       options:

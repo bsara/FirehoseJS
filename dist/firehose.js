@@ -1416,7 +1416,7 @@ Firehose.Company = (function(_super) {
 
   /*
   Fetch a companies properties based on `id`, `knowledgeBaseSubdomain` or `knowledgeBaseCustomDomain`.
-  @returns [jqXHR Promise] Promise
+  @return [jqXHR Promise] Promise
   */
 
 
@@ -1453,7 +1453,7 @@ Firehose.Company = (function(_super) {
 
   /*
   Persists any changes you've made to the company to the server. Properties that can be updated: `title`, `fetch_automatically`
-  @returns [jqXHR Promise] Promise
+  @return [jqXHR Promise] Promise
   */
 
 
@@ -1479,7 +1479,7 @@ Firehose.Company = (function(_super) {
 
   /*
   Force a company to fetch it's accounts right now. (otherwise it's about every 10 minutes if `fetch_automatically` is true)
-  @returns [jqXHR Promise] Promise
+  @return [jqXHR Promise] Promise
   */
 
 
@@ -1494,7 +1494,7 @@ Firehose.Company = (function(_super) {
   /*
   Destroy a company. This will destroy all data associated with the company, including customers, interactions, notes, etc. It is asynchronous, so it will
   not be deleted immediately but in the background over the course of possibly an hour.
-  @returns [jqXHR Promise] Promise
+  @return [jqXHR Promise] Promise
   */
 
 
@@ -1597,7 +1597,7 @@ Firehose.Company = (function(_super) {
   /*
   Returns a remote array of articles found by searching for `text`.
   @param text [string] The string of text you want to search for articles containing.
-  @note: Every time you call this on a company, you are creating a new remote array 
+  @note Every time you call this on a company, you are creating a new remote array 
   and any previously created have their network requests cancelled.
   */
 

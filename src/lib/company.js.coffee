@@ -212,7 +212,7 @@ class Firehose.Company extends Firehose.Object
     
   ###
   Fetch a companies properties based on `id`, `knowledgeBaseSubdomain` or `knowledgeBaseCustomDomain`.
-  @returns [jqXHR Promise] Promise
+  @return [jqXHR Promise] Promise
   ###
   fetch: ->
     if @id?
@@ -241,7 +241,7 @@ class Firehose.Company extends Firehose.Object
  
   ###
   Persists any changes you've made to the company to the server. Properties that can be updated: `title`, `fetch_automatically`
-  @returns [jqXHR Promise] Promise
+  @return [jqXHR Promise] Promise
   ###
   save: ->
     if @id?
@@ -259,7 +259,7 @@ class Firehose.Company extends Firehose.Object
     
   ###
   Force a company to fetch it's accounts right now. (otherwise it's about every 10 minutes if `fetch_automatically` is true)
-  @returns [jqXHR Promise] Promise
+  @return [jqXHR Promise] Promise
   ###
   forceChannelsFetch: ->
     params = 
@@ -270,7 +270,7 @@ class Firehose.Company extends Firehose.Object
   ###
   Destroy a company. This will destroy all data associated with the company, including customers, interactions, notes, etc. It is asynchronous, so it will
   not be deleted immediately but in the background over the course of possibly an hour.
-  @returns [jqXHR Promise] Promise
+  @return [jqXHR Promise] Promise
   ###
   destroy: ->
     params = 
@@ -278,7 +278,16 @@ class Firehose.Company extends Firehose.Object
     Firehose.client.delete( params ).done =>
       Firehose.Agent.loggedInAgent.companies.dropObject this
     
-    
+  ###
+  The customers of a company, filtered by a criteria.
+  @param criteria [Object] A hash of criteria by which customers should be searched. 
+  @option criteria [string] filter "everything" or "unresolved"
+  @option criteria [string] channel A comma seperated list of channels to fetch (e.g. "twitter,email"). Omit to include all channels.
+  @option criteria [string] sort "newest_first" or "oldest_first"
+  @option criteria [string] search_text Any text that will be searched for an a customers name, email/twitter/facebook accunt name, and interaction body.
+  @option criteria [string] preFetch Any one channel. If included, the server will synchronously fetch the channel specified. (e.g. "twitter")
+  @return [RemoteArray<Customer>] The customer that matched the criteria.
+  ###  
   customersWithCriteria: (criteria) ->
     criteria ?= {}
     params =
@@ -296,6 +305,10 @@ class Firehose.Company extends Firehose.Object
     customers
       
       
+  ###
+  The notifications of a company.
+  @return [RemoteArray<TwitterAccount>] the Twitter accounts
+  ###
   notifications: ->
     unless @_notifications?
       this._setIfNotNull "_notifications", new Firehose.RemoteArray "companies/#{@id}/notifications", null, (json) =>
@@ -304,8 +317,10 @@ class Firehose.Company extends Firehose.Object
     @_notifications
     
     
-  # The Twitter accounts of a company
-  # @return [RemoteArray<TwitterAccount>] the Twitter accounts
+  ###
+  The Twitter accounts of a company
+  @return [RemoteArray<TwitterAccount>] the Twitter accounts
+  ###
   twitterAccounts: ->
     unless @_twitterAccounts?
       this._setIfNotNull "_twitterAccounts", new Firehose.RemoteArray "companies/#{@id}/twitter_accounts", null, (json) =>
@@ -314,6 +329,10 @@ class Firehose.Company extends Firehose.Object
     @_twitterAccounts
     
   
+  ### 
+  The Facebook accounts of a company.
+  @return [RemoteArray<facebookAccount>] The found articles.
+  ###
   facebookAccounts: ->
     unless @_facebookAccounts?
       this._setIfNotNull "_facebookAccounts", new Firehose.RemoteArray "companies/#{@id}/facebook_accounts", null, (json) =>
@@ -322,6 +341,10 @@ class Firehose.Company extends Firehose.Object
     @_facebookAccounts
     
     
+  ### 
+  The email accounts of a company.
+  @return [RemoteArray<EmailAccount>] The found articles.
+  ###
   emailAccounts: ->
     unless @_emailAccounts?
       this._setIfNotNull "_emailAccounts", new Firehose.RemoteArray "companies/#{@id}/email_accounts", null, (json) =>
@@ -329,7 +352,10 @@ class Firehose.Company extends Firehose.Object
       @_emailAccounts.sortOn "username"
     @_emailAccounts
     
-    
+  ### 
+  All the articles of a company.
+  @return [RemoteArray<Article>] The found articles.
+  ###
   articles: ->
     unless @_articles?
       articlesRemoteArray = new Firehose.RemoteArray "companies/#{@id}/articles", null, (json) =>
@@ -342,8 +368,8 @@ class Firehose.Company extends Firehose.Object
   ###
   Returns a remote array of articles found by searching for `text`.
   @param text [string] The string of text you want to search for articles containing.
-  @note: Every time you call this on a company, you are creating a new remote array 
-  and any previously created have their network requests cancelled.
+  @note Every time you call this on a company, you are creating a new remote array and any previously created have their network requests cancelled.
+  @return [RemoteArray<Article>] The found articles.
   ### 
   searchedArticles: (text) ->
     currentSearchedArticles = this.get '_searchedArticles'
@@ -357,7 +383,11 @@ class Firehose.Company extends Firehose.Object
     this._setIfNotNull "_searchedArticles", articlesRemoteArray
     articlesRemoteArray
     
-             
+  
+  ###
+  Associates an agent with a company.
+  @param agent [Agent] The agent to add.
+  ### 
   addAgent: (agent) ->
     params = 
       route: "companies/#{@id}/agents/#{agent.id}"
@@ -365,6 +395,10 @@ class Firehose.Company extends Firehose.Object
       @agents.insertObject agent
     
   
+  ###
+  Removes an agent's association with a company.
+  @param agent [Agent] The agent to remove.
+  ### 
   removeAgent: (agent) ->
     params = 
       route: "companies/#{@id}/agents/#{agent.id}"
