@@ -1509,6 +1509,18 @@ Firehose.Company = (function(_super) {
     });
   };
 
+  /*
+  The customers of a company, filtered by a criteria.
+  @param criteria [Object] A hash of criteria by which customers should be searched. 
+  @option criteria [string] filter "everything" or "unresolved"
+  @option criteria [string] channel A comma seperated list of channels to fetch (e.g. "twitter,email"). Omit to include all channels.
+  @option criteria [string] sort "newest_first" or "oldest_first"
+  @option criteria [string] search_text Any text that will be searched for an a customers name, email/twitter/facebook accunt name, and interaction body.
+  @option criteria [string] preFetch Any one channel. If included, the server will synchronously fetch the channel specified. (e.g. "twitter")
+  @return [RemoteArray<Customer>] The customer that matched the criteria.
+  */
+
+
   Company.prototype.customersWithCriteria = function(criteria) {
     var customers, params,
       _this = this;
@@ -1537,6 +1549,12 @@ Firehose.Company = (function(_super) {
     return customers;
   };
 
+  /*
+  The notifications of a company.
+  @return [RemoteArray<TwitterAccount>] the Twitter accounts
+  */
+
+
   Company.prototype.notifications = function() {
     var _this = this;
     if (this._notifications == null) {
@@ -1547,6 +1565,12 @@ Firehose.Company = (function(_super) {
     }
     return this._notifications;
   };
+
+  /*
+  The Twitter accounts of a company
+  @return [RemoteArray<TwitterAccount>] the Twitter accounts
+  */
+
 
   Company.prototype.twitterAccounts = function() {
     var _this = this;
@@ -1559,6 +1583,12 @@ Firehose.Company = (function(_super) {
     return this._twitterAccounts;
   };
 
+  /* 
+  The Facebook accounts of a company.
+  @return [RemoteArray<facebookAccount>] The found articles.
+  */
+
+
   Company.prototype.facebookAccounts = function() {
     var _this = this;
     if (this._facebookAccounts == null) {
@@ -1570,6 +1600,12 @@ Firehose.Company = (function(_super) {
     return this._facebookAccounts;
   };
 
+  /* 
+  The email accounts of a company.
+  @return [RemoteArray<EmailAccount>] The found articles.
+  */
+
+
   Company.prototype.emailAccounts = function() {
     var _this = this;
     if (this._emailAccounts == null) {
@@ -1580,6 +1616,12 @@ Firehose.Company = (function(_super) {
     }
     return this._emailAccounts;
   };
+
+  /* 
+  All the articles of a company.
+  @return [RemoteArray<Article>] The found articles.
+  */
+
 
   Company.prototype.articles = function() {
     var articlesRemoteArray,
@@ -1597,8 +1639,8 @@ Firehose.Company = (function(_super) {
   /*
   Returns a remote array of articles found by searching for `text`.
   @param text [string] The string of text you want to search for articles containing.
-  @note Every time you call this on a company, you are creating a new remote array 
-  and any previously created have their network requests cancelled.
+  @note Every time you call this on a company, you are creating a new remote array and any previously created have their network requests cancelled.
+  @return [RemoteArray<Article>] The found articles.
   */
 
 
@@ -1622,6 +1664,12 @@ Firehose.Company = (function(_super) {
     return articlesRemoteArray;
   };
 
+  /*
+  Associates an agent with a company.
+  @param agent [Agent] The agent to add.
+  */
+
+
   Company.prototype.addAgent = function(agent) {
     var params,
       _this = this;
@@ -1632,6 +1680,12 @@ Firehose.Company = (function(_super) {
       return _this.agents.insertObject(agent);
     });
   };
+
+  /*
+  Removes an agent's association with a company.
+  @param agent [Agent] The agent to remove.
+  */
+
 
   Company.prototype.removeAgent = function(agent) {
     var params,
@@ -4156,6 +4210,13 @@ Firehose.Article = (function(_super) {
   */
 
 
+  Article.prototype.slug = null;
+
+  /*
+  @property [string]
+  */
+
+
   Article.prototype.title = null;
 
   /*
@@ -4227,6 +4288,7 @@ Firehose.Article = (function(_super) {
   Article.prototype._populateWithJSON = function(json) {
     this._setIfNotNull("title", json.title);
     this._setIfNotNull("body", json.body);
+    this._setIfNotNull("slug", json.slug);
     return Article.__super__._populateWithJSON.call(this, json);
   };
 

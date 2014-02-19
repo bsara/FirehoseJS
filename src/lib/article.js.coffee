@@ -12,6 +12,11 @@ class Firehose.Article extends Firehose.Object
   ###
   @property [string] 
   ###
+  slug: null
+  
+  ###
+  @property [string] 
+  ###
   title: null
   
   ###
@@ -67,6 +72,7 @@ class Firehose.Article extends Firehose.Object
   _populateWithJSON: (json) ->
     this._setIfNotNull "title", json.title
     this._setIfNotNull "body",  json.body
+    this._setIfNotNull "slug",  json.slug
     super json
     
     
