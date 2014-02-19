@@ -271,9 +271,9 @@ Firehose.Environment = (function() {
     this._inferEnvironmentFromURL();
     isHostnameLocal = this._isLocalFor(app);
     if (isHostnameLocal) {
-      return "http://" + (subdomain && subdomain + "." || "") + this._appHostNames['local'][app] + ":" + (this._portFor(app));
+      return "http://" + (subdomain && subdomain + "." || "") + this._appDomainNames['local'][app] + ":" + (this._portFor(app));
     } else {
-      return "https://" + (this._hostnamePrefixFor(app)) + this._appHostNames[this._server][app];
+      return "https://" + (this._hostnamePrefixFor(app)) + this._appDomainNames[this._server][app];
     }
   };
 
@@ -315,7 +315,7 @@ Firehose.Environment = (function() {
     kb: 7
   };
 
-  Environment.prototype._appHostNames = {
+  Environment.prototype._appDomainNames = {
     local: {
       API: "localhost",
       browser: "localhost",
@@ -408,36 +408,35 @@ Firehose.Environment = (function() {
   };
 
   Environment.prototype._inferEnvironmentFromURL = function() {
-    var currentURL, environmentNumber, key, serverNumber, value, _ref, _ref1, _ref2, _results;
+    var currentURL, domainName, environmentNumber, key, serverNumber, value, _ref, _ref1;
     currentURL = document.createElement("a");
     currentURL.href = window.unitTestDocumentURL || document.URL;
-    if (_ref = currentURL.hostname, __indexOf.call(this._values(this._appHostNames['production']), _ref) >= 0) {
+    domainName = currentURL.hostname.split('.').slice(-2).join(".");
+    if (__indexOf.call(this._values(this._appDomainNames['production']), domainName) >= 0) {
       this._server = 'production';
-      return this._environment = 'production';
-    } else if (currentURL.hostname.match(/beta/)) {
-      this._server = 'production';
-      return this._environment = 'beta';
+      this._environment = 'production';
     } else {
+      this._server = 'local';
+      this._environment = 'development';
       serverNumber = parseInt(currentURL.port[1]);
-      _ref1 = this._serverNumber;
-      for (key in _ref1) {
-        value = _ref1[key];
+      _ref = this._serverNumber;
+      for (key in _ref) {
+        value = _ref[key];
         if (value === serverNumber) {
           this._server = key;
         }
       }
       environmentNumber = parseInt(currentURL.port[2]);
-      _ref2 = this._environmentNumber;
-      _results = [];
-      for (key in _ref2) {
-        value = _ref2[key];
+      _ref1 = this._environmentNumber;
+      for (key in _ref1) {
+        value = _ref1[key];
         if (value === environmentNumber) {
-          _results.push(this._environment = key);
-        } else {
-          _results.push(void 0);
+          this._environment = key;
         }
       }
-      return _results;
+    }
+    if (currentURL.hostname.match(/beta/)) {
+      return this._environment = 'beta';
     }
   };
 

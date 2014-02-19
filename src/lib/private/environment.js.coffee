@@ -6,9 +6,9 @@ class Firehose.Environment
     this._inferEnvironmentFromURL()
     isHostnameLocal = this._isLocalFor( app )
     if isHostnameLocal
-      "http://#{subdomain && subdomain + "." || ""}#{@_appHostNames['local'][app]}:#{this._portFor(app)}"
+      "http://#{subdomain && subdomain + "." || ""}#{@_appDomainNames['local'][app]}:#{this._portFor(app)}"
     else
-      "https://#{this._hostnamePrefixFor(app)}#{@_appHostNames[@_server][app]}"
+      "https://#{this._hostnamePrefixFor(app)}#{@_appDomainNames[@_server][app]}"
     
     
   serviceToken: (service) ->
@@ -57,7 +57,7 @@ class Firehose.Environment
   
   ## Mappings
   
-  _appHostNames:
+  _appDomainNames:
     local:
       API          : "localhost"
       browser      : "localhost"
@@ -141,25 +141,28 @@ class Firehose.Environment
   _inferEnvironmentFromURL: () ->
     currentURL      = document.createElement "a"
     currentURL.href = window.unitTestDocumentURL || document.URL
+    domainName      = currentURL.hostname.split('.').slice(-2).join(".")
       
-    if currentURL.hostname in @_values @_appHostNames['production']
-      @_server = 'production'
+    if domainName in this._values @_appDomainNames['production']
+      @_server      = 'production'
       @_environment = 'production'
     
-    else if currentURL.hostname.match /beta/
-      @_server = 'production'
-      @_environment = 'beta'
-      
     else
+      @_server      = 'local'
+      @_environment = 'development'
+      
       serverNumber = parseInt currentURL.port[1]
       for key, value of @_serverNumber
         if value == serverNumber
           @_server = key
-          
+      
       environmentNumber = parseInt currentURL.port[2]
       for key, value of @_environmentNumber
         if value == environmentNumber
           @_environment = key
+      
+    if currentURL.hostname.match /beta/
+      @_environment = 'beta'
       
           
     
