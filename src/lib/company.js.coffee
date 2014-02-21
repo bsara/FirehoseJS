@@ -437,7 +437,7 @@ class Firehose.Company extends Firehose.Object
           @discounts.push
             name:           discount.name
             applyType:      discount.apply_type
-            amount:         discount.amount
+            amount:         if discount.apply_type is "fixed amount" then (discount.amount / 100.0).toFixed(2) else discount.amount
             expirationDate: if discount.expiration_date then Date.parse( discount.expiration_date )
     if @token
       fetchBlock()

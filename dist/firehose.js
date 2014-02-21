@@ -1739,7 +1739,7 @@ Firehose.Company = (function(_super) {
           _results.push(_this.discounts.push({
             name: discount.name,
             applyType: discount.apply_type,
-            amount: discount.amount,
+            amount: discount.apply_type === "fixed amount" ? (discount.amount / 100.0).toFixed(2) : discount.amount,
             expirationDate: discount.expiration_date ? Date.parse(discount.expiration_date) : void 0
           }));
         }
