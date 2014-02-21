@@ -1,4 +1,6 @@
-module "Company"
+module "Company",
+  teardown: ->
+    window.unitTestDocumentURL = null
 
 firehoseTest 'Create', 13, (agent) ->
   company = Firehose.Company.companyWithTitle( Faker.Lorem.words(1).join(" "), agent )
@@ -85,9 +87,11 @@ firehoseTest 'Fetch (throws error because not enough info is set)', 1, (agent) -
     start()
 
     
-firehoseTest 'Update', 3, (agent) ->
+firehoseTest 'Update', 5, (agent) ->
   company = agent.companies[0]
   company.title = "Adam's Company"
+  company.knowledgeBaseSubdomain = "mystrou"
+  company.knowledgeBaseCustomDomain = "support.firehoseapp.com"
   company.save()
   .done (data, textStatus) ->
     equal textStatus, "nocontent"
@@ -95,6 +99,8 @@ firehoseTest 'Update', 3, (agent) ->
     .done (data, textStatus) ->
       equal textStatus, "success"
       equal company.title, "Adam's Company"
+      equal company.knowledgeBaseSubdomain, "mystrou"
+      equal company.knowledgeBaseCustomDomain, "support.firehoseapp.com"
       start()
     .fail ->
       start()
@@ -254,4 +260,25 @@ firehoseTest 'Add and Remove Agent', 2, (agent) ->
     .fail (jqXHR, textStatus, errorThrown) ->
       start()
   
+firehoseTest 'Produce URL for companys kb', 5, (agent) ->
+  company      = agent.companies[0]
+  subdomain    = company.get('knowledgeBaseSubdomain')
+  customDomain = company.get('knowledgeBaseCustomDomain')
   
+  window.unitTestDocumentURL = "http://localhost:4001"
+  ok company.kbBaseURL() == "http://#{subdomain}.lvh.me:4007"
+  
+  window.unitTestDocumentURL = "http://localhost:4201"
+  ok company.kbBaseURL() == "http://#{subdomain}.lvh.me:4207"
+  
+  window.unitTestDocumentURL = "https://beta.firehoseapp.com"
+  ok company.kbBaseURL() == "https://#{subdomain}.firehosesupport.com"
+  
+  window.unitTestDocumentURL = "https://www.firehoseapp.com"
+  ok company.kbBaseURL() == "http://#{customDomain}"
+  
+  company.set('knowledgeBaseCustomDomain', null)
+  window.unitTestDocumentURL = "https://www.firehoseapp.com"
+  ok company.kbBaseURL() == "https://#{subdomain}.firehosehelp.com"
+  
+  start()

@@ -4,16 +4,27 @@ class Firehose.Environment
   
   baseURLFor: (app, subdomain) ->
     this._inferEnvironmentFromURL()
-    isHostnameLocal = this._isLocalFor( app )
-    if isHostnameLocal
-      "http://#{subdomain && subdomain + "." || ""}#{@_appDomainNames['local'][app]}:#{this._portFor(app)}"
+    subdomain = subdomain && subdomain + "." || ""
+    
+    if @_environment == 'production'
+      "https://#{subdomain}#{@_appDomainNames['production'][app]}"
+    else if @_environment == 'beta'
+      "https://#{subdomain}#{@_appBetaDomainNames[app]}"
     else
-      "https://#{this._hostnamePrefixFor(app)}#{@_appDomainNames[@_server][app]}"
+      if @_appTypes[app] == "server" and @_server != 'local'
+        "https://#{subdomain}#{@_appDomainNames[@_server][app]}"
+      else
+        "http://#{subdomain}#{@_appDomainNames['local'][app]}:#{this._portFor(app)}"
     
     
   serviceToken: (service) ->
     this._inferEnvironmentFromURL()
     @_serviceKeys[@_environment][service]
+    
+    
+  environment: ->
+    this._inferEnvironmentFromURL()
+    @_environment
   
   
   # private
@@ -86,6 +97,16 @@ class Firehose.Environment
       tweetlonger  : "tl.frh.io"
       kb           : "firehosehelp.com"
     
+  _appBetaDomainNames:
+    API          : @::_appDomainNames['production']['API']
+    browser      : "beta.firehoseapp.com"
+    billing      : @::_appDomainNames['production']['billing']
+    frhio        : @::_appDomainNames['production']['frhio']
+    marketing    : "beta.getfirehose.com"
+    settings     : "beta_settings.firehoseapp.com"
+    tweetlonger  : "beta_tl.frh.io"
+    kb           : "firehosesupport.com"
+    
   _appTypes:
     API          : "server"
     browser      : "client"
@@ -96,26 +117,6 @@ class Firehose.Environment
     tweetlonger  : "client"
     kb           : "client"
     
-  _appBetaPrefix:
-    API          : ""
-    browser      : "beta."
-    billing      : ""
-    frhio        : ""
-    marketing    : "beta."
-    settings     : "beta_"
-    tweetlonger  : "beta_"
-    kb           : "beta."
-    
-  _appSpecialPort:
-    API          : false
-    browser      : false
-    billing      : false
-    frhio        : false
-    marketing    : false
-    settings     : false
-    tweetlonger  : false
-    kb           : 4567
-  
   _serviceKeys:
     development:
       stripe  : "pk_test_oIyMNHil987ug1v8owRhuJwr"
@@ -136,18 +137,18 @@ class Firehose.Environment
     beta:         false
     production:   false
     
-      
-    
+   
+  ## methods      
+  
   _inferEnvironmentFromURL: () ->
     currentURL      = document.createElement "a"
     currentURL.href = window.unitTestDocumentURL || document.URL
     domainName      = currentURL.hostname.split('.').slice(-2).join(".")
       
-    if domainName in this._values @_appDomainNames['production']
-      @_server      = 'production'
-      @_environment = 'production'
+    @_server      = 'production'
+    @_environment = 'production'
     
-    else
+    if parseInt(currentURL.port) > 0
       @_server      = 'local'
       @_environment = 'development'
       
@@ -161,13 +162,11 @@ class Firehose.Environment
         if value == environmentNumber
           @_environment = key
       
-    if currentURL.hostname.match /beta/
+    if currentURL.hostname.match /^beta(\.|_)/
       @_environment = 'beta'
       
           
-    
   _portFor: (app) ->
-    return @_appSpecialPort[app] if @_appSpecialPort[app] != false
     port = "" 
     port += @_typeNumber[@_appTypes[app]]     
     port += if @_appTypes[app] == "client" then @_serverNumber[@_server] else 0
@@ -175,21 +174,9 @@ class Firehose.Environment
     port += @_appNumber[app]
     port
     
+      
+  ## helpers
   
-  _hostnamePrefixFor: (app) ->
-    if @_appTypes[app] == "client" and @_environment == 'beta'
-      @_appBetaPrefix[app]
-    else
-      ""
-      
-  _isLocalFor: (app) ->
-    if @_appTypes[app] == "server" and @_server == "production"
-      false
-    else if @_isEnvironmentLocal[@_environment]
-      true
-    else
-      false
-      
   _values: (obj) ->
     values  = []
     for key, value of obj

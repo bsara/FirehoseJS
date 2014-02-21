@@ -444,7 +444,20 @@ class Firehose.Company extends Firehose.Object
     else
       this.fetch().then ->
         fetchBlock()
-    
+        
+        
+  ###
+  Returns the base URL for the company's knowledge base for the current environment.
+  @note In production, if a custom domain is set on the company, it returns that. Otherwise, it returns the companies subdomain URL. (i.e. msytrou.firehosehelp.com)
+  @note The beta URL for the kb is firehosesupport.com. So instead of mystrou.firehosehelp.com like in production, the beta URL would be mystrou.firehosesupport.com.
+  @return [string] The URL for the company's knowledge base in the current environment.
+  ###
+  kbBaseURL: ->
+    if Firehose.environment() == 'production' and customDomain = this.get('knowledgeBaseCustomDomain')
+      "http://#{customDomain}"
+    else 
+     Firehose.baseURLFor 'kb', this.get('knowledgeBaseSubdomain')
+      
     
   # @nodoc
   _populateWithJSON: (json) ->
@@ -482,6 +495,9 @@ class Firehose.Company extends Firehose.Object
     company:
       title:                @title
       fetch_automatically:  @fetchAutomatically
+      company_settings_attributes:
+        kb_subdomain:       @knowledgeBaseSubdomain     if @knowledgeBaseSubdomain?
+        kb_custom_domain:   @knowledgeBaseCustomDomain  if @knowledgeBaseCustomDomain
       
 
   # @nodoc

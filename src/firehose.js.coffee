@@ -7,7 +7,17 @@ window.Firehose = {}
 
 
 ###
+Returns the current environment that FirehoseJS is running in based on the current docment URL.
+@return   [string] The current environment. 'production', 'beta', 'test' or 'development'.
+###
+Firehose.environment = ->
+  Firehose.client.environment._inferEnvironmentFromURL()
+  Firehose.client.environment._environment
+
+
+###
 @param    server [string] The name of the server. Possible values: 'API', 'browser', 'billing', 'frhio', 'marketing', 'settings'
+@param    subdomain [string] If the generated url should have a subdomain you can optionally provide it.
 @return   [string] The root url of the server based on the current environement.
 @example  Create a URL to the login page of the browser app.
   "#{Firehose.baseURLFor('browser')/home/login"

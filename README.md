@@ -2,11 +2,16 @@
 
 Javascript library for interacting with the Firehose API.
 
+
+
+
 ## Getting Started
 
 Add this to your bower.json file:
 
     "firehosejs": "mysterioustrousers/Firehose"
+
+
 
 ## Documentation
 
@@ -62,6 +67,9 @@ of the browser client.
 
 See the [Documentation](https://docs.firehoseapp.com/firehosejs)
 
+
+
+
 ## Contributing
 
 Make sure you install the following npm packages:
@@ -76,7 +84,9 @@ Make sure these two env vars are set in your .bash_profile:
     
 So that the start_server.sh script knows where your apps are to start them for testing.
 
-You must also make sure that both your local API and billing apps have `rake db:create RAILS_ENV=testclient` and `rake db:migrate RAILS_ENV=testclient`
+You must also make sure that both your local API and billing apps have run `rake db:create RAILS_ENV=testclient` and `rake db:migrate RAILS_ENV=testclient`
+
+
 
 
 #### Documentation

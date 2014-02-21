@@ -52,7 +52,7 @@ test 'produce browser development URL', ->
   ok Firehose.baseURLFor('marketing') == "http://localhost:4004"
   ok Firehose.baseURLFor('settings') == "http://localhost:4005"
   ok Firehose.baseURLFor('tweetlonger') == "http://localhost:4006"
-  ok Firehose.baseURLFor('kb', 'mystrou') == "http://mystrou.lvh.me:4567"
+  ok Firehose.baseURLFor('kb', 'mystrou') == "http://mystrou.lvh.me:4007"
   
 test 'produce browser development URL in test environment', ->
   window.unitTestDocumentURL = "http://localhost:4011"
@@ -63,7 +63,7 @@ test 'produce browser development URL in test environment', ->
   ok Firehose.baseURLFor('marketing') == "http://localhost:4014"
   ok Firehose.baseURLFor('settings') == "http://localhost:4015"
   ok Firehose.baseURLFor('tweetlonger') == "http://localhost:4016"
-  ok Firehose.baseURLFor('kb', 'mt') == "http://mt.lvh.me:4567"
+  ok Firehose.baseURLFor('kb', 'mt') == "http://mt.lvh.me:4017"
   
 test 'produce browser development pointing at production URL', ->
   window.unitTestDocumentURL = "http://localhost:4201"
@@ -74,7 +74,7 @@ test 'produce browser development pointing at production URL', ->
   ok Firehose.baseURLFor('marketing') == "http://localhost:4204"
   ok Firehose.baseURLFor('settings') == "http://localhost:4205"
   ok Firehose.baseURLFor('tweetlonger') == "http://localhost:4206"
-  ok Firehose.baseURLFor('kb', 'mystrou') == "http://mystrou.lvh.me:4567"
+  ok Firehose.baseURLFor('kb', 'mystrou') == "http://mystrou.lvh.me:4207"
   
 test 'produce browser development pointing at production URL', ->
   window.unitTestDocumentURL = "https://getfirehose.com"
@@ -86,6 +86,7 @@ test 'produce browser development pointing at production URL', ->
   ok Firehose.baseURLFor('settings') == "https://settings.firehoseapp.com"
   ok Firehose.baseURLFor('tweetlonger') == "https://tl.frh.io"
   ok Firehose.baseURLFor('kb') == "https://firehosehelp.com"
+  ok Firehose.baseURLFor('kb', 'mystrou') == "https://mystrou.firehosehelp.com"
 
 test 'produce browser beta URLs', ->
   window.unitTestDocumentURL = "https://beta.firehoseapp.com"
@@ -96,4 +97,17 @@ test 'produce browser beta URLs', ->
   ok Firehose.baseURLFor('marketing') == "https://beta.getfirehose.com"
   ok Firehose.baseURLFor('settings') == "https://beta_settings.firehoseapp.com"
   ok Firehose.baseURLFor('tweetlonger') == "https://beta_tl.frh.io"
-  ok Firehose.baseURLFor('kb') == "https://beta.firehosehelp.com"
+  ok Firehose.baseURLFor('kb') == "https://firehosesupport.com"
+  ok Firehose.baseURLFor('kb', 'mystrou') == "https://mystrou.firehosesupport.com"
+  
+test 'produce URLS from custom kb domain', ->
+  window.unitTestDocumentURL = "http://support.somecompany.com"
+  ok Firehose.baseURLFor('API') == "https://api.firehoseapp.com"
+  ok Firehose.baseURLFor('browser') == "https://firehoseapp.com"
+  ok Firehose.baseURLFor('billing') == "https://billing.firehoseapp.com"
+  ok Firehose.baseURLFor('frhio') == "https://frh.io"
+  ok Firehose.baseURLFor('marketing') == "https://getfirehose.com"
+  ok Firehose.baseURLFor('settings') == "https://settings.firehoseapp.com"
+  ok Firehose.baseURLFor('tweetlonger') == "https://tl.frh.io"
+  ok Firehose.baseURLFor('kb') == "https://firehosehelp.com"
+  ok Firehose.baseURLFor('kb', 'mystrou') == "https://mystrou.firehosehelp.com"
