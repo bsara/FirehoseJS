@@ -1,5 +1,7 @@
 # load in bash profile and change to firehose rails directory
-source ~/.bash_profile
+if [ -e "~/.bash_profile" ]; then
+  source ~/.bash_profile
+fi
 
 
 cd $FH_API_PATH

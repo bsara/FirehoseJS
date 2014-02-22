@@ -1734,8 +1734,8 @@ Firehose.Company = (function(_super) {
         _this._setIfNotNull("isCurrent", json.current);
         _this._setIfNotNull("hasSuccessfulBilling", json.has_successful_billing);
         totalDiscount = 0.0;
-        discountAmt = discount.amount;
-        discountAmtStr = discountAmt + "%";
+        discountAmt = 0.0;
+        discountAmtStr = "";
         _this.discounts = [];
         _ref1 = json.discount_list;
         for (_i = 0, _len = _ref1.length; _i < _len; _i++) {
