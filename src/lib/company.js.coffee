@@ -468,7 +468,7 @@ class Firehose.Company extends Firehose.Object
             amountStr:      discountAmtStr
             expirationDate: if discount.expiration_date then Date.parse( discount.expiration_date )
 
-        @nextBillAmountAfterDiscounts = if (Number(totalDiscount) > Number(@nextBillAmountBeforeDiscounts)) then 0 else @nextBillAmountBeforeDiscounts - totalDiscount
+        @nextBillAmountAfterDiscounts = (if (Number(totalDiscount) > Number(@nextBillAmountBeforeDiscounts)) then 0 else @nextBillAmountBeforeDiscounts - totalDiscount).toFixed(2)
 
     if @token
       fetchBlock()

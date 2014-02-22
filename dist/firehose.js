@@ -1757,7 +1757,7 @@ Firehose.Company = (function(_super) {
             expirationDate: discount.expiration_date ? Date.parse(discount.expiration_date) : void 0
           });
         }
-        return _this.nextBillAmountAfterDiscounts = Number(totalDiscount) > Number(_this.nextBillAmountBeforeDiscounts) ? 0 : _this.nextBillAmountBeforeDiscounts - totalDiscount;
+        return _this.nextBillAmountAfterDiscounts = (Number(totalDiscount) > Number(_this.nextBillAmountBeforeDiscounts) ? 0 : _this.nextBillAmountBeforeDiscounts - totalDiscount).toFixed(2);
       });
     };
     if (this.token) {
