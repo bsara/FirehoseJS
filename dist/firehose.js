@@ -1286,6 +1286,20 @@ Firehose.Company = (function(_super) {
   Company.prototype.billingRate = 8.0;
 
   /*
+  @property [float]
+  */
+
+
+  Company.prototype.nextBillAmountBeforeDiscounts = 0.0;
+
+  /*
+  @property [float]
+  */
+
+
+  Company.prototype.nextBillAmountAfterDiscounts = 0.0;
+
+  /*
   @property [Date]
   */
 
@@ -1705,32 +1719,45 @@ Firehose.Company = (function(_super) {
         route: "entities/" + _this.id
       };
       return Firehose.client.get(params).done(function(json) {
-        var discount, _i, _len, _ref1, _results;
+        var discount, discountAmt, discountAmtStr, totalDiscount, _i, _len, _ref1;
         if (json.credit_card != null) {
           _this._setIfNotNull("creditCard", Firehose.CreditCard.creditCardWithID(json.credit_card.id, _this));
           _this.creditCard._populateWithJSON(json.credit_card);
         }
         _this._setIfNotNull("billingEmail", json.email || Firehose.Agent.loggedInAgent.email);
         _this._setIfNotNull("billingRate", (json.rate / 100.0).toFixed(2));
+        _this._setIfNotNull("nextBillAmountBeforeDiscounts", ((_this.billingRate * _this.agents.length) / 100.0).toFixed(2));
         _this._setIfNotNull("trialExpirationDate", Date.parse(json.free_trial_expiration_date) || new Date(+(new Date) + 12096e5));
         _this._setIfNotNull("nextBillingDate", json.next_bill_date ? Date.parse(json.next_bill_date) : void 0);
         _this._setIfNotNull("isGracePeriodOver", json.grace_period_over);
         _this._setIfNotNull("daysLeftInGracePeriod", json.days_left_in_grace_period);
         _this._setIfNotNull("isCurrent", json.current);
         _this._setIfNotNull("hasSuccessfulBilling", json.has_successful_billing);
+        totalDiscount = 0.0;
+        discountAmt = discount.amount;
+        discountAmtStr = discountAmt + "%";
         _this.discounts = [];
         _ref1 = json.discount_list;
-        _results = [];
         for (_i = 0, _len = _ref1.length; _i < _len; _i++) {
           discount = _ref1[_i];
-          _results.push(_this.discounts.push({
+          if (discount.apply_type === "fixed amount") {
+            discountAmt = (discount.amount / 100.0).toFixed(2);
+            discountAmtStr = "$" + discountAmt;
+            totalDiscount += discountAmt;
+          } else {
+            discountAmt = discount.amount;
+            discountAmtStr = discountAmt + "%";
+            totalDiscount += _this.nextBillAmountBeforeDiscounts * (discountAmt / 100);
+          }
+          _this.discounts.push({
             name: discount.name,
             applyType: discount.apply_type,
-            amount: discount.apply_type === "fixed amount" ? (discount.amount / 100.0).toFixed(2) : discount.amount,
+            amount: discountAmt,
+            amountStr: discountAmtStr,
             expirationDate: discount.expiration_date ? Date.parse(discount.expiration_date) : void 0
-          }));
+          });
         }
-        return _results;
+        return _this.nextBillAmountAfterDiscounts = _this.nextBillAmountBeforeDiscounts - totalDiscount;
       });
     };
     if (this.token) {

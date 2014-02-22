@@ -23,9 +23,12 @@ firehoseTest 'Fetch Billing Info', 14, (agent) ->
       ok company.isCurrent?
       ok company.isGracePeriodOver?
       ok company.nextBillingDate?
+      ok company.nextBillAmountBeforeDiscounts?
+      ok company.nextBillAmountAfterDiscounts?
       ok company.trialExpirationDate?
       ok company.discounts.length == 1
       ok company.discounts[0].amount?
+      ok company.discounts[0].amountStr?
       ok company.discounts[0].applyType?
       ok company.discounts[0].expirationDate?
       ok company.discounts[0].name?
