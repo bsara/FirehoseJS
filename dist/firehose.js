@@ -1726,7 +1726,7 @@ Firehose.Company = (function(_super) {
         }
         _this._setIfNotNull("billingEmail", json.email || Firehose.Agent.loggedInAgent.email);
         _this._setIfNotNull("billingRate", (json.rate / 100.0).toFixed(2));
-        _this._setIfNotNull("nextBillAmountBeforeDiscounts", ((_this.billingRate * _this.agents.length) / 100.0).toFixed(2));
+        _this._setIfNotNull("nextBillAmountBeforeDiscounts", (_this.billingRate * _this.agents.length).toFixed(2));
         _this._setIfNotNull("trialExpirationDate", Date.parse(json.free_trial_expiration_date) || new Date(+(new Date) + 12096e5));
         _this._setIfNotNull("nextBillingDate", json.next_bill_date ? Date.parse(json.next_bill_date) : void 0);
         _this._setIfNotNull("isGracePeriodOver", json.grace_period_over);
@@ -1757,7 +1757,7 @@ Firehose.Company = (function(_super) {
             expirationDate: discount.expiration_date ? Date.parse(discount.expiration_date) : void 0
           });
         }
-        return _this.nextBillAmountAfterDiscounts = _this.nextBillAmountBeforeDiscounts - totalDiscount;
+        return _this.nextBillAmountAfterDiscounts = totalDiscount > _this.nextBillAmountBeforeDiscounts ? 0 : _this.nextBillAmountBeforeDiscounts - totalDiscount;
       });
     };
     if (this.token) {

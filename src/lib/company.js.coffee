@@ -437,7 +437,7 @@ class Firehose.Company extends Firehose.Object
         
         this._setIfNotNull "billingEmail",                  json.email || Firehose.Agent.loggedInAgent.email
         this._setIfNotNull "billingRate",                   (json.rate / 100.0).toFixed(2)
-        this._setIfNotNull "nextBillAmountBeforeDiscounts", ((@billingRate * @agents.length) / 100.0).toFixed(2)
+        this._setIfNotNull "nextBillAmountBeforeDiscounts", (@billingRate * @agents.length).toFixed(2)
         this._setIfNotNull "trialExpirationDate",           Date.parse( json.free_trial_expiration_date ) || new Date(+new Date + 12096e5) # 14 days away
         this._setIfNotNull "nextBillingDate",               if json.next_bill_date then Date.parse( json.next_bill_date )
         this._setIfNotNull "isGracePeriodOver",             json.grace_period_over
@@ -468,7 +468,7 @@ class Firehose.Company extends Firehose.Object
             amountStr:      discountAmtStr
             expirationDate: if discount.expiration_date then Date.parse( discount.expiration_date )
 
-        @nextBillAmountAfterDiscounts = @nextBillAmountBeforeDiscounts - totalDiscount
+        @nextBillAmountAfterDiscounts = if totalDiscount > @nextBillAmountBeforeDiscounts then 0 else @nextBillAmountBeforeDiscounts - totalDiscount
 
     if @token
       fetchBlock()
