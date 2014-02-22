@@ -455,11 +455,11 @@ class Firehose.Company extends Firehose.Object
           if discount.apply_type is "fixed amount"
             discountAmt = (discount.amount / 100.0).toFixed(2)
             discountAmtStr = "$" + discountAmt
-            totalDiscount += discountAmt
+            totalDiscount = Number(totalDiscount) + Number(discountAmt)
           else
             discountAmt = discount.amount
             discountAmtStr = discountAmt + "%"
-            totalDiscount += @nextBillAmountBeforeDiscounts * (discountAmt / 100)
+            totalDiscount = Number(totalDiscount) + Number(@nextBillAmountBeforeDiscounts * (discountAmt / 100))
 
           @discounts.push
             name:           discount.name
