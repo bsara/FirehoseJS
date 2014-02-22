@@ -445,11 +445,10 @@ class Firehose.Company extends Firehose.Object
         this._setIfNotNull "isCurrent",                     json.current
         this._setIfNotNull "hasSuccessfulBilling",          json.has_successful_billing
         
-        # TODO: add calcu
-
+        
         totalDiscount = 0.0
-        discountAmt = discount.amount
-        discountAmtStr = discountAmt + "%"
+        discountAmt = 0.0
+        discountAmtStr = ""
 
         @discounts = []
         for discount in json.discount_list
