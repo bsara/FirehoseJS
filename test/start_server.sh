@@ -12,7 +12,7 @@ then
   kill -s 9 $PID 2> /dev/null         # suppresses error if there is no server running or process with that id
 fi
 # prepare the test db and start up the rails server in test environment
-bundle exec rake fh:test:client:prepare
+bundle exec rake fh:test:client:prepare 2> /dev/null
 rails s -e testclient -p 3010 -d
 
 
@@ -25,5 +25,5 @@ then
   kill -s 9 $PID 2> /dev/null         # suppresses error if there is no server running or process with that id
 fi
 # prepare the test db and start up the rails server in test environment
-bundle exec rake fh_billing:test:client:prepare
+bundle exec rake fh_billing:test:client:prepare 2> /dev/null
 rails s -e testclient -p 3012 -d

@@ -578,7 +578,7 @@ Firehose.Client = (function() {
     }
     headers = {
       "Accept": "application/json",
-      "Firehose-Environment": this.environment.environment()
+      "X-Firehose-Environment": this.environment.environment()
     };
     if (auth) {
       if ((this.APIAccessToken != null) && server === 'API') {

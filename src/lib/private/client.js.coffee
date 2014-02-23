@@ -76,7 +76,7 @@ class Firehose.Client
       
     headers = 
       "Accept"                : "application/json",
-      "Firehose-Environment"  : this.environment.environment()
+      "X-Firehose-Environment"  : this.environment.environment()
     
     if auth
       if @APIAccessToken? and server == 'API'
