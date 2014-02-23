@@ -54,7 +54,7 @@ of the browser client.
     	0: API   
     	1: browser
     	2: billing 
-		3: frhio    
+		  3: files    
     	4: marketing 
     	5: settings   
     	6: tweetlonger 

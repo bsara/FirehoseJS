@@ -74,7 +74,9 @@ class Firehose.Client
     if paramStrings.length > 0
       url += "?#{paramStrings.join('&')}"
       
-    headers = { "Accept" : "application/json" }
+    headers = 
+      "Accept"                : "application/json",
+      "Firehose-Environment"  : this.environment.environment()
     
     if auth
       if @APIAccessToken? and server == 'API'

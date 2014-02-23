@@ -4,17 +4,13 @@ class Firehose.Environment
   
   baseURLFor: (app, subdomain) ->
     this._inferEnvironmentFromURL()
-    subdomain = subdomain && subdomain + "." || ""
     
-    if @_environment == 'production'
-      "https://#{subdomain}#{@_appDomainNames['production'][app]}"
-    else if @_environment == 'beta'
-      "https://#{subdomain}#{@_appBetaDomainNames[app]}"
-    else
-      if @_appTypes[app] == "server" and @_server != 'local'
-        "https://#{subdomain}#{@_appDomainNames[@_server][app]}"
-      else
-        "http://#{subdomain}#{@_appDomainNames['local'][app]}:#{this._portFor(app)}"
+    scheme    = this._schemeFor app 
+    subdomain = subdomain && subdomain + "." || ""
+    domain    = this._domainNameFor app
+    port      = this._portFor app 
+    
+    "#{scheme}#{subdomain}#{domain}#{port}"
     
     
   serviceToken: (service) ->
@@ -27,16 +23,18 @@ class Firehose.Environment
     @_environment
   
   
+  
+  
   # private
   
   _server: null
   
   _environment: null
   
-  _subdomain: null
   
   
-  ## Port Numbers
+  
+  ## Mappings (URL Parsing)
   
   # the first digit in the port number
   _typeNumber:
@@ -59,59 +57,64 @@ class Firehose.Environment
     API         : 0
     browser     : 1
     billing     : 2
-    frhio       : 3
+    files       : 3
     marketing   : 4
     settings    : 5
     tweetlonger : 6
     kb          : 7
     
+    
+    
   
-  ## Mappings
+  ## Mappings (URL Generation)
   
   _appDomainNames:
-    local:
-      API          : "localhost"
-      browser      : "localhost"
-      billing      : "localhost"
-      frhio        : "localhost"
-      marketing    : "localhost"
-      settings     : "localhost"
-      tweetlonger  : "localhost"
-      kb           : "lvh.me"
-    mini:
-      API          : "199.19.84.171"
-      browser      : "199.19.84.171"
-      billing      : "199.19.84.171"
-      frhio        : "199.19.84.171"
-      marketing    : "199.19.84.171"
-      settings     : "199.19.84.171"
-      tweetlonger  : "199.19.84.171"
-      kb           : "199.19.84.171"
-    production:
-      API          : "api.firehoseapp.com"
-      browser      : "firehoseapp.com"
-      billing      : "billing.firehoseapp.com"
-      frhio        : "frh.io"
-      marketing    : "getfirehose.com"
-      settings     : "settings.firehoseapp.com"
-      tweetlonger  : "tl.frh.io"
-      kb           : "firehosehelp.com"
-    
-  _appBetaDomainNames:
-    API          : @::_appDomainNames['production']['API']
-    browser      : "beta.firehoseapp.com"
-    billing      : @::_appDomainNames['production']['billing']
-    frhio        : @::_appDomainNames['production']['frhio']
-    marketing    : "beta.getfirehose.com"
-    settings     : "beta_settings.firehoseapp.com"
-    tweetlonger  : "beta_tl.frh.io"
-    kb           : "firehosesupport.com"
+    API:
+      development:  "localhost"
+      test:         "localhost"
+      beta:         "api.firehoseapp.com"
+      production:   "api.firehoseapp.com"
+    browser:
+      development:  "localhost"
+      test:         "localhost"
+      beta:         "beta.firehoseapp.com"
+      production:   "firehoseapp.com"
+    billing:
+      development:  "localhost"
+      test:         "localhost"
+      beta:         "billing.firehoseapp.com"
+      production:   "billing.firehoseapp.com"
+    files:
+      development:  "localhost"
+      test:         "localhost"
+      beta:         "frh.io"
+      production:   "frh.io"
+    marketing:
+      development:  "localhost"
+      test:         "localhost"
+      beta:         "beta.getfirehose.com"
+      production:   "getfirehose.com"
+    settings:
+      development:  "localhost"
+      test:         "localhost"
+      beta:         "beta_settings.firehoseapp.com"
+      production:   "settings.firehoseapp.com"
+    tweetlonger:
+      development:  "localhost"
+      test:         "localhost"
+      beta:         "beta_tl.frh.io"
+      production:   "tl.frh.io"
+    kb:
+      development:  "lvh.me"
+      test:         "lvh.me"
+      beta:         "firehosesupport.com"
+      production:   "firehosehelp.com"
     
   _appTypes:
     API          : "server"
     browser      : "client"
     billing      : "server"
-    frhio        : "server"
+    files        : "server"
     marketing    : "client"
     settings     : "client"
     tweetlonger  : "client"
@@ -131,14 +134,10 @@ class Firehose.Environment
       stripe  : "pk_live_CGPaLboKkpr7tqswA4elf8NQ"
       pusher  : "d3e373f7fac89de7bde8"
       
-  _isEnvironmentLocal:
-    development:  true
-    test:         true
-    beta:         false
-    production:   false
-    
    
-  ## methods      
+   
+   
+  ## methods (URL parsing)
   
   _inferEnvironmentFromURL: () ->
     currentURL      = document.createElement "a"
@@ -165,15 +164,40 @@ class Firehose.Environment
     if currentURL.hostname.match /^beta(\.|_)/
       @_environment = 'beta'
       
+      
+      
+  
+  ## methods (URL Generation)
+      
+  _environmentFor: (app) ->
+    if @_appTypes[app] == 'server' and @_server == 'production'
+      "production"
+    else
+      @_environment
+      
+      
+  _schemeFor: (app) ->
+    environment = this._environmentFor app
+    if environment == 'development' or environment == 'test' or app == 'kb' then "http://" else "https://"
+          
+          
+  _domainNameFor: (app) ->
+    environment = this._environmentFor app
+    @_appDomainNames[app][environment]
+    
           
   _portFor: (app) ->
-    port = "" 
+    environment = this._environmentFor app
+    return "" if environment == 'production' or environment == 'beta'
+    port = ":" 
     port += @_typeNumber[@_appTypes[app]]     
     port += if @_appTypes[app] == "client" then @_serverNumber[@_server] else 0
-    port += @_environmentNumber[@_environment]
+    port += @_environmentNumber[environment]
     port += @_appNumber[app]
     port
     
+      
+      
       
   ## helpers
   

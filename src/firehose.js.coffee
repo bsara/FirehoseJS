@@ -16,7 +16,7 @@ Firehose.environment = ->
 
 
 ###
-@param    server [string] The name of the server. Possible values: 'API', 'browser', 'billing', 'frhio', 'marketing', 'settings'
+@param    server [string] The name of the server. Possible values: 'API', 'browser', 'billing', 'files', 'marketing', 'settings'
 @param    subdomain [string] If the generated url should have a subdomain you can optionally provide it.
 @return   [string] The root url of the server based on the current environement.
 @example  Create a URL to the login page of the browser app.

@@ -18,7 +18,7 @@ Firehose.environment = function() {
 };
 
 /*
-@param    server [string] The name of the server. Possible values: 'API', 'browser', 'billing', 'frhio', 'marketing', 'settings'
+@param    server [string] The name of the server. Possible values: 'API', 'browser', 'billing', 'files', 'marketing', 'settings'
 @param    subdomain [string] If the generated url should have a subdomain you can optionally provide it.
 @return   [string] The root url of the server based on the current environement.
 @example  Create a URL to the login page of the browser app.
@@ -277,19 +277,13 @@ Firehose.Environment = (function() {
   function Environment() {}
 
   Environment.prototype.baseURLFor = function(app, subdomain) {
+    var domain, port, scheme;
     this._inferEnvironmentFromURL();
+    scheme = this._schemeFor(app);
     subdomain = subdomain && subdomain + "." || "";
-    if (this._environment === 'production') {
-      return "https://" + subdomain + this._appDomainNames['production'][app];
-    } else if (this._environment === 'beta') {
-      return "https://" + subdomain + this._appBetaDomainNames[app];
-    } else {
-      if (this._appTypes[app] === "server" && this._server !== 'local') {
-        return "https://" + subdomain + this._appDomainNames[this._server][app];
-      } else {
-        return "http://" + subdomain + this._appDomainNames['local'][app] + ":" + (this._portFor(app));
-      }
-    }
+    domain = this._domainNameFor(app);
+    port = this._portFor(app);
+    return "" + scheme + subdomain + domain + port;
   };
 
   Environment.prototype.serviceToken = function(service) {
@@ -305,8 +299,6 @@ Firehose.Environment = (function() {
   Environment.prototype._server = null;
 
   Environment.prototype._environment = null;
-
-  Environment.prototype._subdomain = null;
 
   Environment.prototype._typeNumber = {
     server: 3,
@@ -328,7 +320,7 @@ Firehose.Environment = (function() {
     API: 0,
     browser: 1,
     billing: 2,
-    frhio: 3,
+    files: 3,
     marketing: 4,
     settings: 5,
     tweetlonger: 6,
@@ -336,54 +328,61 @@ Firehose.Environment = (function() {
   };
 
   Environment.prototype._appDomainNames = {
-    local: {
-      API: "localhost",
-      browser: "localhost",
-      billing: "localhost",
-      frhio: "localhost",
-      marketing: "localhost",
-      settings: "localhost",
-      tweetlonger: "localhost",
-      kb: "lvh.me"
+    API: {
+      development: "localhost",
+      test: "localhost",
+      beta: "api.firehoseapp.com",
+      production: "api.firehoseapp.com"
     },
-    mini: {
-      API: "199.19.84.171",
-      browser: "199.19.84.171",
-      billing: "199.19.84.171",
-      frhio: "199.19.84.171",
-      marketing: "199.19.84.171",
-      settings: "199.19.84.171",
-      tweetlonger: "199.19.84.171",
-      kb: "199.19.84.171"
+    browser: {
+      development: "localhost",
+      test: "localhost",
+      beta: "beta.firehoseapp.com",
+      production: "firehoseapp.com"
     },
-    production: {
-      API: "api.firehoseapp.com",
-      browser: "firehoseapp.com",
-      billing: "billing.firehoseapp.com",
-      frhio: "frh.io",
-      marketing: "getfirehose.com",
-      settings: "settings.firehoseapp.com",
-      tweetlonger: "tl.frh.io",
-      kb: "firehosehelp.com"
+    billing: {
+      development: "localhost",
+      test: "localhost",
+      beta: "billing.firehoseapp.com",
+      production: "billing.firehoseapp.com"
+    },
+    files: {
+      development: "localhost",
+      test: "localhost",
+      beta: "frh.io",
+      production: "frh.io"
+    },
+    marketing: {
+      development: "localhost",
+      test: "localhost",
+      beta: "beta.getfirehose.com",
+      production: "getfirehose.com"
+    },
+    settings: {
+      development: "localhost",
+      test: "localhost",
+      beta: "beta_settings.firehoseapp.com",
+      production: "settings.firehoseapp.com"
+    },
+    tweetlonger: {
+      development: "localhost",
+      test: "localhost",
+      beta: "beta_tl.frh.io",
+      production: "tl.frh.io"
+    },
+    kb: {
+      development: "lvh.me",
+      test: "lvh.me",
+      beta: "firehosesupport.com",
+      production: "firehosehelp.com"
     }
-  };
-
-  Environment.prototype._appBetaDomainNames = {
-    API: Environment.prototype._appDomainNames['production']['API'],
-    browser: "beta.firehoseapp.com",
-    billing: Environment.prototype._appDomainNames['production']['billing'],
-    frhio: Environment.prototype._appDomainNames['production']['frhio'],
-    marketing: "beta.getfirehose.com",
-    settings: "beta_settings.firehoseapp.com",
-    tweetlonger: "beta_tl.frh.io",
-    kb: "firehosesupport.com"
   };
 
   Environment.prototype._appTypes = {
     API: "server",
     browser: "client",
     billing: "server",
-    frhio: "server",
+    files: "server",
     marketing: "client",
     settings: "client",
     tweetlonger: "client",
@@ -407,13 +406,6 @@ Firehose.Environment = (function() {
       stripe: "pk_live_CGPaLboKkpr7tqswA4elf8NQ",
       pusher: "d3e373f7fac89de7bde8"
     }
-  };
-
-  Environment.prototype._isEnvironmentLocal = {
-    development: true,
-    test: true,
-    beta: false,
-    production: false
   };
 
   Environment.prototype._inferEnvironmentFromURL = function() {
@@ -448,12 +440,40 @@ Firehose.Environment = (function() {
     }
   };
 
+  Environment.prototype._environmentFor = function(app) {
+    if (this._appTypes[app] === 'server' && this._server === 'production') {
+      return "production";
+    } else {
+      return this._environment;
+    }
+  };
+
+  Environment.prototype._schemeFor = function(app) {
+    var environment;
+    environment = this._environmentFor(app);
+    if (environment === 'development' || environment === 'test' || app === 'kb') {
+      return "http://";
+    } else {
+      return "https://";
+    }
+  };
+
+  Environment.prototype._domainNameFor = function(app) {
+    var environment;
+    environment = this._environmentFor(app);
+    return this._appDomainNames[app][environment];
+  };
+
   Environment.prototype._portFor = function(app) {
-    var port;
-    port = "";
+    var environment, port;
+    environment = this._environmentFor(app);
+    if (environment === 'production' || environment === 'beta') {
+      return "";
+    }
+    port = ":";
     port += this._typeNumber[this._appTypes[app]];
     port += this._appTypes[app] === "client" ? this._serverNumber[this._server] : 0;
-    port += this._environmentNumber[this._environment];
+    port += this._environmentNumber[environment];
     port += this._appNumber[app];
     return port;
   };
@@ -557,7 +577,8 @@ Firehose.Client = (function() {
       url += "?" + (paramStrings.join('&'));
     }
     headers = {
-      "Accept": "application/json"
+      "Accept": "application/json",
+      "Firehose-Environment": this.environment.environment()
     };
     if (auth) {
       if ((this.APIAccessToken != null) && server === 'API') {

@@ -272,13 +272,13 @@ firehoseTest 'Produce URL for companys kb', 5, (agent) ->
   ok company.kbBaseURL() == "http://#{subdomain}.lvh.me:4207"
   
   window.unitTestDocumentURL = "https://beta.firehoseapp.com"
-  ok company.kbBaseURL() == "https://#{subdomain}.firehosesupport.com"
+  ok company.kbBaseURL() == "http://#{subdomain}.firehosesupport.com"
   
   window.unitTestDocumentURL = "https://www.firehoseapp.com"
   ok company.kbBaseURL() == "http://#{customDomain}"
   
   company.set('knowledgeBaseCustomDomain', null)
   window.unitTestDocumentURL = "https://www.firehoseapp.com"
-  ok company.kbBaseURL() == "https://#{subdomain}.firehosehelp.com"
+  ok company.kbBaseURL() == "http://#{subdomain}.firehosehelp.com"
   
   start()
