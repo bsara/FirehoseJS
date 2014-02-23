@@ -564,6 +564,9 @@ Firehose.Client = (function() {
     if (perPage > -1) {
       params["per_page"] = perPage;
     }
+    if (this.environment.environment() === 'beta') {
+      params["firehose_environment"] = 'beta';
+    }
     paramStrings = [];
     for (key in params) {
       value = params[key];
@@ -577,8 +580,7 @@ Firehose.Client = (function() {
       url += "?" + (paramStrings.join('&'));
     }
     headers = {
-      "Accept": "application/json",
-      "X-Firehose-Environment": this.environment.environment()
+      "Accept": "application/json"
     };
     if (auth) {
       if ((this.APIAccessToken != null) && server === 'API') {
