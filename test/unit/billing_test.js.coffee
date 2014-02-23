@@ -7,7 +7,7 @@ Called start() while already started (QUnit.config.semaphore was 0 already)
 and only 2 or so of the assertions would run. I remember there being a reason and this was my solution, but can't remember it now.
 ###
 
-firehoseTest 'Fetch Billing Info', 14, (agent) ->
+firehoseTest 'Fetch Billing Info', 17, (agent) ->
   firstAgent = Firehose.Agent.agentWithEmailAndPassword( "agent1@example.com", "pw" )
   firstAgent.login()
   .done (data, textStatus) ->
@@ -23,9 +23,12 @@ firehoseTest 'Fetch Billing Info', 14, (agent) ->
       ok company.isCurrent?
       ok company.isGracePeriodOver?
       ok company.nextBillingDate?
+      ok company.nextBillAmountBeforeDiscounts?
+      ok company.nextBillAmountAfterDiscounts?
       ok company.trialExpirationDate?
       ok company.discounts.length == 1
       ok company.discounts[0].amount?
+      ok company.discounts[0].amountStr?
       ok company.discounts[0].applyType?
       ok company.discounts[0].expirationDate?
       ok company.discounts[0].name?

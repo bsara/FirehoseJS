@@ -113,6 +113,16 @@ class Firehose.Company extends Firehose.Object
   @property [float] 
   ###
   billingRate: 8.0
+
+  ###
+  @property [float]
+  ###
+  nextBillAmountBeforeDiscounts: 0.0
+
+  ###
+  @property [float]
+  ###
+  nextBillAmountAfterDiscounts: 0.0
   
   ###
   @property [Date] 
@@ -424,21 +434,42 @@ class Firehose.Company extends Firehose.Object
         if json.credit_card?
           this._setIfNotNull "creditCard", Firehose.CreditCard.creditCardWithID( json.credit_card.id, this )
           @creditCard._populateWithJSON json.credit_card
-        this._setIfNotNull "billingEmail",          json.email || Firehose.Agent.loggedInAgent.email
-        this._setIfNotNull "billingRate",           (json.rate / 100.0).toFixed(2)
-        this._setIfNotNull "trialExpirationDate",   Date.parse( json.free_trial_expiration_date ) || new Date(+new Date + 12096e5) # 14 days away
-        this._setIfNotNull "nextBillingDate",       if json.next_bill_date then Date.parse( json.next_bill_date )
-        this._setIfNotNull "isGracePeriodOver",     json.grace_period_over
-        this._setIfNotNull "daysLeftInGracePeriod", json.days_left_in_grace_period
-        this._setIfNotNull "isCurrent",             json.current
-        this._setIfNotNull "hasSuccessfulBilling",  json.has_successful_billing
+        
+        this._setIfNotNull "billingEmail",                  json.email || Firehose.Agent.loggedInAgent.email
+        this._setIfNotNull "billingRate",                   (json.rate / 100.0).toFixed(2)
+        this._setIfNotNull "nextBillAmountBeforeDiscounts", (@billingRate * @agents.length).toFixed(2)
+        this._setIfNotNull "trialExpirationDate",           Date.parse( json.free_trial_expiration_date ) || new Date(+new Date + 12096e5) # 14 days away
+        this._setIfNotNull "nextBillingDate",               if json.next_bill_date then Date.parse( json.next_bill_date )
+        this._setIfNotNull "isGracePeriodOver",             json.grace_period_over
+        this._setIfNotNull "daysLeftInGracePeriod",         json.days_left_in_grace_period
+        this._setIfNotNull "isCurrent",                     json.current
+        this._setIfNotNull "hasSuccessfulBilling",          json.has_successful_billing
+        
+        
+        totalDiscount = 0.0
+        discountAmt = 0.0
+        discountAmtStr = ""
+
         @discounts = []
         for discount in json.discount_list
+          if discount.apply_type is "fixed amount"
+            discountAmt = (discount.amount / 100.0).toFixed(2)
+            discountAmtStr = "$" + discountAmt
+            totalDiscount = Number(totalDiscount) + Number(discountAmt)
+          else
+            discountAmt = discount.amount
+            discountAmtStr = discountAmt + "%"
+            totalDiscount = Number(totalDiscount) + Number(@nextBillAmountBeforeDiscounts * (discountAmt / 100))
+
           @discounts.push
             name:           discount.name
             applyType:      discount.apply_type
-            amount:         if discount.apply_type is "fixed amount" then (discount.amount / 100.0).toFixed(2) else discount.amount
+            amount:         discountAmt
+            amountStr:      discountAmtStr
             expirationDate: if discount.expiration_date then Date.parse( discount.expiration_date )
+
+        @nextBillAmountAfterDiscounts = (if (Number(totalDiscount) > Number(@nextBillAmountBeforeDiscounts)) then 0 else @nextBillAmountBeforeDiscounts - totalDiscount).toFixed(2)
+
     if @token
       fetchBlock()
     else
