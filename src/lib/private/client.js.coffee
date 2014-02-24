@@ -64,9 +64,6 @@ class Firehose.Client
     params["page"]      = page if page > -1      
     params["per_page"]  = perPage if perPage > -1      
     
-    if this.environment.environment() == 'beta' 
-      params["firehose_environment"] = 'beta' 
-    
     paramStrings = []
     for key, value of params    
       continue unless value?
@@ -79,6 +76,7 @@ class Firehose.Client
       
     headers = 
       "Accept" : "application/json"
+      "X-Firehose-Environment" : "beta" if this.environment.environment() == 'beta'
     
     if auth
       if @APIAccessToken? and server == 'API'
