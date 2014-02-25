@@ -236,7 +236,7 @@ class Firehose.Agent extends Firehose.Object
     this._setIfNotNull "email",       json.email
     
     this._populateAssociatedObjects this, "companies", json.companies, (json) =>
-      Firehose.Company.companyWithID( json.id, this )
+      Firehose.Company.companyWithID( json.id, null, this )
       
     if @companies.length > 0 and not @currentCompany?
       this._setIfNotNull "currentCompany", @companies[0]

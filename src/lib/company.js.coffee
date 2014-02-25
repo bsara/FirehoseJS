@@ -192,11 +192,14 @@ class Firehose.Company extends Firehose.Object
   ###
   Create a company object when all you have is an id. You can then fetch articles or fetch the companies properties if you're authenticated as an agent of the company.
   @param id [number] The id of the company.
+  @param token [number] The company token.
+  @param creator [Agent] The agent that is the creator of this company. (This is mostly used internally).
   @return [Company] Returns a company object. If a company object with this id already exists in the cache, it will be returned.
   ###    
-  @companyWithID: (id, creator) ->
+  @companyWithID: (id, token, creator) ->
     Firehose.Object._objectOfClassWithID Firehose.Company,
       id:       id
+      token:    token
       _creator: creator
       
       

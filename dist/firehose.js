@@ -1130,7 +1130,7 @@ Firehose.Agent = (function(_super) {
     this._setIfNotNull("lastName", json.last_name);
     this._setIfNotNull("email", json.email);
     this._populateAssociatedObjects(this, "companies", json.companies, function(json) {
-      return Firehose.Company.companyWithID(json.id, _this);
+      return Firehose.Company.companyWithID(json.id, null, _this);
     });
     if (this.companies.length > 0 && (this.currentCompany == null)) {
       this._setIfNotNull("currentCompany", this.companies[0]);
@@ -1398,13 +1398,16 @@ Firehose.Company = (function(_super) {
   /*
   Create a company object when all you have is an id. You can then fetch articles or fetch the companies properties if you're authenticated as an agent of the company.
   @param id [number] The id of the company.
+  @param token [number] The company token.
+  @param creator [Agent] The agent that is the creator of this company. (This is mostly used internally).
   @return [Company] Returns a company object. If a company object with this id already exists in the cache, it will be returned.
   */
 
 
-  Company.companyWithID = function(id, creator) {
+  Company.companyWithID = function(id, token, creator) {
     return Firehose.Object._objectOfClassWithID(Firehose.Company, {
       id: id,
+      token: token,
       _creator: creator
     });
   };
