@@ -62,7 +62,7 @@ class Firehose.CreditCard extends Firehose.Object
       company: company
     
   
-  submitToStripe: (callback, newEmail) ->
+  submitToStripe: (callback, ccEmail) ->
     Stripe.card.createToken
       number:     @number
       cvc:        @cvc
@@ -74,7 +74,7 @@ class Firehose.CreditCard extends Firehose.Object
         this._setIfNotNull "expirationYear",  response.card.exp_year
         this._setIfNotNull "lastFour",        response.card.last4
         this._setIfNotNull "stripeToken",     response.id
-        this._setIfNotNull "email",           if newEmail? then newEmail else Firehose.Agent.loggedInAgent.email
+        this._setIfNotNull "email",           if ccEmail? then ccEmail else Firehose.Agent.loggedInAgent.email
         callback()
       else
         callback response.error

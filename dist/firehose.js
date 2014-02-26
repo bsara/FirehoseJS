@@ -2618,7 +2618,7 @@ Firehose.CreditCard = (function(_super) {
     });
   };
 
-  CreditCard.prototype.submitToStripe = function(callback, newEmail) {
+  CreditCard.prototype.submitToStripe = function(callback, ccEmail) {
     var _this = this;
     return Stripe.card.createToken({
       number: this.number,
@@ -2631,7 +2631,7 @@ Firehose.CreditCard = (function(_super) {
         _this._setIfNotNull("expirationYear", response.card.exp_year);
         _this._setIfNotNull("lastFour", response.card.last4);
         _this._setIfNotNull("stripeToken", response.id);
-        _this._setIfNotNull("email", newEmail != null ? newEmail : Firehose.Agent.loggedInAgent.email);
+        _this._setIfNotNull("email", ccEmail != null ? ccEmail : Firehose.Agent.loggedInAgent.email);
         return callback();
       } else {
         return callback(response.error);
