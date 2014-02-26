@@ -113,6 +113,7 @@ class Firehose.CreditCard extends Firehose.Object
     this._setIfNotNull "expirationMonth", json.expiration_month
     this._setIfNotNull "expirationYear",  json.expiration_year
     this._setIfNotNull "lastFour",        json.last_four
+    this._setIfNotNull "email",           json.email
     super json
 
 
