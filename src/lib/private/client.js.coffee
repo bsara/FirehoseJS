@@ -92,7 +92,7 @@ class Firehose.Client
       dataType:     'json'
       headers:      headers
       contentType:  'application/json'
-      statusCode:   @statusCodeHandlers || {}
+      statusCode:   if server == 'API' then @statusCodeHandlers || {}
 
       
     

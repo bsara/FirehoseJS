@@ -599,7 +599,7 @@ Firehose.Client = (function() {
       dataType: 'json',
       headers: headers,
       contentType: 'application/json',
-      statusCode: this.statusCodeHandlers || {}
+      statusCode: server === 'API' ? this.statusCodeHandlers || {} : void 0
     });
   };
 
@@ -1304,7 +1304,7 @@ Firehose.Company = (function(_super) {
   */
 
 
-  Company.prototype.billingRate = 8.0;
+  Company.prototype.billingRate = -1;
 
   /*
   @property [float]

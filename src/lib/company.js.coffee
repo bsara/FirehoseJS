@@ -112,7 +112,7 @@ class Firehose.Company extends Firehose.Object
   ###
   @property [float] 
   ###
-  billingRate: 8.0
+  billingRate: -1
 
   ###
   @property [float]
