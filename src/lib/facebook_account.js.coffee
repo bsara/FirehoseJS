@@ -56,7 +56,7 @@ class Firehose.FacebookAccount extends Firehose.Object
   destroy: ->
     params = 
       route: "facebook_accounts/#{@id}"
-    Firehose.client.delete( params ).done =>
+    Firehose.client.delete( this, params ).done =>
       @company.facebookAccounts().dropObject this
 
 

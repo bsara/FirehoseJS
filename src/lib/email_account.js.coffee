@@ -88,12 +88,12 @@ class Firehose.EmailAccount extends Firehose.Object
       params = 
         route: "email_accounts/#{@id}"
         body:  this._toJSON()
-      Firehose.client.put( params )
+      Firehose.client.put( this, params )
     else
       params = 
         route: "companies/#{@company.id}/email_accounts"
         body:  this._toJSON()
-      Firehose.client.post( params ).done (data) =>
+      Firehose.client.post( this, params ).done (data) =>
         this._populateWithJSON data
         @company.emailAccounts().insertObject this
         
@@ -102,7 +102,7 @@ class Firehose.EmailAccount extends Firehose.Object
   destroy: ->
     params = 
       route: "email_accounts/#{@id}"
-    Firehose.client.delete( params ).done =>
+    Firehose.client.delete( this, params ).done =>
       @company.emailAccounts().dropObject this
     
     

@@ -146,7 +146,7 @@ class Firehose.Interaction extends Firehose.Object
     params = 
       route: "interactions/#{@id}/reply"
       body:  body
-    Firehose.client.post( params ).done (data) =>
+    Firehose.client.post( this, params ).done (data) =>
       this._setIfNotNull "responseDraft", null
       response = Firehose.Interaction._interactionWithJSON( data, @customer )
       @responseInteractions.insertObject response
@@ -159,7 +159,7 @@ class Firehose.Interaction extends Firehose.Object
     params = 
       route: "interactions/#{@id}"
       body:  this._toJSON()
-    Firehose.client.put( params )
+    Firehose.client.put( this, params )
     
     
   ###
@@ -170,42 +170,42 @@ class Firehose.Interaction extends Firehose.Object
   fetch: ->
     params =
       route: "interactions/#{@token || @id}"
-    Firehose.client.get( params ).done (data) =>
+    Firehose.client.get( this, params ).done (data) =>
       this._populateWithJSON data
       
     
   destroy: ->
     params = 
       route: "interactions/#{@id}"
-    Firehose.client.delete( params ).done =>
+    Firehose.client.delete( this, params ).done =>
       @customer.interactions().dropObject this
     
     
   addTag: (tag) ->
     params = 
       route: "interactions/#{@id}/tags/#{tag.id}"
-    Firehose.client.put( params ).done =>
+    Firehose.client.put( this, params ).done =>
       @tags.insertObject tag
     
     
   removeTag: (tag) ->
     params = 
       route: "interactions/#{@id}/tags/#{tag.id}"
-    Firehose.client.delete( params ).done =>
+    Firehose.client.delete( this, params ).done =>
       @tags.dropObject tag
     
     
   flagAgent: (agent) ->
     params = 
       route: "interactions/#{@id}/agents/#{agent.id}"
-    Firehose.client.put( params ).done =>
+    Firehose.client.put( this, params ).done =>
       @flaggedAgents.insertObject agent
     
   
   unflagAgent: (agent) ->
     params = 
       route: "interactions/#{@id}/agents/#{agent.id}"
-    Firehose.client.delete( params ).done =>
+    Firehose.client.delete( this, params ).done =>
       @flaggedAgents.dropObject agent
     
   

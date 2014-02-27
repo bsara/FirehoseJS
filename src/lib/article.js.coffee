@@ -42,7 +42,7 @@ class Firehose.Article extends Firehose.Object
     params = 
       auth:   false
       route:  "articles/#{@id}"
-    Firehose.client.get( params ).done (data) =>
+    Firehose.client.get( this, params ).done (data) =>
       this._populateWithJSON data
 
 
@@ -51,12 +51,12 @@ class Firehose.Article extends Firehose.Object
       params = 
         route: "articles/#{@id}"
         body:  this._toJSON()
-      Firehose.client.put( params )
+      Firehose.client.put( this, params )
     else
       params = 
         route: "companies/#{@company.id}/articles"
         body:  this._toJSON()
-      Firehose.client.post( params ).done (data) =>
+      Firehose.client.post( this, params ).done (data) =>
         this._populateWithJSON data
         @company.articles().insertObject this
       
@@ -64,7 +64,7 @@ class Firehose.Article extends Firehose.Object
   destroy: ->
     params = 
       route: "articles/#{@id}"
-    Firehose.client.delete( params ).done =>
+    Firehose.client.delete( this, params ).done =>
       @company.articles().dropObject this
     
 

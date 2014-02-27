@@ -222,7 +222,7 @@ Firehose.RemoteArray = (function(_super) {
         perPage: _this.perPage
       };
       _this.onceParams = null;
-      return _this._currentXHR = Firehose.client.get(options).done(function(data) {
+      return _this._currentXHR = Firehose.client.get(_this, options).done(function(data) {
         var aggregate, json, object, _i, _len;
         if (data.constructor === Array && data.length > 0) {
           _this.totalRows = data[0].total_rows;
@@ -526,35 +526,35 @@ Firehose.Client = (function() {
     Stripe.setPublishableKey(this.environment.serviceToken('stripe'));
   }
 
-  Client.prototype.get = function(options) {
+  Client.prototype.get = function(object, options) {
     $.extend(options, {
       method: 'GET'
     });
-    return this._sendRequest(options);
+    return this._sendRequest(object, options);
   };
 
-  Client.prototype.post = function(options) {
+  Client.prototype.post = function(object, options) {
     $.extend(options, {
       method: 'POST'
     });
-    return this._sendRequest(options);
+    return this._sendRequest(object, options);
   };
 
-  Client.prototype.put = function(options) {
+  Client.prototype.put = function(object, options) {
     $.extend(options, {
       method: 'PUT'
     });
-    return this._sendRequest(options);
+    return this._sendRequest(object, options);
   };
 
-  Client.prototype["delete"] = function(options) {
+  Client.prototype["delete"] = function(object, options) {
     $.extend(options, {
       method: 'DELETE'
     });
-    return this._sendRequest(options);
+    return this._sendRequest(object, options);
   };
 
-  Client.prototype._sendRequest = function(options) {
+  Client.prototype._sendRequest = function(object, options) {
     var auth, body, defaults, headers, key, method, page, paramStrings, params, perPage, route, server, url, value,
       _this = this;
     defaults = {
@@ -619,8 +619,27 @@ Firehose.Client = (function() {
       contentType: 'application/json',
       statusCode: server === 'API' ? this.statusCodeHandlers || {} : void 0
     }).fail(function(jqXHR, textStatus, errorThrown) {
-      if (server === 'API' && (_this.errorHandler != null)) {
-        return _this.errorHandler(jqXHR, textStatus, errorThrown);
+      var errorStrings, errors, json, _ref;
+      if (server === 'API') {
+        if (_this.errorHandler != null) {
+          _this.errorHandler(jqXHR, textStatus, errorThrown);
+        }
+        if (Number(jqXHR.status) === 422 && (jqXHR.responseJSON != null) && (object != null)) {
+          json = jqXHR.responseJSON;
+          if (json.constructor === Object) {
+            errorStrings = [];
+            _ref = jqXHR.responseJSON;
+            for (key in _ref) {
+              errors = _ref[key];
+              errorStrings.push("" + (_this._humanize(key)) + " " + (errors.join(', ')));
+            }
+            return object.errorString = errorStrings.join("\n");
+          } else if (json.constructor === Array) {
+            return object.errorString = json.join("\n");
+          } else {
+            return object.errorString = "" + json;
+          }
+        }
       }
     });
   };
@@ -656,6 +675,12 @@ Firehose.Client = (function() {
     };
   };
 
+  Client.prototype._humanize = function(str) {
+    return str.replace(/_id$/, '').replace(/_/g, ' ').replace(/^\w/g, function(s) {
+      return s.toUpperCase();
+    });
+  };
+
   return Client;
 
 })();
@@ -681,6 +706,13 @@ Firehose.Object = (function() {
 
 
   Object.prototype.createdAt = null;
+
+  /*
+  @property [string] The errors the server returned about fields that did not contain valid values. You can simply display this to the user without modification.
+  */
+
+
+  Object.prototype.errorString = null;
 
   /*
   @property [Array<Object>] The static array that holds the entire object graph
@@ -967,7 +999,7 @@ Firehose.Agent = (function(_super) {
         }
       }
     };
-    return Firehose.client.post(params).done(function(data) {
+    return Firehose.client.post(this, params).done(function(data) {
       _this._populateWithJSON(data);
       return _this._handleSuccessfulLogin();
     });
@@ -1000,7 +1032,7 @@ Firehose.Agent = (function(_super) {
     } else if (this.accessToken != null) {
       Firehose.client.APIAccessToken = this.accessToken;
     }
-    return Firehose.client.post(params).done(function(data) {
+    return Firehose.client.post(this, params).done(function(data) {
       _this._populateWithJSON(data);
       return _this._handleSuccessfulLogin();
     });
@@ -1033,7 +1065,7 @@ Firehose.Agent = (function(_super) {
     params = {
       route: "agents/" + this.id
     };
-    return Firehose.client.get(params).done(function(data) {
+    return Firehose.client.get(this, params).done(function(data) {
       _this._populateWithJSON(data);
       return _this._handleSuccessfulLogin();
     });
@@ -1051,7 +1083,7 @@ Firehose.Agent = (function(_super) {
       route: "agents/" + this.id,
       body: this._toJSON()
     };
-    return Firehose.client.put(params);
+    return Firehose.client.put(this, params);
   };
 
   /*
@@ -1069,7 +1101,7 @@ Firehose.Agent = (function(_super) {
     params = {
       route: "agents/" + this.id
     };
-    return Firehose.client["delete"](params).done(function() {
+    return Firehose.client["delete"](this, params).done(function() {
       var company, _i, _len, _ref1, _results;
       _ref1 = _this.companies;
       _results = [];
@@ -1091,7 +1123,7 @@ Firehose.Agent = (function(_super) {
     params = {
       route: "agents/" + this.id + "/notifications/" + (ids.join(','))
     };
-    return Firehose.client.put(params);
+    return Firehose.client.put(this, params);
   };
 
   Agent.requestPasswordReset = function(email) {
@@ -1102,7 +1134,7 @@ Firehose.Agent = (function(_super) {
         email: email
       }
     };
-    return Firehose.client.post(params);
+    return Firehose.client.post(this, params);
   };
 
   Agent.resetPassword = function(token, newPassword) {
@@ -1114,7 +1146,7 @@ Firehose.Agent = (function(_super) {
         password: newPassword
       }
     };
-    return Firehose.client.post(params);
+    return Firehose.client.post(this, params);
   };
 
   Agent.prototype.setNewPassword = function(newPassword) {
@@ -1498,7 +1530,7 @@ Firehose.Company = (function(_super) {
     } else {
       throw "You can't call 'fetch' on a company unless 'id', 'knowledgeBaseSubdomain' or 'knowledgeBaseCustomDomain' is set.";
     }
-    return Firehose.client.get(request).done(function(data) {
+    return Firehose.client.get(this, request).done(function(data) {
       return _this._populateWithJSON(data);
     });
   };
@@ -1517,13 +1549,13 @@ Firehose.Company = (function(_super) {
         route: "companies/" + this.id,
         body: this._toJSON()
       };
-      return Firehose.client.put(params);
+      return Firehose.client.put(this, params);
     } else {
       params = {
         route: "agents/" + this._creator.id + "/companies",
         body: this._toJSON()
       };
-      return Firehose.client.post(params).done(function(data) {
+      return Firehose.client.post(this, params).done(function(data) {
         return _this._populateWithJSON(data);
       });
     }
@@ -1540,7 +1572,7 @@ Firehose.Company = (function(_super) {
     params = {
       route: "companies/" + this.id + "/force_channels_fetch"
     };
-    return Firehose.client.put(params);
+    return Firehose.client.put(this, params);
   };
 
   /*
@@ -1556,7 +1588,7 @@ Firehose.Company = (function(_super) {
     params = {
       route: "companies/" + this.id
     };
-    return Firehose.client["delete"](params).done(function() {
+    return Firehose.client["delete"](this, params).done(function() {
       return Firehose.Agent.loggedInAgent.companies.dropObject(_this);
     });
   };
@@ -1728,7 +1760,7 @@ Firehose.Company = (function(_super) {
     params = {
       route: "companies/" + this.id + "/agents/" + agent.id
     };
-    return Firehose.client.put(params).done(function() {
+    return Firehose.client.put(this, params).done(function() {
       return _this.agents.insertObject(agent);
     });
   };
@@ -1745,7 +1777,7 @@ Firehose.Company = (function(_super) {
     params = {
       route: "companies/" + this.id + "/agents/" + agent.id
     };
-    return Firehose.client["delete"](params).done(function() {
+    return Firehose.client["delete"](this, params).done(function() {
       return _this.agents.dropObject(agent);
     });
   };
@@ -1770,7 +1802,7 @@ Firehose.Company = (function(_super) {
         server: "billing",
         route: "entities/" + _this.id
       };
-      return Firehose.client.get(params).done(function(json) {
+      return Firehose.client.get(_this, params).done(function(json) {
         var discount, discountAmt, discountAmtStr, totalDiscount, _i, _len, _ref1;
         if (json.credit_card != null) {
           _this._setIfNotNull("creditCard", Firehose.CreditCard.creditCardWithID(json.credit_card.id, _this));
@@ -2108,7 +2140,7 @@ Firehose.Interaction = (function(_super) {
       route: "interactions/" + this.id + "/reply",
       body: body
     };
-    return Firehose.client.post(params).done(function(data) {
+    return Firehose.client.post(this, params).done(function(data) {
       var response;
       _this._setIfNotNull("responseDraft", null);
       response = Firehose.Interaction._interactionWithJSON(data, _this.customer);
@@ -2126,7 +2158,7 @@ Firehose.Interaction = (function(_super) {
       route: "interactions/" + this.id,
       body: this._toJSON()
     };
-    return Firehose.client.put(params);
+    return Firehose.client.put(this, params);
   };
 
   /*
@@ -2142,7 +2174,7 @@ Firehose.Interaction = (function(_super) {
     params = {
       route: "interactions/" + (this.token || this.id)
     };
-    return Firehose.client.get(params).done(function(data) {
+    return Firehose.client.get(this, params).done(function(data) {
       return _this._populateWithJSON(data);
     });
   };
@@ -2153,7 +2185,7 @@ Firehose.Interaction = (function(_super) {
     params = {
       route: "interactions/" + this.id
     };
-    return Firehose.client["delete"](params).done(function() {
+    return Firehose.client["delete"](this, params).done(function() {
       return _this.customer.interactions().dropObject(_this);
     });
   };
@@ -2164,7 +2196,7 @@ Firehose.Interaction = (function(_super) {
     params = {
       route: "interactions/" + this.id + "/tags/" + tag.id
     };
-    return Firehose.client.put(params).done(function() {
+    return Firehose.client.put(this, params).done(function() {
       return _this.tags.insertObject(tag);
     });
   };
@@ -2175,7 +2207,7 @@ Firehose.Interaction = (function(_super) {
     params = {
       route: "interactions/" + this.id + "/tags/" + tag.id
     };
-    return Firehose.client["delete"](params).done(function() {
+    return Firehose.client["delete"](this, params).done(function() {
       return _this.tags.dropObject(tag);
     });
   };
@@ -2186,7 +2218,7 @@ Firehose.Interaction = (function(_super) {
     params = {
       route: "interactions/" + this.id + "/agents/" + agent.id
     };
-    return Firehose.client.put(params).done(function() {
+    return Firehose.client.put(this, params).done(function() {
       return _this.flaggedAgents.insertObject(agent);
     });
   };
@@ -2197,7 +2229,7 @@ Firehose.Interaction = (function(_super) {
     params = {
       route: "interactions/" + this.id + "/agents/" + agent.id
     };
-    return Firehose.client["delete"](params).done(function() {
+    return Firehose.client["delete"](this, params).done(function() {
       return _this.flaggedAgents.dropObject(agent);
     });
   };
@@ -2316,7 +2348,7 @@ Firehose.AgentInvite = (function(_super) {
       route: "companies/" + this.company.id + "/agent_invites",
       body: this._toJSON()
     };
-    return Firehose.client.post(params).done(function(data) {
+    return Firehose.client.post(this, params).done(function(data) {
       _this._populateWithJSON(data);
       return _this.company.agentInvites.insertObject(_this);
     });
@@ -2327,7 +2359,7 @@ Firehose.AgentInvite = (function(_super) {
     params = {
       route: "agent_invites/" + this.id + "/resend"
     };
-    return Firehose.client.put(params);
+    return Firehose.client.put(this, params);
   };
 
   AgentInvite.prototype.destroy = function() {
@@ -2336,7 +2368,7 @@ Firehose.AgentInvite = (function(_super) {
     params = {
       route: "agent_invites/" + this.id
     };
-    return Firehose.client["delete"](params).done(function() {
+    return Firehose.client["delete"](this, params).done(function() {
       return _this.company.agentInvites.dropObject(_this);
     });
   };
@@ -2501,13 +2533,13 @@ Firehose.CannedResponse = (function(_super) {
         route: "canned_responses/" + this.id,
         body: this._toJSON()
       };
-      return Firehose.client.put(params);
+      return Firehose.client.put(this, params);
     } else {
       params = {
         route: "companies/" + this.company.id + "/canned_responses",
         body: this._toJSON()
       };
-      return Firehose.client.post(params).done(function(data) {
+      return Firehose.client.post(this, params).done(function(data) {
         _this._populateWithJSON(data);
         return _this.company.cannedResponses.insertObject(_this);
       });
@@ -2526,7 +2558,7 @@ Firehose.CannedResponse = (function(_super) {
     params = {
       route: "canned_responses/" + this.id
     };
-    return Firehose.client["delete"](params).done(function() {
+    return Firehose.client["delete"](this, params).done(function() {
       return _this.company.cannedResponses.dropObject(_this);
     });
   };
@@ -2678,7 +2710,7 @@ Firehose.CreditCard = (function(_super) {
       route: "entities/" + this.company.id + "/credit_card",
       body: this._toJSON()
     };
-    return Firehose.client.put(params).done(function() {
+    return Firehose.client.put(this, params).done(function() {
       return _this.company.set('creditCard', _this);
     });
   };
@@ -2691,7 +2723,7 @@ Firehose.CreditCard = (function(_super) {
       server: "billing",
       route: "entities/" + this.company.id + "/credit_card"
     };
-    return Firehose.client.get(params).done(function(data) {
+    return Firehose.client.get(this, params).done(function(data) {
       return _this._populateWithJSON(data);
     });
   };
@@ -2704,7 +2736,7 @@ Firehose.CreditCard = (function(_super) {
       server: "billing",
       route: "entities/" + this.company.id + "/credit_card"
     };
-    return Firehose.client["delete"](params).done(function() {
+    return Firehose.client["delete"](this, params).done(function() {
       return _this.company.set('creditCard', null);
     });
   };
@@ -2838,7 +2870,7 @@ Firehose.Customer = (function(_super) {
     params = {
       route: "customers/" + this.id
     };
-    return Firehose.client.get(params).done(function(data) {
+    return Firehose.client.get(this, params).done(function(data) {
       return _this._populateWithJSON(data);
     });
   };
@@ -2848,7 +2880,7 @@ Firehose.Customer = (function(_super) {
     params = {
       route: "customers/" + this.id + "/resolve_all_interactions"
     };
-    return Firehose.client.put(params);
+    return Firehose.client.put(this, params);
   };
 
   Customer.prototype.destroy = function() {
@@ -2857,7 +2889,7 @@ Firehose.Customer = (function(_super) {
     params = {
       route: "customers/" + this.id
     };
-    return Firehose.client["delete"](params).done(function() {
+    return Firehose.client["delete"](this, params).done(function() {
       var _ref1;
       return (_ref1 = _this.company._customers) != null ? _ref1.dropObject(_this) : void 0;
     });
@@ -3143,13 +3175,13 @@ Firehose.EmailAccount = (function(_super) {
         route: "email_accounts/" + this.id,
         body: this._toJSON()
       };
-      return Firehose.client.put(params);
+      return Firehose.client.put(this, params);
     } else {
       params = {
         route: "companies/" + this.company.id + "/email_accounts",
         body: this._toJSON()
       };
-      return Firehose.client.post(params).done(function(data) {
+      return Firehose.client.post(this, params).done(function(data) {
         _this._populateWithJSON(data);
         return _this.company.emailAccounts().insertObject(_this);
       });
@@ -3162,7 +3194,7 @@ Firehose.EmailAccount = (function(_super) {
     params = {
       route: "email_accounts/" + this.id
     };
-    return Firehose.client["delete"](params).done(function() {
+    return Firehose.client["delete"](this, params).done(function() {
       return _this.company.emailAccounts().dropObject(_this);
     });
   };
@@ -3441,7 +3473,7 @@ Firehose.FacebookAccount = (function(_super) {
     params = {
       route: "facebook_accounts/" + this.id
     };
-    return Firehose.client["delete"](params).done(function() {
+    return Firehose.client["delete"](this, params).done(function() {
       return _this.company.facebookAccounts().dropObject(_this);
     });
   };
@@ -3638,7 +3670,7 @@ Firehose.FacebookPage = (function(_super) {
       route: "facebook_pages/" + this.id,
       body: this._toJSON()
     };
-    return Firehose.client.put(params);
+    return Firehose.client.put(this, params);
   };
 
   FacebookPage.prototype._populateWithJSON = function(json) {
@@ -3718,13 +3750,13 @@ Firehose.Note = (function(_super) {
         route: "notes/" + this.id,
         body: this._toJSON()
       };
-      return Firehose.client.put(params);
+      return Firehose.client.put(this, params);
     } else {
       params = {
         route: "interactions/" + this.interaction.id + "/notes",
         body: this._toJSON()
       };
-      return Firehose.client.post(params).done(function(data) {
+      return Firehose.client.post(this, params).done(function(data) {
         _this._populateWithJSON(data);
         return _this.interaction.notes.insertObject(_this);
       });
@@ -3737,7 +3769,7 @@ Firehose.Note = (function(_super) {
     params = {
       route: "notes/" + this.id
     };
-    return Firehose.client["delete"](params).done(function() {
+    return Firehose.client["delete"](this, params).done(function() {
       return _this.interaction.notes.dropObject(_this);
     });
   };
@@ -3915,7 +3947,7 @@ Firehose.OutgoingAttachment = (function(_super) {
       route: "companies/" + this.company.id + "/outgoing_attachments",
       body: this._toJSON()
     };
-    return Firehose.client.post(params).done(function(data) {
+    return Firehose.client.post(this, params).done(function(data) {
       var xhr, _ref1;
       _this._populateWithJSON(data);
       xhr = new XMLHttpRequest();
@@ -3947,7 +3979,7 @@ Firehose.OutgoingAttachment = (function(_super) {
             route: "outgoing_attachments/" + data.id,
             body: _this._toJSON()
           };
-          return Firehose.client.put(params).done(function() {
+          return Firehose.client.put(_this, params).done(function() {
             return typeof options.success === "function" ? options.success(data.download_url) : void 0;
           }).fail(function(jqXHR, textStatus, errorThrown) {
             return typeof options.error === "function" ? options.error(errorThrown) : void 0;
@@ -4037,13 +4069,13 @@ Firehose.Tag = (function(_super) {
         route: "tags/" + this.id,
         body: this._toJSON()
       };
-      return Firehose.client.put(params);
+      return Firehose.client.put(this, params);
     } else {
       params = {
         route: "companies/" + this.company.id + "/tags",
         body: this._toJSON()
       };
-      return Firehose.client.post(params).done(function(data) {
+      return Firehose.client.post(this, params).done(function(data) {
         _this._populateWithJSON(data);
         return _this.company.tags.insertObject(_this);
       });
@@ -4056,7 +4088,7 @@ Firehose.Tag = (function(_super) {
     params = {
       route: "tags/" + this.id
     };
-    return Firehose.client["delete"](params).done(function() {
+    return Firehose.client["delete"](this, params).done(function() {
       return _this.company.tags.dropObject(_this);
     });
   };
@@ -4143,7 +4175,7 @@ Firehose.TwitterAccount = (function(_super) {
     params = {
       route: "twitter_accounts/" + this.id
     };
-    return Firehose.client["delete"](params).done(function() {
+    return Firehose.client["delete"](this, params).done(function() {
       return _this.company.twitterAccounts().dropObject(_this);
     });
   };
@@ -4337,7 +4369,7 @@ Firehose.Article = (function(_super) {
       auth: false,
       route: "articles/" + this.id
     };
-    return Firehose.client.get(params).done(function(data) {
+    return Firehose.client.get(this, params).done(function(data) {
       return _this._populateWithJSON(data);
     });
   };
@@ -4350,13 +4382,13 @@ Firehose.Article = (function(_super) {
         route: "articles/" + this.id,
         body: this._toJSON()
       };
-      return Firehose.client.put(params);
+      return Firehose.client.put(this, params);
     } else {
       params = {
         route: "companies/" + this.company.id + "/articles",
         body: this._toJSON()
       };
-      return Firehose.client.post(params).done(function(data) {
+      return Firehose.client.post(this, params).done(function(data) {
         _this._populateWithJSON(data);
         return _this.company.articles().insertObject(_this);
       });
@@ -4369,7 +4401,7 @@ Firehose.Article = (function(_super) {
     params = {
       route: "articles/" + this.id
     };
-    return Firehose.client["delete"](params).done(function() {
+    return Firehose.client["delete"](this, params).done(function() {
       return _this.company.articles().dropObject(_this);
     });
   };

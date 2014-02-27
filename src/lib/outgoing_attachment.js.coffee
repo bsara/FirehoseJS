@@ -67,7 +67,7 @@ class Firehose.OutgoingAttachment extends Firehose.Object
     params = 
       route: "companies/#{@company.id}/outgoing_attachments"
       body: this._toJSON()
-    Firehose.client.post( params ).done (data) =>
+    Firehose.client.post( this, params ).done (data) =>
       
       this._populateWithJSON data
       
@@ -102,7 +102,7 @@ class Firehose.OutgoingAttachment extends Firehose.Object
           params = 
             route: "outgoing_attachments/#{data.id}"
             body: this._toJSON()
-          Firehose.client.put( params ).done ->
+          Firehose.client.put( this, params ).done ->
             options.success? data.download_url
           .fail (jqXHR, textStatus, errorThrown) ->
             options.error? errorThrown

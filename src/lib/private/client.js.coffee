@@ -37,31 +37,31 @@ class Firehose.Client
     
     
   # @nodoc
-  get: (options) ->
+  get: (object, options) ->
     $.extend options, method: 'GET'
-    this._sendRequest(options)
+    this._sendRequest object, options
 
 
   # @nodoc
-  post: (options) ->
+  post: (object, options) ->
     $.extend options, method: 'POST'
-    this._sendRequest(options)
+    this._sendRequest object, options
     
     
   # @nodoc
-  put: (options) ->
+  put: (object, options) ->
     $.extend options, method: 'PUT'
-    this._sendRequest(options)
+    this._sendRequest object, options
     
     
   # @nodoc
-  delete: (options) -> 
+  delete: (object, options) -> 
     $.extend options, method: 'DELETE'
-    this._sendRequest(options)
+    this._sendRequest object, options
     
   
   # @nodoc
-  _sendRequest: (options) ->
+  _sendRequest: (object, options) ->
     defaults =
       server:   'API'   
       auth:     true
@@ -117,8 +117,23 @@ class Firehose.Client
       statusCode:   if server == 'API' then @statusCodeHandlers || {}
       
     .fail (jqXHR, textStatus, errorThrown) =>
-      if server == 'API' and @errorHandler?
-        @errorHandler jqXHR, textStatus, errorThrown
+      if server == 'API'
+        
+        # call the error handler if available
+        @errorHandler jqXHR, textStatus, errorThrown if @errorHandler?
+          
+        # set the errorString on the object if possible
+        if Number(jqXHR.status) == 422 and jqXHR.responseJSON? and object?
+          json = jqXHR.responseJSON
+          if json.constructor == Object
+            errorStrings = []
+            for key, errors of jqXHR.responseJSON 
+              errorStrings.push "#{this._humanize(key)} #{errors.join ', '}"
+            object.errorString = errorStrings.join "\n"
+          else if json.constructor == Array
+            object.errorString = json.join "\n"
+          else
+            object.errorString = "#{json}"
 
       
     
@@ -141,6 +156,10 @@ class Firehose.Client
           true
         return allHeaders
       return xhr
+      
+  _humanize: (str) ->
+    str.replace(/_id$/, '').replace(/_/g, ' ').replace /^\w/g, (s) ->
+      s.toUpperCase()
 
 
 ###

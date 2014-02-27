@@ -249,7 +249,7 @@ class Firehose.Company extends Firehose.Object
     else
       throw "You can't call 'fetch' on a company unless 'id', 'knowledgeBaseSubdomain' or 'knowledgeBaseCustomDomain' is set."
       
-    Firehose.client.get( request ).done (data) =>
+    Firehose.client.get( this, request ).done (data) =>
       this._populateWithJSON data
  
   ###
@@ -261,12 +261,12 @@ class Firehose.Company extends Firehose.Object
       params = 
         route: "companies/#{@id}"
         body:  this._toJSON()
-      Firehose.client.put( params )
+      Firehose.client.put( this, params )
     else
       params = 
         route: "agents/#{@_creator.id}/companies"
         body:  this._toJSON()
-      Firehose.client.post( params ).done (data) =>
+      Firehose.client.post( this, params ).done (data) =>
         this._populateWithJSON data
     
     
@@ -277,7 +277,7 @@ class Firehose.Company extends Firehose.Object
   forceChannelsFetch: ->
     params = 
       route: "companies/#{@id}/force_channels_fetch"
-    Firehose.client.put( params )
+    Firehose.client.put( this, params )
     
     
   ###
@@ -288,7 +288,7 @@ class Firehose.Company extends Firehose.Object
   destroy: ->
     params = 
       route: "companies/#{@id}"
-    Firehose.client.delete( params ).done =>
+    Firehose.client.delete( this, params ).done =>
       Firehose.Agent.loggedInAgent.companies.dropObject this
     
   ###
@@ -404,7 +404,7 @@ class Firehose.Company extends Firehose.Object
   addAgent: (agent) ->
     params = 
       route: "companies/#{@id}/agents/#{agent.id}"
-    Firehose.client.put( params ).done =>
+    Firehose.client.put( this, params ).done =>
       @agents.insertObject agent
     
   
@@ -415,7 +415,7 @@ class Firehose.Company extends Firehose.Object
   removeAgent: (agent) ->
     params = 
       route: "companies/#{@id}/agents/#{agent.id}"
-    Firehose.client.delete( params ).done =>
+    Firehose.client.delete( this, params ).done =>
       @agents.dropObject agent
     
     
@@ -433,7 +433,7 @@ class Firehose.Company extends Firehose.Object
       params = 
         server: "billing"
         route: "entities/#{@id}"
-      Firehose.client.get( params ).done (json) =>
+      Firehose.client.get( this, params ).done (json) =>
         if json.credit_card?
           this._setIfNotNull "creditCard", Firehose.CreditCard.creditCardWithID( json.credit_card.id, this )
           @creditCard._populateWithJSON json.credit_card

@@ -32,7 +32,7 @@ class Firehose.AgentInvite extends Firehose.Object
     params = 
       route: "companies/#{@company.id}/agent_invites"
       body:  this._toJSON()
-    Firehose.client.post( params ).done (data) =>
+    Firehose.client.post( this, params ).done (data) =>
       this._populateWithJSON data
       @company.agentInvites.insertObject this
       
@@ -40,13 +40,13 @@ class Firehose.AgentInvite extends Firehose.Object
   resend: ->
     params = 
       route: "agent_invites/#{@id}/resend"
-    Firehose.client.put( params )
+    Firehose.client.put( this, params )
       
       
   destroy: ->
     params = 
       route: "agent_invites/#{@id}"
-    Firehose.client.delete( params ).done =>
+    Firehose.client.delete( this, params ).done =>
       @company.agentInvites.dropObject this
     
 

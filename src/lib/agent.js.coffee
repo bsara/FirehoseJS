@@ -89,7 +89,7 @@ class Firehose.Agent extends Firehose.Object
           first_name: @firstName
           last_name:  @lastName
         
-    Firehose.client.post( params ).done (data) =>
+    Firehose.client.post( this, params ).done (data) =>
       this._populateWithJSON data
       this._handleSuccessfulLogin()
   
@@ -117,7 +117,7 @@ class Firehose.Agent extends Firehose.Object
     else if @accessToken?
       Firehose.client.APIAccessToken = @accessToken
         
-    Firehose.client.post( params ).done (data) =>
+    Firehose.client.post( this, params ).done (data) =>
       this._populateWithJSON data
       this._handleSuccessfulLogin()
       
@@ -142,7 +142,7 @@ class Firehose.Agent extends Firehose.Object
   fetch: ->
     params = 
       route: "agents/#{@id}"
-    Firehose.client.get( params ).done (data) =>
+    Firehose.client.get( this, params ).done (data) =>
       this._populateWithJSON data
       this._handleSuccessfulLogin()
       
@@ -155,7 +155,7 @@ class Firehose.Agent extends Firehose.Object
     params = 
       route: "agents/#{@id}"
       body:  this._toJSON()
-    Firehose.client.put( params )
+    Firehose.client.put( this, params )
   
   
   ###
@@ -168,7 +168,7 @@ class Firehose.Agent extends Firehose.Object
   destroy: ->
     params = 
       route: "agents/#{@id}"
-    Firehose.client.delete( params ).done =>
+    Firehose.client.delete( this, params ).done =>
       for company in @companies
         company.agents.dropObject this
     
@@ -180,7 +180,7 @@ class Firehose.Agent extends Firehose.Object
     
     params = 
       route: "agents/#{@id}/notifications/#{ids.join(',')}"
-    Firehose.client.put( params )
+    Firehose.client.put( this, params )
         
         
   @requestPasswordReset: (email) ->
@@ -188,7 +188,7 @@ class Firehose.Agent extends Firehose.Object
       route: "request_reset_password"
       body:
         email: email
-    Firehose.client.post( params )
+    Firehose.client.post( this, params )
     
   
   @resetPassword: (token, newPassword) ->
@@ -197,7 +197,7 @@ class Firehose.Agent extends Firehose.Object
       body:
         token:    token
         password: newPassword
-    Firehose.client.post( params )
+    Firehose.client.post( this, params )
     
 
   setNewPassword: (newPassword) ->

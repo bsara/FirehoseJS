@@ -39,7 +39,7 @@ class Firehose.TwitterAccount extends Firehose.Object
   destroy: ->
     params = 
       route: "twitter_accounts/#{@id}"
-    Firehose.client.delete( params ).done =>
+    Firehose.client.delete( this, params ).done =>
       @company.twitterAccounts().dropObject this
 
 

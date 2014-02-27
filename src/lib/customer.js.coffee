@@ -78,20 +78,20 @@ class Firehose.Customer extends Firehose.Object
   fetch: ->
     params = 
       route: "customers/#{@id}"
-    Firehose.client.get( params ).done (data) =>
+    Firehose.client.get( this, params ).done (data) =>
       this._populateWithJSON data
     
     
   resolveAllInteractions: ->
     params = 
       route: "customers/#{@id}/resolve_all_interactions"
-    Firehose.client.put( params )
+    Firehose.client.put( this, params )
     
     
   destroy: ->
     params = 
       route: "customers/#{@id}"
-    Firehose.client.delete( params ).done =>
+    Firehose.client.delete( this, params ).done =>
       @company._customers?.dropObject this
   
   

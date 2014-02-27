@@ -15,6 +15,15 @@ asyncTest 'Sign Up', 8, ->
     start()
   .fail ->
     start()
+    
+asyncTest 'Sign Up (Fail with errorString populated)', 1, ->
+  agent = Firehose.Agent.agentWithEmailAndPassword(Faker.Internet.email(), "")
+  agent.signUpWithFirstAndLastName( "", Faker.Name.lastName() )
+  .done ->
+    start()
+  .fail ->
+    ok agent.errorString == "Password digest can't be blank\nFirst name can't be blank"
+    start()
 
 ### 
 # Test of login w un/pw occurs with every test

@@ -11,6 +11,12 @@ class Firehose.Object
   ###
   createdAt: null
   
+  
+  ###
+  @property [string] The errors the server returned about fields that did not contain valid values. You can simply display this to the user without modification.
+  ###
+  errorString: null
+  
   ###
   @property [Array<Object>] The static array that holds the entire object graph
   @nodoc

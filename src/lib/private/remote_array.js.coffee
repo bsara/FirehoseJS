@@ -58,7 +58,7 @@ class Firehose.RemoteArray extends Firehose.UniqueArray
         page:     page
         perPage:  @perPage
       @onceParams = null
-      @_currentXHR = Firehose.client.get( options ).done (data) =>
+      @_currentXHR = Firehose.client.get( this, options ).done (data) =>
         if data.constructor == Array and data.length > 0
           @totalRows = data[0].total_rows
           aggregate = []

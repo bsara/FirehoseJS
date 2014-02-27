@@ -41,7 +41,7 @@ class Firehose.FacebookPage extends Firehose.Object
     params = 
       route: "facebook_pages/#{@id}"
       body:  this._toJSON()
-    Firehose.client.put( params )
+    Firehose.client.put( this, params )
     
     
   # @nodoc

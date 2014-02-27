@@ -38,12 +38,12 @@ class Firehose.Note extends Firehose.Object
       params = 
         route: "notes/#{@id}"
         body:  this._toJSON()
-      Firehose.client.put( params )
+      Firehose.client.put( this, params )
     else
       params = 
         route: "interactions/#{@interaction.id}/notes"
         body:  this._toJSON()
-      Firehose.client.post( params ).done (data) =>
+      Firehose.client.post( this, params ).done (data) =>
         this._populateWithJSON data
         @interaction.notes.insertObject this
         
@@ -51,7 +51,7 @@ class Firehose.Note extends Firehose.Object
   destroy: ->
     params = 
       route: "notes/#{@id}"
-    Firehose.client.delete( params ).done =>
+    Firehose.client.delete( this, params ).done =>
       @interaction.notes.dropObject this
     
 

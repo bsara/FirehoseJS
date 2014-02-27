@@ -86,7 +86,7 @@ class Firehose.CreditCard extends Firehose.Object
       server: "billing"
       route:  "entities/#{@company.id}/credit_card"
       body:   this._toJSON()
-    Firehose.client.put( params ).done =>
+    Firehose.client.put( this, params ).done =>
       @company.set 'creditCard', this
     
     
@@ -95,7 +95,7 @@ class Firehose.CreditCard extends Firehose.Object
     params = 
       server: "billing"
       route: "entities/#{@company.id}/credit_card"
-    Firehose.client.get( params ).done (data) =>
+    Firehose.client.get( this, params ).done (data) =>
       this._populateWithJSON data
     
     
@@ -104,7 +104,7 @@ class Firehose.CreditCard extends Firehose.Object
     params = 
       server: "billing"
       route: "entities/#{@company.id}/credit_card"
-    Firehose.client.delete( params ).done =>
+    Firehose.client.delete( this, params ).done =>
       @company.set 'creditCard', null
     
     

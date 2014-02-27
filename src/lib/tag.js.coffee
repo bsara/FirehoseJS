@@ -33,12 +33,12 @@ class Firehose.Tag extends Firehose.Object
       params = 
         route: "tags/#{@id}"
         body:  this._toJSON()
-      Firehose.client.put( params )
+      Firehose.client.put( this, params )
     else
       params = 
         route: "companies/#{@company.id}/tags"
         body:  this._toJSON()
-      Firehose.client.post( params ).done (data) =>
+      Firehose.client.post( this, params ).done (data) =>
         this._populateWithJSON data
         @company.tags.insertObject this
       
@@ -46,7 +46,7 @@ class Firehose.Tag extends Firehose.Object
   destroy: ->
     params = 
       route: "tags/#{@id}"
-    Firehose.client.delete( params ).done =>
+    Firehose.client.delete( this, params ).done =>
       @company.tags.dropObject this
     
 
