@@ -113,7 +113,7 @@ class Firehose.Object
   # @nodoc
   _populateWithJSON: (json) ->
     this._setIfNotNull "id",        json.id                     unless @id?
-    this._setIfNotNull "createdAt", Date.parse(json.created_at) unless @createdAt?
+    this._setIfNotNull "createdAt", Date.parse(json.created_at) unless @createdAt
 
   # @nodoc
   _setIfNotNull: (key, value) ->

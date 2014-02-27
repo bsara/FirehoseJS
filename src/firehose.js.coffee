@@ -7,7 +7,7 @@ window.Firehose = {}
 
 
 ###
-Returns the current environment that FirehoseJS is running in based on the current docment URL.
+Returns the current environment that Firehose is running in based on the current docment URL.
 @return   [string] The current environment. 'production', 'beta', 'test' or 'development'.
 ###
 Firehose.environment = ->
@@ -32,3 +32,6 @@ Firehose.baseURLFor = (app, subdomain) ->
 ###
 Firehose.tokenFor = (service) ->
   Firehose.client.environment.serviceToken service
+
+
+

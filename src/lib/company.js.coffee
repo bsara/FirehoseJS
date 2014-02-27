@@ -498,7 +498,7 @@ class Firehose.Company extends Firehose.Object
     this._setIfNotNull "title",                     json.title
     this._setIfNotNull "token",                     json.token                                   unless @token?
     this._setIfNotNull "fetchAutomatically",        json.company_settings?.fetch_automatically
-    this._setIfNotNull "lastFetchAt",               json.last_fetch_at
+    this._setIfNotNull "lastFetchAt",               Date.parse(json.last_fetch_at)               if json.last_fetch_at?
     this._setIfNotNull "forwardingEmailAddress",    json.forwarding_email                        unless @forwardingEmailAddress?
     this._setIfNotNull "knowledgeBaseSubdomain",    json.company_settings?.kb_subdomain
     this._setIfNotNull "knowledgeBaseCustomDomain", json.company_settings?.kb_custom_domain
@@ -528,10 +528,10 @@ class Firehose.Company extends Firehose.Object
   _toJSON: ->
     company:
       title:                @title
-      fetch_automatically:  @fetchAutomatically
       company_settings_attributes:
-        kb_subdomain:       @knowledgeBaseSubdomain     if @knowledgeBaseSubdomain?
-        kb_custom_domain:   @knowledgeBaseCustomDomain  if @knowledgeBaseCustomDomain
+        fetch_automatically:  @fetchAutomatically
+        kb_subdomain:         @knowledgeBaseSubdomain     if @knowledgeBaseSubdomain?
+        kb_custom_domain:     @knowledgeBaseCustomDomain  if @knowledgeBaseCustomDomain
       
 
   # @nodoc

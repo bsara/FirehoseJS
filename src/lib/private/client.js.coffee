@@ -1,44 +1,66 @@
-# @nodoc
 class Firehose.Client
   
-  
-  APIAccessToken: null
-  
-  URLToken: null
-  
-  billingAccessToken: null
-  
+  ###
+  A hash of http status codes that could be returned by the API server and functions to handle them.
+  @example Assigning this a hash with a 401 status code to handle an unauthorized request:
+    Firehose.client.statusCodeHandlers =
+      401: =>
+        this.logout()
+      422: (jqXHR, textStatus, errorThrown) ->
+        …
+  ###
   statusCodeHandlers: null
   
+  ###
+  A function that is called whenever a call to the API service fails.
+  ###
+  errorHandler: null
+  
+  # @nodoc
+  APIAccessToken: null
+  
+  # @nodoc
+  URLToken: null
+  
+  # @nodoc
+  billingAccessToken: null
+  
+  # @nodoc
   environment: null
   
   
+  # @nodoc
   constructor: ->
     this._firefoxHack()
     @environment = new Firehose.Environment
     Stripe.setPublishableKey @environment.serviceToken('stripe')
     
     
+  # @nodoc
   get: (options) ->
     $.extend options, method: 'GET'
     this._sendRequest(options)
 
 
+  # @nodoc
   post: (options) ->
     $.extend options, method: 'POST'
     this._sendRequest(options)
     
     
+  # @nodoc
   put: (options) ->
     $.extend options, method: 'PUT'
     this._sendRequest(options)
     
     
+  # @nodoc
   delete: (options) -> 
     $.extend options, method: 'DELETE'
     this._sendRequest(options)
     
   
+  # @nodoc
   _sendRequest: (options) ->
     defaults =
       server:   'API'   
@@ -93,9 +115,14 @@ class Firehose.Client
       headers:      headers
       contentType:  'application/json'
       statusCode:   if server == 'API' then @statusCodeHandlers || {}
+      
+    .fail (jqXHR, textStatus, errorThrown) =>
+      if server == 'API' and @errorHandler?
+        @errorHandler jqXHR, textStatus, errorThrown
 
       
     
+  # @nodoc
   _firefoxHack: ->
     # Firefox hack: http://api.jquery.com/jQuery.ajax/
     _super          = jQuery.ajaxSettings.xhr
@@ -114,6 +141,10 @@ class Firehose.Client
           true
         return allHeaders
       return xhr
-  
-  
+
+
+###
+A few methods are publicized on the client, although a mostly private object used internally.
+@return [Client] The client singleton used by firehose.js internally.
+###
 Firehose.client = new Firehose.Client
