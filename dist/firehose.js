@@ -494,7 +494,7 @@ Firehose.Environment = (function() {
 
 Firehose.Client = (function() {
   /*
-  A hash of http status codes that could be returned by the API server and functions to handle them.
+  @property [hash] A hash of http status codes that could be returned by the API server and functions to handle them.
   @example Assigning this a hash with a 401 status code to handle an unauthorized request:
     Firehose.client.statusCodeHandlers =
       401: =>
@@ -506,7 +506,7 @@ Firehose.Client = (function() {
   Client.prototype.statusCodeHandlers = null;
 
   /*
-  A function that is called whenever a call to the API service fails.
+  @property [Function(jqXHR, textStatus, errorThrown)] A function that is called whenever a call to the API service fails.
   */
 
 
@@ -798,6 +798,26 @@ Firehose.Object = (function() {
     } else {
       return false;
     }
+  };
+
+  /*
+  Takes the `errorString` property and formats it for display in HTML.
+  @return [string] An HTML marked-up version of the `errorString` property in the form of an unordered list (<ul>).
+  */
+
+
+  Object.prototype.HTMLErrorString = function() {
+    var HTML, line, lines, _i, _len, _ref;
+    HTML = "<ul>";
+    lines = (_ref = this.errorString) != null ? _ref.split("\n") : void 0;
+    if (lines != null) {
+      for (_i = 0, _len = lines.length; _i < _len; _i++) {
+        line = lines[_i];
+        HTML += "<li>" + line + "</li>";
+      }
+    }
+    HTML += "</ul>";
+    return HTML;
   };
 
   /*

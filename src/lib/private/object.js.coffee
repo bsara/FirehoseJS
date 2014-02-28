@@ -74,6 +74,20 @@ class Firehose.Object
       true
     else
       false
+      
+  ###
+  Takes the `errorString` property and formats it for display in HTML.
+  @return [string] An HTML marked-up version of the `errorString` property in the form of an unordered list (<ul>).
+  ###
+  HTMLErrorString: ->
+    HTML = "<ul>"
+    lines = this.errorString?.split "\n"
+    if lines?
+      for line in lines   
+        HTML += "<li>#{line}</li>"
+    HTML += "</ul>"
+    HTML
+    
     
   ###
   Create an object to be cached

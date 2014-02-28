@@ -1,7 +1,7 @@
 class Firehose.Client
   
   ###
-  A hash of http status codes that could be returned by the API server and functions to handle them.
+  @property [hash] A hash of http status codes that could be returned by the API server and functions to handle them.
   @example Assigning this a hash with a 401 status code to handle an unauthorized request:
     Firehose.client.statusCodeHandlers =
       401: =>
@@ -12,7 +12,7 @@ class Firehose.Client
   statusCodeHandlers: null
   
   ###
-  A function that is called whenever a call to the API service fails.
+  @property [Function(jqXHR, textStatus, errorThrown)] A function that is called whenever a call to the API service fails.
   ###
   errorHandler: null
   
@@ -157,6 +157,8 @@ class Firehose.Client
         return allHeaders
       return xhr
       
+      
+  # @nodoc
   _humanize: (str) ->
     str.replace(/_id$/, '').replace(/_/g, ' ').replace /^\w/g, (s) ->
       s.toUpperCase()
