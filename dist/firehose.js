@@ -287,8 +287,10 @@ Firehose.Environment = (function() {
   };
 
   Environment.prototype.serviceToken = function(service) {
+    var env;
     this._inferEnvironmentFromURL();
-    return this._serviceKeys[this._environment][service];
+    env = this._server === "production" ? "production" : this._environment;
+    return this._serviceKeys[env][service];
   };
 
   Environment.prototype.environment = function() {
@@ -2032,7 +2034,7 @@ Firehose.Interaction = (function(_super) {
   Interaction.prototype.privateURL = null;
 
   /*
-  @property [string]
+  @property [string] What channel the interaction is through (email, fb, twitter)
   */
 
 
@@ -2046,14 +2048,14 @@ Firehose.Interaction = (function(_super) {
   Interaction.prototype.receivedAt = null;
 
   /*
-  @property [CustomerAccount]
+  @property [CustomerAccount] The account this interaction is linked to.
   */
 
 
   Interaction.prototype.customerAccount = null;
 
   /*
-  @property [Agent]
+  @property [Agent] If this is a response interaction, the agent that wrote it.
   */
 
 

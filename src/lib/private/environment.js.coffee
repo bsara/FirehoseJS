@@ -15,7 +15,8 @@ class Firehose.Environment
     
   serviceToken: (service) ->
     this._inferEnvironmentFromURL()
-    @_serviceKeys[@_environment][service]
+    env = if @_server == "production" then "production" else @_environment 
+    @_serviceKeys[env][service]
     
     
   environment: ->

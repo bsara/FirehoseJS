@@ -45,7 +45,7 @@ class Firehose.Interaction extends Firehose.Object
   privateURL: null
   
   ###
-  @property [string] 
+  @property [string] What channel the interaction is through (email, fb, twitter)
   ###
   channel: null
   
@@ -55,12 +55,12 @@ class Firehose.Interaction extends Firehose.Object
   receivedAt: null
   
   ###
-  @property [CustomerAccount] 
+  @property [CustomerAccount] The account this interaction is linked to.
   ###
   customerAccount: null
   
   ###
-  @property [Agent] 
+  @property [Agent] If this is a response interaction, the agent that wrote it.
   ###
   agent: null
   
