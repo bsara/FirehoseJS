@@ -2879,12 +2879,41 @@ Firehose.Customer = (function(_super) {
     return this.customerFlaggedAgents.sortOn("firstName");
   };
 
+  /*
+  If you have a customer's id, you can create a customer object and then call `fetch` to populate it.
+  @param [number] The customer identifier.
+  @param [Company] The company this customer belongs to.
+  @return [Customer] A customer you can now call `fetch` on to populate.
+  */
+
+
   Customer.customerWithID = function(id, company) {
     return Firehose.Object._objectOfClassWithID(Firehose.Customer, {
       id: id,
       company: company
     });
   };
+
+  /*
+  In a customer list, sometimes a pusher event can send you customer json and you need a way to create a customer from it.
+  @param [Object] JSON of the customer.
+  @param [Company] The company this customer belongs to.
+  @return [Customer] A customer populated with the JSON.
+  */
+
+
+  Customer.customerWithJSON = function(json, company) {
+    var customer;
+    customer = this.customerWithID(json.id, company);
+    customer._populateWithJSON(json);
+    return customer;
+  };
+
+  /*
+  If the customer has a valid `id` this will fetch and populate this customer object with data on the server.
+  @return [Promise] A jqXHR object.
+  */
+
 
   Customer.prototype.fetch = function() {
     var params,

@@ -1,5 +1,13 @@
 module "Customer"
 
+firehoseTest 'Create Customer From JSON', 2, (agent) ->
+  company = agent.companies[0]
+  customerJSON = `{"created_at":"2012-01-26T01:02:01Z","id":26,"location":null,"raw_name":"Adam Kirk","time_zone":null,"name":"Adam Kirk","newest_interaction_id":536509,"newest_interaction_excerpt":"ignore, testing pusher\n\n--\nAdam Kirk\nSent with Airmail\n","newest_interaction_received_at":"2014-03-01T16:44:23Z","interaction_flagged_agents":[],"customer_accounts":[{"channel":"email","created_at":"2012-01-26T01:02:01Z","description":null,"followers_count":0,"following_us":false,"id":26,"image_url":null,"username":"atomkirk@gmail.com"}]}`
+  customer = Firehose.Customer.customerWithJSON customerJSON
+  ok customer.id = 26
+  ok customer.newestInteractionId == 536509
+  start()
+
 firehoseTest 'List', 2, (agent) ->
   company = agent.companies[0]
   customers = company.customersWithCriteria()
