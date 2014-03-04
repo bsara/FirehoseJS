@@ -621,7 +621,7 @@ Firehose.Client = (function() {
       contentType: 'application/json',
       statusCode: server === 'API' ? this.statusCodeHandlers || {} : void 0
     }).fail(function(jqXHR, textStatus, errorThrown) {
-      var errorStrings, errors, json, _ref;
+      var errors, json, _ref, _results;
       if (server === 'API') {
         if (_this.errorHandler != null) {
           _this.errorHandler(jqXHR, textStatus, errorThrown);
@@ -629,17 +629,18 @@ Firehose.Client = (function() {
         if (Number(jqXHR.status) === 422 && (jqXHR.responseJSON != null) && (object != null)) {
           json = jqXHR.responseJSON;
           if (json.constructor === Object) {
-            errorStrings = [];
+            object.errors = [];
             _ref = jqXHR.responseJSON;
+            _results = [];
             for (key in _ref) {
               errors = _ref[key];
-              errorStrings.push("" + (_this._humanize(key)) + " " + (errors.join(', ')));
+              _results.push(object.errors.push("" + (_this._humanize(key)) + " " + (errors.join(', '))));
             }
-            return object.errorString = errorStrings.join("\n");
+            return _results;
           } else if (json.constructor === Array) {
-            return object.errorString = json.join("\n");
+            return object.errors = json;
           } else {
-            return object.errorString = "" + json;
+            return object.errors = ("" + json).split("\n");
           }
         }
       }
@@ -710,11 +711,11 @@ Firehose.Object = (function() {
   Object.prototype.createdAt = null;
 
   /*
-  @property [string] The errors the server returned about fields that did not contain valid values. You can simply display this to the user without modification.
+  @property [Array<String>] The errors the server returned about fields that did not contain valid values.
   */
 
 
-  Object.prototype.errorString = null;
+  Object.prototype.errors = [];
 
   /*
   @property [Array<Object>] The static array that holds the entire object graph
@@ -803,15 +804,15 @@ Firehose.Object = (function() {
   };
 
   /*
-  Takes the `errorString` property and formats it for display in HTML.
-  @return [string] An HTML marked-up version of the `errorString` property in the form of an unordered list (<ul>).
+  Takes the `errors` property and formats it's items for display in HTML.
+  @return [string] An HTML marked-up version of the `errors` property in the form of an unordered list (<ul>).
   */
 
 
   Object.prototype.HTMLErrorString = function() {
-    var HTML, line, lines, _i, _len, _ref;
+    var HTML, line, lines, _i, _len;
     HTML = "<ul>";
-    lines = (_ref = this.errorString) != null ? _ref.split("\n") : void 0;
+    lines = this.errors;
     if (lines != null) {
       for (_i = 0, _len = lines.length; _i < _len; _i++) {
         line = lines[_i];

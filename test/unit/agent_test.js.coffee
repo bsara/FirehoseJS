@@ -16,13 +16,14 @@ asyncTest 'Sign Up', 8, ->
   .fail ->
     start()
     
-asyncTest 'Sign Up (Fail with errorString populated)', 2, ->
+asyncTest 'Sign Up (Fail with errors populated)', 3, ->
   agent = Firehose.Agent.agentWithEmailAndPassword(Faker.Internet.email(), "")
   agent.signUpWithFirstAndLastName( "", Faker.Name.lastName() )
   .done ->
     start()
   .fail ->
-    ok agent.errorString == "Password digest can't be blank\nFirst name can't be blank"
+    ok agent.errors[0] == "Password digest can't be blank"
+    ok agent.errors[1] == "First name can't be blank"
     ok agent.HTMLErrorString() == "<ul><li>Password digest can't be blank</li><li>First name can't be blank</li></ul>"
     start()
 

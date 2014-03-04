@@ -122,21 +122,19 @@ class Firehose.Client
         # call the error handler if available
         @errorHandler jqXHR, textStatus, errorThrown if @errorHandler?
           
-        # set the errorString on the object if possible
+        # set the errors on the object if possible
         if Number(jqXHR.status) == 422 and jqXHR.responseJSON? and object?
           json = jqXHR.responseJSON
           if json.constructor == Object
-            errorStrings = []
+            object.errors = []
             for key, errors of jqXHR.responseJSON 
-              errorStrings.push "#{this._humanize(key)} #{errors.join ', '}"
-            object.errorString = errorStrings.join "\n"
+              object.errors.push "#{this._humanize(key)} #{errors.join ', '}"
           else if json.constructor == Array
-            object.errorString = json.join "\n"
+            object.errors = json
           else
-            object.errorString = "#{json}"
+            object.errors = ("#{json}").split("\n")
 
-      
-    
+
   # @nodoc
   _firefoxHack: ->
     # Firefox hack: http://api.jquery.com/jQuery.ajax/

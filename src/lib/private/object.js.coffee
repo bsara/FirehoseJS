@@ -13,9 +13,9 @@ class Firehose.Object
   
   
   ###
-  @property [string] The errors the server returned about fields that did not contain valid values. You can simply display this to the user without modification.
+  @property [Array<String>] The errors the server returned about fields that did not contain valid values.
   ###
-  errorString: null
+  errors: []
   
   ###
   @property [Array<Object>] The static array that holds the entire object graph
@@ -76,18 +76,17 @@ class Firehose.Object
       false
       
   ###
-  Takes the `errorString` property and formats it for display in HTML.
-  @return [string] An HTML marked-up version of the `errorString` property in the form of an unordered list (<ul>).
+  Takes the `errors` property and formats it's items for display in HTML.
+  @return [string] An HTML marked-up version of the `errors` property in the form of an unordered list (<ul>).
   ###
   HTMLErrorString: ->
     HTML = "<ul>"
-    lines = this.errorString?.split "\n"
+    lines = this.errors
     if lines?
       for line in lines   
         HTML += "<li>#{line}</li>"
     HTML += "</ul>"
     HTML
-    
     
   ###
   Create an object to be cached
