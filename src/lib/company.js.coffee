@@ -308,14 +308,14 @@ class Firehose.Company extends Firehose.Object
       channel:      criteria.channels.join(",") if criteria.channels?
       sort:         if criteria.sort? then criteria.sort else "newest_first"
       search_text:  encodeURIComponent( criteria.searchString ) if criteria.searchString
-    customers = new Firehose.RemoteArray "companies/#{@id}/customers", params, (json) =>
+    @_customers = new Firehose.RemoteArray "companies/#{@id}/customers", params, (json) =>
       Firehose.Customer.customerWithID( json.id, this )
     if params.sort == 'newest_first'
-      customers.sortOn "newestInteractionReceivedAt", "desc"
+      @_customers.sortOn "newestInteractionReceivedAt", "desc"
     else
-      customers.sortOn "newestInteractionReceivedAt", "asc"
-    customers.onceParams = { pre_fetch: criteria.preFetch } if criteria.preFetch?
-    customers
+      @_customers.sortOn "newestInteractionReceivedAt", "asc"
+    @_customers.onceParams = { pre_fetch: criteria.preFetch } if criteria.preFetch?
+    @_customers
       
       
   ###
