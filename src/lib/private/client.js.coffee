@@ -118,10 +118,8 @@ class Firehose.Client
       
     .fail (jqXHR, textStatus, errorThrown) =>
       if server == 'API'
-        
         # call the error handler if available
         @errorHandler jqXHR, textStatus, errorThrown if @errorHandler?
-          
         # set the errors on the object if possible
         if Number(jqXHR.status) == 422 and jqXHR.responseJSON? and object?
           json = jqXHR.responseJSON
@@ -132,7 +130,7 @@ class Firehose.Client
           else if json.constructor == Array
             object.errors = json
           else
-            object.errors = ("#{json}").split("\n")
+            object.errors = "#{json}".split("\n")
 
 
   # @nodoc

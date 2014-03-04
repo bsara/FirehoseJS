@@ -81,13 +81,17 @@ class Firehose.Object
   ###
   HTMLErrorString: ->
     HTML = "<ul>"
-    lines = this.errors
+    lines = @errors
     if lines?
       for line in lines   
         HTML += "<li>#{line}</li>"
     HTML += "</ul>"
     HTML
     
+    
+    
+  # private
+  
   ###
   Create an object to be cached
   @nodoc

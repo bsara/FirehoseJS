@@ -1629,7 +1629,7 @@ Firehose.Company = (function(_super) {
 
 
   Company.prototype.customersWithCriteria = function(criteria) {
-    var customers, params,
+    var params,
       _this = this;
     if (criteria == null) {
       criteria = {};
@@ -1640,20 +1640,20 @@ Firehose.Company = (function(_super) {
       sort: criteria.sort != null ? criteria.sort : "newest_first",
       search_text: criteria.searchString ? encodeURIComponent(criteria.searchString) : void 0
     };
-    customers = new Firehose.RemoteArray("companies/" + this.id + "/customers", params, function(json) {
+    this._customers = new Firehose.RemoteArray("companies/" + this.id + "/customers", params, function(json) {
       return Firehose.Customer.customerWithID(json.id, _this);
     });
     if (params.sort === 'newest_first') {
-      customers.sortOn("newestInteractionReceivedAt", "desc");
+      this._customers.sortOn("newestInteractionReceivedAt", "desc");
     } else {
-      customers.sortOn("newestInteractionReceivedAt", "asc");
+      this._customers.sortOn("newestInteractionReceivedAt", "asc");
     }
     if (criteria.preFetch != null) {
-      customers.onceParams = {
+      this._customers.onceParams = {
         pre_fetch: criteria.preFetch
       };
     }
-    return customers;
+    return this._customers;
   };
 
   /*
