@@ -20,24 +20,9 @@ class Firehose.Company extends Firehose.Object
   lastFetchAt: null
   
   ###
-  @property [boolean] 
-  ###
-  fetchAutomatically: true
-  
-  ###
   @property [string] 
   ###
   forwardingEmailAddress: null
-  
-  ###
-  @property [string] 
-  ###
-  knowledgeBaseSubdomain: null
-  
-  ###
-  @property [string] 
-  ###
-  knowledgeBaseCustomDomain: null
   
   ###
   @property [integer] 
@@ -50,6 +35,44 @@ class Firehose.Company extends Firehose.Object
   numberOfAccounts: 0
   
   
+  # settings
+  
+  ###
+  @property [boolean] 
+  ###
+  fetchAutomatically: true
+  
+  ###
+  @property [string] 
+  ###
+  knowledgeBaseSubdomain: null
+  
+  ###
+  @property [string] 
+  ###
+  knowledgeBaseCustomDomain: null
+  
+  ###
+  @property [string]
+  ###
+  knowledgeBaseCSS: null
+  
+  ###
+  @property [string]
+  ###
+  knowlegeBaseLayoutTemplate: null
+  
+  ###
+  @property [string]
+  ###
+  knowlegeBaseSearchTemplate: null
+  
+  ###
+  @property [string]
+  ###
+  knowlegeBaseArticleTemplate: null
+
+
   # associations
   
   ###
@@ -495,15 +518,21 @@ class Firehose.Company extends Firehose.Object
     
   # @nodoc
   _populateWithJSON: (json) ->
-    this._setIfNotNull "title",                     json.title
-    this._setIfNotNull "token",                     json.token                                   unless @token?
-    this._setIfNotNull "fetchAutomatically",        json.company_settings?.fetch_automatically
-    this._setIfNotNull "lastFetchAt",               Date.parse(json.last_fetch_at)               if json.last_fetch_at?
-    this._setIfNotNull "forwardingEmailAddress",    json.forwarding_email                        unless @forwardingEmailAddress?
-    this._setIfNotNull "knowledgeBaseSubdomain",    json.company_settings?.kb_subdomain
-    this._setIfNotNull "knowledgeBaseCustomDomain", json.company_settings?.kb_custom_domain
-    this._setIfNotNull "unresolvedCount",           json.unresolved_count
-    this._setIfNotNull "numberOfAccounts",          json.number_of_accounts
+    this._setIfNotNull "title",                         json.title
+    this._setIfNotNull "token",                         json.token                      unless @token?
+    this._setIfNotNull "lastFetchAt",                   Date.parse(json.last_fetch_at)  if json.last_fetch_at?
+    this._setIfNotNull "forwardingEmailAddress",        json.forwarding_email           unless @forwardingEmailAddress?
+    this._setIfNotNull "unresolvedCount",               json.unresolved_count
+    this._setIfNotNull "numberOfAccounts",              json.number_of_accounts
+        
+    # settings    
+    this._setIfNotNull "fetchAutomatically",            json.company_settings?.fetch_automatically
+    this._setIfNotNull "knowledgeBaseSubdomain",        json.company_settings?.kb_subdomain
+    this._setIfNotNull "knowledgeBaseCustomDomain",     json.company_settings?.kb_custom_domain
+    this._setIfNotNull "knowledgeBaseCSS",              json.company_settings?.kb_css
+    this._setIfNotNull "knowledgeBaseLayoutTemplate",   json.company_settings?.kb_layout_template
+    this._setIfNotNull "knowledgeBaseSearchTemplate",   json.company_settings?.kb_search_template
+    this._setIfNotNull "knowledgeBaseArticleTemplate",  json.company_settings?.kb_article_template
     
     this._populateAssociatedObjects this, "agents", json.agents, (json) =>
       agent = Firehose.Agent.agentWithID( json.id )
@@ -529,9 +558,13 @@ class Firehose.Company extends Firehose.Object
     company:
       title:                @title
       company_settings_attributes:
-        fetch_automatically:  @fetchAutomatically
-        kb_subdomain:         @knowledgeBaseSubdomain     if @knowledgeBaseSubdomain?
-        kb_custom_domain:     @knowledgeBaseCustomDomain  if @knowledgeBaseCustomDomain
+        fetch_automatically : @fetchAutomatically
+        kb_subdomain        : @knowledgeBaseSubdomain       if @knowledgeBaseSubdomain?
+        kb_custom_domain    : @knowledgeBaseCustomDomain    if @knowledgeBaseCustomDomain
+        kb_css              : @knowledgeBaseCSS             if @knowledgeBaseCSS
+        kb_layout_template  : @knowledgeBaseLayoutTemplate  if @knowledgeBaseLayoutTemplate
+        kb_search_template  : @knowledgeBaseSearchTemplate  if @knowledgeBaseSearchTemplate
+        kb_article_template : @knowledgeBaseArticleTemplate if @knowledgeBaseArticleTemplate
       
 
   # @nodoc

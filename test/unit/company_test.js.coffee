@@ -87,11 +87,15 @@ firehoseTest 'Fetch (throws error because not enough info is set)', 1, (agent) -
     start()
 
     
-firehoseTest 'Update', 5, (agent) ->
-  company = agent.companies[0]
+firehoseTest 'Update', 9, (agent) ->
+  company       = agent.companies[0]
   company.title = "Adam's Company"
-  company.knowledgeBaseSubdomain = "mystrou"
-  company.knowledgeBaseCustomDomain = "support.firehoseapp.com"
+  company.knowledgeBaseSubdomain       = "mystrou"
+  company.knowledgeBaseCustomDomain    = "support.firehoseapp.com"
+  company.knowledgeBaseCSS             = "css"
+  company.knowledgeBaseLayoutTemplate  = "layout template"
+  company.knowledgeBaseSearchTemplate  = "search template"
+  company.knowledgeBaseArticleTemplate = "article template"
   company.save()
   .done (data, textStatus) ->
     equal textStatus, "nocontent"
@@ -101,6 +105,10 @@ firehoseTest 'Update', 5, (agent) ->
       equal company.title, "Adam's Company"
       equal company.knowledgeBaseSubdomain, "mystrou"
       equal company.knowledgeBaseCustomDomain, "support.firehoseapp.com"
+      equal company.knowledgeBaseCSS, "css"
+      equal company.knowledgeBaseLayoutTemplate, "layout template"
+      equal company.knowledgeBaseSearchTemplate, "search template"
+      equal company.knowledgeBaseArticleTemplate, "article template"
       start()
     .fail ->
       start()

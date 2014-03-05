@@ -1285,18 +1285,32 @@ Firehose.Company = (function(_super) {
   Company.prototype.lastFetchAt = null;
 
   /*
-  @property [boolean]
-  */
-
-
-  Company.prototype.fetchAutomatically = true;
-
-  /*
   @property [string]
   */
 
 
   Company.prototype.forwardingEmailAddress = null;
+
+  /*
+  @property [integer]
+  */
+
+
+  Company.prototype.unresolvedCount = 0;
+
+  /*
+  @property [integer]
+  */
+
+
+  Company.prototype.numberOfAccounts = 0;
+
+  /*
+  @property [boolean]
+  */
+
+
+  Company.prototype.fetchAutomatically = true;
 
   /*
   @property [string]
@@ -1313,18 +1327,32 @@ Firehose.Company = (function(_super) {
   Company.prototype.knowledgeBaseCustomDomain = null;
 
   /*
-  @property [integer]
+  @property [string]
   */
 
 
-  Company.prototype.unresolvedCount = 0;
+  Company.prototype.knowledgeBaseCSS = null;
 
   /*
-  @property [integer]
+  @property [string]
   */
 
 
-  Company.prototype.numberOfAccounts = 0;
+  Company.prototype.knowlegeBaseLayoutTemplate = null;
+
+  /*
+  @property [string]
+  */
+
+
+  Company.prototype.knowlegeBaseSearchTemplate = null;
+
+  /*
+  @property [string]
+  */
+
+
+  Company.prototype.knowlegeBaseArticleTemplate = null;
 
   /*
   @property [Array<Agent>]
@@ -1894,23 +1922,27 @@ Firehose.Company = (function(_super) {
   };
 
   Company.prototype._populateWithJSON = function(json) {
-    var _ref1, _ref2, _ref3,
+    var _ref1, _ref2, _ref3, _ref4, _ref5, _ref6, _ref7,
       _this = this;
     this._setIfNotNull("title", json.title);
     if (this.token == null) {
       this._setIfNotNull("token", json.token);
     }
-    this._setIfNotNull("fetchAutomatically", (_ref1 = json.company_settings) != null ? _ref1.fetch_automatically : void 0);
     if (json.last_fetch_at != null) {
       this._setIfNotNull("lastFetchAt", Date.parse(json.last_fetch_at));
     }
     if (this.forwardingEmailAddress == null) {
       this._setIfNotNull("forwardingEmailAddress", json.forwarding_email);
     }
-    this._setIfNotNull("knowledgeBaseSubdomain", (_ref2 = json.company_settings) != null ? _ref2.kb_subdomain : void 0);
-    this._setIfNotNull("knowledgeBaseCustomDomain", (_ref3 = json.company_settings) != null ? _ref3.kb_custom_domain : void 0);
     this._setIfNotNull("unresolvedCount", json.unresolved_count);
     this._setIfNotNull("numberOfAccounts", json.number_of_accounts);
+    this._setIfNotNull("fetchAutomatically", (_ref1 = json.company_settings) != null ? _ref1.fetch_automatically : void 0);
+    this._setIfNotNull("knowledgeBaseSubdomain", (_ref2 = json.company_settings) != null ? _ref2.kb_subdomain : void 0);
+    this._setIfNotNull("knowledgeBaseCustomDomain", (_ref3 = json.company_settings) != null ? _ref3.kb_custom_domain : void 0);
+    this._setIfNotNull("knowledgeBaseCSS", (_ref4 = json.company_settings) != null ? _ref4.kb_css : void 0);
+    this._setIfNotNull("knowledgeBaseLayoutTemplate", (_ref5 = json.company_settings) != null ? _ref5.kb_layout_template : void 0);
+    this._setIfNotNull("knowledgeBaseSearchTemplate", (_ref6 = json.company_settings) != null ? _ref6.kb_search_template : void 0);
+    this._setIfNotNull("knowledgeBaseArticleTemplate", (_ref7 = json.company_settings) != null ? _ref7.kb_article_template : void 0);
     this._populateAssociatedObjects(this, "agents", json.agents, function(json) {
       var agent;
       agent = Firehose.Agent.agentWithID(json.id);
@@ -1937,7 +1969,11 @@ Firehose.Company = (function(_super) {
         company_settings_attributes: {
           fetch_automatically: this.fetchAutomatically,
           kb_subdomain: this.knowledgeBaseSubdomain != null ? this.knowledgeBaseSubdomain : void 0,
-          kb_custom_domain: this.knowledgeBaseCustomDomain ? this.knowledgeBaseCustomDomain : void 0
+          kb_custom_domain: this.knowledgeBaseCustomDomain ? this.knowledgeBaseCustomDomain : void 0,
+          kb_css: this.knowledgeBaseCSS ? this.knowledgeBaseCSS : void 0,
+          kb_layout_template: this.knowledgeBaseLayoutTemplate ? this.knowledgeBaseLayoutTemplate : void 0,
+          kb_search_template: this.knowledgeBaseSearchTemplate ? this.knowledgeBaseSearchTemplate : void 0,
+          kb_article_template: this.knowledgeBaseArticleTemplate ? this.knowledgeBaseArticleTemplate : void 0
         }
       }
     };
