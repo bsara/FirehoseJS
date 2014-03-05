@@ -85,6 +85,22 @@ firehoseTest 'Fetch (throws error because not enough info is set)', 1, (agent) -
     start()
   .fail (jqXHR, textStatus, errorThrown) ->
     start()
+    
+firehoseTest 'Fetch (include extra settings)', 8, (agent) ->
+  company = agent.companies[0]
+  company.fetch( include_settings: ["kb_theming"] )
+  .done (data, textStatus) ->
+    equal textStatus, "success"
+    ok company.title?
+    ok company.knowledgeBaseSubdomain?
+    ok company.knowledgeBaseCustomDomain?
+    ok company.knowledgeBaseCSS?
+    ok company.knowledgeBaseLayoutTemplate?
+    ok company.knowledgeBaseSearchTemplate?
+    ok company.knowledgeBaseArticleTemplate?
+    start()
+  .fail ->
+    start()
 
     
 firehoseTest 'Update', 9, (agent) ->

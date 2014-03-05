@@ -1555,12 +1555,16 @@ Firehose.Company = (function(_super) {
   */
 
 
-  Company.prototype.fetch = function() {
-    var request,
+  Company.prototype.fetch = function(options) {
+    var request, requested_settings,
       _this = this;
+    if (options == null) {
+      options = {};
+    }
     if (this.id != null) {
+      requested_settings = options.include_settings != null ? "?include=" + (options.include_settings.join(",")) : "";
       request = {
-        route: "companies/" + this.id
+        route: "companies/" + this.id + requested_settings
       };
     } else if (this.knowledgeBaseSubdomain) {
       request = {

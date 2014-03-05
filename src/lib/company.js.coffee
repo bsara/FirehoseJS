@@ -250,10 +250,11 @@ class Firehose.Company extends Firehose.Object
   Fetch a companies properties based on `id`, `knowledgeBaseSubdomain` or `knowledgeBaseCustomDomain`.
   @return [jqXHR Promise] Promise
   ###
-  fetch: ->
+  fetch: (options = {}) ->
     if @id?
+      requested_settings = if options.include_settings? then "?include=#{options.include_settings.join "," }" else ""
       request = 
-        route: "companies/#{@id}"
+        route: "companies/#{@id}#{requested_settings}"
         
     else if @knowledgeBaseSubdomain
       request = 
