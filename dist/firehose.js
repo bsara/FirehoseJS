@@ -1973,11 +1973,11 @@ Firehose.Company = (function(_super) {
         company_settings_attributes: {
           fetch_automatically: this.fetchAutomatically,
           kb_subdomain: this.knowledgeBaseSubdomain != null ? this.knowledgeBaseSubdomain : void 0,
-          kb_custom_domain: this.knowledgeBaseCustomDomain ? this.knowledgeBaseCustomDomain : void 0,
-          kb_css: this.knowledgeBaseCSS ? this.knowledgeBaseCSS : void 0,
-          kb_layout_template: this.knowledgeBaseLayoutTemplate ? this.knowledgeBaseLayoutTemplate : void 0,
-          kb_search_template: this.knowledgeBaseSearchTemplate ? this.knowledgeBaseSearchTemplate : void 0,
-          kb_article_template: this.knowledgeBaseArticleTemplate ? this.knowledgeBaseArticleTemplate : void 0
+          kb_custom_domain: this.knowledgeBaseCustomDomain != null ? this.knowledgeBaseCustomDomain : void 0,
+          kb_css: this.knowledgeBaseCSS != null ? this.knowledgeBaseCSS : void 0,
+          kb_layout_template: this.knowledgeBaseLayoutTemplate != null ? this.knowledgeBaseLayoutTemplate : void 0,
+          kb_search_template: this.knowledgeBaseSearchTemplate != null ? this.knowledgeBaseSearchTemplate : void 0,
+          kb_article_template: this.knowledgeBaseArticleTemplate != null ? this.knowledgeBaseArticleTemplate : void 0
         }
       }
     };

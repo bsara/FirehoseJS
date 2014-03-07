@@ -561,11 +561,11 @@ class Firehose.Company extends Firehose.Object
       company_settings_attributes:
         fetch_automatically : @fetchAutomatically
         kb_subdomain        : @knowledgeBaseSubdomain       if @knowledgeBaseSubdomain?
-        kb_custom_domain    : @knowledgeBaseCustomDomain    if @knowledgeBaseCustomDomain
-        kb_css              : @knowledgeBaseCSS             if @knowledgeBaseCSS
-        kb_layout_template  : @knowledgeBaseLayoutTemplate  if @knowledgeBaseLayoutTemplate
-        kb_search_template  : @knowledgeBaseSearchTemplate  if @knowledgeBaseSearchTemplate
-        kb_article_template : @knowledgeBaseArticleTemplate if @knowledgeBaseArticleTemplate
+        kb_custom_domain    : @knowledgeBaseCustomDomain    if @knowledgeBaseCustomDomain?
+        kb_css              : @knowledgeBaseCSS             if @knowledgeBaseCSS?
+        kb_layout_template  : @knowledgeBaseLayoutTemplate  if @knowledgeBaseLayoutTemplate?
+        kb_search_template  : @knowledgeBaseSearchTemplate  if @knowledgeBaseSearchTemplate?
+        kb_article_template : @knowledgeBaseArticleTemplate if @knowledgeBaseArticleTemplate?
       
 
   # @nodoc
