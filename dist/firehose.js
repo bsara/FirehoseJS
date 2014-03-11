@@ -3305,6 +3305,18 @@ Firehose.EmailAccount = (function(_super) {
       port: 995,
       server: "pop3.live.com"
     }, {
+      domain: "live.com",
+      kind: "POP",
+      SSL: true,
+      port: 995,
+      server: "pop3.live.com"
+    }, {
+      domain: "outlook.com",
+      kind: "IMAP",
+      SSL: true,
+      port: 993,
+      server: "imap-mail.outlook.com"
+    }, {
       domain: "aol.com",
       kind: "IMAP",
       SSL: true,
@@ -3344,20 +3356,24 @@ Firehose.EmailAccount = (function(_super) {
   ];
 
   EmailAccount.prototype.guessFieldsFromEmail = function() {
-    var domain, service, _i, _len, _ref1;
-    _ref1 = this._popularServices;
-    for (_i = 0, _len = _ref1.length; _i < _len; _i++) {
-      service = _ref1[_i];
-      domain = "@" + service.domain;
-      if (this.username.indexOf(domain) !== -1) {
-        this._setIfNotNull("kind", service.kind);
-        this._setIfNotNull("SSL", service.SSL);
-        this._setIfNotNull("port", service.port);
-        this._setIfNotNull("server", service.server);
-        this._setIfNotNull("isForwarding", false);
-        return true;
+    var domain, service, _i, _len, _ref1, _ref2;
+    if ((_ref1 = this.username) != null ? _ref1.trim() : void 0) {
+      _ref2 = this._popularServices;
+      for (_i = 0, _len = _ref2.length; _i < _len; _i++) {
+        service = _ref2[_i];
+        domain = "@" + service.domain;
+        if (this.username.indexOf(domain) !== -1) {
+          this._setIfNotNull("kind", service.kind);
+          this._setIfNotNull("SSL", service.SSL);
+          this._setIfNotNull("port", service.port);
+          this._setIfNotNull("server", service.server);
+          this._setIfNotNull("isForwarding", false);
+          this.errors = [];
+          return true;
+        }
       }
     }
+    this.errors = ["More information needed"];
     return false;
   };
 

@@ -120,6 +120,18 @@ class Firehose.EmailAccount extends Firehose.Object
                         port    : 995
                         server  : "pop3.live.com"
                       ,
+                        domain  : "live.com"
+                        kind    : "POP"
+                        SSL     : true
+                        port    : 995
+                        server  : "pop3.live.com"
+                      ,
+                        domain  : "outlook.com"
+                        kind    : "IMAP"
+                        SSL     : true
+                        port    : 993
+                        server  : "imap-mail.outlook.com"
+                      ,
                         domain  : "aol.com"
                         kind    : "IMAP"
                         SSL     : true
@@ -159,15 +171,18 @@ class Firehose.EmailAccount extends Firehose.Object
   
   
   guessFieldsFromEmail: ->
-    for service in @_popularServices
-      domain = "@#{service.domain}"
-      if @username.indexOf( domain ) != -1
-        this._setIfNotNull "kind",          service.kind
-        this._setIfNotNull "SSL",           service.SSL
-        this._setIfNotNull "port",          service.port
-        this._setIfNotNull "server",        service.server
-        this._setIfNotNull "isForwarding",  false
-        return true
+    if @username?.trim()
+      for service in @_popularServices
+        domain = "@#{service.domain}"
+        if @username.indexOf( domain ) != -1
+          this._setIfNotNull "kind",          service.kind
+          this._setIfNotNull "SSL",           service.SSL
+          this._setIfNotNull "port",          service.port
+          this._setIfNotNull "server",        service.server
+          this._setIfNotNull "isForwarding",  false
+          @errors = []
+          return true
+    @errors = [ "More information needed" ]
     return false
     
     
