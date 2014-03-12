@@ -48,7 +48,7 @@ firehoseTest 'Test Immediate Login', 11, (agent) ->
     start()
   .fail ->
     start()
-    
+
 firehoseTest 'Log In With Access Token', 8, (agent) ->
   agent.email = null
   agent.login()
@@ -64,21 +64,21 @@ firehoseTest 'Log In With Access Token', 8, (agent) ->
     start()
   .fail ->
     start()
-    
+
 firehoseTest 'Log Out', 2, (agent) ->
   agent.email = null
   agent.logout()
-  .done (data, textStatus) ->
-    equal textStatus, "nocontent"
+  .done (data, logoutTextStatus) ->
+    equal logoutTextStatus, "nocontent"
     agent.fetch()
-    .done (data, textStatus, jqXHR) ->
+    .done (data, fetchTextStatus, jqXHR) ->
       start()
     .fail (jqXHR) ->
       equal jqXHR.status, 401
       start() 
   .fail ->
     start()
-    
+
 firehoseTest 'Fetch', 14, (agent) ->
   agent.fetch()
   .done (data, textStatus) ->
@@ -100,17 +100,17 @@ firehoseTest 'Fetch', 14, (agent) ->
     start()
   .fail ->
     start()
-    
+
 firehoseTest 'Update', 7, (agent) ->
   agent.firstName = "Heidi"
   agent.lastName  = "Kirk"
   agent.setNewPassword Faker.Lorem.words(1)
   agent.save()
-  .done (data, textStatus) ->
-    equal textStatus, "nocontent"
+  .done (data, saveTextStatus) ->
+    equal saveTextStatus, "nocontent"
     agent.fetch()
-    .done (data, textStatus) ->
-      equal textStatus, "success"
+    .done (data, fetchTextStatus) ->
+      equal fetchTextStatus, "success"
       equal agent.firstName, "Heidi"
       equal agent.lastName, "Kirk"
       ok agent.email?
@@ -121,7 +121,7 @@ firehoseTest 'Update', 7, (agent) ->
       start()
   .fail ->
     start()
-
+###
 firehoseTest 'Destroy', 1, (agent) ->
   agent.destroy()
   .done (data, textStatus) ->
@@ -129,11 +129,11 @@ firehoseTest 'Destroy', 1, (agent) ->
     start()
   .fail ->
     start()   
-    
+
 firehoseTest 'Gravatar URL', 1, (agent) ->
   ok agent.gravatarURL().length > 40 
   start()
-    
+
 firehoseTest 'Status Code Handlers', 1, (agent) ->
   Firehose.client.statusCodeHandlers =
     401: ->
@@ -141,7 +141,7 @@ firehoseTest 'Status Code Handlers', 1, (agent) ->
       start()
   Firehose.client.APIAccessToken = "blah"
   agent.fetch()
-  
+
 firehoseTest 'Archive/Unarchive', 8, (agent) ->
   agent.archive()
   agent2 = Firehose.Agent.agentWithID agent.id
