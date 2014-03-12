@@ -121,18 +121,22 @@ class Firehose.Agent extends Firehose.Object
       this._populateWithJSON data
       this._handleSuccessfulLogin()
       
-  
+      
   ###
-  Makes no call to the server but simply nulls out all the stored credentials that are used to authenticate requests.
+  Logs the agent out by invalidating the browser's auth token token and nulls out all the stored credentials that are used to authenticate requests.
   Any requests made after calling `logout()` on any agent will cause every request that requires authenticattion to fail.
+  @return [Promise] A jqXHR Promise.
   ###
   logout: ->
-    this._setIfNotNull "accessToken", null
-    this._setIfNotNull "URLToken", null
-    Firehose.Agent.loggedInAgent        = null
-    Firehose.client.APIAccessToken      = null
-    Firehose.client.URLToken            = null
-    Firehose.client.billingAccessToken  = null
+    params = 
+      route: 'logout'
+    Firehose.client.delete( this, params ).always =>
+      this._setIfNotNull "accessToken", null
+      this._setIfNotNull "URLToken", null
+      Firehose.Agent.loggedInAgent        = null
+      Firehose.client.APIAccessToken      = null
+      Firehose.client.URLToken            = null
+      Firehose.client.billingAccessToken  = null
     
   
   ###
@@ -229,8 +233,8 @@ class Firehose.Agent extends Firehose.Object
   
   # @nodoc
   _populateWithJSON: (json) ->
-    this._setIfNotNull "accessToken", json.access_token unless @accessToken?
-    this._setIfNotNull "URLToken",    json.url_token    unless @URLToken?
+    this._setIfNotNull "accessToken", json.browser_token  unless @accessToken?
+    this._setIfNotNull "URLToken",    json.url_token      unless @URLToken?
     this._setIfNotNull "firstName",   json.first_name
     this._setIfNotNull "lastName",    json.last_name
     this._setIfNotNull "email",       json.email

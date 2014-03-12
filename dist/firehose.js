@@ -1062,18 +1062,26 @@ Firehose.Agent = (function(_super) {
   };
 
   /*
-  Makes no call to the server but simply nulls out all the stored credentials that are used to authenticate requests.
+  Logs the agent out by invalidating the browser's auth token token and nulls out all the stored credentials that are used to authenticate requests.
   Any requests made after calling `logout()` on any agent will cause every request that requires authenticattion to fail.
+  @return [Promise] A jqXHR Promise.
   */
 
 
   Agent.prototype.logout = function() {
-    this._setIfNotNull("accessToken", null);
-    this._setIfNotNull("URLToken", null);
-    Firehose.Agent.loggedInAgent = null;
-    Firehose.client.APIAccessToken = null;
-    Firehose.client.URLToken = null;
-    return Firehose.client.billingAccessToken = null;
+    var params,
+      _this = this;
+    params = {
+      route: 'logout'
+    };
+    return Firehose.client["delete"](this, params).always(function() {
+      _this._setIfNotNull("accessToken", null);
+      _this._setIfNotNull("URLToken", null);
+      Firehose.Agent.loggedInAgent = null;
+      Firehose.client.APIAccessToken = null;
+      Firehose.client.URLToken = null;
+      return Firehose.client.billingAccessToken = null;
+    });
   };
 
   /*
@@ -1204,7 +1212,7 @@ Firehose.Agent = (function(_super) {
   Agent.prototype._populateWithJSON = function(json) {
     var _this = this;
     if (this.accessToken == null) {
-      this._setIfNotNull("accessToken", json.access_token);
+      this._setIfNotNull("accessToken", json.browser_token);
     }
     if (this.URLToken == null) {
       this._setIfNotNull("URLToken", json.url_token);
