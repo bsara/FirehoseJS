@@ -86,6 +86,14 @@ So that the start_server.sh script knows where your apps are to start them for t
 
 You must also make sure that both your local API and billing apps have run `rake db:create RAILS_ENV=testclient` and `rake db:migrate RAILS_ENV=testclient`
 
+### Testing
+
+Unlike rails integration tests, libraries have no direct access to the application to create the test data needed for a test as part of the test, we must prepare a database full of all the different data scenarios we need to test. To generate these prepopulated postgres dbs you run rake tasks. For each app:
+	
+	API: rake fh:test:client:prepare[200]
+	Billing: rake fh_billing:test:client:prepare[30]
+
+The number in brackets does 2 things, it tells the task how many "set ups" to create. An agent with companies, customers, interactions, notes, etc. is one setup for the API app, for example. Each test will log in as an agent (e.g. agent23@example.com, each test incrementing the agent number) and that agent will have a full "set up" so the test that acts as that agent will have any data it might need. Most of the time when you run tests, the server boot up scripts will run the above commands without brackets/numbers, which will just swap in a "gold master" copy of the database you have generated previously. If, however, the db schema changes in any way, you will need to run the above commands again to generate a new db that uses the new schema. So **If all or many of your tests are failing, it's probably because you need to regenerate the db**.
 
 
 
