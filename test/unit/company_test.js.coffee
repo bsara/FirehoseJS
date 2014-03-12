@@ -20,7 +20,7 @@ firehoseTest 'Create', 13, (agent) ->
     ok company.token?
     ok company.unresolvedCount == 0
     start()
-  .fail (jqXHR, textStatus, errorThrown) ->
+  .fail ->
     start()
 
 firehoseTest 'Fetch', 13, (agent) ->
@@ -41,41 +41,41 @@ firehoseTest 'Fetch', 13, (agent) ->
     ok company.token?
     ok company.unresolvedCount > 0
     start()
-  .fail (jqXHR, textStatus, errorThrown) ->
+  .fail ->
     start()
-    
+
 firehoseTest 'Fetch Based on KB subdomain', 3, (agent) ->
   company = agent.companies[0]
   company.fetch()
-  .done (data, textStatus) ->
+  .done (data, companyFetchTextStatus) ->
     kbCompany = Firehose.Company.companyWithKBSubdomain company.knowledgeBaseSubdomain
     kbCompany.fetch()
-    .done (data, textStatus) ->
-      equal textStatus, "success"
+    .done (data, kbFetchTextStatus) ->
+      equal kbFetchTextStatus, "success"
       ok company.id?
       ok company.title?
       start()
-    .fail (jqXHR, textStatus, errorThrown) ->
+    .fail ->
       start()
-  .fail (jqXHR, textStatus, errorThrown) ->
+  .fail ->
     start()
-    
+
 firehoseTest 'Fetch Based on KB custom domain', 3, (agent) ->
   company = agent.companies[0]
   company.fetch()
-  .done (data, textStatus) ->
+  .done (data, companyFetchTextStatus) ->
     kbCompany = Firehose.Company.companyWithKBCustomDomain company.knowledgeBaseCustomDomain
     kbCompany.fetch()
-    .done (data, textStatus) ->
-      equal textStatus, "success"
+    .done (data, kbFetchTextStatus) ->
+      equal kbFetchTextStatus, "success"
       ok company.id?
       ok company.title?
       start()
-    .fail (jqXHR, textStatus, errorThrown) ->
+    .fail ->
       start()
-  .fail (jqXHR, textStatus, errorThrown) ->
+  .fail ->
     start()
-    
+
 firehoseTest 'Fetch (throws error because not enough info is set)', 1, (agent) ->
   company = agent.companies[0]
   company.fetch()
@@ -83,9 +83,9 @@ firehoseTest 'Fetch (throws error because not enough info is set)', 1, (agent) -
     kbCompany = Firehose.Company.companyWithKBCustomDomain company.knowledgeBaseCustomDomain
     throws kbCompany.fetch()
     start()
-  .fail (jqXHR, textStatus, errorThrown) ->
+  .fail ->
     start()
-    
+
 firehoseTest 'Fetch (include extra settings)', 8, (agent) ->
   company = agent.companies[0]
   company.fetch( include_settings: ["kb_theming"] )
@@ -102,7 +102,7 @@ firehoseTest 'Fetch (include extra settings)', 8, (agent) ->
   .fail ->
     start()
 
-    
+
 firehoseTest 'Update', 9, (agent) ->
   company       = agent.companies[0]
   company.title = "Adam's Company"
@@ -113,11 +113,11 @@ firehoseTest 'Update', 9, (agent) ->
   company.knowledgeBaseSearchTemplate  = "search template"
   company.knowledgeBaseArticleTemplate = "article template"
   company.save()
-  .done (data, textStatus) ->
-    equal textStatus, "nocontent"
+  .done (data, saveTextStatus) ->
+    equal saveTextStatus, "nocontent"
     company.fetch()
-    .done (data, textStatus) ->
-      equal textStatus, "success"
+    .done (data, fetchTextStatus) ->
+      equal fetchTextStatus, "success"
       equal company.title, "Adam's Company"
       equal company.knowledgeBaseSubdomain, "mystrou"
       equal company.knowledgeBaseCustomDomain, "support.firehoseapp.com"
@@ -128,22 +128,22 @@ firehoseTest 'Update', 9, (agent) ->
       start()
     .fail ->
       start()
-  .fail (jqXHR, textStatus, errorThrown) ->
+  .fail ->
     start()
-    
+
 firehoseTest 'Destroy', 1, (agent) ->
   company = Firehose.Company.companyWithTitle( Faker.Lorem.words(1).join(" "), agent )
   company.save()
-  .done (data, textStatus) ->
+  .done (data, saveTextStatus) ->
     company.destroy()
-    .done (data, textStatus) ->
-      equal textStatus, "nocontent"
+    .done (data, destroyTextStatus) ->
+      equal destroyTextStatus, "nocontent"
       start()
-    .fail (jqXHR, textStatus, errorThrown) ->
+    .fail ->
       start()
-  .fail (jqXHR, textStatus, errorThrown) ->
+  .fail ->
     start()
-    
+
 firehoseTest 'Force Channels Fetch', 1, (agent) ->
   company = agent.companies[0]
   company.forceChannelsFetch()
@@ -152,7 +152,7 @@ firehoseTest 'Force Channels Fetch', 1, (agent) ->
     start()
   .fail (jqXHR, textStatus, errorThrown) ->
     start()
-    
+
 firehoseTest 'Fetch Notifications', 2, (agent) ->
   company = agent.companies[0]
   notifications = company.notifications()
@@ -163,7 +163,7 @@ firehoseTest 'Fetch Notifications', 2, (agent) ->
     start()
   .fail (jqXHR, textStatus, errorThrown) ->
     start()
-    
+
 firehoseTest 'Fetch Twitter Accounts', 2, (agent) ->
   company = agent.companies[0]
   twitterAccounts = company.twitterAccounts()
@@ -196,7 +196,7 @@ firehoseTest 'Fetch Email Accounts', 2, (agent) ->
     start()
   .fail (jqXHR, textStatus, errorThrown) ->
     start()
-    
+
 firehoseTest 'Fetch Articles', 2, (agent) ->
   company = agent.companies[0]
   articles = company.articles()
@@ -207,40 +207,40 @@ firehoseTest 'Fetch Articles', 2, (agent) ->
     start()
   .fail (jqXHR, textStatus, errorThrown) ->
     start()
-    
+
 firehoseTest 'Search Articles', 2, (agent) ->
   company = agent.companies[0]
   articles = company.articles()
   articles.next()
-  .done (data, textStatus) ->
+  .done (data, articlesNextTextStatus) ->
     firstWord = articles[0].body.split(" ")[0]
     searchedArticles = company.searchedArticles firstWord
     searchedArticles.next()
-    .done (data, textStatus) ->
-      equal textStatus, "success"
+    .done (data, searchedArticlesNextTextStatus) ->
+      equal searchedArticlesNextTextStatus, "success"
       ok searchedArticles.length > 0
       start()
-    .fail (jqXHR, textStatus, errorThrown) ->
+    .fail (jqXHR, searchedArticlesNextTextStatus, errorThrown) ->
       start()
-  .fail (jqXHR, textStatus, errorThrown) ->
+  .fail (jqXHR, articlesNextTextStatus, errorThrown) ->
     start()
-    
+
 firehoseTest 'Search Articles (Abort)', 1, (agent) ->
   company = agent.companies[0]
   articles = company.articles()
   articles.next()
-  .done (data, textStatus) ->
+  .done (data, articlesNextTextStatus) ->
     firstWord = articles[0].body.split(" ")[0]
     searchedArticles = company.searchedArticles firstWord
     searchedArticles.next()
-    .done (data, textStatus) ->
-      thow "shouldn't have gotten here"
+    .done (data, searchedArticlesNextTextStatus) ->
+      throw "shouldn't have gotten here"
       start()
-    .fail (jqXHR, textStatus, errorThrown) ->
-      ok textStatus == 'abort'
+    .fail (jqXHR, searchedArticlesNextTextStatus, errorThrown) ->
+      ok searchedArticlesNextTextStatus == 'abort'
       start()
     searchedArticles.abort()
-  .fail (jqXHR, textStatus, errorThrown) ->
+  .fail (jqXHR, articlesNextTextStatus, errorThrown) ->
     start()
 
 firehoseTest 'Add and Remove Agent', 2, (agent) ->
@@ -271,38 +271,38 @@ firehoseTest 'Add and Remove Agent', 2, (agent) ->
                 # verify agent was removed
                 ok company.agents.length == count
                 start()
-              .fail (jqXHR, textStatus, errorThrown) ->
+              .fail ->
                 start()
-            .fail (jqXHR, textStatus, errorThrown) ->
+            .fail ->
               start()
-          .fail (jqXHR, textStatus, errorThrown) ->
+          .fail ->
             start()
-        .fail (jqXHR, textStatus, errorThrown) ->
+        .fail ->
           start()
-      .fail (jqXHR, textStatus, errorThrown) ->
+      .fail ->
         start()
-    .fail (jqXHR, textStatus, errorThrown) ->
+    .fail ->
       start()
-  
+
 firehoseTest 'Produce URL for companys kb', 5, (agent) ->
   company      = agent.companies[0]
   subdomain    = company.get('knowledgeBaseSubdomain')
   customDomain = company.get('knowledgeBaseCustomDomain')
-  
+
   window.unitTestDocumentURL = "http://localhost:4001"
   ok company.kbBaseURL() == "http://#{subdomain}.lvh.me:4007"
-  
+
   window.unitTestDocumentURL = "http://localhost:4201"
   ok company.kbBaseURL() == "http://#{subdomain}.lvh.me:4207"
-  
+
   window.unitTestDocumentURL = "https://beta.firehoseapp.com"
   ok company.kbBaseURL() == "http://#{subdomain}.firehosesupport.com"
-  
+
   window.unitTestDocumentURL = "https://www.firehoseapp.com"
   ok company.kbBaseURL() == "http://#{customDomain}"
-  
+
   company.set('knowledgeBaseCustomDomain', null)
   window.unitTestDocumentURL = "https://www.firehoseapp.com"
   ok company.kbBaseURL() == "http://#{subdomain}.firehosehelp.com"
-  
+
   start()

@@ -121,7 +121,7 @@ firehoseTest 'Update', 7, (agent) ->
       start()
   .fail ->
     start()
-###
+
 firehoseTest 'Destroy', 1, (agent) ->
   agent.destroy()
   .done (data, textStatus) ->
