@@ -47,11 +47,11 @@ firehoseTest 'Fetch', 13, (agent) ->
 firehoseTest 'Fetch Based on KB subdomain', 3, (agent) ->
   company = agent.companies[0]
   company.fetch()
-  .done (data, companyFetchTextStatus) ->
+  .done ->
     kbCompany = Firehose.Company.companyWithKBSubdomain company.knowledgeBaseSubdomain
     kbCompany.fetch()
-    .done (data, kbFetchTextStatus) ->
-      equal kbFetchTextStatus, "success"
+    .done (data, textStatus) ->
+      equal textStatus, "success"
       ok company.id?
       ok company.title?
       start()
@@ -63,10 +63,10 @@ firehoseTest 'Fetch Based on KB subdomain', 3, (agent) ->
 firehoseTest 'Fetch Based on KB custom domain', 3, (agent) ->
   company = agent.companies[0]
   company.fetch()
-  .done (data, companyFetchTextStatus) ->
+  .done ->
     kbCompany = Firehose.Company.companyWithKBCustomDomain company.knowledgeBaseCustomDomain
     kbCompany.fetch()
-    .done (data, kbFetchTextStatus) ->
+    .done (data, textStatus) ->
       equal kbFetchTextStatus, "success"
       ok company.id?
       ok company.title?
@@ -79,7 +79,7 @@ firehoseTest 'Fetch Based on KB custom domain', 3, (agent) ->
 firehoseTest 'Fetch (throws error because not enough info is set)', 1, (agent) ->
   company = agent.companies[0]
   company.fetch()
-  .done (data, textStatus) ->
+  .done ->
     kbCompany = Firehose.Company.companyWithKBCustomDomain company.knowledgeBaseCustomDomain
     throws kbCompany.fetch()
     start()
@@ -113,10 +113,10 @@ firehoseTest 'Update', 9, (agent) ->
   company.knowledgeBaseSearchTemplate  = "search template"
   company.knowledgeBaseArticleTemplate = "article template"
   company.save()
-  .done (data, saveTextStatus) ->
+  .done (saveData, saveTextStatus) ->
     equal saveTextStatus, "nocontent"
     company.fetch()
-    .done (data, fetchTextStatus) ->
+    .done (fetchData, fetchTextStatus) ->
       equal fetchTextStatus, "success"
       equal company.title, "Adam's Company"
       equal company.knowledgeBaseSubdomain, "mystrou"
@@ -134,10 +134,10 @@ firehoseTest 'Update', 9, (agent) ->
 firehoseTest 'Destroy', 1, (agent) ->
   company = Firehose.Company.companyWithTitle( Faker.Lorem.words(1).join(" "), agent )
   company.save()
-  .done (data, saveTextStatus) ->
+  .done ->
     company.destroy()
-    .done (data, destroyTextStatus) ->
-      equal destroyTextStatus, "nocontent"
+    .done (data, textStatus) ->
+      equal textStatus, "nocontent"
       start()
     .fail ->
       start()
@@ -150,7 +150,7 @@ firehoseTest 'Force Channels Fetch', 1, (agent) ->
   .done (data, textStatus) ->
     equal textStatus, "nocontent"
     start()
-  .fail (jqXHR, textStatus, errorThrown) ->
+  .fail ->
     start()
 
 firehoseTest 'Fetch Notifications', 2, (agent) ->
@@ -161,7 +161,7 @@ firehoseTest 'Fetch Notifications', 2, (agent) ->
     equal textStatus, "success"
     ok notifications.length > 0
     start()
-  .fail (jqXHR, textStatus, errorThrown) ->
+  .fail ->
     start()
 
 firehoseTest 'Fetch Twitter Accounts', 2, (agent) ->
@@ -172,7 +172,7 @@ firehoseTest 'Fetch Twitter Accounts', 2, (agent) ->
     equal textStatus, "success"
     ok twitterAccounts.length > 0
     start()
-  .fail (jqXHR, textStatus, errorThrown) ->
+  .fail ->
     start()
 
 firehoseTest 'Fetch Facebook Accounts', 2, (agent) ->
@@ -183,7 +183,7 @@ firehoseTest 'Fetch Facebook Accounts', 2, (agent) ->
     equal textStatus, "success"
     ok facebookAccounts.length > 0
     start()
-  .fail (jqXHR, textStatus, errorThrown) ->
+  .fail ->
     start()
 
 firehoseTest 'Fetch Email Accounts', 2, (agent) ->
@@ -194,7 +194,7 @@ firehoseTest 'Fetch Email Accounts', 2, (agent) ->
     equal textStatus, "success"
     ok emailAccounts.length > 0
     start()
-  .fail (jqXHR, textStatus, errorThrown) ->
+  .fail ->
     start()
 
 firehoseTest 'Fetch Articles', 2, (agent) ->
@@ -205,42 +205,42 @@ firehoseTest 'Fetch Articles', 2, (agent) ->
     equal textStatus, "success"
     ok articles.length > 0
     start()
-  .fail (jqXHR, textStatus, errorThrown) ->
+  .fail ->
     start()
 
 firehoseTest 'Search Articles', 2, (agent) ->
   company = agent.companies[0]
   articles = company.articles()
   articles.next()
-  .done (data, articlesNextTextStatus) ->
+  .done ->
     firstWord = articles[0].body.split(" ")[0]
     searchedArticles = company.searchedArticles firstWord
     searchedArticles.next()
-    .done (data, searchedArticlesNextTextStatus) ->
-      equal searchedArticlesNextTextStatus, "success"
+    .done (data, textStatus) ->
+      equal textStatus, "success"
       ok searchedArticles.length > 0
       start()
-    .fail (jqXHR, searchedArticlesNextTextStatus, errorThrown) ->
+    .fail ->
       start()
-  .fail (jqXHR, articlesNextTextStatus, errorThrown) ->
+  .fail ->
     start()
 
 firehoseTest 'Search Articles (Abort)', 1, (agent) ->
   company = agent.companies[0]
   articles = company.articles()
   articles.next()
-  .done (data, articlesNextTextStatus) ->
+  .done ->
     firstWord = articles[0].body.split(" ")[0]
     searchedArticles = company.searchedArticles firstWord
     searchedArticles.next()
-    .done (data, searchedArticlesNextTextStatus) ->
+    .done ->
       throw "shouldn't have gotten here"
       start()
-    .fail (jqXHR, searchedArticlesNextTextStatus, errorThrown) ->
-      ok searchedArticlesNextTextStatus == 'abort'
+    .fail (jqXHR, txtStatus, errorThrown) ->
+      ok textStatus == 'abort'
       start()
     searchedArticles.abort()
-  .fail (jqXHR, articlesNextTextStatus, errorThrown) ->
+  .fail ->
     start()
 
 firehoseTest 'Add and Remove Agent', 2, (agent) ->
