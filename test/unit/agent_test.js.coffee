@@ -49,6 +49,22 @@ firehoseTest 'Test Immediate Login', 11, (agent) ->
   .fail ->
     start()
     
+firehoseTest 'Log In With Access Token', 8, (agent) ->
+  agent.email = null
+  agent.login()
+  .done (data, textStatus) ->
+    equal textStatus, "success"
+    ok agent.firstName?
+    ok agent.lastName?
+    ok agent.email?
+    ok agent.id?
+    ok agent.createdAt?
+    equal agent.companies.length, 1
+    ok agent.currentCompany?
+    start()
+  .fail ->
+    start()
+    
 firehoseTest 'Log Out', 2, (agent) ->
   agent.email = null
   agent.logout()
