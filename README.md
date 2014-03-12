@@ -86,7 +86,7 @@ So that the start_server.sh script knows where your apps are to start them for t
 
 You must also make sure that both your local API and billing apps have run `rake db:create RAILS_ENV=testclient` and `rake db:migrate RAILS_ENV=testclient`
 
-### Testing
+#### Testing
 
 Unlike rails integration tests, libraries have no direct access to the application to create the test data needed for a test as part of the test, we must prepare a database full of all the different data scenarios we need to test. To generate these prepopulated postgres dbs you run rake tasks. For each app:
 	
