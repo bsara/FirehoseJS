@@ -68,10 +68,10 @@ firehoseTest 'Log In With Access Token', 8, (agent) ->
 firehoseTest 'Log Out', 2, (agent) ->
   agent.email = null
   agent.logout()
-  .done (data, logoutTextStatus) ->
-    equal logoutTextStatus, "nocontent"
+  .done (data, textStatus) ->
+    equal textStatus, "nocontent"
     agent.fetch()
-    .done (data, fetchTextStatus, jqXHR) ->
+    .done ->
       start()
     .fail (jqXHR) ->
       equal jqXHR.status, 401
@@ -106,10 +106,10 @@ firehoseTest 'Update', 7, (agent) ->
   agent.lastName  = "Kirk"
   agent.setNewPassword Faker.Lorem.words(1)
   agent.save()
-  .done (data, saveTextStatus) ->
+  .done (saveData, saveTextStatus) ->
     equal saveTextStatus, "nocontent"
     agent.fetch()
-    .done (data, fetchTextStatus) ->
+    .done (fetchData, fetchTextStatus) ->
       equal fetchTextStatus, "success"
       equal agent.firstName, "Heidi"
       equal agent.lastName, "Kirk"
