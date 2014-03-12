@@ -1,5 +1,5 @@
 module "Firehose"
-  
+
 test 'baseURLFor', ->
   ok Firehose.baseURLFor('API') == 'http://localhost:3010'
   ok Firehose.baseURLFor('browser') == 'http://localhost:4011'
