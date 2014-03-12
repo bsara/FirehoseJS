@@ -61,13 +61,14 @@ firehoseTest 'Fetch Based on KB subdomain', 3, (agent) ->
     start()
 
 firehoseTest 'Fetch Based on KB custom domain', 3, (agent) ->
+  blah = this
   company = agent.companies[0]
   company.fetch()
   .done ->
     kbCompany = Firehose.Company.companyWithKBCustomDomain company.knowledgeBaseCustomDomain
     kbCompany.fetch()
     .done (data, textStatus) ->
-      equal kbFetchTextStatus, "success"
+      equal textStatus, "success"
       ok company.id?
       ok company.title?
       start()
@@ -236,7 +237,7 @@ firehoseTest 'Search Articles (Abort)', 1, (agent) ->
     .done ->
       throw "shouldn't have gotten here"
       start()
-    .fail (jqXHR, txtStatus, errorThrown) ->
+    .fail (jqXHR, textStatus, errorThrown) ->
       ok textStatus == 'abort'
       start()
     searchedArticles.abort()
