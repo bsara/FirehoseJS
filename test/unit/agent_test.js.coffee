@@ -75,7 +75,7 @@ firehoseTest 'Log Out', 2, (agent) ->
       start()
     .fail (jqXHR) ->
       equal jqXHR.status, 401
-      start() 
+      start()
   .fail ->
     start()
 
@@ -141,6 +141,8 @@ firehoseTest 'Status Code Handlers', 1, (agent) ->
       start()
   Firehose.client.APIAccessToken = "blah"
   agent.fetch()
+  .done ->
+    start()
 
 firehoseTest 'Archive/Unarchive', 8, (agent) ->
   agent.archive()
