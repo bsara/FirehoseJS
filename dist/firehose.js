@@ -629,7 +629,7 @@ Firehose.Client = (function() {
         if (Number(jqXHR.status) === 422 && (jqXHR.responseJSON != null) && (object != null)) {
           json = jqXHR.responseJSON;
           if (json.constructor === Object) {
-            delete object.errors;
+            object.errors = [];
             _ref = jqXHR.responseJSON;
             _results = [];
             for (key in _ref) {
