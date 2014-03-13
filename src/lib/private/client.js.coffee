@@ -124,7 +124,7 @@ class Firehose.Client
         if Number(jqXHR.status) == 422 and jqXHR.responseJSON? and object?
           json = jqXHR.responseJSON
           if json.constructor == Object
-            object.errors = []
+            delete object.errors
             for key, errors of jqXHR.responseJSON 
               object.errors.push "#{this._humanize(key)} #{errors.join ', '}"
           else if json.constructor == Array
