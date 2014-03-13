@@ -474,8 +474,8 @@ class Firehose.Company extends Firehose.Object
         this._setIfNotNull "billingRate",                   (json.rate / 100.0).toFixed(2)
         this._setIfNotNull "nextBillAmountBeforeDiscounts", (@billingRate * @agents.length).toFixed(2)
         this._setIfNotNull "isFreeTrialEligible",           json.is_free_trial_eligible
-        this._setIfNotNull "trialExpirationDate",           Date.parse( json.free_trial_expiration_date ) || new Date(+new Date + 12096e5) # 14 days away
-        this._setIfNotNull "nextBillingDate",               if json.next_bill_date then Date.parse( json.next_bill_date )
+        this._setIfNotNull "trialExpirationDate",           @_date( json.free_trial_expiration_date ) || new Date(+new Date + 12096e5) # 14 days away
+        this._setIfNotNull "nextBillingDate",               if json.next_bill_date then @_date( json.next_bill_date )
         this._setIfNotNull "isGracePeriodOver",             json.grace_period_over
         this._setIfNotNull "daysLeftInGracePeriod",         json.days_left_in_grace_period
         this._setIfNotNull "isCurrent",                     json.current
@@ -502,7 +502,7 @@ class Firehose.Company extends Firehose.Object
             applyType:      discount.apply_type
             amount:         discountAmt
             amountStr:      discountAmtStr
-            expirationDate: if discount.expiration_date then Date.parse( discount.expiration_date )
+            expirationDate: if discount.expiration_date then @_date( discount.expiration_date )
 
         @nextBillAmountAfterDiscounts = (if (Number(totalDiscount) > Number(@nextBillAmountBeforeDiscounts)) then 0 else @nextBillAmountBeforeDiscounts - totalDiscount).toFixed(2)
 
@@ -523,7 +523,7 @@ class Firehose.Company extends Firehose.Object
         server: "billing"
         route: "entities/#{@id}/renew_trial"
       Firehose.client.put( this, params ).done (json) =>
-        this._setIfNotNull "trialExpirationDate", Date.parse( json.free_trial_expiration_date ) 
+        this._setIfNotNull "trialExpirationDate", @_date( json.free_trial_expiration_date ) 
     if @token
       requestBlock()
     else
@@ -546,9 +546,9 @@ class Firehose.Company extends Firehose.Object
   # @nodoc
   _populateWithJSON: (json) ->
     this._setIfNotNull "title",                         json.title
-    this._setIfNotNull "token",                         json.token                      unless @token?
-    this._setIfNotNull "lastFetchAt",                   Date.parse(json.last_fetch_at)  if json.last_fetch_at?
-    this._setIfNotNull "forwardingEmailAddress",        json.forwarding_email           unless @forwardingEmailAddress?
+    this._setIfNotNull "token",                         json.token                  unless @token?
+    this._setIfNotNull "lastFetchAt",                   @_date(json.last_fetch_at)  if json.last_fetch_at?
+    this._setIfNotNull "forwardingEmailAddress",        json.forwarding_email       unless @forwardingEmailAddress?
     this._setIfNotNull "unresolvedCount",               json.unresolved_count
     this._setIfNotNull "numberOfAccounts",              json.number_of_accounts
         

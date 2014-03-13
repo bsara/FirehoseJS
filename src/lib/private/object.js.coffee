@@ -135,8 +135,8 @@ class Firehose.Object
           
   # @nodoc
   _populateWithJSON: (json) ->
-    this._setIfNotNull "id",        json.id                     unless @id?
-    this._setIfNotNull "createdAt", Date.parse(json.created_at) unless @createdAt
+    this._setIfNotNull "id",        json.id                 unless @id?
+    this._setIfNotNull "createdAt", @_date(json.created_at) unless @createdAt
 
   # @nodoc
   _setIfNotNull: (key, value) ->
@@ -151,3 +151,8 @@ class Firehose.Object
   # @nodoc
   _textOrNull: (value) ->
     if value?.length > 0 then value else null
+    
+  # @nodoc
+  _date: (dateString) ->
+    date = new Date dateString
+    if isNaN date then null else date

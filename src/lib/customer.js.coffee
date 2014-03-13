@@ -133,7 +133,7 @@ class Firehose.Customer extends Firehose.Object
     this._setIfNotNull "timeZone",                     json.time_zone
     this._setIfNotNull "newestInteractionId",          json.newest_interaction_id
     this._setIfNotNull "newestInteractionExcerpt",     json.newest_interaction_excerpt
-    this._setIfNotNull "newestInteractionReceivedAt",  Date.parse json.newest_interaction_received_at
+    this._setIfNotNull "newestInteractionReceivedAt",  @_date json.newest_interaction_received_at
     
     this._populateAssociatedObjects this, "customerAccounts", json.customer_accounts, (json) =>
       Firehose.CustomerAccount._customerAccountWithID( json.id, this )

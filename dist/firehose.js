@@ -882,7 +882,7 @@ Firehose.Object = (function() {
       this._setIfNotNull("id", json.id);
     }
     if (!this.createdAt) {
-      return this._setIfNotNull("createdAt", Date.parse(json.created_at));
+      return this._setIfNotNull("createdAt", this._date(json.created_at));
     }
   };
 
@@ -904,6 +904,16 @@ Firehose.Object = (function() {
       return value;
     } else {
       return null;
+    }
+  };
+
+  Object.prototype._date = function(dateString) {
+    var date;
+    date = new Date(dateString);
+    if (isNaN(date)) {
+      return null;
+    } else {
+      return date;
     }
   };
 
@@ -1893,8 +1903,8 @@ Firehose.Company = (function(_super) {
         _this._setIfNotNull("billingRate", (json.rate / 100.0).toFixed(2));
         _this._setIfNotNull("nextBillAmountBeforeDiscounts", (_this.billingRate * _this.agents.length).toFixed(2));
         _this._setIfNotNull("isFreeTrialEligible", json.is_free_trial_eligible);
-        _this._setIfNotNull("trialExpirationDate", Date.parse(json.free_trial_expiration_date) || new Date(+(new Date) + 12096e5));
-        _this._setIfNotNull("nextBillingDate", json.next_bill_date ? Date.parse(json.next_bill_date) : void 0);
+        _this._setIfNotNull("trialExpirationDate", _this._date(json.free_trial_expiration_date) || new Date(+(new Date) + 12096e5));
+        _this._setIfNotNull("nextBillingDate", json.next_bill_date ? _this._date(json.next_bill_date) : void 0);
         _this._setIfNotNull("isGracePeriodOver", json.grace_period_over);
         _this._setIfNotNull("daysLeftInGracePeriod", json.days_left_in_grace_period);
         _this._setIfNotNull("isCurrent", json.current);
@@ -1920,7 +1930,7 @@ Firehose.Company = (function(_super) {
             applyType: discount.apply_type,
             amount: discountAmt,
             amountStr: discountAmtStr,
-            expirationDate: discount.expiration_date ? Date.parse(discount.expiration_date) : void 0
+            expirationDate: discount.expiration_date ? _this._date(discount.expiration_date) : void 0
           });
         }
         return _this.nextBillAmountAfterDiscounts = (Number(totalDiscount) > Number(_this.nextBillAmountBeforeDiscounts) ? 0 : _this.nextBillAmountBeforeDiscounts - totalDiscount).toFixed(2);
@@ -1952,7 +1962,7 @@ Firehose.Company = (function(_super) {
         route: "entities/" + _this.id + "/renew_trial"
       };
       return Firehose.client.put(_this, params).done(function(json) {
-        return _this._setIfNotNull("trialExpirationDate", Date.parse(json.free_trial_expiration_date));
+        return _this._setIfNotNull("trialExpirationDate", _this._date(json.free_trial_expiration_date));
       });
     };
     if (this.token) {
@@ -1989,7 +1999,7 @@ Firehose.Company = (function(_super) {
       this._setIfNotNull("token", json.token);
     }
     if (json.last_fetch_at != null) {
-      this._setIfNotNull("lastFetchAt", Date.parse(json.last_fetch_at));
+      this._setIfNotNull("lastFetchAt", this._date(json.last_fetch_at));
     }
     if (this.forwardingEmailAddress == null) {
       this._setIfNotNull("forwardingEmailAddress", json.forwarding_email);
@@ -2375,7 +2385,7 @@ Firehose.Interaction = (function(_super) {
     this._setIfNotNull("body", json.body);
     this._setIfNotNull("responseDraft", json.response_draft);
     this._setIfNotNull("channel", json.channel);
-    this._setIfNotNull("receivedAt", Date.parse(json.received_at));
+    this._setIfNotNull("receivedAt", this._date(json.received_at));
     this._setIfNotNull("privateURL", json.private_url);
     this._setIfNotNull("happiness", json.happiness);
     this._setIfNotNull("resolved", json.resolved);
@@ -3062,7 +3072,7 @@ Firehose.Customer = (function(_super) {
     this._setIfNotNull("timeZone", json.time_zone);
     this._setIfNotNull("newestInteractionId", json.newest_interaction_id);
     this._setIfNotNull("newestInteractionExcerpt", json.newest_interaction_excerpt);
-    this._setIfNotNull("newestInteractionReceivedAt", Date.parse(json.newest_interaction_received_at));
+    this._setIfNotNull("newestInteractionReceivedAt", this._date(json.newest_interaction_received_at));
     this._populateAssociatedObjects(this, "customerAccounts", json.customer_accounts, function(json) {
       return Firehose.CustomerAccount._customerAccountWithID(json.id, _this);
     });

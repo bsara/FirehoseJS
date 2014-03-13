@@ -229,7 +229,7 @@ class Firehose.Interaction extends Firehose.Object
     this._setIfNotNull "body",          json.body
     this._setIfNotNull "responseDraft", json.response_draft
     this._setIfNotNull "channel",       json.channel
-    this._setIfNotNull "receivedAt",    Date.parse(json.received_at)
+    this._setIfNotNull "receivedAt",    @_date(json.received_at)
     this._setIfNotNull "privateURL",    json.private_url
     this._setIfNotNull "happiness",     json.happiness
     this._setIfNotNull "resolved",      json.resolved
