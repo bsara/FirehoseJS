@@ -1952,8 +1952,7 @@ Firehose.Company = (function(_super) {
         route: "entities/" + _this.id + "/renew_trial"
       };
       return Firehose.client.put(_this, params).done(function(json) {
-        _this._setIfNotNull("trialExpirationDate", Date.parse(json.free_trial_expiration_date));
-        return _this._setIfNotNull("isFreeTrialEligible", false);
+        return _this._setIfNotNull("trialExpirationDate", Date.parse(json.free_trial_expiration_date));
       });
     };
     if (this.token) {

@@ -39,7 +39,7 @@ firehoseTest 'Fetch Billing Info', 18, (agent) ->
   .fail (jqXHR, textStatus, errorThrown) ->
     start()
     
-firehoseTest 'Extend Trial', 5, (agent) ->
+firehoseTest 'Extend Trial', 4, (agent) ->
   firstAgent = Firehose.Agent.agentWithEmailAndPassword( "agent1@example.com", "pw" )
   firstAgent.login().done (data, textStatus) ->
     company = firstAgent.companies[0]
@@ -53,7 +53,6 @@ firehoseTest 'Extend Trial', 5, (agent) ->
         shouldEnd = new Date
         shouldEnd.setDate( shouldEnd.getDate() + 14 )
         ok company.trialExpirationDate, shouldEnd
-        equal company.isFreeTrialEligible, false
         start()
       .fail (jqXHR, textStatus, errorThrown) ->
         start()

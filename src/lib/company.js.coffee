@@ -524,7 +524,6 @@ class Firehose.Company extends Firehose.Object
         route: "entities/#{@id}/renew_trial"
       Firehose.client.put( this, params ).done (json) =>
         this._setIfNotNull "trialExpirationDate", Date.parse( json.free_trial_expiration_date ) 
-        this._setIfNotNull "isFreeTrialEligible", false
     if @token
       requestBlock()
     else
