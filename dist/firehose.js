@@ -2392,7 +2392,8 @@ Firehose.Interaction = (function(_super) {
       var interaction;
       json.channel = _this.channel;
       interaction = Firehose.Interaction._interactionWithJSON(json, _this.customer);
-      return interaction.set('originalInteraction', _this);
+      interaction.set('originalInteraction', _this);
+      return interaction;
     });
     this._populateAssociatedObjects(this, "notes", json.notes, function(json) {
       return Firehose.Note._noteWithID(json.id, _this);
