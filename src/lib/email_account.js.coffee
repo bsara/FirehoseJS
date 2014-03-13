@@ -69,7 +69,7 @@ class Firehose.EmailAccount extends Firehose.Object
       emailAccount.kind             = settings.kind             if settings.kind?
       emailAccount.server           = settings.server           if settings.server?
       emailAccount.port             = settings.port             if settings.port?
-      emailAccount.username         = settings.username || settings.emailAddress
+      emailAccount.username         = settings.username         if settings.username?
       emailAccount.password         = settings.password         if settings.password?
       emailAccount.SSL              = settings.SSL              if settings.SSL?
       emailAccount.deleteFromServer = settings.deleteFromServer if settings.deleteFromServer?
@@ -203,13 +203,13 @@ class Firehose.EmailAccount extends Firehose.Object
   # @nodoc
   _toJSON: ->
     email_account:
-      email:              @emailAddress
-      title:              @title
-      forwarding:         @isForwarding
-      incoming_server:    @server
-      incoming_ssl:       @SSL
-      incoming_port:      @port
-      incoming_username:  @username
-      incoming_password:  @password
-      kind:               @kind
-      delete_from_server: @deleteFromServer
+      email:              @emailAddress     if @emailAddress
+      title:              @title            if @title
+      forwarding:         @isForwarding     if @isForwarding
+      incoming_server:    @server           if @server
+      incoming_ssl:       @SSL              if @SSL
+      incoming_port:      @port             if @port
+      incoming_username:  @username         if @username
+      incoming_password:  @password         if @password
+      kind:               @kind             if @kind
+      delete_from_server: @deleteFromServer if @deleteFromServer

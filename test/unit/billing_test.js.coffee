@@ -7,7 +7,7 @@ Called start() while already started (QUnit.config.semaphore was 0 already)
 and only 2 or so of the assertions would run. I remember there being a reason and this was my solution, but can't remember it now.
 ###
 
-firehoseTest 'Fetch Billing Info', 17, (agent) ->
+firehoseTest 'Fetch Billing Info', 18, (agent) ->
   firstAgent = Firehose.Agent.agentWithEmailAndPassword( "agent1@example.com", "pw" )
   firstAgent.login()
   .done (data, textStatus) ->
@@ -25,6 +25,7 @@ firehoseTest 'Fetch Billing Info', 17, (agent) ->
       ok company.nextBillingDate?
       ok company.nextBillAmountBeforeDiscounts?
       ok company.nextBillAmountAfterDiscounts?
+      ok company.isFreeTrialEligible?
       ok company.trialExpirationDate?
       ok company.discounts.length == 1
       ok company.discounts[0].amount?
@@ -33,6 +34,29 @@ firehoseTest 'Fetch Billing Info', 17, (agent) ->
       ok company.discounts[0].expirationDate?
       ok company.discounts[0].name?
       start()
+    .fail (jqXHR, textStatus, errorThrown) ->
+      start()
+  .fail (jqXHR, textStatus, errorThrown) ->
+    start()
+    
+firehoseTest 'Renew Trial', 5, (agent) ->
+  firstAgent = Firehose.Agent.agentWithEmailAndPassword( "agent1@example.com", "pw" )
+  firstAgent.login().done (data, textStatus) ->
+    company = firstAgent.companies[0]
+    company.token = "entity_token_#{company.id}"
+    company.fetchBillingInfo().done (data, textStatus) ->
+      equal textStatus, "success"
+      equal company.isFreeTrialEligible, true
+      trialExpDate = company.trialExpirationDate?
+      company.renewTrial().done (data, textStatus) ->
+        equal textStatus, "success"
+        shouldEnd = new Date
+        shouldEnd.setDate( shouldEnd.getDate() + 14 )
+        ok company.trialExpirationDate, shouldEnd
+        equal company.isFreeTrialEligible, false
+        start()
+      .fail (jqXHR, textStatus, errorThrown) ->
+        start()
     .fail (jqXHR, textStatus, errorThrown) ->
       start()
   .fail (jqXHR, textStatus, errorThrown) ->

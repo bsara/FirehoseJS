@@ -21,7 +21,7 @@ module "Agent Invite"
 
 firehoseTest 'Create', 1, (agent) ->
   company = agent.companies[0]
-  agentInvite = Firehose.AgentInvite.agentInviteWithEmail( Faker.Lorem.words(1).join(" "), company)
+  agentInvite = Firehose.AgentInvite.agentInviteWithEmail( "#{Faker.Lorem.words(1).join(" ")}@example.com", company)
   agentInvite.save()
   .done (data, textStatus) ->
     equal textStatus, "success"
@@ -31,7 +31,7 @@ firehoseTest 'Create', 1, (agent) ->
 
 firehoseTest 'Resend', 1, (agent) ->
   company = agent.companies[0]
-  agentInvite = Firehose.AgentInvite.agentInviteWithEmail( Faker.Lorem.words(1).join(" "), company)
+  agentInvite = Firehose.AgentInvite.agentInviteWithEmail( "#{Faker.Lorem.words(1).join(" ")}@example.com", company)
   agentInvite.save()
   .done (data, textStatus) ->
     agentInvite.resend()
@@ -45,7 +45,7 @@ firehoseTest 'Resend', 1, (agent) ->
 
 firehoseTest 'Destroy', 1, (agent) ->
   company = agent.companies[0]
-  agentInvite = Firehose.AgentInvite.agentInviteWithEmail( Faker.Lorem.words(1).join(" "), company)
+  agentInvite = Firehose.AgentInvite.agentInviteWithEmail( "#{Faker.Lorem.words(1).join(" ")}@example.com", company)
   agentInvite.save()
   .done (data, textStatus) ->
     agentInvite.destroy()

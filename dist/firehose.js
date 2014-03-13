@@ -899,6 +899,14 @@ Firehose.Object = (function() {
     };
   };
 
+  Object.prototype._textOrNull = function(value) {
+    if ((value != null ? value.length : void 0) > 0) {
+      return value;
+    } else {
+      return null;
+    }
+  };
+
   return Object;
 
 })();
@@ -1440,6 +1448,13 @@ Firehose.Company = (function(_super) {
   Company.prototype.nextBillAmountAfterDiscounts = 0.0;
 
   /*
+  @property [boolean]
+  */
+
+
+  Company.prototype.isFreeTrialEligible = false;
+
+  /*
   @property [Date]
   */
 
@@ -1814,6 +1829,7 @@ Firehose.Company = (function(_super) {
   /*
   Associates an agent with a company.
   @param agent [Agent] The agent to add.
+  @return [jqXHR Promise] Promise
   */
 
 
@@ -1831,6 +1847,7 @@ Firehose.Company = (function(_super) {
   /*
   Removes an agent's association with a company.
   @param agent [Agent] The agent to remove.
+  @return [jqXHR Promise] Promise
   */
 
 
@@ -1852,6 +1869,7 @@ Firehose.Company = (function(_super) {
     applyType: [string] either "percentage" or "fixed amount"
     amount: [number] The percentage or fixed amount to discount from the total price.
     expirationDate: [Date] When the discount expires and should not longer be applied to the monthly billing.
+    @return [jqXHR Promise] Promise
   */
 
 
@@ -1874,6 +1892,7 @@ Firehose.Company = (function(_super) {
         _this._setIfNotNull("billingEmail", json.email || Firehose.Agent.loggedInAgent.email);
         _this._setIfNotNull("billingRate", (json.rate / 100.0).toFixed(2));
         _this._setIfNotNull("nextBillAmountBeforeDiscounts", (_this.billingRate * _this.agents.length).toFixed(2));
+        _this._setIfNotNull("isFreeTrialEligible", json.is_free_trial_eligible);
         _this._setIfNotNull("trialExpirationDate", Date.parse(json.free_trial_expiration_date) || new Date(+(new Date) + 12096e5));
         _this._setIfNotNull("nextBillingDate", json.next_bill_date ? Date.parse(json.next_bill_date) : void 0);
         _this._setIfNotNull("isGracePeriodOver", json.grace_period_over);
@@ -1912,6 +1931,36 @@ Firehose.Company = (function(_super) {
     } else {
       return this.fetch().then(function() {
         return fetchBlock();
+      });
+    }
+  };
+
+  /*
+  If the company is still in trial and has 3 days left in its trial, the trial can be extended by the length of the original trial period.
+  @return [jqXHR Promise] Promise
+  */
+
+
+  Company.prototype.renewTrial = function() {
+    var requestBlock,
+      _this = this;
+    requestBlock = function() {
+      var params;
+      Firehose.client.billingAccessToken = _this.token;
+      params = {
+        server: "billing",
+        route: "entities/" + _this.id + "/renew_trial"
+      };
+      return Firehose.client.put(_this, params).done(function(json) {
+        _this._setIfNotNull("trialExpirationDate", Date.parse(json.free_trial_expiration_date));
+        return _this._setIfNotNull("isFreeTrialEligible", false);
+      });
+    };
+    if (this.token) {
+      return requestBlock();
+    } else {
+      return this.fetch().then(function() {
+        return requestBlock();
       });
     }
   };
@@ -1980,12 +2029,12 @@ Firehose.Company = (function(_super) {
         title: this.title,
         company_settings_attributes: {
           fetch_automatically: this.fetchAutomatically,
-          kb_subdomain: this.knowledgeBaseSubdomain != null ? this.knowledgeBaseSubdomain : void 0,
-          kb_custom_domain: this.knowledgeBaseCustomDomain != null ? this.knowledgeBaseCustomDomain : void 0,
-          kb_css: this.knowledgeBaseCSS != null ? this.knowledgeBaseCSS : void 0,
-          kb_layout_template: this.knowledgeBaseLayoutTemplate != null ? this.knowledgeBaseLayoutTemplate : void 0,
-          kb_search_template: this.knowledgeBaseSearchTemplate != null ? this.knowledgeBaseSearchTemplate : void 0,
-          kb_article_template: this.knowledgeBaseArticleTemplate != null ? this.knowledgeBaseArticleTemplate : void 0
+          kb_subdomain: this.knowledgeBaseSubdomain ? this.knowledgeBaseSubdomain : void 0,
+          kb_custom_domain: this._textOrNull(this.knowledgeBaseCustomDomain),
+          kb_css: this._textOrNull(this.knowledgeBaseCSS),
+          kb_layout_template: this._textOrNull(this.knowledgeBaseLayoutTemplate),
+          kb_search_template: this._textOrNull(this.knowledgeBaseSearchTemplate),
+          kb_article_template: this._textOrNull(this.knowledgeBaseArticleTemplate)
         }
       }
     };
@@ -3246,7 +3295,9 @@ Firehose.EmailAccount = (function(_super) {
       if (settings.port != null) {
         emailAccount.port = settings.port;
       }
-      emailAccount.username = settings.username || settings.emailAddress;
+      if (settings.username != null) {
+        emailAccount.username = settings.username;
+      }
       if (settings.password != null) {
         emailAccount.password = settings.password;
       }
@@ -3405,16 +3456,16 @@ Firehose.EmailAccount = (function(_super) {
   EmailAccount.prototype._toJSON = function() {
     return {
       email_account: {
-        email: this.emailAddress,
-        title: this.title,
-        forwarding: this.isForwarding,
-        incoming_server: this.server,
-        incoming_ssl: this.SSL,
-        incoming_port: this.port,
-        incoming_username: this.username,
-        incoming_password: this.password,
-        kind: this.kind,
-        delete_from_server: this.deleteFromServer
+        email: this.emailAddress ? this.emailAddress : void 0,
+        title: this.title ? this.title : void 0,
+        forwarding: this.isForwarding ? this.isForwarding : void 0,
+        incoming_server: this.server ? this.server : void 0,
+        incoming_ssl: this.SSL ? this.SSL : void 0,
+        incoming_port: this.port ? this.port : void 0,
+        incoming_username: this.username ? this.username : void 0,
+        incoming_password: this.password ? this.password : void 0,
+        kind: this.kind ? this.kind : void 0,
+        delete_from_server: this.deleteFromServer ? this.deleteFromServer : void 0
       }
     };
   };

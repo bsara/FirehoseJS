@@ -148,6 +148,11 @@ class Firehose.Company extends Firehose.Object
   nextBillAmountAfterDiscounts: 0.0
   
   ###
+  @property [boolean] 
+  ###
+  isFreeTrialEligible: false
+  
+  ###
   @property [Date] 
   ###
   trialExpirationDate: null
@@ -424,6 +429,7 @@ class Firehose.Company extends Firehose.Object
   ###
   Associates an agent with a company.
   @param agent [Agent] The agent to add.
+  @return [jqXHR Promise] Promise
   ### 
   addAgent: (agent) ->
     params = 
@@ -435,6 +441,7 @@ class Firehose.Company extends Firehose.Object
   ###
   Removes an agent's association with a company.
   @param agent [Agent] The agent to remove.
+  @return [jqXHR Promise] Promise
   ### 
   removeAgent: (agent) ->
     params = 
@@ -450,6 +457,7 @@ class Firehose.Company extends Firehose.Object
     applyType: [string] either "percentage" or "fixed amount"
     amount: [number] The percentage or fixed amount to discount from the total price.
     expirationDate: [Date] When the discount expires and should not longer be applied to the monthly billing.
+    @return [jqXHR Promise] Promise
   ###
   fetchBillingInfo: ->
     fetchBlock = =>
@@ -465,6 +473,7 @@ class Firehose.Company extends Firehose.Object
         this._setIfNotNull "billingEmail",                  json.email || Firehose.Agent.loggedInAgent.email
         this._setIfNotNull "billingRate",                   (json.rate / 100.0).toFixed(2)
         this._setIfNotNull "nextBillAmountBeforeDiscounts", (@billingRate * @agents.length).toFixed(2)
+        this._setIfNotNull "isFreeTrialEligible",           json.is_free_trial_eligible
         this._setIfNotNull "trialExpirationDate",           Date.parse( json.free_trial_expiration_date ) || new Date(+new Date + 12096e5) # 14 days away
         this._setIfNotNull "nextBillingDate",               if json.next_bill_date then Date.parse( json.next_bill_date )
         this._setIfNotNull "isGracePeriodOver",             json.grace_period_over
@@ -503,6 +512,24 @@ class Firehose.Company extends Firehose.Object
       this.fetch().then ->
         fetchBlock()
         
+  ###
+  If the company is still in trial and has 3 days left in its trial, the trial can be extended by the length of the original trial period.
+  @return [jqXHR Promise] Promise
+  ### 
+  renewTrial: ->
+    requestBlock = =>
+      Firehose.client.billingAccessToken = @token 
+      params = 
+        server: "billing"
+        route: "entities/#{@id}/renew_trial"
+      Firehose.client.put( this, params ).done (json) =>
+        this._setIfNotNull "trialExpirationDate", Date.parse( json.free_trial_expiration_date ) 
+        this._setIfNotNull "isFreeTrialEligible", false
+    if @token
+      requestBlock()
+    else
+      this.fetch().then ->
+        requestBlock()
         
   ###
   Returns the base URL for the company's knowledge base for the current environment.
@@ -560,12 +587,12 @@ class Firehose.Company extends Firehose.Object
       title:                @title
       company_settings_attributes:
         fetch_automatically : @fetchAutomatically
-        kb_subdomain        : @knowledgeBaseSubdomain       if @knowledgeBaseSubdomain?
-        kb_custom_domain    : @knowledgeBaseCustomDomain    if @knowledgeBaseCustomDomain?
-        kb_css              : @knowledgeBaseCSS             if @knowledgeBaseCSS?
-        kb_layout_template  : @knowledgeBaseLayoutTemplate  if @knowledgeBaseLayoutTemplate?
-        kb_search_template  : @knowledgeBaseSearchTemplate  if @knowledgeBaseSearchTemplate?
-        kb_article_template : @knowledgeBaseArticleTemplate if @knowledgeBaseArticleTemplate?
+        kb_subdomain        : @knowledgeBaseSubdomain if @knowledgeBaseSubdomain
+        kb_custom_domain    : this._textOrNull @knowledgeBaseCustomDomain 
+        kb_css              : this._textOrNull @knowledgeBaseCSS          
+        kb_layout_template  : this._textOrNull @knowledgeBaseLayoutTemplate
+        kb_search_template  : this._textOrNull @knowledgeBaseSearchTemplate 
+        kb_article_template : this._textOrNull @knowledgeBaseArticleTemplate 
       
 
   # @nodoc

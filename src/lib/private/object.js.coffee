@@ -148,3 +148,6 @@ class Firehose.Object
     id:         @id
     created_at: @createdAt
     
+  # @nodoc
+  _textOrNull: (value) ->
+    if value?.length > 0 then value else null
