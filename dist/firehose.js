@@ -1941,7 +1941,7 @@ Firehose.Company = (function(_super) {
   */
 
 
-  Company.prototype.renewTrial = function() {
+  Company.prototype.extendTrial = function() {
     var requestBlock,
       _this = this;
     requestBlock = function() {

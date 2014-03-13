@@ -516,7 +516,7 @@ class Firehose.Company extends Firehose.Object
   If the company is still in trial and has 3 days left in its trial, the trial can be extended by the length of the original trial period.
   @return [jqXHR Promise] Promise
   ### 
-  renewTrial: ->
+  extendTrial: ->
     requestBlock = =>
       Firehose.client.billingAccessToken = @token 
       params = 
