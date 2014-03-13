@@ -586,7 +586,7 @@ class Firehose.Company extends Firehose.Object
       title:                @title
       company_settings_attributes:
         fetch_automatically : @fetchAutomatically
-        kb_subdomain        : @knowledgeBaseSubdomain if @knowledgeBaseSubdomain
+        kb_subdomain        : this._textOrNull @knowledgeBaseSubdomain 
         kb_custom_domain    : this._textOrNull @knowledgeBaseCustomDomain 
         kb_css              : this._textOrNull @knowledgeBaseCSS          
         kb_layout_template  : this._textOrNull @knowledgeBaseLayoutTemplate

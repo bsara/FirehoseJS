@@ -900,7 +900,10 @@ Firehose.Object = (function() {
   };
 
   Object.prototype._textOrNull = function(value) {
-    if ((value != null ? value.length : void 0) > 0) {
+    if (value == null) {
+      return;
+    }
+    if (value.length > 0) {
       return value;
     } else {
       return null;
@@ -2038,7 +2041,7 @@ Firehose.Company = (function(_super) {
         title: this.title,
         company_settings_attributes: {
           fetch_automatically: this.fetchAutomatically,
-          kb_subdomain: this.knowledgeBaseSubdomain ? this.knowledgeBaseSubdomain : void 0,
+          kb_subdomain: this._textOrNull(this.knowledgeBaseSubdomain),
           kb_custom_domain: this._textOrNull(this.knowledgeBaseCustomDomain),
           kb_css: this._textOrNull(this.knowledgeBaseCSS),
           kb_layout_template: this._textOrNull(this.knowledgeBaseLayoutTemplate),

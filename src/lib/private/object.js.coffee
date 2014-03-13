@@ -150,7 +150,8 @@ class Firehose.Object
     
   # @nodoc
   _textOrNull: (value) ->
-    if value?.length > 0 then value else null
+    return if !value?
+    if value.length > 0 then value else null
     
   # @nodoc
   _date: (dateString) ->
