@@ -246,6 +246,7 @@ class Firehose.Interaction extends Firehose.Object
       json.channel = @channel
       interaction = Firehose.Interaction._interactionWithJSON( json, @customer )
       interaction.set 'originalInteraction', this
+      interaction
       
     this._populateAssociatedObjects this, "notes", json.notes, (json) =>
       Firehose.Note._noteWithID( json.id, this )
