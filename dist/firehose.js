@@ -679,7 +679,7 @@ Firehose.Client = (function() {
   };
 
   Client.prototype._humanize = function(str) {
-    return str.replace(/_id$/, '').replace(/_/g, ' ').replace(/^\w/g, function(s) {
+    return str.replace(/_id$/, '').replace(/_/g, ' ').replace(/\S\.\S/, " ").replace(/^\w/g, function(s) {
       return s.toUpperCase();
     });
   };

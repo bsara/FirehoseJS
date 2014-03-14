@@ -156,7 +156,7 @@ class Firehose.Client
       
   # @nodoc
   _humanize: (str) ->
-    str.replace(/_id$/, '').replace(/_/g, ' ').replace /^\w/g, (s) ->
+    str.replace(/_id$/, '').replace(/_/g, ' ').replace(/\S\.\S/, " ").replace /^\w/g, (s) ->
       s.toUpperCase()
 
 
