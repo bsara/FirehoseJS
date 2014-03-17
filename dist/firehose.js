@@ -522,6 +522,8 @@ Firehose.Client = (function() {
 
   Client.prototype.environment = null;
 
+  Client.prototype.safariHackRequestCount = 0;
+
   function Client() {
     this._firefoxHack();
     this.environment = new Firehose.Environment;
@@ -584,6 +586,7 @@ Firehose.Client = (function() {
     if (perPage > -1) {
       params["per_page"] = perPage;
     }
+    this._safariHack(params);
     paramStrings = [];
     for (key in params) {
       value = params[key];
@@ -676,6 +679,16 @@ Firehose.Client = (function() {
       };
       return xhr;
     };
+  };
+
+  Client.prototype._safariHack = function(params) {
+    if (this.safariHackRequestCount > 6) {
+      return;
+    }
+    this.safariHackRequestCount++;
+    if (navigator.userAgent.indexOf("Safari") > -1 && navigator.userAgent.indexOf('Chrome') === -1) {
+      return params["safari_bug_cache_breaker"] = "" + (Math.random());
+    }
   };
 
   Client.prototype._humanize = function(str) {

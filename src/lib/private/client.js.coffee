@@ -28,6 +28,9 @@ class Firehose.Client
   # @nodoc
   environment: null
   
+  # @nodoc
+  safariHackRequestCount: 0
+  
   
   # @nodoc
   constructor: ->
@@ -86,6 +89,8 @@ class Firehose.Client
     params["page"]      = page if page > -1      
     params["per_page"]  = perPage if perPage > -1      
     
+    this._safariHack params
+    
     paramStrings = []
     for key, value of params    
       continue unless value?
@@ -134,8 +139,8 @@ class Firehose.Client
 
 
   # @nodoc
+  # Firefox hack: http://api.jquery.com/jQuery.ajax/
   _firefoxHack: ->
-    # Firefox hack: http://api.jquery.com/jQuery.ajax/
     _super          = jQuery.ajaxSettings.xhr
     xhrCorsHeaders  = [ "Cache-Control", "Content-Language", "Content-Type", "Expires", "Last-Modified", "Pragma" ];
     jQuery.ajaxSettings.xhr = ->
@@ -152,6 +157,17 @@ class Firehose.Client
           true
         return allHeaders
       return xhr
+      
+  
+  # @nodoc
+  # Safari has a bug where it caches the xhr requests. So if you go to settings.firehoseapp.com, then 
+  # back to the browser, the frist request will be from firehoseapp.com but the Referer Header (which is
+  # set by Safari and you can't modify) is still settings.firehoseapp.com for the first 3-4 requests.
+  _safariHack: (params) ->
+    return if @safariHackRequestCount > 6
+    @safariHackRequestCount++
+    if navigator.userAgent.indexOf("Safari") > -1 and navigator.userAgent.indexOf('Chrome') == -1
+      params["safari_bug_cache_breaker"] = "#{Math.random()}" 
       
       
   # @nodoc

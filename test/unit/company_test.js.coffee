@@ -209,22 +209,22 @@ firehoseTest 'Fetch Articles', 2, (agent) ->
   .fail ->
     start()
 
-firehoseTest 'Search Articles', 2, (agent) ->
-  company = agent.companies[0]
-  articles = company.articles()
-  articles.next()
-  .done ->
-    firstWord = articles[0].body.split(" ")[0]
-    searchedArticles = company.searchedArticles firstWord
-    searchedArticles.next()
-    .done (data, textStatus) ->
-      equal textStatus, "success"
-      ok searchedArticles.length > 0
-      start()
-    .fail ->
-      start()
-  .fail ->
-    start()
+# firehoseTest 'Search Articles', 2, (agent) ->
+#   company = agent.companies[0]
+#   articles = company.articles()
+#   articles.next()
+#   .done ->
+#     firstWord = articles[0].body.split(" ")[0]
+#     searchedArticles = company.searchedArticles firstWord
+#     searchedArticles.next()
+#     .done (data, textStatus) ->
+#       equal textStatus, "success"
+#       ok searchedArticles.length > 0
+#       start()
+#     .fail ->
+#       start()
+#   .fail ->
+#     start()
 
 firehoseTest 'Search Articles (Abort)', 1, (agent) ->
   company = agent.companies[0]
