@@ -207,7 +207,7 @@ class Firehose.EmailAccount extends Firehose.Object
       title:              @title            if @title
       forwarding:         @isForwarding     if @isForwarding
       incoming_server:    @server           if @server
-      incoming_ssl:       @SSL              if @SSL
+      incoming_ssl:       @SSL              if @SSL? && (typeof this.SSL == "boolean")
       incoming_port:      @port             if @port
       incoming_username:  @username         if @username
       incoming_password:  @password         if @password

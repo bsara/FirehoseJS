@@ -3486,7 +3486,7 @@ Firehose.EmailAccount = (function(_super) {
         title: this.title ? this.title : void 0,
         forwarding: this.isForwarding ? this.isForwarding : void 0,
         incoming_server: this.server ? this.server : void 0,
-        incoming_ssl: this.SSL ? this.SSL : void 0,
+        incoming_ssl: (this.SSL != null) && (typeof this.SSL === "boolean") ? this.SSL : void 0,
         incoming_port: this.port ? this.port : void 0,
         incoming_username: this.username ? this.username : void 0,
         incoming_password: this.password ? this.password : void 0,
