@@ -86,8 +86,8 @@ class Firehose.Client
     params  = defaults.params
     body    = defaults.body
     
-    params["page"]      = page if page > -1      
-    params["per_page"]  = perPage if perPage > -1      
+    params["page"]     = page if page > -1      
+    params["per_page"] = perPage if perPage > -1      
     
     this._safariHack params
     

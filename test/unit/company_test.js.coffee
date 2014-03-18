@@ -209,22 +209,22 @@ firehoseTest 'Fetch Articles', 2, (agent) ->
   .fail ->
     start()
 
-# firehoseTest 'Search Articles', 2, (agent) ->
-#   company = agent.companies[0]
-#   articles = company.articles()
-#   articles.next()
-#   .done ->
-#     firstWord = articles[0].body.split(" ")[0]
-#     searchedArticles = company.searchedArticles firstWord
-#     searchedArticles.next()
-#     .done (data, textStatus) ->
-#       equal textStatus, "success"
-#       ok searchedArticles.length > 0
-#       start()
-#     .fail ->
-#       start()
-#   .fail ->
-#     start()
+firehoseTest 'Search Articles', 2, (agent) ->
+  company = agent.companies[0]
+  articles = company.articles()
+  articles.next()
+  .done ->
+    firstWord = articles[0].body.split(" ")[0]
+    searchedArticles = company.searchedArticles firstWord
+    searchedArticles.next()
+    .done (data, textStatus) ->
+      equal textStatus, "success"
+      ok searchedArticles.length > 0
+      start()
+    .fail ->
+      start()
+  .fail ->
+    start()
 
 firehoseTest 'Search Articles (Abort)', 1, (agent) ->
   company = agent.companies[0]
@@ -297,13 +297,13 @@ firehoseTest 'Produce URL for companys kb', 5, (agent) ->
   ok company.kbBaseURL() == "http://#{subdomain}.lvh.me:4207"
 
   window.unitTestDocumentURL = "https://beta.firehoseapp.com"
-  ok company.kbBaseURL() == "http://#{subdomain}.firehosesupport.com"
+  ok company.kbBaseURL() == "https://#{subdomain}.firehosesupport.com"
 
   window.unitTestDocumentURL = "https://www.firehoseapp.com"
   ok company.kbBaseURL() == "http://#{customDomain}"
 
   company.set('knowledgeBaseCustomDomain', null)
   window.unitTestDocumentURL = "https://www.firehoseapp.com"
-  ok company.kbBaseURL() == "http://#{subdomain}.firehosehelp.com"
+  ok company.kbBaseURL() == "https://#{subdomain}.firehosehelp.com"
 
   start()

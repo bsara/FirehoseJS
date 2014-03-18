@@ -453,7 +453,7 @@ Firehose.Environment = (function() {
   Environment.prototype._schemeFor = function(app) {
     var environment;
     environment = this._environmentFor(app);
-    if (environment === 'development' || environment === 'test' || app === 'kb') {
+    if (environment === 'development' || environment === 'test') {
       return "http://";
     } else {
       return "https://";
