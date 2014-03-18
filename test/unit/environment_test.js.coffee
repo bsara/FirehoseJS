@@ -85,8 +85,8 @@ test 'produce browser development pointing at production URL', ->
   ok Firehose.baseURLFor('marketing') == "https://getfirehose.com"
   ok Firehose.baseURLFor('settings') == "https://settings.firehoseapp.com"
   ok Firehose.baseURLFor('tweetlonger') == "https://tl.frh.io"
-  ok Firehose.baseURLFor('kb') == "https://firehosehelp.com"
-  ok Firehose.baseURLFor('kb', 'mystrou') == "https://mystrou.firehosehelp.com"
+  ok Firehose.baseURLFor('kb') == "http://firehosehelp.com"
+  ok Firehose.baseURLFor('kb', 'mystrou') == "http://mystrou.firehosehelp.com"
 
 test 'produce browser beta URLs', ->
   window.unitTestDocumentURL = "https://beta.firehoseapp.com"
@@ -97,8 +97,8 @@ test 'produce browser beta URLs', ->
   ok Firehose.baseURLFor('marketing') == "https://beta.getfirehose.com"
   ok Firehose.baseURLFor('settings') == "https://beta_settings.firehoseapp.com"
   ok Firehose.baseURLFor('tweetlonger') == "https://beta_tl.frh.io"
-  ok Firehose.baseURLFor('kb') == "https://firehosesupport.com"
-  ok Firehose.baseURLFor('kb', 'mystrou') == "https://mystrou.firehosesupport.com"
+  ok Firehose.baseURLFor('kb') == "http://firehosesupport.com"
+  ok Firehose.baseURLFor('kb', 'mystrou') == "http://mystrou.firehosesupport.com"
   
 test 'produce URLS from custom kb domain', ->
   window.unitTestDocumentURL = "http://support.somecompany.com"
@@ -109,5 +109,5 @@ test 'produce URLS from custom kb domain', ->
   ok Firehose.baseURLFor('marketing') == "https://getfirehose.com"
   ok Firehose.baseURLFor('settings') == "https://settings.firehoseapp.com"
   ok Firehose.baseURLFor('tweetlonger') == "https://tl.frh.io"
-  ok Firehose.baseURLFor('kb') == "https://firehosehelp.com"
-  ok Firehose.baseURLFor('kb', 'mystrou') == "https://mystrou.firehosehelp.com"
+  ok Firehose.baseURLFor('kb') == "http://firehosehelp.com"
+  ok Firehose.baseURLFor('kb', 'mystrou') == "http://mystrou.firehosehelp.com"

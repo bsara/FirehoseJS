@@ -179,7 +179,7 @@ class Firehose.Environment
       
   _schemeFor: (app) ->
     environment = this._environmentFor app
-    if environment == 'development' or environment == 'test' then "http://" else "https://"
+    if environment == 'development' or environment == 'test' or app == 'kb' then "http://" else "https://"
           
           
   _domainNameFor: (app) ->
