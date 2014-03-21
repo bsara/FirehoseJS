@@ -1,71 +1,71 @@
 class Firehose.EmailAccount extends Firehose.Object
-  
+
 
   # @nodoc
   @_firehoseType: "EmailAccount"
 
   ###
-  @property [Company] 
+  @property [Company]
   ###
   company: null
-  
+
   ###
-  @property [string] 
+  @property [string]
   ###
   emailAddress: null
-  
+
   ###
-  @property [boolean] 
+  @property [boolean]
   ###
   isForwarding: false
-  
+
   ###
-  @property [string] 
+  @property [string]
   ###
   title: null
-  
+
   ###
   @property [string] Can be either `IMAP` or `POP`
   ###
   kind: 'IMAP'
-  
+
   ###
-  @property [string] 
+  @property [string]
   ###
   server: null
-  
+
   ###
-  @property [string] 
+  @property [string]
   ###
   port: null
-  
+
   ###
-  @property [string] 
+  @property [string]
   ###
   username: null
-  
+
   ###
-  @property [string] 
+  @property [string]
   ###
   password: null
-  
+
   ###
-  @property [boolean] 
+  @property [boolean]
   ###
   SSL: true
-  
+
   ###
-  @property [boolean] 
+  @property [boolean]
   ###
   deleteFromServer: false
-  
-  
+
+
   @emailAccountWithSettings: (company, settings) ->
     emailAccount = {}
     emailAccount.company = company
     if settings?
       emailAccount.emailAddress     = settings.emailAddress     if settings.emailAddress?
-      emailAccount.title            = settings.title            if settings.title?  
+      emailAccount.title            = settings.title            if settings.title?
       emailAccount.kind             = settings.kind             if settings.kind?
       emailAccount.server           = settings.server           if settings.server?
       emailAccount.port             = settings.port             if settings.port?
@@ -74,38 +74,38 @@ class Firehose.EmailAccount extends Firehose.Object
       emailAccount.SSL              = settings.SSL              if settings.SSL?
       emailAccount.deleteFromServer = settings.deleteFromServer if settings.deleteFromServer?
     Firehose.Object._objectOfClassWithID Firehose.EmailAccount, emailAccount
-    
-    
+
+
   # @nodoc
   @_emailAccountWithID: (id, company) ->
     Firehose.Object._objectOfClassWithID Firehose.EmailAccount,
       id:      id
       company: company
-    
-      
+
+
   save: ->
     if @id?
-      params = 
+      params =
         route: "email_accounts/#{@id}"
         body:  this._toJSON()
       Firehose.client.put( this, params )
     else
-      params = 
+      params =
         route: "companies/#{@company.id}/email_accounts"
         body:  this._toJSON()
       Firehose.client.post( this, params ).done (data) =>
         this._populateWithJSON data
         @company.emailAccounts().insertObject this
-        
-    
-    
+
+
+
   destroy: ->
-    params = 
+    params =
       route: "email_accounts/#{@id}"
     Firehose.client.delete( this, params ).done =>
       @company.emailAccounts().dropObject this
-    
-    
+
+
   # @nodoc
   _popularServices: [
                         domain  : "gmail.com"
@@ -168,8 +168,8 @@ class Firehose.EmailAccount extends Firehose.Object
                         port    : 993
                         server  : "imap.mail.yahoo.com"
                     ]
-  
-  
+
+
   guessFieldsFromEmail: ->
     if @username?.trim()
       for service in @_popularServices
@@ -184,8 +184,8 @@ class Firehose.EmailAccount extends Firehose.Object
           return true
     @errors = [ "More information needed" ]
     return false
-    
-    
+
+
   # @nodoc
   _populateWithJSON: (json) ->
     this._setIfNotNull "emailAddress",     json.email
@@ -198,18 +198,18 @@ class Firehose.EmailAccount extends Firehose.Object
     this._setIfNotNull "kind",             json.kind
     this._setIfNotNull "deleteFromServer", json.delete_from_server
     super json
-    
-    
+
+
   # @nodoc
   _toJSON: ->
     email_account:
       email:              @emailAddress     if @emailAddress
       title:              @title            if @title
-      forwarding:         @isForwarding     if @isForwarding
+      forwarding:         @isForwarding     if @isForwarding?
       incoming_server:    @server           if @server
-      incoming_ssl:       @SSL              if @SSL? && (typeof this.SSL == "boolean")
+      incoming_ssl:       @SSL              if @SSL?
       incoming_port:      @port             if @port
       incoming_username:  @username         if @username
-      incoming_password:  @password         if @password
+      incoming_password:  @password         if @password?
       kind:               @kind             if @kind
-      delete_from_server: @deleteFromServer if @deleteFromServer
+      delete_from_server: @deleteFromServer if @deleteFromServer?

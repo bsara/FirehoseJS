@@ -3484,14 +3484,14 @@ Firehose.EmailAccount = (function(_super) {
       email_account: {
         email: this.emailAddress ? this.emailAddress : void 0,
         title: this.title ? this.title : void 0,
-        forwarding: this.isForwarding ? this.isForwarding : void 0,
+        forwarding: this.isForwarding != null ? this.isForwarding : void 0,
         incoming_server: this.server ? this.server : void 0,
-        incoming_ssl: (this.SSL != null) && (typeof this.SSL === "boolean") ? this.SSL : void 0,
+        incoming_ssl: this.SSL != null ? this.SSL : void 0,
         incoming_port: this.port ? this.port : void 0,
         incoming_username: this.username ? this.username : void 0,
-        incoming_password: this.password ? this.password : void 0,
+        incoming_password: this.password != null ? this.password : void 0,
         kind: this.kind ? this.kind : void 0,
-        delete_from_server: this.deleteFromServer ? this.deleteFromServer : void 0
+        delete_from_server: this.deleteFromServer != null ? this.deleteFromServer : void 0
       }
     };
   };
