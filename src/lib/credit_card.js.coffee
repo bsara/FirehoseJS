@@ -73,7 +73,7 @@ class Firehose.CreditCard extends Firehose.Object
 
     errorsFound = []
 
-    if !@number?.trim()
+    if !@number?.trim() || number.length < 14
       errorsFound.push errorCodes.invalidNumber
     if !@cvc?trim()
       errorsFound.push errorCodes.invalidCVC
