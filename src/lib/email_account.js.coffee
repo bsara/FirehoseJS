@@ -210,6 +210,6 @@ class Firehose.EmailAccount extends Firehose.Object
       incoming_ssl:       @SSL              if @SSL?
       incoming_port:      @port             if @port
       incoming_username:  @username         if @username
-      incoming_password:  @password         if @password?
+      incoming_password:  @password         if @password? && @password != "fhfakepass"
       kind:               @kind             if @kind
       delete_from_server: @deleteFromServer if @deleteFromServer?
