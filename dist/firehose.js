@@ -2836,7 +2836,7 @@ Firehose.CreditCard = (function(_super) {
   };
 
   CreditCard.prototype.submitToStripe = function(callback, ccEmail) {
-    var errorsFound, stripeErrorCodes, _ref1, _ref2, _ref3,
+    var errorsFound, stripeErrorCodes, _ref1,
       _this = this;
     this.clearErrors();
     stripeErrorCodes = {
@@ -2852,10 +2852,10 @@ Firehose.CreditCard = (function(_super) {
     if (!(typeof this.cvc === "function" ? this.cvc(trim()) : void 0)) {
       errorsFound.push(stripeErrorCodes.invalidCVC);
     }
-    if (!((_ref2 = this.expirationMonth) != null ? _ref2.trim() : void 0)) {
+    if ((this.expirationMonth == null) || !String(this.expirationMonth).trim() || typeof this.expirationMonth !== "number") {
       errorsFound.push(stripeErrorCodes.invalidExpiryMonth);
     }
-    if (!((_ref3 = this.expirationYear) != null ? _ref3.trim() : void 0)) {
+    if ((this.expirationYear == null) || !String(this.expirationYear).trim() || typeof this.expirationYear !== "number") {
       errorsFound.push(stripeErrorCodes.invalidExpiryYear);
     }
     return Stripe.card.createToken({

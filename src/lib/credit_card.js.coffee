@@ -77,9 +77,9 @@ class Firehose.CreditCard extends Firehose.Object
       errorsFound.push stripeErrorCodes.invalidNumber
     if !@cvc?trim()
       errorsFound.push stripeErrorCodes.invalidCVC
-    if !@expirationMonth?.trim()
+    if !@expirationMonth? || !String(@expirationMonth).trim() || typeof @expirationMonth != "number"
       errorsFound.push stripeErrorCodes.invalidExpiryMonth
-    if !@expirationYear?.trim()
+    if !@expirationYear? || !String(@expirationYear).trim() || typeof @expirationYear != "number"
       errorsFound.push stripeErrorCodes.invalidExpiryYear
 
     Stripe.card.createToken
