@@ -73,9 +73,9 @@ class Firehose.CreditCard extends Firehose.Object
 
     errorsFound = []
 
-    if !@number?.trim() || number.length < 14
+    if !@number?.trim()
       errorsFound.push stripeErrorCodes.invalidNumber
-    if !@cvc?trim()
+    if !@cvc?.trim()
       errorsFound.push stripeErrorCodes.invalidCVC
     if !@expirationMonth? || !String(@expirationMonth).trim() || typeof @expirationMonth != "number"
       errorsFound.push stripeErrorCodes.invalidExpiryMonth
@@ -94,17 +94,17 @@ class Firehose.CreditCard extends Firehose.Object
         this._setIfNotNull "expirationYear",  response.card.exp_year
         this._setIfNotNull "lastFour",        response.card.last4
         this._setIfNotNull "stripeToken",     response.id
-        this._setIfNotNull "email",           if ccEmail? then ccEmail else Firehose.Agent.loggedInAgent.email
+        this._setIfNotNull "email",           if ccEmail?.trim() then ccEmail.trim() else Firehose.Agent.loggedInAgent.email
         hasErrors = errorsFound.length > 0
       else
         errorsFound.push response.error.code
         hasErrors = true
 
       if hasErrors
-        @errors.push "Invalid credit card number" if $.inArray(_stripeErrorCodes.invalidNumber, errorsFound) > -1
-        @errors.push "Invalid CVV"                if $.inArray(_stripeErrorCodes.invalidCVC, errorsFound) > -1
-        @errors.push "Invalid Expiration Month"   if $.inArray(_stripeErrorCodes.invalidExpiryMonth, errorsFound) > -1
-        @errors.push "Invalid Expiration Year"    if $.inArray(_stripeErrorCodes.invalidExpiryYear, errorsFound) > -1
+        @errors.push "Invalid credit card number" if $.inArray(stripeErrorCodes.invalidNumber, errorsFound) > -1
+        @errors.push "Invalid CVV"                if $.inArray(stripeErrorCodes.invalidCVC, errorsFound) > -1
+        @errors.push "Invalid Expiration Month"   if $.inArray(stripeErrorCodes.invalidExpiryMonth, errorsFound) > -1
+        @errors.push "Invalid Expiration Year"    if $.inArray(stripeErrorCodes.invalidExpiryYear, errorsFound) > -1
 
       callback(hasErrors)
 

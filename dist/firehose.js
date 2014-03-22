@@ -2836,7 +2836,7 @@ Firehose.CreditCard = (function(_super) {
   };
 
   CreditCard.prototype.submitToStripe = function(callback, ccEmail) {
-    var errorsFound, stripeErrorCodes, _ref1,
+    var errorsFound, stripeErrorCodes, _ref1, _ref2,
       _this = this;
     this.clearErrors();
     stripeErrorCodes = {
@@ -2846,10 +2846,10 @@ Firehose.CreditCard = (function(_super) {
       invalidExpiryYear: "invalid_expiry_year"
     };
     errorsFound = [];
-    if (!((_ref1 = this.number) != null ? _ref1.trim() : void 0) || number.length < 14) {
+    if (!((_ref1 = this.number) != null ? _ref1.trim() : void 0)) {
       errorsFound.push(stripeErrorCodes.invalidNumber);
     }
-    if (!(typeof this.cvc === "function" ? this.cvc(trim()) : void 0)) {
+    if (!((_ref2 = this.cvc) != null ? _ref2.trim() : void 0)) {
       errorsFound.push(stripeErrorCodes.invalidCVC);
     }
     if ((this.expirationMonth == null) || !String(this.expirationMonth).trim() || typeof this.expirationMonth !== "number") {
@@ -2871,23 +2871,23 @@ Firehose.CreditCard = (function(_super) {
         _this._setIfNotNull("expirationYear", response.card.exp_year);
         _this._setIfNotNull("lastFour", response.card.last4);
         _this._setIfNotNull("stripeToken", response.id);
-        _this._setIfNotNull("email", ccEmail != null ? ccEmail : Firehose.Agent.loggedInAgent.email);
+        _this._setIfNotNull("email", (ccEmail != null ? ccEmail.trim() : void 0) ? ccEmail.trim() : Firehose.Agent.loggedInAgent.email);
         hasErrors = errorsFound.length > 0;
       } else {
         errorsFound.push(response.error.code);
         hasErrors = true;
       }
       if (hasErrors) {
-        if ($.inArray(_stripeErrorCodes.invalidNumber, errorsFound) > -1) {
+        if ($.inArray(stripeErrorCodes.invalidNumber, errorsFound) > -1) {
           _this.errors.push("Invalid credit card number");
         }
-        if ($.inArray(_stripeErrorCodes.invalidCVC, errorsFound) > -1) {
+        if ($.inArray(stripeErrorCodes.invalidCVC, errorsFound) > -1) {
           _this.errors.push("Invalid CVV");
         }
-        if ($.inArray(_stripeErrorCodes.invalidExpiryMonth, errorsFound) > -1) {
+        if ($.inArray(stripeErrorCodes.invalidExpiryMonth, errorsFound) > -1) {
           _this.errors.push("Invalid Expiration Month");
         }
-        if ($.inArray(_stripeErrorCodes.invalidExpiryYear, errorsFound) > -1) {
+        if ($.inArray(stripeErrorCodes.invalidExpiryYear, errorsFound) > -1) {
           _this.errors.push("Invalid Expiration Year");
         }
       }
