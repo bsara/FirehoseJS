@@ -2836,17 +2836,15 @@ Firehose.CreditCard = (function(_super) {
   };
 
   CreditCard.prototype.submitToStripe = function(callback, ccEmail) {
-    var errorsFound, _ref1, _ref2, _ref3,
+    var errorsFound, stripeErrorCodes, _ref1, _ref2, _ref3,
       _this = this;
     this.clearErrors();
-    ({
-      stripeErrorCodes: {
-        invalidNumber: "invalid_number",
-        invalidCVC: "invalid_cvc",
-        invalidExpiryMonth: "invalid_expiry_month",
-        invalidExpiryYear: "invalid_expiry_year"
-      }
-    });
+    stripeErrorCodes = {
+      invalidNumber: "invalid_number",
+      invalidCVC: "invalid_cvc",
+      invalidExpiryMonth: "invalid_expiry_month",
+      invalidExpiryYear: "invalid_expiry_year"
+    };
     errorsFound = [];
     if (!((_ref1 = this.number) != null ? _ref1.trim() : void 0) || number.length < 14) {
       errorsFound.push(stripeErrorCodes.invalidNumber);

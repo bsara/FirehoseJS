@@ -6,32 +6,32 @@ module.exports = (grunt) ->
   grunt.initConfig
     # Metadata.
     pkg: grunt.file.readJSON 'package.json'
-    
+
     banner: '/*! <%= pkg.title || pkg.name %> - v<%= pkg.version %> - ' +
       '<%= grunt.template.today("yyyy-mm-dd") %>\n' +
       '<%= pkg.homepage ? "* " + pkg.homepage + "\\n" : "" %>' +
       '* Copyright (c) <%= grunt.template.today("yyyy") %> <%= pkg.author.name %>;' +
       ' Licensed <%= _.pluck(pkg.licenses, "type").join(", ") %> */\n',
-      
-      
+
+
     # Task configuration.
-    
+
     clean:
       files: ['dist', 'build/src']
-      
+
     bump:
       options:
         commit: false
         createTag: false
         push: false
-        
+
     coffee:
       app:
         options:
           bare: true
           preserve_dirs: true
         files: [
-          expand: true  
+          expand: true
           cwd: 'src/'
           src: ['**/*.coffee']
           dest: 'build/src/'
@@ -43,12 +43,12 @@ module.exports = (grunt) ->
           preserve_dirs: true
         files: [
           expand: true
-          cwd: 'test/' 
+          cwd: 'test/'
           src: ['**/*.coffee']
           dest: 'build/test'
           ext: '.js'
         ]
-        
+
     concat:
       all:
         src: (->
@@ -88,22 +88,22 @@ module.exports = (grunt) ->
           sources
         )()
         dest: 'dist/firehose.js'
-        
-    copy: 
+
+    copy:
       test:
         src: 'test/firehosejs_tests.html'
         dest: 'build/test/firehosejs_tests.html'
-            
+
     exec:
       generate_docs:
         command: 'codo'
       start_server:
         command: 'sh ./test/start_server.sh'
-      kill_server: 
+      kill_server:
         command: 'sh ./test/kill_server.sh'
       open_browser:
         command: 'open http://localhost:4011/build/test/firehosejs_tests.html'
-        
+
     connect:
       test:
         options:
@@ -114,21 +114,21 @@ module.exports = (grunt) ->
           port: 4011
           base: '.'
           keepalive: true
-      
+
     qunit:
       all:
         options:
           timeout: 15000
           urls: ['http://localhost:4011/build/test/firehosejs_tests.html']
-      
+
     uglify:
       options:
         mangle: false
         banner: '<%= banner %>'
-      dist: 
+      dist:
         src: 'dist/firehose.js'
         dest: 'dist/firehose.min.js'
-      
+
     watch:
       gruntfile:
         files: '<%= jshint.gruntfile.src %>'
@@ -142,21 +142,21 @@ module.exports = (grunt) ->
       build:
         files: ['src/**/*.coffee']
         tasks: ['clean', 'coffee:app', 'concat:all', 'uglify']
-        
-        
+
+
   grunt.event.on 'qunit.moduleStart', (name) ->
     grunt.log.writeln("")
     grunt.log.ok("Testing: #{name}");
-  
+
   # grunt.event.on 'qunit.testStart', (name) ->
   #   grunt.log.ok("Started #{name}");
-    
+
   grunt.event.on 'qunit.testDone', (name, failed, passed, total) ->
     if passed
       grunt.log.ok("Passed: #{name}");
     else
       grunt.log.error("Failed: #{name}");
-      
+
 
   # These plugins provide necessary tasks.
   grunt.loadNpmTasks 'grunt-contrib-clean'
@@ -169,9 +169,10 @@ module.exports = (grunt) ->
   grunt.loadNpmTasks 'grunt-exec'
   grunt.loadNpmTasks 'grunt-contrib-connect'
   grunt.loadNpmTasks 'grunt-bump'
-  
+
   # Default task.
   grunt.registerTask 'default', ['clean', 'exec:generate_docs', 'coffee', 'concat', 'copy', 'exec:start_server', 'connect:test', 'qunit', 'exec:kill_server', 'uglify']
+  grunt.registerTask 'notest', ['clean', 'exec:generate_docs', 'coffee', 'concat', 'copy', 'uglify']
   grunt.registerTask 'debug', ['clean', 'coffee', 'concat', 'copy', 'exec:start_server', 'exec:open_browser', 'connect:debug']
   # grunt.registerTask 'noserver', ['clean', 'coffee', 'concat', 'copy', 'connect:test', 'qunit' ]
   grunt.registerTask 'noserver', ['clean', 'coffee', 'concat', 'copy', 'exec:open_browser', 'connect:debug' ]

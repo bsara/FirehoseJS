@@ -65,7 +65,7 @@ class Firehose.CreditCard extends Firehose.Object
   submitToStripe: (callback, ccEmail) ->
     @clearErrors()
 
-    stripeErrorCodes:
+    stripeErrorCodes =
       invalidNumber:      "invalid_number"
       invalidCVC:         "invalid_cvc"
       invalidExpiryMonth: "invalid_expiry_month"
