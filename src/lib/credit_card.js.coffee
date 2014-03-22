@@ -63,28 +63,52 @@ class Firehose.CreditCard extends Firehose.Object
 
 
   submitToStripe: (callback, ccEmail) ->
+    @clearErrors()
+
+    stripeErrorCodes:
+      invalidNumber:      "invalid_number"
+      invalidCVC:         "invalid_cvc"
+      invalidExpiryMonth: "invalid_expiry_month"
+      invlaidExpiryYear:  "invalid_expiry_year"
+
+    errorsFound = []
+
+    if !@number?.trim()
+      errorsFound.push errorCodes.invalidNumber
+    if !@cvc?trim()
+      errorsFound.push errorCodes.invalidCVC
+    if !@expirationMonth?.trim()
+      errorsFound.push errorCodes.invalidExpiryMonth
+    if !@expirationYear?.trim()
+      errorsFound.push errorCodes.invlaidExpiryYear
+
     Stripe.card.createToken
       number:     @number
       cvc:        @cvc
       exp_month:  @expirationMonth
       exp_year:   @expirationYear
     , (status, response) =>
-      @clearErrors()
-
+      hasErrors = false
       if not response.error
         this._setIfNotNull "expirationMonth", response.card.exp_month
         this._setIfNotNull "expirationYear",  response.card.exp_year
         this._setIfNotNull "lastFour",        response.card.last4
         this._setIfNotNull "stripeToken",     response.id
         this._setIfNotNull "email",           if ccEmail? then ccEmail else Firehose.Agent.loggedInAgent.email
-        callback(false)
-        return
+        hasErrors = errorsFound.length > 0
+      else
+        errorsFound.push errorCodes.invalidNumber
+        errorsFound.push errorCodes.invalidCVC
+        errorsFound.push errorCodes.invalidExpiryMonth
+        errorsFound.push errorCodes.invlaidExpiryYear
+        hasErrors = true
 
-      @errors.push "Invalid credit card number" if response.error.code == "invalid_number"
-      @errors.push "Invalid CVV"                if response.error.code == "invalid_cvc"
-      @errors.push "Invalid Expiration Month"   if response.error.code == "invalid_expiry_year"
-      @errors.push "Invalid Expiration Year"    if response.error.code == "invalid_expiry_month"
-      callback(true)
+      @errors.push "Invalid credit card number" if $.inArray(_stripeErrorCodes.invalidNumber, errorsFound) > -1
+      @errors.push "Invalid CVV"                if $.inArray(_stripeErrorCodes.invalidNumber, errorsFound) > -1
+      @errors.push "Invalid Expiration Month"   if $.inArray(_stripeErrorCodes.invalidNumber, errorsFound) > -1
+      @errors.push "Invalid Expiration Year"    if $.inArray(_stripeErrorCodes.invalidNumber, errorsFound) > -1
+
+      callback(hasErrors)
 
 
   save: ->

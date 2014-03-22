@@ -2836,36 +2836,65 @@ Firehose.CreditCard = (function(_super) {
   };
 
   CreditCard.prototype.submitToStripe = function(callback, ccEmail) {
-    var _this = this;
+    var errorsFound, _ref1, _ref2, _ref3,
+      _this = this;
+    this.clearErrors();
+    ({
+      stripeErrorCodes: {
+        invalidNumber: "invalid_number",
+        invalidCVC: "invalid_cvc",
+        invalidExpiryMonth: "invalid_expiry_month",
+        invlaidExpiryYear: "invalid_expiry_year"
+      }
+    });
+    errorsFound = [];
+    if (!((_ref1 = this.number) != null ? _ref1.trim() : void 0) || number.length < 14) {
+      errorsFound.push(errorCodes.invalidNumber);
+    }
+    if (!(typeof this.cvc === "function" ? this.cvc(trim()) : void 0)) {
+      errorsFound.push(errorCodes.invalidCVC);
+    }
+    if (!((_ref2 = this.expirationMonth) != null ? _ref2.trim() : void 0)) {
+      errorsFound.push(errorCodes.invalidExpiryMonth);
+    }
+    if (!((_ref3 = this.expirationYear) != null ? _ref3.trim() : void 0)) {
+      errorsFound.push(errorCodes.invlaidExpiryYear);
+    }
     return Stripe.card.createToken({
       number: this.number,
       cvc: this.cvc,
       exp_month: this.expirationMonth,
       exp_year: this.expirationYear
     }, function(status, response) {
-      _this.clearErrors();
+      var hasErrors;
+      hasErrors = false;
       if (!response.error) {
         _this._setIfNotNull("expirationMonth", response.card.exp_month);
         _this._setIfNotNull("expirationYear", response.card.exp_year);
         _this._setIfNotNull("lastFour", response.card.last4);
         _this._setIfNotNull("stripeToken", response.id);
         _this._setIfNotNull("email", ccEmail != null ? ccEmail : Firehose.Agent.loggedInAgent.email);
-        callback(false);
-        return;
+        hasErrors = errorsFound.length > 0;
+      } else {
+        errorsFound.push(errorCodes.invalidNumber);
+        errorsFound.push(errorCodes.invalidCVC);
+        errorsFound.push(errorCodes.invalidExpiryMonth);
+        errorsFound.push(errorCodes.invlaidExpiryYear);
+        hasErrors = true;
       }
-      if (response.error.code === "invalid_number") {
+      if ($.inArray(_stripeErrorCodes.invalidNumber, errorsFound) > -1) {
         _this.errors.push("Invalid credit card number");
       }
-      if (response.error.code === "invalid_cvc") {
+      if ($.inArray(_stripeErrorCodes.invalidNumber, errorsFound) > -1) {
         _this.errors.push("Invalid CVV");
       }
-      if (response.error.code === "invalid_expiry_year") {
+      if ($.inArray(_stripeErrorCodes.invalidNumber, errorsFound) > -1) {
         _this.errors.push("Invalid Expiration Month");
       }
-      if (response.error.code === "invalid_expiry_month") {
+      if ($.inArray(_stripeErrorCodes.invalidNumber, errorsFound) > -1) {
         _this.errors.push("Invalid Expiration Year");
       }
-      return callback(true);
+      return callback(hasErrors);
     });
   };
 
