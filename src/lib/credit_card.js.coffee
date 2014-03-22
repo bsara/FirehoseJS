@@ -80,10 +80,10 @@ class Firehose.CreditCard extends Firehose.Object
         callback(false)
         return
 
-      @errors.push "Invalid credit card number" if error.code == "invalid_number"
-      @errors.push "Invalid CVV"                if error.code == "invalid_cvc"
-      @errors.push "Invalid Expiration Month"   if error.code == "invalid_expiry_year"
-      @errors.push "Invalid Expiration Year"    if error.code == "invalid_expiry_month"
+      @errors.push "Invalid credit card number" if response.error.code == "invalid_number"
+      @errors.push "Invalid CVV"                if response.error.code == "invalid_cvc"
+      @errors.push "Invalid Expiration Month"   if response.error.code == "invalid_expiry_year"
+      @errors.push "Invalid Expiration Year"    if response.error.code == "invalid_expiry_month"
       callback(true)
 
 

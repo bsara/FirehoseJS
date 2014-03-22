@@ -2853,16 +2853,16 @@ Firehose.CreditCard = (function(_super) {
         callback(false);
         return;
       }
-      if (error.code === "invalid_number") {
+      if (response.error.code === "invalid_number") {
         _this.errors.push("Invalid credit card number");
       }
-      if (error.code === "invalid_cvc") {
+      if (response.error.code === "invalid_cvc") {
         _this.errors.push("Invalid CVV");
       }
-      if (error.code === "invalid_expiry_year") {
+      if (response.error.code === "invalid_expiry_year") {
         _this.errors.push("Invalid Expiration Month");
       }
-      if (error.code === "invalid_expiry_month") {
+      if (response.error.code === "invalid_expiry_month") {
         _this.errors.push("Invalid Expiration Year");
       }
       return callback(true);
