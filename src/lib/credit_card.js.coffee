@@ -69,18 +69,18 @@ class Firehose.CreditCard extends Firehose.Object
       invalidNumber:      "invalid_number"
       invalidCVC:         "invalid_cvc"
       invalidExpiryMonth: "invalid_expiry_month"
-      invlaidExpiryYear:  "invalid_expiry_year"
+      invalidExpiryYear:  "invalid_expiry_year"
 
     errorsFound = []
 
     if !@number?.trim() || number.length < 14
-      errorsFound.push errorCodes.invalidNumber
+      errorsFound.push stripeErrorCodes.invalidNumber
     if !@cvc?trim()
-      errorsFound.push errorCodes.invalidCVC
+      errorsFound.push stripeErrorCodes.invalidCVC
     if !@expirationMonth?.trim()
-      errorsFound.push errorCodes.invalidExpiryMonth
+      errorsFound.push stripeErrorCodes.invalidExpiryMonth
     if !@expirationYear?.trim()
-      errorsFound.push errorCodes.invlaidExpiryYear
+      errorsFound.push stripeErrorCodes.invalidExpiryYear
 
     Stripe.card.createToken
       number:     @number
@@ -97,16 +97,13 @@ class Firehose.CreditCard extends Firehose.Object
         this._setIfNotNull "email",           if ccEmail? then ccEmail else Firehose.Agent.loggedInAgent.email
         hasErrors = errorsFound.length > 0
       else
-        errorsFound.push errorCodes.invalidNumber
-        errorsFound.push errorCodes.invalidCVC
-        errorsFound.push errorCodes.invalidExpiryMonth
-        errorsFound.push errorCodes.invlaidExpiryYear
+        errorsFound.push response.error.code
         hasErrors = true
 
       @errors.push "Invalid credit card number" if $.inArray(_stripeErrorCodes.invalidNumber, errorsFound) > -1
-      @errors.push "Invalid CVV"                if $.inArray(_stripeErrorCodes.invalidNumber, errorsFound) > -1
-      @errors.push "Invalid Expiration Month"   if $.inArray(_stripeErrorCodes.invalidNumber, errorsFound) > -1
-      @errors.push "Invalid Expiration Year"    if $.inArray(_stripeErrorCodes.invalidNumber, errorsFound) > -1
+      @errors.push "Invalid CVV"                if $.inArray(_stripeErrorCodes.invalidCVC, errorsFound) > -1
+      @errors.push "Invalid Expiration Month"   if $.inArray(_stripeErrorCodes.invalidExpiryMonth, errorsFound) > -1
+      @errors.push "Invalid Expiration Year"    if $.inArray(_stripeErrorCodes.invalidExpiryYear, errorsFound) > -1
 
       callback(hasErrors)
 

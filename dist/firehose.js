@@ -2844,21 +2844,21 @@ Firehose.CreditCard = (function(_super) {
         invalidNumber: "invalid_number",
         invalidCVC: "invalid_cvc",
         invalidExpiryMonth: "invalid_expiry_month",
-        invlaidExpiryYear: "invalid_expiry_year"
+        invalidExpiryYear: "invalid_expiry_year"
       }
     });
     errorsFound = [];
     if (!((_ref1 = this.number) != null ? _ref1.trim() : void 0) || number.length < 14) {
-      errorsFound.push(errorCodes.invalidNumber);
+      errorsFound.push(stripeErrorCodes.invalidNumber);
     }
     if (!(typeof this.cvc === "function" ? this.cvc(trim()) : void 0)) {
-      errorsFound.push(errorCodes.invalidCVC);
+      errorsFound.push(stripeErrorCodes.invalidCVC);
     }
     if (!((_ref2 = this.expirationMonth) != null ? _ref2.trim() : void 0)) {
-      errorsFound.push(errorCodes.invalidExpiryMonth);
+      errorsFound.push(stripeErrorCodes.invalidExpiryMonth);
     }
     if (!((_ref3 = this.expirationYear) != null ? _ref3.trim() : void 0)) {
-      errorsFound.push(errorCodes.invlaidExpiryYear);
+      errorsFound.push(stripeErrorCodes.invalidExpiryYear);
     }
     return Stripe.card.createToken({
       number: this.number,
@@ -2876,22 +2876,19 @@ Firehose.CreditCard = (function(_super) {
         _this._setIfNotNull("email", ccEmail != null ? ccEmail : Firehose.Agent.loggedInAgent.email);
         hasErrors = errorsFound.length > 0;
       } else {
-        errorsFound.push(errorCodes.invalidNumber);
-        errorsFound.push(errorCodes.invalidCVC);
-        errorsFound.push(errorCodes.invalidExpiryMonth);
-        errorsFound.push(errorCodes.invlaidExpiryYear);
+        errorsFound.push(response.error.code);
         hasErrors = true;
       }
       if ($.inArray(_stripeErrorCodes.invalidNumber, errorsFound) > -1) {
         _this.errors.push("Invalid credit card number");
       }
-      if ($.inArray(_stripeErrorCodes.invalidNumber, errorsFound) > -1) {
+      if ($.inArray(_stripeErrorCodes.invalidCVC, errorsFound) > -1) {
         _this.errors.push("Invalid CVV");
       }
-      if ($.inArray(_stripeErrorCodes.invalidNumber, errorsFound) > -1) {
+      if ($.inArray(_stripeErrorCodes.invalidExpiryMonth, errorsFound) > -1) {
         _this.errors.push("Invalid Expiration Month");
       }
-      if ($.inArray(_stripeErrorCodes.invalidNumber, errorsFound) > -1) {
+      if ($.inArray(_stripeErrorCodes.invalidExpiryYear, errorsFound) > -1) {
         _this.errors.push("Invalid Expiration Year");
       }
       return callback(hasErrors);
