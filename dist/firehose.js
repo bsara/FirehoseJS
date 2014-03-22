@@ -632,7 +632,7 @@ Firehose.Client = (function() {
         if (Number(jqXHR.status) === 422 && (jqXHR.responseJSON != null) && (object != null)) {
           json = jqXHR.responseJSON;
           if (json.constructor === Object) {
-            object.errors = [];
+            object.clearErrors();
             _ref = jqXHR.responseJSON;
             _results = [];
             for (key in _ref) {
@@ -814,6 +814,15 @@ Firehose.Object = (function() {
     } else {
       return false;
     }
+  };
+
+  /*
+  Clears all data from the `errors` array.
+  */
+
+
+  Object.prototype.clearErrors = function() {
+    return this.errors = [];
   };
 
   /*
@@ -2834,16 +2843,29 @@ Firehose.CreditCard = (function(_super) {
       exp_month: this.expirationMonth,
       exp_year: this.expirationYear
     }, function(status, response) {
+      _this.clearErrors();
       if (!response.error) {
         _this._setIfNotNull("expirationMonth", response.card.exp_month);
         _this._setIfNotNull("expirationYear", response.card.exp_year);
         _this._setIfNotNull("lastFour", response.card.last4);
         _this._setIfNotNull("stripeToken", response.id);
         _this._setIfNotNull("email", ccEmail != null ? ccEmail : Firehose.Agent.loggedInAgent.email);
-        return callback();
-      } else {
-        return callback(response.error);
+        callback(false);
+        return;
       }
+      if (error.code === "invalid_number") {
+        _this.errors.push("Invalid credit card number");
+      }
+      if (error.code === "invalid_cvc") {
+        _this.errors.push("Invalid CVV");
+      }
+      if (error.code === "invalid_expiry_year") {
+        _this.errors.push("Invalid Expiration Month");
+      }
+      if (error.code === "invalid_expiry_month") {
+        _this.errors.push("Invalid Expiration Year");
+      }
+      return callback(true);
     });
   };
 

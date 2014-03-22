@@ -15,7 +15,7 @@ asyncTest 'Sign Up', 8, ->
     start()
   .fail ->
     start()
-    
+
 asyncTest 'Sign Up (Fail with errors populated)', 3, ->
   agent = Firehose.Agent.agentWithEmailAndPassword(Faker.Internet.email(), "")
   agent.signUpWithFirstAndLastName( "", Faker.Name.lastName() )
@@ -27,7 +27,7 @@ asyncTest 'Sign Up (Fail with errors populated)', 3, ->
     ok agent.HTMLErrorString() == "<ul><li>Password digest can't be blank</li><li>First name can't be blank</li></ul>"
     start()
 
-### 
+###
 # Test of login w un/pw occurs with every test
 ###
 
@@ -91,7 +91,7 @@ firehoseTest 'Fetch', 14, (agent) ->
     equal agent.companies.length, 1
     company = agent.currentCompany
     ok company?
-    ok company.id? 
+    ok company.id?
     ok company.title?
     ok company.token?
     ok company.fetchAutomatically
@@ -128,10 +128,10 @@ firehoseTest 'Destroy', 1, (agent) ->
     equal textStatus, "nocontent"
     start()
   .fail ->
-    start()   
+    start()
 
 firehoseTest 'Gravatar URL', 1, (agent) ->
-  ok agent.gravatarURL().length > 40 
+  ok agent.gravatarURL().length > 40
   start()
 
 firehoseTest 'Status Code Handlers', 1, (agent) ->

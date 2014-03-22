@@ -7,10 +7,10 @@ Called start() while already started (QUnit.config.semaphore was 0 already)
 and only 2 or so of the assertions would run. I remember there being a reason and this was my solution, but can't remember it now.
 ###
 
-firehoseTest 'Fetch Billing Info', 18, (agent) ->
+firehoseTest "Fetch Billing Info", 18, (agent) ->
   firstAgent = Firehose.Agent.agentWithEmailAndPassword( "agent1@example.com", "pw" )
   firstAgent.login()
-  .done (data, textStatus) ->
+  .done ->
     company = firstAgent.companies[0]
     company.token = "entity_token_#{company.id}"
     company.fetchBillingInfo()
@@ -34,99 +34,170 @@ firehoseTest 'Fetch Billing Info', 18, (agent) ->
       ok company.discounts[0].expirationDate?
       ok company.discounts[0].name?
       start()
-    .fail (jqXHR, textStatus, errorThrown) ->
+    .fail ->
       start()
-  .fail (jqXHR, textStatus, errorThrown) ->
-    start()
-    
-firehoseTest 'Extend Trial', 4, (agent) ->
-  firstAgent = Firehose.Agent.agentWithEmailAndPassword( "agent1@example.com", "pw" )
-  firstAgent.login().done (data, textStatus) ->
-    company = firstAgent.companies[0]
-    company.token = "entity_token_#{company.id}"
-    company.fetchBillingInfo().done (data, textStatus) ->
-      equal textStatus, "success"
-      equal company.isFreeTrialEligible, true
-      trialExpDate = company.trialExpirationDate?
-      company.extendTrial().done (data, textStatus) ->
-        equal textStatus, "success"
-        shouldEnd = new Date
-        shouldEnd.setDate( shouldEnd.getDate() + 14 )
-        ok company.trialExpirationDate, shouldEnd
-        start()
-      .fail (jqXHR, textStatus, errorThrown) ->
-        start()
-    .fail (jqXHR, textStatus, errorThrown) ->
-      start()
-  .fail (jqXHR, textStatus, errorThrown) ->
+  .fail ->
     start()
 
-firehoseTest 'Add', 6, (agent) ->
+
+firehoseTest "Extend Trial", 4, (agent) ->
   firstAgent = Firehose.Agent.agentWithEmailAndPassword( "agent1@example.com", "pw" )
   firstAgent.login()
-  .done (data, textStatus) ->
+  .done ->
     company = firstAgent.companies[0]
-    creditCard = Firehose.CreditCard.creditCardWithNumber( "4242424242424242", 888, 4, 2014, firstAgent.email, company )
-    creditCard.submitToStripe ->
+    company.token = "entity_token_#{company.id}"
+    company.fetchBillingInfo()
+    .done (data, fetchBillingInfoTextStatus) ->
+      equal fetchBillingInfoTextStatus, "success"
+      equal company.isFreeTrialEligible, true
+
+      trialExpDate = company.trialExpirationDate?
+
+      company.extendTrial()
+      .done (data, extendTrialTextStatus) ->
+        equal extendTrialTextStatus, "success"
+
+        shouldEnd = new Date
+        shouldEnd.setDate( shouldEnd.getDate() + 14 )
+
+        ok company.trialExpirationDate, shouldEnd
+        start()
+      .fail ->
+        start()
+    .fail ->
+      start()
+  .fail ->
+    start()
+
+
+firehoseTest "Add", 13, (agent) ->
+  firstAgent = Firehose.Agent.agentWithEmailAndPassword( "agent1@example.com", "pw" )
+  firstAgent.login()
+  .done ->
+    expectedCreditCardExpirationMonth = 4
+    expectedCreditCardExpirationYear = 2020
+    expectedCreditCardLastFour = "4242"
+    expectedCreditCardEmail = firstAgent.email
+
+    company = firstAgent.companies[0]
+    creditCard = Firehose.CreditCard.creditCardWithNumber(
+      "424242424242" + expectedCreditCardLastFour,
+      888,
+      expectedCreditCardExpirationMonth,
+      expectedCreditCardExpirationYear,
+      expectedCreditCardEmail,
+      company
+    )
+
+    creditCard.submitToStripe(((hasErrors) ->
+      equal hasErrors, false, "no errors should have been returned from stripe"
+      equal creditCard.errors.length, 0, "errors array should be empty"
+
       company.token = "entity_token_#{company.id}"
+
       creditCard.save()
       .done (data, textStatus) ->
         equal textStatus, "nocontent"
+
         ok creditCard.expirationMonth?
         ok creditCard.expirationYear?
         ok creditCard.lastFour?
         ok creditCard.stripeToken?
         ok creditCard.email?
+
+        equal creditCard.expirationMonth, expectedCreditCardExpirationMonth, "creditCard.expirationMonth"
+        equal creditCard.expirationYear, expectedCreditCardExpirationYear, "creditCard.expirationYear"
+        equal creditCard.lastFour, expectedCreditCardLastFour, "creditCard.lastFour"
+        equal creditCard.email, expectedCreditCardEmail, "creditCard.email"
+        equal creditCard.errors.length, 0, "errors array should be empty"
+
         start()
-      .fail (jqXHR, textStatus, errorThrown) ->
+      .fail ->
         start()
-  .fail (jqXHR, textStatus, errorThrown) ->
+    ), firstAgent.email)
+  .fail ->
     start()
-    
-firehoseTest 'Fetch', 6, (agent) ->
+
+
+firehoseTest "Fetch", 14, (agent) ->
   firstAgent = Firehose.Agent.agentWithEmailAndPassword( "agent1@example.com", "pw" )
   firstAgent.login()
-  .done (data, textStatus) ->
+  .done ->
+    expectedCreditCardExpirationMonth = 4
+    expectedCreditCardExpirationYear = 2020
+    expectedCreditCardLastFour = "4242"
+    expectedCreditCardEmail = firstAgent.email
+
     company = firstAgent.companies[0]
-    creditCard = Firehose.CreditCard.creditCardWithNumber( "4242424242424242", 888, 4, 2014, firstAgent.email, company )
-    creditCard.submitToStripe ->
+    creditCard = Firehose.CreditCard.creditCardWithNumber(
+      "424242424242" + expectedCreditCardLastFour,
+      888,
+      expectedCreditCardExpirationMonth,
+      expectedCreditCardExpirationYear,
+      expectedCreditCardEmail,
+      company
+    )
+
+    creditCard.submitToStripe(((hasErrors) ->
+      equal hasErrors, false, "no errors should have been returned from stripe"
+      equal creditCard.errors.length, 0, "errors array should be empty"
+
       company.token = "entity_token_#{company.id}"
+
       creditCard.save()
-      .done (data, textStatus) ->
+      .done ->
+        equal creditCard.errors.length, 0, "errors array should be empty"
+
         creditCard.fetch()
         .done (data, textStatus) ->
           equal textStatus, "success"
+
           ok creditCard.expirationMonth?
           ok creditCard.expirationYear?
           ok creditCard.lastFour?
           ok creditCard.stripeToken?
           ok creditCard.email?
+
+          equal creditCard.expirationMonth, expectedCreditCardExpirationMonth, "creditCard.expirationMonth"
+          equal creditCard.expirationYear, expectedCreditCardExpirationYear, "creditCard.expirationYear"
+          equal creditCard.lastFour, expectedCreditCardLastFour, "creditCard.lastFour"
+          equal creditCard.email, expectedCreditCardEmail, "creditCard.email"
+          equal creditCard.errors.length, 0, "errors array should be empty"
+
           start()
-        .fail (jqXHR, textStatus, errorThrown) ->
+        .fail ->
           start()
-      .fail (jqXHR, textStatus, errorThrown) ->
+      .fail ->
         start()
-  .fail (jqXHR, textStatus, errorThrown) ->
+    ), firstAgent.email)
+  .fail ->
     start()
 
-firehoseTest 'Remove', 1, (agent) ->
+
+firehoseTest "Remove", 4, (agent) ->
   firstAgent = Firehose.Agent.agentWithEmailAndPassword( "agent1@example.com", "pw" )
   firstAgent.login()
-  .done (data, textStatus) ->
+  .done ->
     company = firstAgent.companies[0]
     creditCard = Firehose.CreditCard.creditCardWithNumber( "4242424242424242", 888, 4, 2014, firstAgent.email, company )
-    creditCard.submitToStripe ->
+    creditCard.submitToStripe(((hasErrors) ->
+      equal hasErrors, false, "no errors should have been returned from stripe"
+      equal creditCard.errors.length, 0, "errors array should be empty"
+
       company.token = "entity_token_#{company.id}"
+
       creditCard.save()
-      .done (data, textStatus) ->
+      .done ->
         creditCard.destroy()
         .done (data, textStatus) ->
           equal textStatus, "nocontent"
+          equal company.creditCard, null, "company.creditCard"
+          # TODO: add a creditCard.fetch and associated assertions here to ensure that full removal occurred
           start()
-        .fail (jqXHR, textStatus, errorThrown) ->
+        .fail ->
           start()
-      .fail (jqXHR, textStatus, errorThrown) ->
+      .fail ->
         start()
-  .fail (jqXHR, textStatus, errorThrown) ->
+    ), firstAgent.email)
+  .fail ->
     start()
-

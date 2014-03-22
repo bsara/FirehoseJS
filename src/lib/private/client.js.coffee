@@ -1,5 +1,5 @@
 class Firehose.Client
-  
+
   ###
   @property [hash] A hash of http status codes that could be returned by the API server and functions to handle them.
   @example Assigning this a hash with a 401 status code to handle an unauthorized request:
@@ -10,35 +10,35 @@ class Firehose.Client
         …
   ###
   statusCodeHandlers: null
-  
+
   ###
   @property [Function(jqXHR, textStatus, errorThrown)] A function that is called whenever a call to the API service fails.
   ###
   errorHandler: null
-  
+
   # @nodoc
   APIAccessToken: null
-  
+
   # @nodoc
   URLToken: null
-  
+
   # @nodoc
   billingAccessToken: null
-  
+
   # @nodoc
   environment: null
-  
+
   # @nodoc
   safariHackRequestCount: 0
-  
-  
+
+
   # @nodoc
   constructor: ->
     this._firefoxHack()
     @environment = new Firehose.Environment
     Stripe.setPublishableKey @environment.serviceToken('stripe')
-    
-    
+
+
   # @nodoc
   get: (object, options) ->
     $.extend options, method: 'GET'
@@ -49,24 +49,24 @@ class Firehose.Client
   post: (object, options) ->
     $.extend options, method: 'POST'
     this._sendRequest object, options
-    
-    
+
+
   # @nodoc
   put: (object, options) ->
     $.extend options, method: 'PUT'
     this._sendRequest object, options
-    
-    
+
+
   # @nodoc
-  delete: (object, options) -> 
+  delete: (object, options) ->
     $.extend options, method: 'DELETE'
     this._sendRequest object, options
-    
-  
+
+
   # @nodoc
   _sendRequest: (object, options) ->
     defaults =
-      server:   'API'   
+      server:   'API'
       auth:     true
       route:    ''
       method:   'GET'
@@ -74,43 +74,43 @@ class Firehose.Client
       perPage:  -1
       params:   {}
       body:     null
-      
+
     $.extend defaults, options
-    
+
     server  = defaults.server
     auth    = defaults.auth
     route   = defaults.route
     method  = defaults.method
-    page    = defaults.page 
+    page    = defaults.page
     perPage = defaults.perPage
     params  = defaults.params
     body    = defaults.body
-    
-    params["page"]     = page if page > -1      
-    params["per_page"] = perPage if perPage > -1      
-    
+
+    params["page"]     = page if page > -1
+    params["per_page"] = perPage if perPage > -1
+
     this._safariHack params
-    
+
     paramStrings = []
-    for key, value of params    
+    for key, value of params
       continue unless value?
       paramStrings.push "#{key}=#{encodeURIComponent(value)}"
-       
+
     url = "#{@environment.baseURLFor(server)}/#{route}"
-    
+
     if paramStrings.length > 0
       url += "?#{paramStrings.join('&')}"
-      
-    headers = 
+
+    headers =
       "Accept" : "application/json"
       "X-Firehose-Environment" : "beta" if this.environment.environment() == 'beta'
-    
+
     if auth
       if @APIAccessToken? and server == 'API'
         $.extend headers, { "Authorization" : "Token token=\"#{@APIAccessToken}\"" }
       else if @billingAccessToken? and server == 'billing'
         $.extend headers, { "Authorization" : "Token token=\"#{@billingAccessToken}\"" }
-      
+
     $.ajax
       type:         method
       url:          url
@@ -120,7 +120,7 @@ class Firehose.Client
       headers:      headers
       contentType:  'application/json'
       statusCode:   if server == 'API' then @statusCodeHandlers || {}
-      
+
     .fail (jqXHR, textStatus, errorThrown) =>
       if server == 'API'
         # call the error handler if available
@@ -129,8 +129,8 @@ class Firehose.Client
         if Number(jqXHR.status) == 422 and jqXHR.responseJSON? and object?
           json = jqXHR.responseJSON
           if json.constructor == Object
-            object.errors = []
-            for key, errors of jqXHR.responseJSON 
+            object.clearErrors()
+            for key, errors of jqXHR.responseJSON
               object.errors.push "#{this._humanize(key)} #{errors.join ', '}"
           else if json.constructor == Array
             object.errors = json
@@ -157,19 +157,19 @@ class Firehose.Client
           true
         return allHeaders
       return xhr
-      
-  
+
+
   # @nodoc
-  # Safari has a bug where it caches the xhr requests. So if you go to settings.firehoseapp.com, then 
+  # Safari has a bug where it caches the xhr requests. So if you go to settings.firehoseapp.com, then
   # back to the browser, the frist request will be from firehoseapp.com but the Referer Header (which is
   # set by Safari and you can't modify) is still settings.firehoseapp.com for the first 3-4 requests.
   _safariHack: (params) ->
     return if @safariHackRequestCount > 6
     @safariHackRequestCount++
     if navigator.userAgent.indexOf("Safari") > -1 and navigator.userAgent.indexOf('Chrome') == -1
-      params["safari_bug_cache_breaker"] = "#{Math.random()}" 
-      
-      
+      params["safari_bug_cache_breaker"] = "#{Math.random()}"
+
+
   # @nodoc
   _humanize: (str) ->
     str.replace(/_id$/, '').replace(/_/g, ' ').replace(/\S\.\S/, " ").replace /^\w/g, (s) ->

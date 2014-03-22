@@ -1,6 +1,6 @@
 # Base class for Firehose API Objects
-class Firehose.Object 
-  
+class Firehose.Object
+
   ###
   @property [Number] Unique ID of object
   ###
@@ -10,20 +10,20 @@ class Firehose.Object
   @property [Date] When the object was created on the server
   ###
   createdAt: null
-  
-  
+
+
   ###
   @property [Array<String>] The errors the server returned about fields that did not contain valid values.
   ###
   errors: []
-  
+
   ###
   @property [Array<Object>] The static array that holds the entire object graph
   @nodoc
   ###
   @_objects: []
-  
-  
+
+
   ###
   @note You never need to construct a `Firehose.Object` object directly. Use a subclass' factory method.
   @private
@@ -31,28 +31,28 @@ class Firehose.Object
   constructor: (properties) ->
     for prop of properties
       this[prop] = properties[prop]
-      
-  
+
+
   ###
   To be overridden by subclasses
-  @nodoc 
+  @nodoc
   ###
   _setup: ->
-    
+
   ###
   A placeholder for third-party libraries to replace. (e.g Ember.js, Backbone.js)
   @note A client-side library that uses observers often uses get/set methods. You can do `Firehose.Object.set = Ember.Object.set` for example.
   ###
   get: (key) ->
     this[key]
-  
+
   ###
   A placeholder for third-party libraries to replace. (e.g Ember.js, Backbone.js)
   @note A client-side library that uses observers often uses get/set methods. You can do `Firehose.Object.get = Ember.Object.get` for example.
   ###
   set: (key, value) ->
     this[key] = value
-    
+
   ###
   Uses the classes 'archivableProperties' to stringify this object and save it in localStorage.
   @param key [string] an optional key to archive the object by if the 'id' is not available.
@@ -60,7 +60,7 @@ class Firehose.Object
   archive: (key = @id) ->
     index = "#{this.constructor._firehoseType}_#{key}"
     localStorage[index] = JSON.stringify this._toArchivableJSON()
-    
+
   ###
   Unarchives the object from local storage.
   @param key [string] an optional key to unarchive the object by if 'id' is not available.
@@ -74,7 +74,13 @@ class Firehose.Object
       true
     else
       false
-      
+
+  ###
+  Clears all data from the `errors` array.
+  ###
+  clearErrors: ->
+    @errors = []
+
   ###
   Takes the `errors` property and formats it's items for display in HTML.
   @return [string] An HTML marked-up version of the `errors` property in the form of an unordered list (<ul>).
@@ -83,15 +89,15 @@ class Firehose.Object
     HTML = "<ul>"
     lines = @errors
     if lines?
-      for line in lines   
+      for line in lines
         HTML += "<li>#{line}</li>"
     HTML += "</ul>"
     HTML
-    
-    
-    
+
+
+
   # private
-  
+
   ###
   Create an object to be cached
   @nodoc
@@ -106,9 +112,9 @@ class Firehose.Object
     obj = new klass properties
     obj._setup()
     @_objects.push obj
-    obj  
-    
-  
+    obj
+
+
   # @nodoc
   _populateAssociatedObjects: (owner, association, json, creation) ->
     if json?
@@ -118,21 +124,21 @@ class Firehose.Object
         object._populateWithJSON objectJSON
         objects.push object
       owner.set association, objects
-        
-  
+
+
   # @nodoc
   _populateAssociatedObjectWithJSON:(owner, association, json, creation) ->
-    if json? 
+    if json?
       object = creation json
       owner.set association, object
       object._populateWithJSON json
-      
-      
+
+
   # @nodoc
   _populateAssociatedObjectWithID:(owner, association, id, creation) ->
     owner.set association, if id? then creation( id ) else null
-          
-          
+
+
   # @nodoc
   _populateWithJSON: (json) ->
     this._setIfNotNull "id",        json.id                 unless @id?
@@ -142,17 +148,17 @@ class Firehose.Object
   _setIfNotNull: (key, value) ->
     if value?
       this.set key, value
-      
+
   # @nodoc
   _toArchivableJSON: ->
     id:         @id
     created_at: @createdAt
-    
+
   # @nodoc
   _textOrNull: (value) ->
     return if !value?
     if value.length > 0 then value else null
-    
+
   # @nodoc
   _date: (dateString) ->
     date = new Date dateString
