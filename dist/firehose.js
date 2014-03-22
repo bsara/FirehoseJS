@@ -2879,17 +2879,19 @@ Firehose.CreditCard = (function(_super) {
         errorsFound.push(response.error.code);
         hasErrors = true;
       }
-      if ($.inArray(_stripeErrorCodes.invalidNumber, errorsFound) > -1) {
-        _this.errors.push("Invalid credit card number");
-      }
-      if ($.inArray(_stripeErrorCodes.invalidCVC, errorsFound) > -1) {
-        _this.errors.push("Invalid CVV");
-      }
-      if ($.inArray(_stripeErrorCodes.invalidExpiryMonth, errorsFound) > -1) {
-        _this.errors.push("Invalid Expiration Month");
-      }
-      if ($.inArray(_stripeErrorCodes.invalidExpiryYear, errorsFound) > -1) {
-        _this.errors.push("Invalid Expiration Year");
+      if (hasErrors) {
+        if ($.inArray(_stripeErrorCodes.invalidNumber, errorsFound) > -1) {
+          _this.errors.push("Invalid credit card number");
+        }
+        if ($.inArray(_stripeErrorCodes.invalidCVC, errorsFound) > -1) {
+          _this.errors.push("Invalid CVV");
+        }
+        if ($.inArray(_stripeErrorCodes.invalidExpiryMonth, errorsFound) > -1) {
+          _this.errors.push("Invalid Expiration Month");
+        }
+        if ($.inArray(_stripeErrorCodes.invalidExpiryYear, errorsFound) > -1) {
+          _this.errors.push("Invalid Expiration Year");
+        }
       }
       return callback(hasErrors);
     });

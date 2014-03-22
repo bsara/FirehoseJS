@@ -100,10 +100,11 @@ class Firehose.CreditCard extends Firehose.Object
         errorsFound.push response.error.code
         hasErrors = true
 
-      @errors.push "Invalid credit card number" if $.inArray(_stripeErrorCodes.invalidNumber, errorsFound) > -1
-      @errors.push "Invalid CVV"                if $.inArray(_stripeErrorCodes.invalidCVC, errorsFound) > -1
-      @errors.push "Invalid Expiration Month"   if $.inArray(_stripeErrorCodes.invalidExpiryMonth, errorsFound) > -1
-      @errors.push "Invalid Expiration Year"    if $.inArray(_stripeErrorCodes.invalidExpiryYear, errorsFound) > -1
+      if hasErrors
+        @errors.push "Invalid credit card number" if $.inArray(_stripeErrorCodes.invalidNumber, errorsFound) > -1
+        @errors.push "Invalid CVV"                if $.inArray(_stripeErrorCodes.invalidCVC, errorsFound) > -1
+        @errors.push "Invalid Expiration Month"   if $.inArray(_stripeErrorCodes.invalidExpiryMonth, errorsFound) > -1
+        @errors.push "Invalid Expiration Year"    if $.inArray(_stripeErrorCodes.invalidExpiryYear, errorsFound) > -1
 
       callback(hasErrors)
 
