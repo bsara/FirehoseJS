@@ -2879,16 +2879,16 @@ Firehose.CreditCard = (function(_super) {
       }
       if (hasErrors) {
         if ($.inArray(stripeErrorCodes.invalidNumber, errorsFound) > -1) {
-          _this.errors.push("Invalid credit card number");
+          _this.errors.push("Credit card number is invalid");
         }
         if ($.inArray(stripeErrorCodes.invalidCVC, errorsFound) > -1) {
-          _this.errors.push("Invalid CVV");
+          _this.errors.push("CVV is invalid");
         }
         if ($.inArray(stripeErrorCodes.invalidExpiryMonth, errorsFound) > -1) {
-          _this.errors.push("Invalid Expiration Month");
+          _this.errors.push("Expiration month is invalid");
         }
         if ($.inArray(stripeErrorCodes.invalidExpiryYear, errorsFound) > -1) {
-          _this.errors.push("Invalid Expiration Year");
+          _this.errors.push("Expiration year is invalid");
         }
       }
       return callback(hasErrors);
