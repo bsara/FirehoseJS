@@ -79,7 +79,7 @@ class Firehose.Object
   Clears all data from the `errors` array.
   ###
   clearErrors: ->
-    @errors = []
+    @set "errors", []
 
   ###
   Takes the `errors` property and formats it's items for display in HTML.

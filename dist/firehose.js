@@ -822,7 +822,7 @@ Firehose.Object = (function() {
 
 
   Object.prototype.clearErrors = function() {
-    return this.errors = [];
+    return this.set("errors", []);
   };
 
   /*
