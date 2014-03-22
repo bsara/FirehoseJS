@@ -171,8 +171,9 @@ module.exports = (grunt) ->
   grunt.loadNpmTasks 'grunt-bump'
 
   # Default task.
-  grunt.registerTask 'default', ['clean', 'exec:generate_docs', 'coffee', 'concat', 'copy', 'exec:start_server', 'connect:test', 'qunit', 'exec:kill_server', 'uglify']
-  grunt.registerTask 'notest', ['clean', 'exec:generate_docs', 'coffee', 'concat', 'copy', 'uglify']
+  grunt.registerTask 'default', ['test']
+  grunt.registerTask 'test', ['clean', 'exec:generate_docs', 'coffee', 'concat', 'copy', 'exec:start_server', 'connect:test', 'qunit', 'exec:kill_server', 'uglify']
+  grunt.registerTask 'build', ['clean', 'exec:generate_docs', 'coffee', 'concat', 'copy', 'uglify']
   grunt.registerTask 'debug', ['clean', 'coffee', 'concat', 'copy', 'exec:start_server', 'exec:open_browser', 'connect:debug']
   # grunt.registerTask 'noserver', ['clean', 'coffee', 'concat', 'copy', 'connect:test', 'qunit' ]
   grunt.registerTask 'noserver', ['clean', 'coffee', 'concat', 'copy', 'exec:open_browser', 'connect:debug' ]
