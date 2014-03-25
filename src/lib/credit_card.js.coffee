@@ -45,6 +45,16 @@ class Firehose.CreditCard extends Firehose.Object
   email: null
 
 
+  ###
+  Create a credit card for submitting to Stripe.
+  @param number [string] The credit card number.
+  @param cvc [number] The cvc
+  @param expMonth [number] String of a number between "01" and "12" representing the expiration month.
+  @param expYear [number] String of the expiration year (e.g. "2014")
+  @param email [string] The email that receipts should be sent to.
+  @param company [Company] The company this card will be added to
+  @return [CreditCard] Returns a credit card that can then be sumitted to Stripe for a token and saved to Firehose.
+  ###    
   @creditCardWithNumber: (number, cvc, expMonth, expYear, email, company) ->
     Firehose.Object._objectOfClassWithID Firehose.CreditCard,
     number:          number
@@ -55,7 +65,12 @@ class Firehose.CreditCard extends Firehose.Object
     company:         company
 
 
-
+  ###
+  Create a credit card for submitting to Stripe.
+  @param id [number] The id of the credit card object from the api.
+  @param company [Company] The company this card will be added to
+  @return [CreditCard] Returns a credit card that can then be fetched.
+  ###    
   @creditCardWithID: (id, company) ->
     Firehose.Object._objectOfClassWithID Firehose.CreditCard,
       id:      id
@@ -75,7 +90,7 @@ class Firehose.CreditCard extends Firehose.Object
 
     if !@number?.trim()
       errorsFound.push stripeErrorCodes.invalidNumber
-    if !@cvc?.trim()
+    if !@cvc? || !String(@cvc).trim() || typeof @cvc != "number"
       errorsFound.push stripeErrorCodes.invalidCVC
     if !@expirationMonth? || !String(@expirationMonth).trim() || typeof @expirationMonth != "number"
       errorsFound.push stripeErrorCodes.invalidExpiryMonth

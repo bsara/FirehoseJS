@@ -30,9 +30,9 @@ class Firehose.Company extends Firehose.Object
   unresolvedCount: 0
   
   ###
-  @property [integer] 
+  @property [boolean] 
   ###
-  numberOfAccounts: 0
+  isBrandNew: 0
   
   
   # settings
@@ -71,7 +71,47 @@ class Firehose.Company extends Firehose.Object
   @property [string]
   ###
   knowlegeBaseArticleTemplate: null
+  
+  ###
+  @property [string]
+  ###
+  chatTitleTextColor: null
+  
+  ###
+  @property [string]
+  ###
+  chatTitleBackgroundColor: null
 
+  ###
+  @property [string]
+  ###
+  chatAgentColor: null
+  
+  ###
+  @property [string]
+  ###
+  chatCustomerColor: null
+  
+  ###
+  @property [string]
+  ###
+  chatFieldTextColor: null
+  
+  ###
+  @property [string]
+  ###
+  chatFieldBackgroundColor: null
+  
+  ###
+  @property [string]
+  ###
+  chatBackgroundColor: null
+  
+  ###
+  @property [string]
+  ###
+  chatResponseBackgroundColor: null
+  
 
   # associations
   
@@ -550,16 +590,26 @@ class Firehose.Company extends Firehose.Object
     this._setIfNotNull "lastFetchAt",                   @_date(json.last_fetch_at)  if json.last_fetch_at?
     this._setIfNotNull "forwardingEmailAddress",        json.forwarding_email       unless @forwardingEmailAddress?
     this._setIfNotNull "unresolvedCount",               json.unresolved_count
-    this._setIfNotNull "numberOfAccounts",              json.number_of_accounts
+    this._setIfNotNull "isBrandNew",                    json.is_brand_new
         
     # settings    
     this._setIfNotNull "fetchAutomatically",            json.company_settings?.fetch_automatically
+    
     this._setIfNotNull "knowledgeBaseSubdomain",        json.company_settings?.kb_subdomain
     this._setIfNotNull "knowledgeBaseCustomDomain",     json.company_settings?.kb_custom_domain
     this._setIfNotNull "knowledgeBaseCSS",              json.company_settings?.kb_css
     this._setIfNotNull "knowledgeBaseLayoutTemplate",   json.company_settings?.kb_layout_template
     this._setIfNotNull "knowledgeBaseSearchTemplate",   json.company_settings?.kb_search_template
     this._setIfNotNull "knowledgeBaseArticleTemplate",  json.company_settings?.kb_article_template
+    
+    this._setIfNotNull "chatTitleTextColor",            json.company_settings?.chat_title_text_color
+    this._setIfNotNull "chatTitleBackgroundColor",      json.company_settings?.chat_title_background_color
+    this._setIfNotNull "chatAgentColor",                json.company_settings?.chat_agent_color
+    this._setIfNotNull "chatCustomerColor",             json.company_settings?.chat_customer_color
+    this._setIfNotNull "chatFieldTextColor",            json.company_settings?.chat_field_text_color
+    this._setIfNotNull "chatFieldBackgroundColor",      json.company_settings?.chat_field_background_color
+    this._setIfNotNull "chatBackgroundColor",           json.company_settings?.chat_background_color
+    this._setIfNotNull "chatResponseBackgroundColor",   json.company_settings?.chat_response_background_color
     
     this._populateAssociatedObjects this, "agents", json.agents, (json) =>
       agent = Firehose.Agent.agentWithID( json.id )
@@ -583,16 +633,27 @@ class Firehose.Company extends Firehose.Object
   # @nodoc
   _toJSON: ->
     company:
-      title:                @title
+      title : @title
       company_settings_attributes:
-        fetch_automatically : @fetchAutomatically
-        kb_subdomain        : this._textOrNull @knowledgeBaseSubdomain 
-        kb_custom_domain    : this._textOrNull @knowledgeBaseCustomDomain 
-        kb_css              : this._textOrNull @knowledgeBaseCSS          
-        kb_layout_template  : this._textOrNull @knowledgeBaseLayoutTemplate
-        kb_search_template  : this._textOrNull @knowledgeBaseSearchTemplate 
-        kb_article_template : this._textOrNull @knowledgeBaseArticleTemplate 
-      
+        fetch_automatically            : @fetchAutomatically
+        
+        kb_subdomain                   : this._textOrNull @knowledgeBaseSubdomain 
+        kb_custom_domain               : this._textOrNull @knowledgeBaseCustomDomain 
+        kb_css                         : this._textOrNull @knowledgeBaseCSS          
+        kb_layout_template             : this._textOrNull @knowledgeBaseLayoutTemplate
+        kb_search_template             : this._textOrNull @knowledgeBaseSearchTemplate 
+        kb_article_template            : this._textOrNull @knowledgeBaseArticleTemplate 
+        
+        chat_title_text_color          : this._textOrNull @chatTitleTextColor
+        chat_title_background_color    : this._textOrNull @chatTitleBackgroundColor
+        chat_agent_color               : this._textOrNull @chatAgentColor
+        chat_customer_color            : this._textOrNull @chatCustomerColor
+        chat_field_text_color          : this._textOrNull @chatFieldTextColor
+        chat_field_background_color    : this._textOrNull @chatFieldBackgroundColor
+        chat_background_color          : this._textOrNull @chatBackgroundColor
+        chat_response_background_color : this._textOrNull @chatResponseBackgroundColor
+
+
 
   # @nodoc
   _toArchivableJSON: ->
@@ -604,7 +665,7 @@ class Firehose.Company extends Firehose.Object
       forwarding_email:     @forwardingEmailAddress
       kb_subdomain:         @knowledgeBaseSubdomain
       unresolved_count:     @unresolvedCount
-      number_of_accounts:   @numberOfAccounts
+      is_brand_new:         @isBrandNew
       # agents:               @agents._toArchivableJSON()   # gotta figure out how to imp this so it doesn't recurse infinitely
       agent_invites:        @agentInvites._toArchivableJSON()
       tags:                 @tags._toArchivableJSON()

@@ -95,7 +95,7 @@ firehoseTest 'Fetch', 14, (agent) ->
     ok company.title?
     ok company.token?
     ok company.fetchAutomatically
-    ok company.numberOfAccounts == 4
+    ok company.isBrandNew == false
     ok company.createdAt?
     start()
   .fail ->

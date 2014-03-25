@@ -14,7 +14,7 @@ firehoseTest 'Create', 13, (agent) ->
     ok company.fetchAutomatically
     ok company.forwardingEmailAddress?
     ok company.id?
-    ok company.numberOfAccounts == 1    
+    ok company.isBrandNew == true
     ok company.tags?
     ok company.title?
     ok company.token?
@@ -35,7 +35,7 @@ firehoseTest 'Fetch', 13, (agent) ->
     ok company.fetchAutomatically
     ok company.forwardingEmailAddress?
     ok company.id?
-    ok company.numberOfAccounts > 0    
+    ok company.isBrandNew?
     ok company.tags?
     ok company.title?
     ok company.token?
@@ -87,9 +87,9 @@ firehoseTest 'Fetch (throws error because not enough info is set)', 1, (agent) -
   .fail ->
     start()
 
-firehoseTest 'Fetch (include extra settings)', 8, (agent) ->
+firehoseTest 'Fetch (include extra settings)', 16, (agent) ->
   company = agent.companies[0]
-  company.fetch( include_settings: ["kb_theming"] )
+  company.fetch( include_settings: ["kb_theming", "chat_theming"] )
   .done (data, textStatus) ->
     equal textStatus, "success"
     ok company.title?
@@ -99,12 +99,20 @@ firehoseTest 'Fetch (include extra settings)', 8, (agent) ->
     ok company.knowledgeBaseLayoutTemplate?
     ok company.knowledgeBaseSearchTemplate?
     ok company.knowledgeBaseArticleTemplate?
+    ok company.chatTitleTextColor?         
+    ok company.chatTitleBackgroundColor?   
+    ok company.chatAgentColor?             
+    ok company.chatCustomerColor?          
+    ok company.chatFieldTextColor?         
+    ok company.chatFieldBackgroundColor?   
+    ok company.chatBackgroundColor?        
+    ok company.chatResponseBackgroundColor?
     start()
   .fail ->
     start()
 
 
-firehoseTest 'Update', 9, (agent) ->
+firehoseTest 'Update', 17, (agent) ->
   company       = agent.companies[0]
   company.title = "Adam's Company"
   company.knowledgeBaseSubdomain       = "mystrou"
@@ -113,6 +121,14 @@ firehoseTest 'Update', 9, (agent) ->
   company.knowledgeBaseLayoutTemplate  = "layout template"
   company.knowledgeBaseSearchTemplate  = "search template"
   company.knowledgeBaseArticleTemplate = "article template"
+  company.chatTitleTextColor           = "#000000"
+  company.chatTitleBackgroundColor     = "#000000"
+  company.chatAgentColor               = "#000000"
+  company.chatCustomerColor            = "#000000"
+  company.chatFieldTextColor           = "#000000"
+  company.chatFieldBackgroundColor     = "#000000"
+  company.chatBackgroundColor          = "#000000"
+  company.chatResponseBackgroundColor  = "#000000"
   company.save()
   .done (saveData, saveTextStatus) ->
     equal saveTextStatus, "nocontent"
@@ -120,12 +136,20 @@ firehoseTest 'Update', 9, (agent) ->
     .done (fetchData, fetchTextStatus) ->
       equal fetchTextStatus, "success"
       equal company.title, "Adam's Company"
-      equal company.knowledgeBaseSubdomain, "mystrou"
-      equal company.knowledgeBaseCustomDomain, "support.firehoseapp.com"
-      equal company.knowledgeBaseCSS, "css"
-      equal company.knowledgeBaseLayoutTemplate, "layout template"
-      equal company.knowledgeBaseSearchTemplate, "search template"
+      equal company.knowledgeBaseSubdomain,       "mystrou"
+      equal company.knowledgeBaseCustomDomain,    "support.firehoseapp.com"
+      equal company.knowledgeBaseCSS,             "css"
+      equal company.knowledgeBaseLayoutTemplate,  "layout template"
+      equal company.knowledgeBaseSearchTemplate,  "search template"
       equal company.knowledgeBaseArticleTemplate, "article template"
+      equal company.chatTitleTextColor,           "#000000"   
+      equal company.chatTitleBackgroundColor,     "#000000"   
+      equal company.chatAgentColor,               "#000000"   
+      equal company.chatCustomerColor,            "#000000"    
+      equal company.chatFieldTextColor,           "#000000"   
+      equal company.chatFieldBackgroundColor,     "#000000"   
+      equal company.chatBackgroundColor,          "#000000"    
+      equal company.chatResponseBackgroundColor,  "#000000"    
       start()
     .fail ->
       start()

@@ -1350,11 +1350,11 @@ Firehose.Company = (function(_super) {
   Company.prototype.unresolvedCount = 0;
 
   /*
-  @property [integer]
+  @property [boolean]
   */
 
 
-  Company.prototype.numberOfAccounts = 0;
+  Company.prototype.isBrandNew = 0;
 
   /*
   @property [boolean]
@@ -1404,6 +1404,62 @@ Firehose.Company = (function(_super) {
 
 
   Company.prototype.knowlegeBaseArticleTemplate = null;
+
+  /*
+  @property [string]
+  */
+
+
+  Company.prototype.chatTitleTextColor = null;
+
+  /*
+  @property [string]
+  */
+
+
+  Company.prototype.chatTitleBackgroundColor = null;
+
+  /*
+  @property [string]
+  */
+
+
+  Company.prototype.chatAgentColor = null;
+
+  /*
+  @property [string]
+  */
+
+
+  Company.prototype.chatCustomerColor = null;
+
+  /*
+  @property [string]
+  */
+
+
+  Company.prototype.chatFieldTextColor = null;
+
+  /*
+  @property [string]
+  */
+
+
+  Company.prototype.chatFieldBackgroundColor = null;
+
+  /*
+  @property [string]
+  */
+
+
+  Company.prototype.chatBackgroundColor = null;
+
+  /*
+  @property [string]
+  */
+
+
+  Company.prototype.chatResponseBackgroundColor = null;
 
   /*
   @property [Array<Agent>]
@@ -2017,7 +2073,7 @@ Firehose.Company = (function(_super) {
   };
 
   Company.prototype._populateWithJSON = function(json) {
-    var _ref1, _ref2, _ref3, _ref4, _ref5, _ref6, _ref7,
+    var _ref1, _ref10, _ref11, _ref12, _ref13, _ref14, _ref15, _ref2, _ref3, _ref4, _ref5, _ref6, _ref7, _ref8, _ref9,
       _this = this;
     this._setIfNotNull("title", json.title);
     if (this.token == null) {
@@ -2030,7 +2086,7 @@ Firehose.Company = (function(_super) {
       this._setIfNotNull("forwardingEmailAddress", json.forwarding_email);
     }
     this._setIfNotNull("unresolvedCount", json.unresolved_count);
-    this._setIfNotNull("numberOfAccounts", json.number_of_accounts);
+    this._setIfNotNull("isBrandNew", json.is_brand_new);
     this._setIfNotNull("fetchAutomatically", (_ref1 = json.company_settings) != null ? _ref1.fetch_automatically : void 0);
     this._setIfNotNull("knowledgeBaseSubdomain", (_ref2 = json.company_settings) != null ? _ref2.kb_subdomain : void 0);
     this._setIfNotNull("knowledgeBaseCustomDomain", (_ref3 = json.company_settings) != null ? _ref3.kb_custom_domain : void 0);
@@ -2038,6 +2094,14 @@ Firehose.Company = (function(_super) {
     this._setIfNotNull("knowledgeBaseLayoutTemplate", (_ref5 = json.company_settings) != null ? _ref5.kb_layout_template : void 0);
     this._setIfNotNull("knowledgeBaseSearchTemplate", (_ref6 = json.company_settings) != null ? _ref6.kb_search_template : void 0);
     this._setIfNotNull("knowledgeBaseArticleTemplate", (_ref7 = json.company_settings) != null ? _ref7.kb_article_template : void 0);
+    this._setIfNotNull("chatTitleTextColor", (_ref8 = json.company_settings) != null ? _ref8.chat_title_text_color : void 0);
+    this._setIfNotNull("chatTitleBackgroundColor", (_ref9 = json.company_settings) != null ? _ref9.chat_title_background_color : void 0);
+    this._setIfNotNull("chatAgentColor", (_ref10 = json.company_settings) != null ? _ref10.chat_agent_color : void 0);
+    this._setIfNotNull("chatCustomerColor", (_ref11 = json.company_settings) != null ? _ref11.chat_customer_color : void 0);
+    this._setIfNotNull("chatFieldTextColor", (_ref12 = json.company_settings) != null ? _ref12.chat_field_text_color : void 0);
+    this._setIfNotNull("chatFieldBackgroundColor", (_ref13 = json.company_settings) != null ? _ref13.chat_field_background_color : void 0);
+    this._setIfNotNull("chatBackgroundColor", (_ref14 = json.company_settings) != null ? _ref14.chat_background_color : void 0);
+    this._setIfNotNull("chatResponseBackgroundColor", (_ref15 = json.company_settings) != null ? _ref15.chat_response_background_color : void 0);
     this._populateAssociatedObjects(this, "agents", json.agents, function(json) {
       var agent;
       agent = Firehose.Agent.agentWithID(json.id);
@@ -2068,7 +2132,15 @@ Firehose.Company = (function(_super) {
           kb_css: this._textOrNull(this.knowledgeBaseCSS),
           kb_layout_template: this._textOrNull(this.knowledgeBaseLayoutTemplate),
           kb_search_template: this._textOrNull(this.knowledgeBaseSearchTemplate),
-          kb_article_template: this._textOrNull(this.knowledgeBaseArticleTemplate)
+          kb_article_template: this._textOrNull(this.knowledgeBaseArticleTemplate),
+          chat_title_text_color: this._textOrNull(this.chatTitleTextColor),
+          chat_title_background_color: this._textOrNull(this.chatTitleBackgroundColor),
+          chat_agent_color: this._textOrNull(this.chatAgentColor),
+          chat_customer_color: this._textOrNull(this.chatCustomerColor),
+          chat_field_text_color: this._textOrNull(this.chatFieldTextColor),
+          chat_field_background_color: this._textOrNull(this.chatFieldBackgroundColor),
+          chat_background_color: this._textOrNull(this.chatBackgroundColor),
+          chat_response_background_color: this._textOrNull(this.chatResponseBackgroundColor)
         }
       }
     };
@@ -2083,7 +2155,7 @@ Firehose.Company = (function(_super) {
       forwarding_email: this.forwardingEmailAddress,
       kb_subdomain: this.knowledgeBaseSubdomain,
       unresolved_count: this.unresolvedCount,
-      number_of_accounts: this.numberOfAccounts,
+      is_brand_new: this.isBrandNew,
       agent_invites: this.agentInvites._toArchivableJSON(),
       tags: this.tags._toArchivableJSON(),
       canned_responses: this.cannedResponses._toArchivableJSON()
@@ -2817,6 +2889,18 @@ Firehose.CreditCard = (function(_super) {
 
   CreditCard.prototype.email = null;
 
+  /*
+  Create a credit card for submitting to Stripe.
+  @param number [string] The credit card number.
+  @param cvc [number] The cvc
+  @param expMonth [number] String of a number between "01" and "12" representing the expiration month.
+  @param expYear [number] String of the expiration year (e.g. "2014")
+  @param email [string] The email that receipts should be sent to.
+  @param company [Company] The company this card will be added to
+  @return [CreditCard] Returns a credit card that can then be sumitted to Stripe for a token and saved to Firehose.
+  */
+
+
   CreditCard.creditCardWithNumber = function(number, cvc, expMonth, expYear, email, company) {
     return Firehose.Object._objectOfClassWithID(Firehose.CreditCard, {
       number: number,
@@ -2828,6 +2912,14 @@ Firehose.CreditCard = (function(_super) {
     });
   };
 
+  /*
+  Create a credit card for submitting to Stripe.
+  @param id [number] The id of the credit card object from the api.
+  @param company [Company] The company this card will be added to
+  @return [CreditCard] Returns a credit card that can then be fetched.
+  */
+
+
   CreditCard.creditCardWithID = function(id, company) {
     return Firehose.Object._objectOfClassWithID(Firehose.CreditCard, {
       id: id,
@@ -2836,7 +2928,7 @@ Firehose.CreditCard = (function(_super) {
   };
 
   CreditCard.prototype.submitToStripe = function(callback, ccEmail) {
-    var errorsFound, stripeErrorCodes, _ref1, _ref2,
+    var errorsFound, stripeErrorCodes, _ref1,
       _this = this;
     this.clearErrors();
     stripeErrorCodes = {
@@ -2849,7 +2941,7 @@ Firehose.CreditCard = (function(_super) {
     if (!((_ref1 = this.number) != null ? _ref1.trim() : void 0)) {
       errorsFound.push(stripeErrorCodes.invalidNumber);
     }
-    if (!((_ref2 = this.cvc) != null ? _ref2.trim() : void 0)) {
+    if ((this.cvc == null) || !String(this.cvc).trim() || typeof this.cvc !== "number") {
       errorsFound.push(stripeErrorCodes.invalidCVC);
     }
     if ((this.expirationMonth == null) || !String(this.expirationMonth).trim() || typeof this.expirationMonth !== "number") {
@@ -3512,9 +3604,7 @@ Firehose.EmailAccount = (function(_super) {
 
   EmailAccount.prototype._populateWithJSON = function(json) {
     this._setIfNotNull("emailAddress", json.email);
-    if (this.title == null) {
-      this._setIfNotNull("title", json.title);
-    }
+    this._setIfNotNull("title", json.title);
     this._setIfNotNull("isForwarding", json.forwarding);
     this._setIfNotNull("server", json.incoming_server);
     this._setIfNotNull("SSL", json.incoming_ssl);

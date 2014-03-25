@@ -189,7 +189,7 @@ class Firehose.EmailAccount extends Firehose.Object
   # @nodoc
   _populateWithJSON: (json) ->
     this._setIfNotNull "emailAddress",     json.email
-    this._setIfNotNull "title",            json.title unless @title?
+    this._setIfNotNull "title",            json.title
     this._setIfNotNull "isForwarding",     json.forwarding
     this._setIfNotNull "server",           json.incoming_server
     this._setIfNotNull "SSL",              json.incoming_ssl
