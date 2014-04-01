@@ -1,3 +1,9 @@
-/node_modules/
+# Misc Files/Folders #
+.DS_Store
+.svn
+*~
+
+# Build Files/Folders #
+node_modules/
 build/
 components/
