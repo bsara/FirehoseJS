@@ -85,7 +85,7 @@ firehoseTest 'Reply To Email', 1, (agent) ->
     .fail (jqXHR, textStatus, errorThrown) ->
       start()
 
-firehoseTest 'Attachments', 4, (agent) ->
+firehoseTest 'Attachments', 5, (agent) ->
   company = agent.companies[0]
   customers = company.customersWithCriteria( channels: ["email"] )
   customers.next()
@@ -98,7 +98,8 @@ firehoseTest 'Attachments', 4, (agent) ->
       .done (data, textStatus) ->
         for interaction in interactions
           return if tested
-          for attachment in interaction.attachments          
+          ok interaction.attachments.length == 1
+          for attachment in interaction.attachments
             ok attachment.id?            
             ok attachment.filename?
             ok attachment.temporaryURL?
@@ -287,3 +288,20 @@ firehoseTest 'Add and Remove Flagged Agent', 4, (agent) ->
         start()
     .fail (jqXHR, textStatus, errorThrown) ->
       start()
+
+firehoseTest 'Get Link to Email Raw Source', 1, (agent) ->
+  company = agent.companies[0]
+  customers = company.customersWithCriteria( channels: ["email"] )
+  customers.next()
+  .done (data, textStatus) ->
+    customer = customers[0]
+    interactions = customer.interactions()
+    interactions.next()
+    .done (data, textStatus) ->
+      interaction = interactions[0]
+      ok interaction.linkToSource() == "http://localhost:3010/interactions/#{interaction.token}/raw_source"
+      start()
+    .fail (jqXHR, textStatus, errorThrown) ->
+      start()
+  .fail (jqXHR, textStatus, errorThrown) ->
+    start()

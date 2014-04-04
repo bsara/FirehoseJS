@@ -46,6 +46,15 @@ class Firehose.EmailInteraction extends Firehose.Interaction
   @_emailInteractionWithID: (id) ->
     Firehose.Object._objectOfClassWithID Firehose.EmailInteraction,
       id: id
+      
+  
+  ###
+  Returns the URL to the source of the email interaction exactly as it was received into Firehose. 
+  @note: You can only call this on an e-mail interaction.
+  @return [String] A full URL to the email's raw RFC source.
+  ###
+  linkToSource: ->
+    "#{Firehose.baseURLFor('API')}/interactions/#{@token}/raw_source"
     
   
   # @nodoc

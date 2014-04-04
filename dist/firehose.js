@@ -3704,6 +3704,17 @@ Firehose.EmailInteraction = (function(_super) {
     });
   };
 
+  /*
+  Returns the URL to the source of the email interaction exactly as it was received into Firehose. 
+  @note: You can only call this on an e-mail interaction.
+  @return [String] A full URL to the email's raw RFC source.
+  */
+
+
+  EmailInteraction.prototype.linkToSource = function() {
+    return "" + (Firehose.baseURLFor('API')) + "/interactions/" + this.token + "/raw_source";
+  };
+
   EmailInteraction.prototype._populateWithJSON = function(json) {
     var emailJSON,
       _this = this;

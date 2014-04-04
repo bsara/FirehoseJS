@@ -218,6 +218,8 @@ class Firehose.Interaction extends Firehose.Object
       "Happy"
       
       
+      
+      
   # @nodoc
   _setCustomer: (customer) ->
     this._setIfNotNull "customer", customer
