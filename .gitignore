@@ -4,6 +4,11 @@
 *~
 
 # Build Files/Folders #
-node_modules/
-build/
-components/
+/build
+/components
+/node_modules
+
+
+# Sublime Files/Folders
+/*.sublime-workspace
+/*.sublime-project
