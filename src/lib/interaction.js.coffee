@@ -116,8 +116,13 @@ class Firehose.Interaction extends Firehose.Object
       token: token
     
     
-  # @nodoc
-  @_interactionWithJSON: (json, customer) ->
+  ###
+  Used to create an interaction from JSON received from a web socket event.
+  @param json [string] The json received from the pusher even or the API.
+  @param customer [Customer] The customer this interaction belongs to.
+  @return [Interaction] a generic interaction object.
+  ### 
+  @interactionWithJSON: (json, customer) ->
     interaction = null
     if json.channel == "twitter"
       interaction = Firehose.TwitterInteraction._twitterInteractionWithID( json.id )
@@ -148,7 +153,7 @@ class Firehose.Interaction extends Firehose.Object
       body:  body
     Firehose.client.post( this, params ).done (data) =>
       this._setIfNotNull "responseDraft", null
-      response = Firehose.Interaction._interactionWithJSON( data, @customer )
+      response = Firehose.Interaction.interactionWithJSON( data, @customer )
       @responseInteractions.insertObject response
       response._setIfNotNull "agent", Firehose.Agent.loggedInAgent
       @responseInteractions.sort (interaction1, interaction2) ->
@@ -246,7 +251,7 @@ class Firehose.Interaction extends Firehose.Object
     
     this._populateAssociatedObjects this, "responseInteractions", json.response_interactions, (json) =>
       json.channel = @channel
-      interaction = Firehose.Interaction._interactionWithJSON( json, @customer )
+      interaction = Firehose.Interaction.interactionWithJSON( json, @customer )
       interaction.set 'originalInteraction', this
       interaction
       

@@ -2325,7 +2325,15 @@ Firehose.Interaction = (function(_super) {
     });
   };
 
-  Interaction._interactionWithJSON = function(json, customer) {
+  /*
+  Used to create an interaction from JSON received from a web socket event.
+  @param json [string] The json received from the pusher even or the API.
+  @param customer [Customer] The customer this interaction belongs to.
+  @return [Interaction] a generic interaction object.
+  */
+
+
+  Interaction.interactionWithJSON = function(json, customer) {
     var interaction;
     interaction = null;
     if (json.channel === "twitter") {
@@ -2369,7 +2377,7 @@ Firehose.Interaction = (function(_super) {
     return Firehose.client.post(this, params).done(function(data) {
       var response;
       _this._setIfNotNull("responseDraft", null);
-      response = Firehose.Interaction._interactionWithJSON(data, _this.customer);
+      response = Firehose.Interaction.interactionWithJSON(data, _this.customer);
       _this.responseInteractions.insertObject(response);
       response._setIfNotNull("agent", Firehose.Agent.loggedInAgent);
       return _this.responseInteractions.sort(function(interaction1, interaction2) {
@@ -2497,7 +2505,7 @@ Firehose.Interaction = (function(_super) {
     this._populateAssociatedObjects(this, "responseInteractions", json.response_interactions, function(json) {
       var interaction;
       json.channel = _this.channel;
-      interaction = Firehose.Interaction._interactionWithJSON(json, _this.customer);
+      interaction = Firehose.Interaction.interactionWithJSON(json, _this.customer);
       interaction.set('originalInteraction', _this);
       return interaction;
     });
@@ -3214,7 +3222,7 @@ Firehose.Customer = (function(_super) {
     var _this = this;
     if (this._interactions == null) {
       this._setIfNotNull("_interactions", new Firehose.RemoteArray("customers/" + this.id + "/interactions", null, function(json) {
-        return Firehose.Interaction._interactionWithJSON(json, _this);
+        return Firehose.Interaction.interactionWithJSON(json, _this);
       }));
       this._interactions.sortOn("receivedAt");
     }

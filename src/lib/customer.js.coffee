@@ -120,7 +120,7 @@ class Firehose.Customer extends Firehose.Object
   interactions: ->
     unless @_interactions?
       this._setIfNotNull "_interactions", new Firehose.RemoteArray "customers/#{@id}/interactions", null, (json) =>
-        Firehose.Interaction._interactionWithJSON( json, this )
+        Firehose.Interaction.interactionWithJSON( json, this )
       @_interactions.sortOn "receivedAt"
     @_interactions
     
