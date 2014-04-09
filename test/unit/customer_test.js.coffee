@@ -2,7 +2,7 @@ module "Customer"
 
 firehoseTest 'Create Customer From JSON', 2, (agent) ->
   company = agent.companies[0]
-  customerJSON = `{"created_at":"2012-01-26T01:02:01Z","id":26,"location":null,"raw_name":"Adam Kirk","time_zone":null,"name":"Adam Kirk","newest_interaction_id":536509,"newest_interaction_excerpt":"ignore, testing pusher\n\n--\nAdam Kirk\nSent with Airmail\n","newest_interaction_received_at":"2014-03-01T16:44:23Z","interaction_flagged_agents":[],"customer_accounts":[{"channel":"email","created_at":"2012-01-26T01:02:01Z","description":null,"followers_count":0,"following_us":false,"id":26,"image_url":null,"username":"atomkirk@gmail.com"}]}`
+  customerJSON = '{"created_at":"2012-01-26T01:02:01Z","id":26,"location":null,"raw_name":"Adam Kirk","time_zone":null,"name":"Adam Kirk","newest_interaction_id":536509,"newest_interaction_excerpt":"ignore, testing pusher\n\n--\nAdam Kirk\nSent with Airmail\n","newest_interaction_received_at":"2014-03-01T16:44:23Z","interaction_flagged_agents":[],"customer_accounts":[{"channel":"email","created_at":"2012-01-26T01:02:01Z","description":null,"followers_count":0,"following_us":false,"id":26,"image_url":null,"username":"atomkirk@gmail.com"}]}'
   customer = Firehose.Customer.customerWithJSON customerJSON
   ok customer.id = 26
   ok customer.newestInteractionId == 536509
@@ -18,13 +18,13 @@ firehoseTest 'List', 2, (agent) ->
     start()
   .fail (jqXHR, textStatus, errorThrown) ->
     start()
-    
+
 firehoseTest 'Fetch', 8, (agent) ->
   company = agent.companies[0]
   customers = company.customersWithCriteria()
   customers.next()
   .done (data, textStatus) ->
-    customer = customers[0]    
+    customer = customers[0]
     customer.fetch()
     .done (data, textStatus) ->
       equal textStatus, "success"
@@ -40,13 +40,13 @@ firehoseTest 'Fetch', 8, (agent) ->
       start()
   .fail (jqXHR, textStatus, errorThrown) ->
     start()
-    
+
 firehoseTest 'Destroy', 1, (agent) ->
   company = agent.companies[0]
   customers = company.customersWithCriteria()
   customers.next()
   .done (data, textStatus) ->
-    customer = customers[0]    
+    customer = customers[0]
     customer.destroy()
     .done (data, textStatus) ->
       equal textStatus, "nocontent"
@@ -61,7 +61,7 @@ firehoseTest 'Resolve All Interactions', 1, (agent) ->
   customers = company.customersWithCriteria()
   customers.next()
   .done (data, textStatus) ->
-    customer = customers[0]    
+    customer = customers[0]
     customer.resolveAllInteractions()
     .done (data, textStatus) ->
       equal textStatus, "nocontent"
@@ -94,7 +94,7 @@ firehoseTest 'List Paginated', 2, (agent) ->
     start()
   .fail (jqXHR, textStatus, errorThrown) ->
     start()
-    
+
 firehoseTest 'List Newest First', 3, (agent) ->
   company           = agent.companies[0]
   customers         = company.customersWithCriteria( sort: "newest_first" )
@@ -108,7 +108,7 @@ firehoseTest 'List Newest First', 3, (agent) ->
     start()
   .fail (jqXHR, textStatus, errorThrown) ->
     start()
-    
+
 firehoseTest 'List Newest First', 3, (agent) ->
   company           = agent.companies[0]
   customers         = company.customersWithCriteria( sort: "oldest_first" )
@@ -122,7 +122,7 @@ firehoseTest 'List Newest First', 3, (agent) ->
     start()
   .fail (jqXHR, textStatus, errorThrown) ->
     start()
-    
+
 firehoseTest 'List Email Only', 3, (agent) ->
   company           = agent.companies[0]
   customers         = company.customersWithCriteria( channels: ["email"] )
@@ -140,7 +140,7 @@ firehoseTest 'List Email Only', 3, (agent) ->
     start()
   .fail (jqXHR, textStatus, errorThrown) ->
     start()
-        
+
 firehoseTest 'List Facebook Only', 3, (agent) ->
   company           = agent.companies[0]
   customers         = company.customersWithCriteria( channels: ["facebook"] )
@@ -158,7 +158,7 @@ firehoseTest 'List Facebook Only', 3, (agent) ->
     start()
   .fail (jqXHR, textStatus, errorThrown) ->
     start()
-        
+
 firehoseTest 'List Twitter Only', 3, (agent) ->
   company           = agent.companies[0]
   customers         = company.customersWithCriteria( channels: ["twitter"] )
@@ -176,7 +176,25 @@ firehoseTest 'List Twitter Only', 3, (agent) ->
     start()
   .fail (jqXHR, textStatus, errorThrown) ->
     start()
-    
+
+firehoseTest 'List Chats Only', 3, (agent) ->
+  company           = agent.companies[0]
+  customers         = company.customersWithCriteria( channels: ["chat"] )
+  customers.next()
+  .done (data, textStatus) ->
+    equal textStatus, "success"
+    ok customers.length > 0
+    allEmail = true
+    for customer in customers
+      customerAccount = customer.customerAccounts[0]
+      if customerAccount.channel != "chat"
+        allEmail = false
+        break
+    ok allEmail
+    start()
+  .fail (jqXHR, textStatus, errorThrown) ->
+    start()
+
 firehoseTest 'List Matched Keywords', 2, (agent) ->
   company           = agent.companies[0]
   customers         = company.customersWithCriteria( searchString: "a" )
@@ -187,7 +205,7 @@ firehoseTest 'List Matched Keywords', 2, (agent) ->
     start()
   .fail (jqXHR, textStatus, errorThrown) ->
     start()
-    
+
 firehoseTest 'Agent Has Dibs', 1, (agent) ->
   company   = agent.companies[0]
   customers = company.customersWithCriteria()
@@ -213,7 +231,7 @@ firehoseTest 'Agent Has Dibs', 1, (agent) ->
       start()
   .fail (jqXHR, textStatus, errorThrown) ->
     start()
-    
+
 firehoseTest 'Avatar URL', 2, (agent) ->
   company   = agent.companies[0]
   customers = company.customersWithCriteria()

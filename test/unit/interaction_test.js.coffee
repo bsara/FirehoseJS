@@ -9,13 +9,13 @@ firehoseTest 'Index', 1, (agent) ->
     interactions = customer.interactions()
     interactions.next()
     .done (data, textStatus) ->
-      ok interactions.length > 0     
+      ok interactions.length > 0
       start()
     .fail (jqXHR, textStatus, errorThrown) ->
       start()
   .fail (jqXHR, textStatus, errorThrown) ->
     start()
-    
+
 firehoseTest 'Reply To Twitter', 1, (agent) ->
   window.realTestAgent (realAgent) ->
     company = realAgent.companies[0]
@@ -38,7 +38,7 @@ firehoseTest 'Reply To Twitter', 1, (agent) ->
         start()
     .fail (jqXHR, textStatus, errorThrown) ->
       start()
-      
+
 firehoseTest 'Reply To Facebook', 1, (agent) ->
   window.realTestAgent (realAgent) ->
     company = realAgent.companies[0]
@@ -61,7 +61,7 @@ firehoseTest 'Reply To Facebook', 1, (agent) ->
         start()
     .fail (jqXHR, textStatus, errorThrown) ->
       start()
-      
+
 firehoseTest 'Reply To Email', 1, (agent) ->
   window.realTestAgent (realAgent) ->
     company = realAgent.companies[0]
@@ -100,7 +100,7 @@ firehoseTest 'Attachments', 5, (agent) ->
           return if tested
           ok interaction.attachments.length == 1
           for attachment in interaction.attachments
-            ok attachment.id?            
+            ok attachment.id?
             ok attachment.filename?
             ok attachment.temporaryURL?
             ok attachment.createdAt?
@@ -110,7 +110,7 @@ firehoseTest 'Attachments', 5, (agent) ->
         start()
   .fail (jqXHR, textStatus, errorThrown) ->
     start()
-    
+
 firehoseTest 'Fetch With Token', 9, (agent) ->
   company = agent.companies[0]
   customers = company.customersWithCriteria( channels: ["email"] )
@@ -140,7 +140,7 @@ firehoseTest 'Fetch With Token', 9, (agent) ->
       start()
   .fail (jqXHR, textStatus, errorThrown) ->
     start()
-    
+
 firehoseTest 'Fetch With ID', 9, (agent) ->
   company = agent.companies[0]
   customers = company.customersWithCriteria( channels: ["email"] )
@@ -170,7 +170,7 @@ firehoseTest 'Fetch With ID', 9, (agent) ->
       start()
   .fail (jqXHR, textStatus, errorThrown) ->
     start()
-  
+
 firehoseTest 'Update', 1, (agent) ->
   company = agent.companies[0]
   customers = company.customersWithCriteria( channels: ["email"] )
@@ -229,7 +229,7 @@ firehoseTest 'Add And Remove Interaction Tag', 4, (agent) ->
       tag = Firehose.Tag.tagWithLabel( Faker.Lorem.words(1).join(" "), company)
       tag.save()
       .done (data, textStatus) ->
-        interaction.addTag( tag )  
+        interaction.addTag( tag )
         .done (data, textStatus) ->
           ok textStatus == "nocontent"
           ok interaction.tags.length > tagCount
@@ -248,7 +248,7 @@ firehoseTest 'Add And Remove Interaction Tag', 4, (agent) ->
       start()
   .fail (jqXHR, textStatus, errorThrown) ->
     start()
-    
+
 firehoseTest 'Add and Remove Flagged Agent', 4, (agent) ->
   company = agent.companies[0]
   window.nextTestAgent (addAgent) ->
@@ -267,11 +267,11 @@ firehoseTest 'Add and Remove Flagged Agent', 4, (agent) ->
           .done (data, textStatus) ->
             interaction = interactions[0]
             flaggedAgentsCount = interaction.flaggedAgents.length
-            interaction.flagAgent( agent ) 
+            interaction.flagAgent( agent )
             .done (data, textStatus) ->
               ok textStatus == "nocontent"
               ok interaction.flaggedAgents.length > flaggedAgentsCount
-              interaction.unflagAgent( agent) 
+              interaction.unflagAgent( agent)
               .done (data, textStatus) ->
                 ok textStatus == "nocontent"
                 ok interaction.flaggedAgents.length == flaggedAgentsCount
@@ -305,3 +305,28 @@ firehoseTest 'Get Link to Email Raw Source', 1, (agent) ->
       start()
   .fail (jqXHR, textStatus, errorThrown) ->
     start()
+
+# firehoseTest 'Reply To Chat', 1, (agent) ->
+#   window.realTestAgent (realAgent) ->
+#     debugger
+#     company = realAgent.companies[0]
+#     customers = company.customersWithCriteria( channels: ["chat"] )
+#     customers.next()
+#     .done (data, textStatus) ->
+#       debugger
+#       customer = customers[0]
+#       interactions = customer.interactions()
+#       interactions.next()
+#       .done (data, textStatus) ->
+#         interaction = interactions[0]
+#         interaction.responseDraft = Faker.Lorem.words(10).join(" ")
+#         interaction.reply()
+#         .done (data, textStatus) ->
+#           ok textStatus == "success"
+#           start()
+#         .fail (jqXHR, textStatus, errorThrown) ->
+#           start()
+#       .fail (jqXHR, textStatus, errorThrown) ->
+#         start()
+#     .fail (jqXHR, textStatus, errorThrown) ->
+#       start()

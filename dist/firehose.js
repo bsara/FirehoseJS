@@ -2313,7 +2313,7 @@ Firehose.Interaction = (function(_super) {
 
   /*
   Used to create a generic interaction that can then be fetched, without authentication, by the token.
-  @param token [string] 
+  @param token [string]
   @note: Any interactions is publicly visible with a token.
   @return [Interaction] a generic interaction object.
   */
@@ -2342,6 +2342,8 @@ Firehose.Interaction = (function(_super) {
       interaction = Firehose.FacebookInteraction._facebookInteractionWithID(json.id);
     } else if (json.channel === "email") {
       interaction = Firehose.EmailInteraction._emailInteractionWithID(json.id);
+    } else if (json.channel === "chat") {
+      interaction = Firehose.ChatInteraction._chatInteractionWithID(json.id);
     }
     interaction._setCustomer(customer);
     interaction._populateWithJSON(json);
@@ -3713,7 +3715,7 @@ Firehose.EmailInteraction = (function(_super) {
   };
 
   /*
-  Returns the URL to the source of the email interaction exactly as it was received into Firehose. 
+  Returns the URL to the source of the email interaction exactly as it was received into Firehose.
   @note: You can only call this on an e-mail interaction.
   @return [String] A full URL to the email's raw RFC source.
   */
