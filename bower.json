@@ -14,20 +14,11 @@
   ],
   "license": "MIT",
   "ignore": [
-    "build",
-    "components",
-    "src",
-    "node_modules",
-    "test",
-    "stripe",
-    ".bowerrc",
-    ".git",
-    ".gitignore",
-    ".jshintrc",
-    "CONTRIBUTING.md",
-    "Gruntfile.coffee",
-    "package.json",
-    "README.md"
+    "**/*",
+    "!bower.json",
+    "!dist/**/*",
+    "!docs/**/*",
+    "!LICENSE"
   ],
   "dependencies": {
     "jquery": "~2.0.0",
