@@ -1,36 +1,40 @@
-module "Product"
+module "Product",
 
-firehoseTest 'Create', 1, (agent) ->
+  teardown: ->
+    window.unitTestDocumentURL = null
+
+firehoseTest 'Create', 5, (agent) ->
   company = agent.companies[0]
   product = Firehose.Product.productWithName( Faker.Lorem.words(1).join(""), company)
   product.save()
   .done (data, textStatus) ->
     equal textStatus, "success"
     ok product.id?
-    ok product.token?
     ok product.name?
+    ok product.token?
     ok company.createdAt?
     start()
   .fail (jqXHR, textStatus, errorThrown) ->
     start()
     
-firehoseTest 'Fetch', 13, (agent) ->
+firehoseTest 'Fetch', 5, (agent) ->
   company = agent.companies[0]
-  company.fetch()
+  product = company.products[0]
+  product.fetch()
   .done (data, textStatus) ->
     equal textStatus, "success"
-    ok company.id?
-    ok company.name?
-    ok company.token?
-    ok company.createdAt?
+    ok product.id?
+    ok product.name?
+    ok product.token?
+    ok product.createdAt?
     start()
   .fail ->
     start()
 
-firehoseTest 'Fetch Based on KB subdomain', 3, (agent) ->
+firehoseTest 'Fetch Based on KB subdomain', 9, (agent) ->
   company = agent.companies[0]
   product = company.products[0]
-  product.fetch()
+  product.fetch( include: ['kb'] )
   .done ->
     kbProduct = Firehose.Product.productWithKBSubdomain product.knowledgeBaseSubdomain
     kbProduct.fetch()
@@ -50,10 +54,10 @@ firehoseTest 'Fetch Based on KB subdomain', 3, (agent) ->
   .fail ->
     start()
 
-firehoseTest 'Fetch Based on KB custom domain', 3, (agent) ->
+firehoseTest 'Fetch Based on KB custom domain', 9, (agent) ->
   company = agent.companies[0]
   product = company.products[0]
-  product.fetch()
+  product.fetch( include: ['kb'] )
   .done ->
     kbProduct = Firehose.Product.productWithKBCustomDomain product.knowledgeBaseCustomDomain
     kbProduct.fetch()
@@ -78,37 +82,44 @@ firehoseTest 'Fetch (throws error because not enough info is set)', 1, (agent) -
   product = company.products[0]
   product.fetch()
   .done ->
-    kbProduct = Firehose.Product.productWithKBCustomDomain product.knowledgeBaseCustomDomain
-    throws kbProduct.fetch()
+    kbProduct = Firehose.Product.productWithKBCustomDomain null
+    throws -> kbProduct.fetch()
     start()
   .fail ->
     start()
 
-firehoseTest 'Fetch (include extra settings)', 16, (agent) ->
+firehoseTest 'Fetch (include extra settings)', 22, (agent) ->
   company = agent.companies[0]
-  company.fetch( include: ["kb", "chat"] )
+  product = company.products[0]
+  product.fetch( include: ["kb", "chat"] )
   .done (data, textStatus) ->
     equal textStatus, "success"
-    ok company.title?
-    ok company.knowledgeBaseSubdomain?
-    ok company.knowledgeBaseCustomDomain?
-    ok company.knowledgeBaseCSS?
-    ok company.knowledgeBaseLayoutTemplate?
-    ok company.knowledgeBaseSearchTemplate?
-    ok company.knowledgeBaseArticleTemplate?
-    ok company.chatTitleTextColor?         
-    ok company.chatTitleBackgroundColor?   
-    ok company.chatAgentColor?             
-    ok company.chatCustomerColor?          
-    ok company.chatFieldTextColor?         
-    ok company.chatFieldBackgroundColor?   
-    ok company.chatBackgroundColor?        
-    ok company.chatResponseBackgroundColor?
+    ok product.name?
+    ok product.knowledgeBaseSubdomain?
+    ok product.knowledgeBaseCustomDomain?
+    ok product.knowledgeBaseCSS?
+    ok product.knowledgeBaseLayoutTemplate?
+    ok product.knowledgeBaseSearchTemplate?
+    ok product.knowledgeBaseArticleTemplate?
+    ok product.chatTitleTextColor?         
+    ok product.chatTitleBackgroundColor?   
+    ok product.chatAgentColor?             
+    ok product.chatCustomerColor?          
+    ok product.chatFieldTextColor?         
+    ok product.chatFieldBackgroundColor?   
+    ok product.chatBackgroundColor?        
+    ok product.chatResponseBackgroundColor?
+    ok product.chatCSS?
+    ok product.chatOnlineHeaderText?
+    ok product.chatOnlineWelcomeText?
+    ok product.chatOfflineHeaderText?
+    ok product.chatOfflineWelcomeText?
+    ok product.chatOfflineEmailAddress?
     start()
   .fail ->
     start()
 
-firehoseTest 'Update', 1, (agent) ->
+firehoseTest 'Update', 5, (agent) ->
   company = agent.companies[0]
   product = Firehose.Product.productWithName( Faker.Lorem.words(1).join(""), company)
   product.save()
@@ -116,10 +127,11 @@ firehoseTest 'Update', 1, (agent) ->
     product.name = Faker.Lorem.words(1).join("")
     product.save()
     .done (data, textStatus) ->
+      equal textStatus, "nocontent"
       product2 = Firehose.Product.productWithID product.id, company
       product2.fetch()
       .done (data, textStatus) -> 
-        equal textStatus, "nocontent"
+        equal textStatus, "success"
         ok product2.id?
         ok product2.token?
         ok product2.name?
@@ -196,25 +208,28 @@ firehoseTest 'Search Articles (Abort)', 1, (agent) ->
     start()
 
 firehoseTest 'Produce URL for products kb', 5, (agent) ->
-  company      = agent.companies[0]
-  product      = company.products[0]
-  subdomain    = product.get('knowledgeBaseSubdomain')
-  customDomain = product.get('knowledgeBaseCustomDomain')
+  company = agent.companies[0]
+  product = company.products[0]
+  product.fetch( include: ['kb'] ).done ->
+    subdomain    = product.get('knowledgeBaseSubdomain')
+    customDomain = product.get('knowledgeBaseCustomDomain')
 
-  window.unitTestDocumentURL = "http://localhost:4001"
-  ok product.kbBaseURL() == "http://#{subdomain}.lvh.me:4007"
+    window.unitTestDocumentURL = "http://localhost:4001"
+    ok product.kbBaseURL() == "http://#{subdomain}.lvh.me:4007"
 
-  window.unitTestDocumentURL = "http://localhost:4201"
-  ok product.kbBaseURL() == "http://#{subdomain}.lvh.me:4207"
+    window.unitTestDocumentURL = "http://localhost:4201"
+    ok product.kbBaseURL() == "http://#{subdomain}.lvh.me:4207"
 
-  window.unitTestDocumentURL = "https://beta.firehoseapp.com"
-  ok product.kbBaseURL() == "http://#{subdomain}.firehosesupport.com"
+    window.unitTestDocumentURL = "https://beta.firehoseapp.com"
+    ok product.kbBaseURL() == "http://#{subdomain}.firehosesupport.com"
 
-  window.unitTestDocumentURL = "https://www.firehoseapp.com"
-  ok product.kbBaseURL() == "http://#{customDomain}"
+    window.unitTestDocumentURL = "https://www.firehoseapp.com"
+    ok product.kbBaseURL() == "http://#{customDomain}"
 
-  product.set('knowledgeBaseCustomDomain', null)
-  window.unitTestDocumentURL = "https://www.firehoseapp.com"
-  ok product.kbBaseURL() == "http://#{subdomain}.firehosehelp.com"
+    product.set('knowledgeBaseCustomDomain', null)
+    window.unitTestDocumentURL = "https://www.firehoseapp.com"
+    ok product.kbBaseURL() == "http://#{subdomain}.firehosehelp.com"
 
-  start()
+    start()
+  .fail (jqXHR, textStatus, errorThrown) ->
+    start() 

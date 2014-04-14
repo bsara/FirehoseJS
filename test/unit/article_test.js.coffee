@@ -3,7 +3,8 @@ module "Article"
 
 firehoseTest 'Create', 1, (agent) ->
   company = agent.companies[0]
-  article = Firehose.Article.articleWithTitleBodyAndCompany( Faker.Lorem.words(4).join(" "), Faker.Lorem.words(10).join(" "), company)
+  product = company.products[0]
+  article = Firehose.Article.articleWithTitleAndBody( Faker.Lorem.words(4).join(" "), Faker.Lorem.words(10).join(" "), product)
   article.save()
   .done (data, textStatus) ->
     equal textStatus, "success"
@@ -14,7 +15,8 @@ firehoseTest 'Create', 1, (agent) ->
 
 firehoseTest 'Fetch', 5, (agent) ->
   company = agent.companies[0]
-  article = Firehose.Article.articleWithTitleBodyAndCompany( Faker.Lorem.words(4).join(" "), Faker.Lorem.words(10).join(" "), company)
+  product = company.products[0]
+  article = Firehose.Article.articleWithTitleAndBody( Faker.Lorem.words(4).join(" "), Faker.Lorem.words(10).join(" "), product)
   article.save()
   .done ->
     article.fetch()
@@ -33,7 +35,8 @@ firehoseTest 'Fetch', 5, (agent) ->
 
 firehoseTest 'Update', 1, (agent) ->
   company = agent.companies[0]
-  article = Firehose.Article.articleWithTitleBodyAndCompany( Faker.Lorem.words(4).join(" "), Faker.Lorem.words(10).join(" "), company)
+  product = company.products[0]
+  article = Firehose.Article.articleWithTitleAndBody( Faker.Lorem.words(4).join(" "), Faker.Lorem.words(10).join(" "), product)
   article.save()
   .done ->
     article.title = Faker.Lorem.words(10).join(" ")
@@ -50,7 +53,8 @@ firehoseTest 'Update', 1, (agent) ->
 
 firehoseTest 'Destroy', 1, (agent) ->
   company = agent.companies[0]
-  article = Firehose.Article.articleWithTitleBodyAndCompany( Faker.Lorem.words(4).join(" "), Faker.Lorem.words(10).join(" "), company)
+  product = company.products[0]
+  article = Firehose.Article.articleWithTitleAndBody( Faker.Lorem.words(4).join(" "), Faker.Lorem.words(10).join(" "), product)
   article.save()
   .done ->
     article.destroy()

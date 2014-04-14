@@ -32,17 +32,17 @@ class Firehose.Product extends Firehose.Object
   ###
   @property [String]
   ###
-  knowlegeBaseLayoutTemplate: null
+  knowledgeBaseLayoutTemplate: null
   
   ###
   @property [String]
   ###
-  knowlegeBaseSearchTemplate: null
+  knowledgeBaseSearchTemplate: null
   
   ###
   @property [String]
   ###
-  knowlegeBaseArticleTemplate: null
+  knowledgeBaseArticleTemplate: null
   
   ###
   @property [String]
@@ -115,7 +115,7 @@ class Firehose.Product extends Firehose.Object
   chatOfflineEmailAddress: null
   
   
-  # remote arrays
+  # Remote Arrays
   
   # @nodoc
   _articles: null
@@ -123,6 +123,15 @@ class Firehose.Product extends Firehose.Object
   # @nodoc
   _searchedArticles: null
   
+  
+  
+  # Private
+  
+  # @nodoc
+  _includesKnowledgeBaseAttributes: false
+  
+  # @nodoc
+  _includesChatAttributes: false
   
   
   
@@ -201,9 +210,10 @@ class Firehose.Product extends Firehose.Object
   ###
   fetch: (options = {}) ->
     if @id?
-      requested_attributes = if options.include? then "?include=#{options.include.join "," }" else ""
       request = 
-        route: "products/#{@id}#{requested_attributes}"
+        route: "products/#{@id}"
+        params:
+          include: options.include.join(",") if options.include?
         
     else if @knowledgeBaseSubdomain
       request = 
@@ -276,6 +286,7 @@ class Firehose.Product extends Firehose.Object
   @return [String] The URL for the product's knowledge base in the current environment.
   ###
   kbBaseURL: ->
+    throw "You must call `Product#fetch( include: ['kb'] )` before you can call this." unless @_includesKnowledgeBaseAttributes
     if Firehose.environment() == 'production' and customDomain = this.get('knowledgeBaseCustomDomain')
       "http://#{customDomain}"
     else 
@@ -285,12 +296,15 @@ class Firehose.Product extends Firehose.Object
   # @nodoc
   _populateWithJSON: (json) ->
     this._setIfNotNull "name",                          json.name
+    this._setIfNotNull "token",                         json.token
+    @_includesKnowledgeBaseAttributes = typeof json.kb_subdomain != 'undefined'
     this._setIfNotNull "knowledgeBaseSubdomain",        json.kb_subdomain                   
     this._setIfNotNull "knowledgeBaseCustomDomain",     json.kb_custom_domain               
     this._setIfNotNull "knowledgeBaseCSS",              json.kb_css                         
-    this._setIfNotNull "knowlegeBaseLayoutTemplate",    json.kb_layout_template             
-    this._setIfNotNull "knowlegeBaseSearchTemplate",    json.kb_search_template             
-    this._setIfNotNull "knowlegeBaseArticleTemplate",   json.kb_article_template            
+    this._setIfNotNull "knowledgeBaseLayoutTemplate",   json.kb_layout_template             
+    this._setIfNotNull "knowledgeBaseSearchTemplate",   json.kb_search_template             
+    this._setIfNotNull "knowledgeBaseArticleTemplate",  json.kb_article_template            
+    @_includesChatAttributes = typeof json.chat_title_text_color != 'undefined'
     this._setIfNotNull "chatTitleTextColor",            json.chat_title_text_color          
     this._setIfNotNull "chatTitleBackgroundColor",      json.chat_title_background_color    
     this._setIfNotNull "chatAgentColor",                json.chat_agent_color               
@@ -311,38 +325,39 @@ class Firehose.Product extends Firehose.Object
   # @nodoc
   _toJSON: ->
     product:
-      name                           : @name
-      kb_subdomain                   : @knowledgeBaseSubdomain
-      kb_custom_domain               : @knowledgeBaseCustomDomain
-      kb_css                         : @knowledgeBaseCSS
-      kb_layout_template             : @knowlegeBaseLayoutTemplate
-      kb_search_template             : @knowlegeBaseSearchTemplate
-      kb_article_template            : @knowlegeBaseArticleTemplate
-      chat_title_text_color          : @chatTitleTextColor
-      chat_title_background_color    : @chatTitleBackgroundColor
-      chat_agent_color               : @chatAgentColor
-      chat_customer_color            : @chatCustomerColor
-      chat_field_text_color          : @chatFieldTextColor
-      chat_field_background_color    : @chatFieldBackgroundColor
-      chat_background_color          : @chatBackgroundColor
-      chat_response_background_color : @chatResponseBackgroundColor
-      chat_css                       : @chatCSS
-      chat_online_header_text        : @chatOnlineHeaderText
-      chat_online_welcome_text       : @chatOnlineWelcomeText
-      chat_offline_header_text       : @chatOfflineHeaderText
-      chat_offline_welcome_text      : @chatOfflineWelcomeText
-      chat_offline_email_address     : @chatOfflineEmailAddress
+      name                           : @name                             if @name?
+      kb_subdomain                   : @knowledgeBaseSubdomain           if @knowledgeBaseSubdomain?
+      kb_custom_domain               : @knowledgeBaseCustomDomain        if @_includesKnowledgeBaseAttributes
+      kb_css                         : @knowledgeBaseCSS                 if @_includesKnowledgeBaseAttributes
+      kb_layout_template             : @knowledgeBaseLayoutTemplate      if @_includesKnowledgeBaseAttributes
+      kb_search_template             : @knowledgeBaseSearchTemplate      if @_includesKnowledgeBaseAttributes
+      kb_article_template            : @knowledgeBaseArticleTemplate     if @_includesKnowledgeBaseAttributes
+      chat_title_text_color          : @chatTitleTextColor               if @_includesChatAttributes
+      chat_title_background_color    : @chatTitleBackgroundColor         if @_includesChatAttributes
+      chat_agent_color               : @chatAgentColor                   if @_includesChatAttributes
+      chat_customer_color            : @chatCustomerColor                if @_includesChatAttributes
+      chat_field_text_color          : @chatFieldTextColor               if @_includesChatAttributes
+      chat_field_background_color    : @chatFieldBackgroundColor         if @_includesChatAttributes
+      chat_background_color          : @chatBackgroundColor              if @_includesChatAttributes
+      chat_response_background_color : @chatResponseBackgroundColor      if @_includesChatAttributes
+      chat_css                       : @chatCSS                          if @_includesChatAttributes
+      chat_online_header_text        : @chatOnlineHeaderText             if @_includesChatAttributes
+      chat_online_welcome_text       : @chatOnlineWelcomeText            if @_includesChatAttributes
+      chat_offline_header_text       : @chatOfflineHeaderText            if @_includesChatAttributes
+      chat_offline_welcome_text      : @chatOfflineWelcomeText           if @_includesChatAttributes
+      chat_offline_email_address     : @chatOfflineEmailAddress          if @_includesChatAttributes
  
    # @nodoc
   _toArchivableJSON: ->
     $.extend super(),
       name                           : @name
+      token                          : @token
       kb_subdomain                   : @knowledgeBaseSubdomain
       kb_custom_domain               : @knowledgeBaseCustomDomain
       kb_css                         : @knowledgeBaseCSS
-      kb_layout_template             : @knowlegeBaseLayoutTemplate
-      kb_search_template             : @knowlegeBaseSearchTemplate
-      kb_article_template            : @knowlegeBaseArticleTemplate
+      kb_layout_template             : @knowledgeBaseLayoutTemplate
+      kb_search_template             : @knowledgeBaseSearchTemplate
+      kb_article_template            : @knowledgeBaseArticleTemplate
       chat_title_text_color          : @chatTitleTextColor
       chat_title_background_color    : @chatTitleBackgroundColor
       chat_agent_color               : @chatAgentColor

@@ -1,6 +1,6 @@
 module "Agent"
 
-asyncTest 'Sign Up', 8, ->
+asyncTest 'Sign Up', 9, ->
   agent = Firehose.Agent.agentWithEmailAndPassword(Faker.Internet.email(), Faker.Name.firstName())
   agent.signUpWithFirstAndLastName( Faker.Name.firstName(), Faker.Name.lastName() )
   .done (data, textStatus) ->
@@ -10,6 +10,7 @@ asyncTest 'Sign Up', 8, ->
     ok agent.email?
     ok agent.id?
     ok agent.createdAt?
+    ok agent.DNDIsManuallyTurnedOn?
     equal agent.companies.length, 1
     ok agent.currentCompany?
     start()
@@ -31,7 +32,7 @@ asyncTest 'Sign Up (Fail with errors populated)', 3, ->
 # Test of login w un/pw occurs with every test
 ###
 
-firehoseTest 'Test Immediate Login', 11, (agent) ->
+firehoseTest 'Test Immediate Login', 14, (agent) ->
   ok agent.firstName?
   ok agent.lastName?
   ok agent.email?
@@ -43,13 +44,16 @@ firehoseTest 'Test Immediate Login', 11, (agent) ->
     ok agent.email?
     ok agent.id?
     ok agent.createdAt?
+    ok agent.DNDStartHourUTC?
+    ok agent.DNDEndHourUTC?
+    ok agent.DNDIsManuallyTurnedOn?
     equal agent.companies.length, 1
     ok agent.currentCompany?
     start()
   .fail ->
     start()
 
-firehoseTest 'Log In With Access Token', 8, (agent) ->
+firehoseTest 'Log In With Access Token', 11, (agent) ->
   agent.email = null
   agent.login()
   .done (data, textStatus) ->
@@ -59,6 +63,9 @@ firehoseTest 'Log In With Access Token', 8, (agent) ->
     ok agent.email?
     ok agent.id?
     ok agent.createdAt?
+    ok agent.DNDStartHourUTC?
+    ok agent.DNDEndHourUTC?
+    ok agent.DNDIsManuallyTurnedOn?
     equal agent.companies.length, 1
     ok agent.currentCompany?
     start()
@@ -79,7 +86,7 @@ firehoseTest 'Log Out', 2, (agent) ->
   .fail ->
     start()
 
-firehoseTest 'Fetch', 14, (agent) ->
+firehoseTest 'Fetch', 17, (agent) ->
   agent.fetch()
   .done (data, textStatus) ->
     equal textStatus, "success"
@@ -88,6 +95,9 @@ firehoseTest 'Fetch', 14, (agent) ->
     ok agent.email?
     ok agent.id?
     ok agent.createdAt?
+    ok agent.DNDStartHourUTC?
+    ok agent.DNDEndHourUTC?
+    ok agent.DNDIsManuallyTurnedOn?
     equal agent.companies.length, 1
     company = agent.currentCompany
     ok company?
@@ -101,7 +111,7 @@ firehoseTest 'Fetch', 14, (agent) ->
   .fail ->
     start()
 
-firehoseTest 'Update', 7, (agent) ->
+firehoseTest 'Update', 10, (agent) ->
   agent.firstName = "Heidi"
   agent.lastName  = "Kirk"
   agent.setNewPassword Faker.Lorem.words(1)
@@ -116,6 +126,9 @@ firehoseTest 'Update', 7, (agent) ->
       ok agent.email?
       ok agent.id?
       ok agent.createdAt?
+      ok agent.DNDStartHourUTC?
+      ok agent.DNDEndHourUTC?
+      ok agent.DNDIsManuallyTurnedOn?
       start()
     .fail ->
       start()

@@ -1012,6 +1012,27 @@ Firehose.Agent = (function(_super) {
 
   Agent.prototype.currentCompany = null;
 
+  /*
+  @property [integer]
+  */
+
+
+  Agent.prototype.DNDStartHourUTC = null;
+
+  /*
+  @property [integer]
+  */
+
+
+  Agent.prototype.DNDEndHourUTC = null;
+
+  /*
+  @property [boolean]
+  */
+
+
+  Agent.prototype.DNDIsManuallyTurnedOn = false;
+
   Agent.prototype._password = null;
 
   Agent.prototype.companies = null;
@@ -1263,6 +1284,9 @@ Firehose.Agent = (function(_super) {
     this._setIfNotNull("firstName", json.first_name);
     this._setIfNotNull("lastName", json.last_name);
     this._setIfNotNull("email", json.email);
+    this._setIfNotNull("DNDStartHourUTC", json.dnd_start_hour_utc);
+    this._setIfNotNull("DNDEndHourUTC", json.dnd_end_hour_utc);
+    this._setIfNotNull("DNDIsManuallyTurnedOn", json.dnd_is_manually_turned_on);
     this._populateAssociatedObjects(this, "companies", json.companies, function(json) {
       return Firehose.Company.companyWithID(json.id, null, _this);
     });
@@ -1278,7 +1302,10 @@ Firehose.Agent = (function(_super) {
         first_name: this.firstName,
         last_name: this.lastName,
         email: this.email,
-        password: this._password != null ? this._password : void 0
+        password: this._password != null ? this._password : void 0,
+        dnd_start_hour_utc: this.DNDStartHourUTC,
+        dnd_end_hour_utc: this.DNDEndHourUTC,
+        dnd_is_manually_turned_on: this.DNDIsManuallyTurnedOn
       }
     };
   };
@@ -1292,6 +1319,9 @@ Firehose.Agent = (function(_super) {
       last_name: this.lastName,
       email: this.email,
       password: this._password != null ? this._password : void 0,
+      dnd_start_hour_utc: this.DNDStartHourUTC,
+      dnd_end_hour_utc: this.DNDEndHourUTC,
+      dnd_is_manually_turned_on: this.DNDIsManuallyTurnedOn,
       companies: (_ref1 = this.companies) != null ? _ref1._toArchivableJSON() : void 0
     });
   };
@@ -1364,109 +1394,18 @@ Firehose.Company = (function(_super) {
   Company.prototype.fetchAutomatically = true;
 
   /*
-  @property [String]
-  */
-
-
-  Company.prototype.knowledgeBaseSubdomain = null;
-
-  /*
-  @property [String]
-  */
-
-
-  Company.prototype.knowledgeBaseCustomDomain = null;
-
-  /*
-  @property [String]
-  */
-
-
-  Company.prototype.knowledgeBaseCSS = null;
-
-  /*
-  @property [String]
-  */
-
-
-  Company.prototype.knowlegeBaseLayoutTemplate = null;
-
-  /*
-  @property [String]
-  */
-
-
-  Company.prototype.knowlegeBaseSearchTemplate = null;
-
-  /*
-  @property [String]
-  */
-
-
-  Company.prototype.knowlegeBaseArticleTemplate = null;
-
-  /*
-  @property [String]
-  */
-
-
-  Company.prototype.chatTitleTextColor = null;
-
-  /*
-  @property [String]
-  */
-
-
-  Company.prototype.chatTitleBackgroundColor = null;
-
-  /*
-  @property [String]
-  */
-
-
-  Company.prototype.chatAgentColor = null;
-
-  /*
-  @property [String]
-  */
-
-
-  Company.prototype.chatCustomerColor = null;
-
-  /*
-  @property [String]
-  */
-
-
-  Company.prototype.chatFieldTextColor = null;
-
-  /*
-  @property [String]
-  */
-
-
-  Company.prototype.chatFieldBackgroundColor = null;
-
-  /*
-  @property [String]
-  */
-
-
-  Company.prototype.chatBackgroundColor = null;
-
-  /*
-  @property [String]
-  */
-
-
-  Company.prototype.chatResponseBackgroundColor = null;
-
-  /*
   @property [Array<Agent>]
   */
 
 
   Company.prototype.agents = null;
+
+  /*
+  @property [Array<Product>]
+  */
+
+
+  Company.prototype.products = null;
 
   /*
   @property [Array<AgentInvite>]
@@ -1498,10 +1437,6 @@ Firehose.Company = (function(_super) {
   Company.prototype._facebookAccounts = null;
 
   Company.prototype._emailAccounts = null;
-
-  Company.prototype._articles = null;
-
-  Company.prototype._searchedArticles = null;
 
   /*
   @property [CreditCard]
@@ -1638,66 +1573,23 @@ Firehose.Company = (function(_super) {
   };
 
   /*
-  Create a company object when all you have is the subdomain for the knowledge base. You can then call `fetch` to get the company's `id` and `title`.
-  @param subdomain [String] The subdomain of the company
-  @return [Company] Returns a company object you can then call `fetch` on.
-  */
-
-
-  Company.companyWithKBSubdomain = function(subdomain) {
-    return Firehose.Object._objectOfClassWithID(Firehose.Company, {
-      knowledgeBaseSubdomain: subdomain
-    });
-  };
-
-  /*
-  Create a company object when all you have is the custom domain for the knowledge base. You can then call `fetch` to get the company's `id` and `title`.
-  @param customDomain [String] The custom domain that maps (via a CNAME DNS record) to the subdomain of the company's kb.
-  @return [Company] Returns a company object you can then call `fetch` on.
-  */
-
-
-  Company.companyWithKBCustomDomain = function(customDomain) {
-    return Firehose.Object._objectOfClassWithID(Firehose.Company, {
-      knowledgeBaseCustomDomain: customDomain
-    });
-  };
-
-  /*
-  Fetch a companies properties based on `id`, `knowledgeBaseSubdomain` or `knowledgeBaseCustomDomain`.
+  Fetch a companies properties based on its `id`.
   @return [jqXHR Promise] Promise
   */
 
 
   Company.prototype.fetch = function(options) {
-    var request, requested_settings,
+    var request,
       _this = this;
     if (options == null) {
       options = {};
     }
     if (this.id != null) {
-      requested_settings = options.include_settings != null ? "?include=" + (options.include_settings.join(",")) : "";
       request = {
-        route: "companies/" + this.id + requested_settings
-      };
-    } else if (this.knowledgeBaseSubdomain) {
-      request = {
-        auth: false,
-        route: "companies",
-        params: {
-          kb_subdomain: this.knowledgeBaseSubdomain
-        }
-      };
-    } else if (this.knowledgeBaseCustomDomain) {
-      request = {
-        auth: false,
-        route: "companies",
-        params: {
-          kb_custom_domain: this.knowledgeBaseCustomDomain
-        }
+        route: "companies/" + this.id
       };
     } else {
-      throw "You can't call 'fetch' on a company unless 'id', 'knowledgeBaseSubdomain' or 'knowledgeBaseCustomDomain' is set.";
+      throw "You can't call 'fetch' on a company unless 'id' is set.";
     }
     return Firehose.client.get(this, request).done(function(data) {
       return _this._populateWithJSON(data);
@@ -1870,53 +1762,6 @@ Firehose.Company = (function(_super) {
     return this._emailAccounts;
   };
 
-  /* 
-  All the articles of a company.
-  @return [RemoteArray<Article>] The found articles.
-  */
-
-
-  Company.prototype.articles = function() {
-    var articlesRemoteArray,
-      _this = this;
-    if (this._articles == null) {
-      articlesRemoteArray = new Firehose.RemoteArray("companies/" + this.id + "/articles", null, function(json) {
-        return Firehose.Article.articleWithID(json.id, _this);
-      });
-      articlesRemoteArray.auth = false;
-      this._setIfNotNull("_articles", articlesRemoteArray);
-    }
-    return this._articles;
-  };
-
-  /*
-  Returns a remote array of articles found by searching for `text`.
-  @param text [String] The string of text you want to search for articles containing.
-  @note Every time you call this on a company, you are creating a new remote array and any previously created have their network requests cancelled.
-  @return [RemoteArray<Article>] The found articles.
-  */
-
-
-  Company.prototype.searchedArticles = function(text) {
-    var articlesRemoteArray, currentSearchedArticles,
-      _this = this;
-    currentSearchedArticles = this.get('_searchedArticles');
-    if (currentSearchedArticles) {
-      currentSearchedArticles.abort();
-    }
-    articlesRemoteArray = new Firehose.RemoteArray("companies/" + this.id + "/article_search", {
-      q: text
-    }, function(json) {
-      var article;
-      article = Firehose.Article.articleWithID(json.id, _this);
-      article._populateWithJSON(json);
-      return article;
-    });
-    articlesRemoteArray.auth = false;
-    this._setIfNotNull("_searchedArticles", articlesRemoteArray);
-    return articlesRemoteArray;
-  };
-
   /*
   Associates an agent with a company.
   @param agent [Agent] The agent to add.
@@ -2055,25 +1900,8 @@ Firehose.Company = (function(_super) {
     }
   };
 
-  /*
-  Returns the base URL for the company's knowledge base for the current environment.
-  @note In production, if a custom domain is set on the company, it returns that. Otherwise, it returns the companies subdomain URL. (i.e. msytrou.firehosehelp.com)
-  @note The beta URL for the kb is firehosesupport.com. So instead of mystrou.firehosehelp.com like in production, the beta URL would be mystrou.firehosesupport.com.
-  @return [String] The URL for the company's knowledge base in the current environment.
-  */
-
-
-  Company.prototype.kbBaseURL = function() {
-    var customDomain;
-    if (Firehose.environment() === 'production' && (customDomain = this.get('knowledgeBaseCustomDomain'))) {
-      return "http://" + customDomain;
-    } else {
-      return Firehose.baseURLFor('kb', this.get('knowledgeBaseSubdomain'));
-    }
-  };
-
   Company.prototype._populateWithJSON = function(json) {
-    var _ref1, _ref10, _ref11, _ref12, _ref13, _ref14, _ref15, _ref2, _ref3, _ref4, _ref5, _ref6, _ref7, _ref8, _ref9,
+    var _ref1,
       _this = this;
     this._setIfNotNull("title", json.title);
     if (this.token == null) {
@@ -2088,25 +1916,14 @@ Firehose.Company = (function(_super) {
     this._setIfNotNull("unresolvedCount", json.unresolved_count);
     this._setIfNotNull("isBrandNew", json.is_brand_new);
     this._setIfNotNull("fetchAutomatically", (_ref1 = json.company_settings) != null ? _ref1.fetch_automatically : void 0);
-    this._setIfNotNull("knowledgeBaseSubdomain", (_ref2 = json.company_settings) != null ? _ref2.kb_subdomain : void 0);
-    this._setIfNotNull("knowledgeBaseCustomDomain", (_ref3 = json.company_settings) != null ? _ref3.kb_custom_domain : void 0);
-    this._setIfNotNull("knowledgeBaseCSS", (_ref4 = json.company_settings) != null ? _ref4.kb_css : void 0);
-    this._setIfNotNull("knowledgeBaseLayoutTemplate", (_ref5 = json.company_settings) != null ? _ref5.kb_layout_template : void 0);
-    this._setIfNotNull("knowledgeBaseSearchTemplate", (_ref6 = json.company_settings) != null ? _ref6.kb_search_template : void 0);
-    this._setIfNotNull("knowledgeBaseArticleTemplate", (_ref7 = json.company_settings) != null ? _ref7.kb_article_template : void 0);
-    this._setIfNotNull("chatTitleTextColor", (_ref8 = json.company_settings) != null ? _ref8.chat_title_text_color : void 0);
-    this._setIfNotNull("chatTitleBackgroundColor", (_ref9 = json.company_settings) != null ? _ref9.chat_title_background_color : void 0);
-    this._setIfNotNull("chatAgentColor", (_ref10 = json.company_settings) != null ? _ref10.chat_agent_color : void 0);
-    this._setIfNotNull("chatCustomerColor", (_ref11 = json.company_settings) != null ? _ref11.chat_customer_color : void 0);
-    this._setIfNotNull("chatFieldTextColor", (_ref12 = json.company_settings) != null ? _ref12.chat_field_text_color : void 0);
-    this._setIfNotNull("chatFieldBackgroundColor", (_ref13 = json.company_settings) != null ? _ref13.chat_field_background_color : void 0);
-    this._setIfNotNull("chatBackgroundColor", (_ref14 = json.company_settings) != null ? _ref14.chat_background_color : void 0);
-    this._setIfNotNull("chatResponseBackgroundColor", (_ref15 = json.company_settings) != null ? _ref15.chat_response_background_color : void 0);
     this._populateAssociatedObjects(this, "agents", json.agents, function(json) {
       var agent;
       agent = Firehose.Agent.agentWithID(json.id);
       agent.companies.insertObject(_this);
       return agent;
+    });
+    this._populateAssociatedObjects(this, "products", json.products, function(json) {
+      return Firehose.Product.productWithID(json.id, _this);
     });
     this._populateAssociatedObjects(this, "agentInvites", json.agent_invites, function(json) {
       return Firehose.AgentInvite._agentInviteWithID(json.id, _this);
@@ -2126,21 +1943,7 @@ Firehose.Company = (function(_super) {
       company: {
         title: this.title,
         company_settings_attributes: {
-          fetch_automatically: this.fetchAutomatically,
-          kb_subdomain: this._textOrNull(this.knowledgeBaseSubdomain),
-          kb_custom_domain: this._textOrNull(this.knowledgeBaseCustomDomain),
-          kb_css: this._textOrNull(this.knowledgeBaseCSS),
-          kb_layout_template: this._textOrNull(this.knowledgeBaseLayoutTemplate),
-          kb_search_template: this._textOrNull(this.knowledgeBaseSearchTemplate),
-          kb_article_template: this._textOrNull(this.knowledgeBaseArticleTemplate),
-          chat_title_text_color: this._textOrNull(this.chatTitleTextColor),
-          chat_title_background_color: this._textOrNull(this.chatTitleBackgroundColor),
-          chat_agent_color: this._textOrNull(this.chatAgentColor),
-          chat_customer_color: this._textOrNull(this.chatCustomerColor),
-          chat_field_text_color: this._textOrNull(this.chatFieldTextColor),
-          chat_field_background_color: this._textOrNull(this.chatFieldBackgroundColor),
-          chat_background_color: this._textOrNull(this.chatBackgroundColor),
-          chat_response_background_color: this._textOrNull(this.chatResponseBackgroundColor)
+          fetch_automatically: this.fetchAutomatically
         }
       }
     };
@@ -4588,21 +4391,21 @@ Firehose.Product = (function(_super) {
   */
 
 
-  Product.prototype.knowlegeBaseLayoutTemplate = null;
+  Product.prototype.knowledgeBaseLayoutTemplate = null;
 
   /*
   @property [String]
   */
 
 
-  Product.prototype.knowlegeBaseSearchTemplate = null;
+  Product.prototype.knowledgeBaseSearchTemplate = null;
 
   /*
   @property [String]
   */
 
 
-  Product.prototype.knowlegeBaseArticleTemplate = null;
+  Product.prototype.knowledgeBaseArticleTemplate = null;
 
   /*
   @property [String]
@@ -4702,6 +4505,14 @@ Firehose.Product = (function(_super) {
 
   Product.prototype.chatOfflineEmailAddress = null;
 
+  Product.prototype._articles = null;
+
+  Product.prototype._searchedArticles = null;
+
+  Product.prototype._includesKnowledgeBaseAttributes = false;
+
+  Product.prototype._includesChatAttributes = false;
+
   /*
   The designated method of creating a new product.  
   @param name [String] The short display name.
@@ -4717,10 +4528,43 @@ Firehose.Product = (function(_super) {
     });
   };
 
-  Product._productWithID = function(id, company) {
+  /*
+  Create a product object when all you have is an id. You can then fetch articles or fetch the product's properties if you're authenticated as an agent of the company.
+  @param id [number] The id of the product.
+  @return [Product] Returns a product object. If a product object with this id already exists in the cache, it will be returned.
+  */
+
+
+  Product.productWithID = function(id, company) {
     return Firehose.Object._objectOfClassWithID(Firehose.Product, {
       id: id,
       company: company
+    });
+  };
+
+  /*
+  Create a product object when all you have is the subdomain for the knowledge base. You can then call `fetch` to get the products's `id` and `name`.
+  @param subdomain [String] The subdomain of the product.
+  @return [Product] Returns a product object you can then call `fetch` on.
+  */
+
+
+  Product.productWithKBSubdomain = function(subdomain) {
+    return Firehose.Object._objectOfClassWithID(Firehose.Product, {
+      knowledgeBaseSubdomain: subdomain
+    });
+  };
+
+  /*
+  Create a product object when all you have is the custom domain for the knowledge base. You can then call `fetch` to get the products's `id` and `name`.
+  @param customDomain [String] The custom domain that maps (via a CNAME DNS record) to the subdomain of the products's kb.
+  @return [Product] Returns a product object you can then call `fetch` on.
+  */
+
+
+  Product.productWithKBCustomDomain = function(customDomain) {
+    return Firehose.Object._objectOfClassWithID(Firehose.Product, {
+      knowledgeBaseCustomDomain: customDomain
     });
   };
 
@@ -4765,15 +4609,17 @@ Firehose.Product = (function(_super) {
 
 
   Product.prototype.fetch = function(options) {
-    var request, requested_attributes,
+    var request,
       _this = this;
     if (options == null) {
       options = {};
     }
     if (this.id != null) {
-      requested_attributes = options.include != null ? "?include=" + (options.include.join(",")) : "";
       request = {
-        route: "products/" + this.id + requested_attributes
+        route: "products/" + this.id,
+        params: {
+          include: options.include != null ? options.include.join(",") : void 0
+        }
       };
     } else if (this.knowledgeBaseSubdomain) {
       request = {
@@ -4816,14 +4662,84 @@ Firehose.Product = (function(_super) {
     });
   };
 
+  /* 
+  All the articles of a product.
+  @return [RemoteArray<Article>] The found articles.
+  */
+
+
+  Product.prototype.articles = function() {
+    var articlesRemoteArray,
+      _this = this;
+    if (this._articles == null) {
+      articlesRemoteArray = new Firehose.RemoteArray("products/" + this.id + "/articles", null, function(json) {
+        return Firehose.Article.articleWithID(json.id, _this);
+      });
+      articlesRemoteArray.auth = false;
+      this._setIfNotNull("_articles", articlesRemoteArray);
+    }
+    return this._articles;
+  };
+
+  /*
+  Returns a remote array of articles found by searching for `text`.
+  @param text [String] The string of text you want to search for articles containing.
+  @note Every time you call this on a product, you are creating a new remote array and any previously created have their network requests cancelled.
+  @return [RemoteArray<Article>] The found articles.
+  */
+
+
+  Product.prototype.searchedArticles = function(text) {
+    var articlesRemoteArray, currentSearchedArticles,
+      _this = this;
+    currentSearchedArticles = this.get('_searchedArticles');
+    if (currentSearchedArticles) {
+      currentSearchedArticles.abort();
+    }
+    articlesRemoteArray = new Firehose.RemoteArray("products/" + this.id + "/article_search", {
+      q: text
+    }, function(json) {
+      var article;
+      article = Firehose.Article.articleWithID(json.id, _this);
+      article._populateWithJSON(json);
+      return article;
+    });
+    articlesRemoteArray.auth = false;
+    this._setIfNotNull("_searchedArticles", articlesRemoteArray);
+    return articlesRemoteArray;
+  };
+
+  /*
+  Returns the base URL for the product's knowledge base for the current environment.
+  @note In production, if a custom domain is set on the product, it returns that. Otherwise, it returns the products subdomain URL. (i.e. calvetica.firehosehelp.com)
+  @note The beta URL for the kb is firehosesupport.com. So instead of calvetica.firehosehelp.com like in production, the beta URL would be calvetica.firehosesupport.com.
+  @return [String] The URL for the product's knowledge base in the current environment.
+  */
+
+
+  Product.prototype.kbBaseURL = function() {
+    var customDomain;
+    if (!this._includesKnowledgeBaseAttributes) {
+      throw "You must call `Product#fetch( include: ['kb'] )` before you can call this.";
+    }
+    if (Firehose.environment() === 'production' && (customDomain = this.get('knowledgeBaseCustomDomain'))) {
+      return "http://" + customDomain;
+    } else {
+      return Firehose.baseURLFor('kb', this.get('knowledgeBaseSubdomain'));
+    }
+  };
+
   Product.prototype._populateWithJSON = function(json) {
     this._setIfNotNull("name", json.name);
+    this._setIfNotNull("token", json.token);
+    this._includesKnowledgeBaseAttributes = typeof json.kb_subdomain !== 'undefined';
     this._setIfNotNull("knowledgeBaseSubdomain", json.kb_subdomain);
     this._setIfNotNull("knowledgeBaseCustomDomain", json.kb_custom_domain);
     this._setIfNotNull("knowledgeBaseCSS", json.kb_css);
-    this._setIfNotNull("knowlegeBaseLayoutTemplate", json.kb_layout_template);
-    this._setIfNotNull("knowlegeBaseSearchTemplate", json.kb_search_template);
-    this._setIfNotNull("knowlegeBaseArticleTemplate", json.kb_article_template);
+    this._setIfNotNull("knowledgeBaseLayoutTemplate", json.kb_layout_template);
+    this._setIfNotNull("knowledgeBaseSearchTemplate", json.kb_search_template);
+    this._setIfNotNull("knowledgeBaseArticleTemplate", json.kb_article_template);
+    this._includesChatAttributes = typeof json.chat_title_text_color !== 'undefined';
     this._setIfNotNull("chatTitleTextColor", json.chat_title_text_color);
     this._setIfNotNull("chatTitleBackgroundColor", json.chat_title_background_color);
     this._setIfNotNull("chatAgentColor", json.chat_agent_color);
@@ -4844,27 +4760,27 @@ Firehose.Product = (function(_super) {
   Product.prototype._toJSON = function() {
     return {
       product: {
-        name: this.name,
-        kb_subdomain: this.knowledgeBaseSubdomain,
-        kb_custom_domain: this.knowledgeBaseCustomDomain,
-        kb_css: this.knowledgeBaseCSS,
-        kb_layout_template: this.knowlegeBaseLayoutTemplate,
-        kb_search_template: this.knowlegeBaseSearchTemplate,
-        kb_article_template: this.knowlegeBaseArticleTemplate,
-        chat_title_text_color: this.chatTitleTextColor,
-        chat_title_background_color: this.chatTitleBackgroundColor,
-        chat_agent_color: this.chatAgentColor,
-        chat_customer_color: this.chatCustomerColor,
-        chat_field_text_color: this.chatFieldTextColor,
-        chat_field_background_color: this.chatFieldBackgroundColor,
-        chat_background_color: this.chatBackgroundColor,
-        chat_response_background_color: this.chatResponseBackgroundColor,
-        chat_css: this.chatCSS,
-        chat_online_header_text: this.chatOnlineHeaderText,
-        chat_online_welcome_text: this.chatOnlineWelcomeText,
-        chat_offline_header_text: this.chatOfflineHeaderText,
-        chat_offline_welcome_text: this.chatOfflineWelcomeText,
-        chat_offline_email_address: this.chatOfflineEmailAddress
+        name: this.name != null ? this.name : void 0,
+        kb_subdomain: this.knowledgeBaseSubdomain != null ? this.knowledgeBaseSubdomain : void 0,
+        kb_custom_domain: this._includesKnowledgeBaseAttributes ? this.knowledgeBaseCustomDomain : void 0,
+        kb_css: this._includesKnowledgeBaseAttributes ? this.knowledgeBaseCSS : void 0,
+        kb_layout_template: this._includesKnowledgeBaseAttributes ? this.knowledgeBaseLayoutTemplate : void 0,
+        kb_search_template: this._includesKnowledgeBaseAttributes ? this.knowledgeBaseSearchTemplate : void 0,
+        kb_article_template: this._includesKnowledgeBaseAttributes ? this.knowledgeBaseArticleTemplate : void 0,
+        chat_title_text_color: this._includesChatAttributes ? this.chatTitleTextColor : void 0,
+        chat_title_background_color: this._includesChatAttributes ? this.chatTitleBackgroundColor : void 0,
+        chat_agent_color: this._includesChatAttributes ? this.chatAgentColor : void 0,
+        chat_customer_color: this._includesChatAttributes ? this.chatCustomerColor : void 0,
+        chat_field_text_color: this._includesChatAttributes ? this.chatFieldTextColor : void 0,
+        chat_field_background_color: this._includesChatAttributes ? this.chatFieldBackgroundColor : void 0,
+        chat_background_color: this._includesChatAttributes ? this.chatBackgroundColor : void 0,
+        chat_response_background_color: this._includesChatAttributes ? this.chatResponseBackgroundColor : void 0,
+        chat_css: this._includesChatAttributes ? this.chatCSS : void 0,
+        chat_online_header_text: this._includesChatAttributes ? this.chatOnlineHeaderText : void 0,
+        chat_online_welcome_text: this._includesChatAttributes ? this.chatOnlineWelcomeText : void 0,
+        chat_offline_header_text: this._includesChatAttributes ? this.chatOfflineHeaderText : void 0,
+        chat_offline_welcome_text: this._includesChatAttributes ? this.chatOfflineWelcomeText : void 0,
+        chat_offline_email_address: this._includesChatAttributes ? this.chatOfflineEmailAddress : void 0
       }
     };
   };
@@ -4872,12 +4788,13 @@ Firehose.Product = (function(_super) {
   Product.prototype._toArchivableJSON = function() {
     return $.extend(Product.__super__._toArchivableJSON.call(this), {
       name: this.name,
+      token: this.token,
       kb_subdomain: this.knowledgeBaseSubdomain,
       kb_custom_domain: this.knowledgeBaseCustomDomain,
       kb_css: this.knowledgeBaseCSS,
-      kb_layout_template: this.knowlegeBaseLayoutTemplate,
-      kb_search_template: this.knowlegeBaseSearchTemplate,
-      kb_article_template: this.knowlegeBaseArticleTemplate,
+      kb_layout_template: this.knowledgeBaseLayoutTemplate,
+      kb_search_template: this.knowledgeBaseSearchTemplate,
+      kb_article_template: this.knowledgeBaseArticleTemplate,
       chat_title_text_color: this.chatTitleTextColor,
       chat_title_background_color: this.chatTitleBackgroundColor,
       chat_agent_color: this.chatAgentColor,
@@ -5200,11 +5117,11 @@ Firehose.Article = (function(_super) {
   Article._firehoseType = "Article";
 
   /*
-  @property [Company]
+  @property [Product]
   */
 
 
-  Article.prototype.company = null;
+  Article.prototype.product = null;
 
   /*
   @property [String]
@@ -5227,18 +5144,18 @@ Firehose.Article = (function(_super) {
 
   Article.prototype.body = null;
 
-  Article.articleWithTitleBodyAndCompany = function(title, body, company) {
+  Article.articleWithTitleAndBody = function(title, body, product) {
     return Firehose.Object._objectOfClassWithID(Firehose.Article, {
       title: title,
       body: body,
-      company: company
+      product: product
     });
   };
 
-  Article.articleWithID = function(id, company) {
+  Article.articleWithID = function(id, product) {
     return Firehose.Object._objectOfClassWithID(Firehose.Article, {
       id: id,
-      company: company
+      product: product
     });
   };
 
@@ -5265,12 +5182,12 @@ Firehose.Article = (function(_super) {
       return Firehose.client.put(this, params);
     } else {
       params = {
-        route: "companies/" + this.company.id + "/articles",
+        route: "products/" + this.product.id + "/articles",
         body: this._toJSON()
       };
       return Firehose.client.post(this, params).done(function(data) {
         _this._populateWithJSON(data);
-        return _this.company.articles().insertObject(_this);
+        return _this.product.articles().insertObject(_this);
       });
     }
   };
@@ -5282,7 +5199,7 @@ Firehose.Article = (function(_super) {
       route: "articles/" + this.id
     };
     return Firehose.client["delete"](this, params).done(function() {
-      return _this.company.articles().dropObject(_this);
+      return _this.product.articles().dropObject(_this);
     });
   };
 

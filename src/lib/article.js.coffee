@@ -54,7 +54,7 @@ class Firehose.Article extends Firehose.Object
       Firehose.client.put( this, params )
     else
       params = 
-        route: "products/#{@company.id}/articles"
+        route: "products/#{@product.id}/articles"
         body:  this._toJSON()
       Firehose.client.post( this, params ).done (data) =>
         this._populateWithJSON data
