@@ -10,17 +10,17 @@ class Firehose.Customer extends Firehose.Object
   company: null
   
   ###
-  @property [string] 
+  @property [String] 
   ###
   name: null
   
   ###
-  @property [string] 
+  @property [String] 
   ###
   location: null
   
   ###
-  @property [string] 
+  @property [String] 
   ###
   timeZone: null
   
@@ -30,7 +30,7 @@ class Firehose.Customer extends Firehose.Object
   newestInteractionId: null
   
   ###
-  @property [string] 
+  @property [String] 
   ###
   newestInteractionExcerpt: null
   

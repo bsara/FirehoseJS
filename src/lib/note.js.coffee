@@ -10,7 +10,7 @@ class Firehose.Note extends Firehose.Object
   interaction: null
   
   ###
-  @property [string] 
+  @property [String] 
   ###
   body: null
   

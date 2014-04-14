@@ -5,7 +5,7 @@ class Firehose.AgentInvite extends Firehose.Object
   @_firehoseType: "AgentInvite"
   
   ###
-  @property [string] 
+  @property [String] 
   ###
   toEmail: null
   

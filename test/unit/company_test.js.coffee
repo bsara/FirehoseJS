@@ -44,91 +44,11 @@ firehoseTest 'Fetch', 13, (agent) ->
   .fail ->
     start()
 
-firehoseTest 'Fetch Based on KB subdomain', 3, (agent) ->
-  company = agent.companies[0]
-  company.fetch()
-  .done ->
-    kbCompany = Firehose.Company.companyWithKBSubdomain company.knowledgeBaseSubdomain
-    kbCompany.fetch()
-    .done (data, textStatus) ->
-      equal textStatus, "success"
-      ok company.id?
-      ok company.title?
-      start()
-    .fail ->
-      start()
-  .fail ->
-    start()
-
-firehoseTest 'Fetch Based on KB custom domain', 3, (agent) ->
-  blah = this
-  company = agent.companies[0]
-  company.fetch()
-  .done ->
-    kbCompany = Firehose.Company.companyWithKBCustomDomain company.knowledgeBaseCustomDomain
-    kbCompany.fetch()
-    .done (data, textStatus) ->
-      equal textStatus, "success"
-      ok company.id?
-      ok company.title?
-      start()
-    .fail ->
-      start()
-  .fail ->
-    start()
-
-firehoseTest 'Fetch (throws error because not enough info is set)', 1, (agent) ->
-  company = agent.companies[0]
-  company.fetch()
-  .done ->
-    kbCompany = Firehose.Company.companyWithKBCustomDomain company.knowledgeBaseCustomDomain
-    throws kbCompany.fetch()
-    start()
-  .fail ->
-    start()
-
-firehoseTest 'Fetch (include extra settings)', 16, (agent) ->
-  company = agent.companies[0]
-  company.fetch( include_settings: ["kb_theming", "chat_theming"] )
-  .done (data, textStatus) ->
-    equal textStatus, "success"
-    ok company.title?
-    ok company.knowledgeBaseSubdomain?
-    ok company.knowledgeBaseCustomDomain?
-    ok company.knowledgeBaseCSS?
-    ok company.knowledgeBaseLayoutTemplate?
-    ok company.knowledgeBaseSearchTemplate?
-    ok company.knowledgeBaseArticleTemplate?
-    ok company.chatTitleTextColor?         
-    ok company.chatTitleBackgroundColor?   
-    ok company.chatAgentColor?             
-    ok company.chatCustomerColor?          
-    ok company.chatFieldTextColor?         
-    ok company.chatFieldBackgroundColor?   
-    ok company.chatBackgroundColor?        
-    ok company.chatResponseBackgroundColor?
-    start()
-  .fail ->
-    start()
 
 
 firehoseTest 'Update', 17, (agent) ->
   company       = agent.companies[0]
   company.title = "Adam's Company"
-  company.knowledgeBaseSubdomain       = "mystrou"
-  company.knowledgeBaseCustomDomain    = "support.firehoseapp.com"
-  company.knowledgeBaseCSS             = "css"
-  company.knowledgeBaseLayoutTemplate  = "layout template"
-  company.knowledgeBaseSearchTemplate  = "search template"
-  company.knowledgeBaseArticleTemplate = "article template"
-  company.chatTitleTextColor           = "#000000"
-  company.chatTitleBackgroundColor     = "#000000"
-  company.chatAgentColor               = "#000000"
-  company.chatCustomerColor            = "#000000"
-  company.chatFieldTextColor           = "#000000"
-  company.chatFieldBackgroundColor     = "#000000"
-  company.chatBackgroundColor          = "#000000"
-  company.chatResponseBackgroundColor  = "#000000"
   company.save()
   .done (saveData, saveTextStatus) ->
     equal saveTextStatus, "nocontent"
@@ -136,20 +56,6 @@ firehoseTest 'Update', 17, (agent) ->
     .done (fetchData, fetchTextStatus) ->
       equal fetchTextStatus, "success"
       equal company.title, "Adam's Company"
-      equal company.knowledgeBaseSubdomain,       "mystrou"
-      equal company.knowledgeBaseCustomDomain,    "support.firehoseapp.com"
-      equal company.knowledgeBaseCSS,             "css"
-      equal company.knowledgeBaseLayoutTemplate,  "layout template"
-      equal company.knowledgeBaseSearchTemplate,  "search template"
-      equal company.knowledgeBaseArticleTemplate, "article template"
-      equal company.chatTitleTextColor,           "#000000"   
-      equal company.chatTitleBackgroundColor,     "#000000"   
-      equal company.chatAgentColor,               "#000000"   
-      equal company.chatCustomerColor,            "#000000"    
-      equal company.chatFieldTextColor,           "#000000"   
-      equal company.chatFieldBackgroundColor,     "#000000"   
-      equal company.chatBackgroundColor,          "#000000"    
-      equal company.chatResponseBackgroundColor,  "#000000"    
       start()
     .fail ->
       start()
@@ -222,51 +128,6 @@ firehoseTest 'Fetch Email Accounts', 2, (agent) ->
   .fail ->
     start()
 
-firehoseTest 'Fetch Articles', 2, (agent) ->
-  company = agent.companies[0]
-  articles = company.articles()
-  articles.next()
-  .done (data, textStatus) ->
-    equal textStatus, "success"
-    ok articles.length > 0
-    start()
-  .fail ->
-    start()
-
-firehoseTest 'Search Articles', 2, (agent) ->
-  company = agent.companies[0]
-  articles = company.articles()
-  articles.next()
-  .done ->
-    firstWord = articles[0].body.split(" ")[0]
-    searchedArticles = company.searchedArticles firstWord
-    searchedArticles.next()
-    .done (data, textStatus) ->
-      equal textStatus, "success"
-      ok searchedArticles.length > 0
-      start()
-    .fail ->
-      start()
-  .fail ->
-    start()
-
-firehoseTest 'Search Articles (Abort)', 1, (agent) ->
-  company = agent.companies[0]
-  articles = company.articles()
-  articles.next()
-  .done ->
-    firstWord = articles[0].body.split(" ")[0]
-    searchedArticles = company.searchedArticles firstWord
-    searchedArticles.next()
-    .done ->
-      throw "shouldn't have gotten here"
-      start()
-    .fail (jqXHR, textStatus, errorThrown) ->
-      ok textStatus == 'abort'
-      start()
-    searchedArticles.abort()
-  .fail ->
-    start()
 
 firehoseTest 'Add and Remove Agent', 2, (agent) ->
   company = agent.companies[0]
@@ -309,25 +170,4 @@ firehoseTest 'Add and Remove Agent', 2, (agent) ->
     .fail ->
       start()
 
-firehoseTest 'Produce URL for companys kb', 5, (agent) ->
-  company      = agent.companies[0]
-  subdomain    = company.get('knowledgeBaseSubdomain')
-  customDomain = company.get('knowledgeBaseCustomDomain')
 
-  window.unitTestDocumentURL = "http://localhost:4001"
-  ok company.kbBaseURL() == "http://#{subdomain}.lvh.me:4007"
-
-  window.unitTestDocumentURL = "http://localhost:4201"
-  ok company.kbBaseURL() == "http://#{subdomain}.lvh.me:4207"
-
-  window.unitTestDocumentURL = "https://beta.firehoseapp.com"
-  ok company.kbBaseURL() == "http://#{subdomain}.firehosesupport.com"
-
-  window.unitTestDocumentURL = "https://www.firehoseapp.com"
-  ok company.kbBaseURL() == "http://#{customDomain}"
-
-  company.set('knowledgeBaseCustomDomain', null)
-  window.unitTestDocumentURL = "https://www.firehoseapp.com"
-  ok company.kbBaseURL() == "http://#{subdomain}.firehosehelp.com"
-
-  start()

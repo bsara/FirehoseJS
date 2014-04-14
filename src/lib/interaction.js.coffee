@@ -9,12 +9,12 @@ class Firehose.Interaction extends Firehose.Object
   customer: null
   
   ###
-  @property [string] 
+  @property [String] 
   ###
   token: null
   
   ###
-  @property [string] 
+  @property [String] 
   ###
   responseDraft: null
   
@@ -35,17 +35,17 @@ class Firehose.Interaction extends Firehose.Object
   isOutgoing: null
   
   ###
-  @property [string] 
+  @property [String] 
   ###
   body: null
   
   ###
-  @property [string] 
+  @property [String] 
   ###
   privateURL: null
   
   ###
-  @property [string] What channel the interaction is through (email, fb, twitter)
+  @property [String] What channel the interaction is through (email, fb, twitter)
   ###
   channel: null
   
@@ -107,7 +107,7 @@ class Firehose.Interaction extends Firehose.Object
   
   ###
   Used to create a generic interaction that can then be fetched, without authentication, by the token.
-  @param token [string] 
+  @param token [String] 
   @note: Any interactions is publicly visible with a token.
   @return [Interaction] a generic interaction object.
   ### 
@@ -118,7 +118,7 @@ class Firehose.Interaction extends Firehose.Object
     
   ###
   Used to create an interaction from JSON received from a web socket event.
-  @param json [string] The json received from the pusher even or the API.
+  @param json [String] The json received from the pusher even or the API.
   @param customer [Customer] The customer this interaction belongs to.
   @return [Interaction] a generic interaction object.
   ### 

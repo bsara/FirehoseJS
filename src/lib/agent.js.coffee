@@ -11,27 +11,27 @@ class Firehose.Agent extends Firehose.Object
   @loggedInAgent: null
   
   ###
-  @property [string] Available once the agent is logged in. You can store this locally for automatic login on the user's next visit.
+  @property [String] Available once the agent is logged in. You can store this locally for automatic login on the user's next visit.
   ###
   accessToken: null
   
   ###
-  @property [string] 
+  @property [String] 
   ###
   URLToken: null
   
   ###
-  @property [string] 
+  @property [String] 
   ###
   firstName: null
   
   ###
-  @property [string] 
+  @property [String] 
   ###
   lastName: null
   
   ###
-  @property [string] 
+  @property [String] 
   ###
   email: null
   
@@ -70,9 +70,9 @@ class Firehose.Agent extends Firehose.Object
     
   ###
   Create a new agent.
-  @param firstName [string] The first name of the agent that will be shown in the interace and to customers.
-  @param lastName [string] The last name of the agent.
-  @param inviteToken [string] If The user is accepting an invite from an email, the invite token will be in the url and you can pass it in here to link this agent to that company when they sign up.
+  @param firstName [String] The first name of the agent that will be shown in the interace and to customers.
+  @param lastName [String] The last name of the agent.
+  @param inviteToken [String] If The user is accepting an invite from an email, the invite token will be in the url and you can pass it in here to link this agent to that company when they sign up.
   @return [Promise] a jqXHR Promise.
   ###
   signUpWithFirstAndLastName: (firstName, lastName, inviteToken) ->
@@ -214,7 +214,7 @@ class Firehose.Agent extends Firehose.Object
     
   ###
   The agents gravatar given their email address.
-  @return [string] the url of the agent's gravatar.
+  @return [String] the url of the agent's gravatar.
   ###
   gravatarURL: ->
     if @email

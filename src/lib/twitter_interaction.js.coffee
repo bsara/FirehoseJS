@@ -15,17 +15,17 @@ class Firehose.TwitterInteraction extends Firehose.Interaction
   favorited: false
   
   ###
-  @property [string] 
+  @property [String] 
   ###
   tweetId: null
   
   ###
-  @property [string] 
+  @property [String] 
   ###
   inReplyToScreenName: null
   
   ###
-  @property [string] 
+  @property [String] 
   ###
   inReplyToStatusId: null
   
@@ -35,22 +35,22 @@ class Firehose.TwitterInteraction extends Firehose.Interaction
   retweetCount: 0
   
   ###
-  @property [string] 
+  @property [String] 
   ###
   tweetSource: null
   
   ###
-  @property [string] 
+  @property [String] 
   ###
   toUserId: null
   
   ###
-  @property [string] 
+  @property [String] 
   ###
   toScreenName: null
   
   ###
-  @property [string] 
+  @property [String] 
   ###
   fromUserId: null
   

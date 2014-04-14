@@ -10,7 +10,7 @@ class Firehose.Tag extends Firehose.Object
   company: null
   
   ###
-  @property [string] 
+  @property [String] 
   ###
   label: null
   

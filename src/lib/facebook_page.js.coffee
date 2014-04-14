@@ -10,17 +10,17 @@ class Firehose.FacebookPage extends Firehose.Object
   facebookAccount: null
   
   ###
-  @property [string] 
+  @property [String] 
   ###
   name: null
   
   ###
-  @property [string] 
+  @property [String] 
   ###
   category: null
   
   ###
-  @property [string] 
+  @property [String] 
   ###
   pageId: null
   

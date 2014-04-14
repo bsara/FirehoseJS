@@ -10,12 +10,12 @@ class Firehose.Notification extends Firehose.Object
   company: null
   
   ###
-  @property [string] 
+  @property [String] 
   ###
   title: null
   
   ###
-  @property [string] 
+  @property [String] 
   ###
   text: null
   

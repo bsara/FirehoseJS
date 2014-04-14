@@ -55,7 +55,7 @@ class Firehose.Object
 
   ###
   Uses the classes 'archivableProperties' to stringify this object and save it in localStorage.
-  @param key [string] an optional key to archive the object by if the 'id' is not available.
+  @param key [String] an optional key to archive the object by if the 'id' is not available.
   ###
   archive: (key = @id) ->
     index = "#{this.constructor._firehoseType}_#{key}"
@@ -63,7 +63,7 @@ class Firehose.Object
 
   ###
   Unarchives the object from local storage.
-  @param key [string] an optional key to unarchive the object by if 'id' is not available.
+  @param key [String] an optional key to unarchive the object by if 'id' is not available.
   @return [boolean] true if the object was in localStorage, false if it was not.
   ###
   unarchive: (key = @id) ->
@@ -83,7 +83,7 @@ class Firehose.Object
 
   ###
   Takes the `errors` property and formats it's items for display in HTML.
-  @return [string] An HTML marked-up version of the `errors` property in the form of an unordered list (<ul>).
+  @return [String] An HTML marked-up version of the `errors` property in the form of an unordered list (<ul>).
   ###
   HTMLErrorString: ->
     HTML = "<ul>"

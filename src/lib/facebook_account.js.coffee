@@ -10,22 +10,22 @@ class Firehose.FacebookAccount extends Firehose.Object
   company: null
   
   ###
-  @property [string] 
+  @property [String] 
   ###
   username: null
   
   ###
-  @property [string] 
+  @property [String] 
   ###
   facebookUserId: null
   
   ###
-  @property [string] 
+  @property [String] 
   ###
   imageURL: null
   
   ###
-  @property [string] 
+  @property [String] 
   ###
   name: null
   
