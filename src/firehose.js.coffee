@@ -8,7 +8,7 @@ window.Firehose = {}
 
 ###
 Returns the current environment that Firehose is running in based on the current docment URL.
-@return   [string] The current environment. 'production', 'beta', 'test' or 'development'.
+@return   [String] The current environment. 'production', 'beta', 'test' or 'development'.
 ###
 Firehose.environment = ->
   Firehose.client.environment._inferEnvironmentFromURL()
@@ -16,9 +16,9 @@ Firehose.environment = ->
 
 
 ###
-@param    server [string] The name of the server. Possible values: 'API', 'browser', 'billing', 'files', 'marketing', 'settings'
-@param    subdomain [string] If the generated url should have a subdomain you can optionally provide it.
-@return   [string] The root url of the server based on the current environement.
+@param    server [String] The name of the server. Possible values: 'API', 'browser', 'billing', 'files', 'marketing', 'settings'
+@param    subdomain [String] If the generated url should have a subdomain you can optionally provide it.
+@return   [String] The root url of the server based on the current environement.
 @example  Create a URL to the login page of the browser app.
   "#{Firehose.baseURLFor('browser')/home/login"
 ###
@@ -27,8 +27,8 @@ Firehose.baseURLFor = (app, subdomain) ->
   
   
 ###
-@param    service [string] The name of the service. Possible values: 'pusher', 'stripe'
-@return   [string] The token/key used for that service's library.
+@param    service [String] The name of the service. Possible values: 'pusher', 'stripe'
+@return   [String] The token/key used for that service's library.
 ###
 Firehose.tokenFor = (service) ->
   Firehose.client.environment.serviceToken service

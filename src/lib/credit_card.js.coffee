@@ -10,48 +10,48 @@ class Firehose.CreditCard extends Firehose.Object
   company: null
 
   ###
-  @property [string] Only ever populated when set locally in preparation for submitting to Stripe.
+  @property [String] Only ever populated when set locally in preparation for submitting to Stripe.
   ###
   number: null
 
   ###
-  @property [string] Only ever populated when set locally in preparation for submitting to Stripe.
+  @property [String] Only ever populated when set locally in preparation for submitting to Stripe.
   ###
   cvc: null
 
   ###
-  @property [string]
+  @property [String]
   ###
   expirationMonth: null
 
   ###
-  @property [string]
+  @property [String]
   ###
   expirationYear: null
 
   ###
-  @property [string]
+  @property [String]
   ###
   lastFour: null
 
   ###
-  @property [string]
+  @property [String]
   ###
   stripeToken: null
 
   ###
-  @property [string] The e-mail receipts will be sent to.
+  @property [String] The e-mail receipts will be sent to.
   ###
   email: null
 
 
   ###
   Create a credit card for submitting to Stripe.
-  @param number [string] The credit card number.
+  @param number [String] The credit card number.
   @param cvc [number] The cvc
   @param expMonth [number] String of a number between "01" and "12" representing the expiration month.
   @param expYear [number] String of the expiration year (e.g. "2014")
-  @param email [string] The email that receipts should be sent to.
+  @param email [String] The email that receipts should be sent to.
   @param company [Company] The company this card will be added to
   @return [CreditCard] Returns a credit card that can then be sumitted to Stripe for a token and saved to Firehose.
   ###    

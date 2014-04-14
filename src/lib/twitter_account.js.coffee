@@ -10,17 +10,17 @@ class Firehose.TwitterAccount extends Firehose.Object
   company: null
   
   ###
-  @property [string] 
+  @property [String] 
   ###
   screenName: null
   
   ###
-  @property [string] 
+  @property [String] 
   ###
   twitterUserId: null
   
   ###
-  @property [string] 
+  @property [String] 
   ###
   imageURL: null
   

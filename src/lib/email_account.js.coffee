@@ -10,7 +10,7 @@ class Firehose.EmailAccount extends Firehose.Object
   company: null
 
   ###
-  @property [string]
+  @property [String]
   ###
   emailAddress: null
 
@@ -20,32 +20,32 @@ class Firehose.EmailAccount extends Firehose.Object
   isForwarding: false
 
   ###
-  @property [string]
+  @property [String]
   ###
   title: null
 
   ###
-  @property [string] Can be either `IMAP` or `POP`
+  @property [String] Can be either `IMAP` or `POP`
   ###
   kind: 'IMAP'
 
   ###
-  @property [string]
+  @property [String]
   ###
   server: null
 
   ###
-  @property [string]
+  @property [String]
   ###
   port: null
 
   ###
-  @property [string]
+  @property [String]
   ###
   username: null
 
   ###
-  @property [string]
+  @property [String]
   ###
   password: null
 

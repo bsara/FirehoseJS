@@ -10,12 +10,12 @@ class Firehose.Attachment extends Firehose.Object
   emailInteraction: null
   
   ###
-  @property [string] 
+  @property [String] 
   ###
   filename: null
   
   ###
-  @property [string] 
+  @property [String] 
   ###
   temporaryURL: null
   

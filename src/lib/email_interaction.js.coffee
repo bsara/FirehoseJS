@@ -10,22 +10,22 @@ class Firehose.EmailInteraction extends Firehose.Interaction
   emailAccount: null
   
   ###
-  @property [string] 
+  @property [String] 
   ###
   emailSubject: null
   
   ###
-  @property [string] 
+  @property [String] 
   ###
   replyTo: null
   
   ###
-  @property [string] 
+  @property [String] 
   ###
   toEmail: null
   
   ###
-  @property [string] 
+  @property [String] 
   ###
   fromEmail: null
   

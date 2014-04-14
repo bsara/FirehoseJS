@@ -5,12 +5,12 @@ class Firehose.Company extends Firehose.Object
   @_firehoseType: "Company"
   
   ###
-  @property [string] 
+  @property [String] 
   ###
   title: null
   
   ###
-  @property [string] 
+  @property [String] 
   ###
   token: null
   
@@ -20,7 +20,7 @@ class Firehose.Company extends Firehose.Object
   lastFetchAt: null
   
   ###
-  @property [string] 
+  @property [String] 
   ###
   forwardingEmailAddress: null
   
@@ -42,76 +42,6 @@ class Firehose.Company extends Firehose.Object
   ###
   fetchAutomatically: true
   
-  ###
-  @property [string] 
-  ###
-  knowledgeBaseSubdomain: null
-  
-  ###
-  @property [string] 
-  ###
-  knowledgeBaseCustomDomain: null
-  
-  ###
-  @property [string]
-  ###
-  knowledgeBaseCSS: null
-  
-  ###
-  @property [string]
-  ###
-  knowlegeBaseLayoutTemplate: null
-  
-  ###
-  @property [string]
-  ###
-  knowlegeBaseSearchTemplate: null
-  
-  ###
-  @property [string]
-  ###
-  knowlegeBaseArticleTemplate: null
-  
-  ###
-  @property [string]
-  ###
-  chatTitleTextColor: null
-  
-  ###
-  @property [string]
-  ###
-  chatTitleBackgroundColor: null
-
-  ###
-  @property [string]
-  ###
-  chatAgentColor: null
-  
-  ###
-  @property [string]
-  ###
-  chatCustomerColor: null
-  
-  ###
-  @property [string]
-  ###
-  chatFieldTextColor: null
-  
-  ###
-  @property [string]
-  ###
-  chatFieldBackgroundColor: null
-  
-  ###
-  @property [string]
-  ###
-  chatBackgroundColor: null
-  
-  ###
-  @property [string]
-  ###
-  chatResponseBackgroundColor: null
-  
 
   # associations
   
@@ -119,6 +49,11 @@ class Firehose.Company extends Firehose.Object
   @property [Array<Agent>] 
   ###
   agents: null
+  
+  ###
+  @property [Array<Product>] 
+  ###
+  products: null
   
   ###
   @property [Array<AgentInvite>] 
@@ -153,12 +88,6 @@ class Firehose.Company extends Firehose.Object
   # @nodoc
   _emailAccounts: null
   
-  # @nodoc
-  _articles: null
-  
-  # @nodoc
-  _searchedArticles: null
-  
   
   # billing
   
@@ -168,7 +97,7 @@ class Firehose.Company extends Firehose.Object
   creditCard: null
   
   ###
-  @property [string] 
+  @property [String] 
   ###
   billingEmail: null
   
@@ -248,7 +177,7 @@ class Firehose.Company extends Firehose.Object
     
   ###
   Create a brand new company with a title and an optional creator.
-  @param title [string] The title of the company.
+  @param title [String] The title of the company.
   @param creator [Agent] The creator of the company. You can leave blank and it will make the current agent the creator.
   ###    
   @companyWithTitle: (title, creator) ->
@@ -270,56 +199,21 @@ class Firehose.Company extends Firehose.Object
       token:    token
       _creator: creator
       
-      
-  ###
-  Create a company object when all you have is the subdomain for the knowledge base. You can then call `fetch` to get the company's `id` and `title`.
-  @param subdomain [string] The subdomain of the company
-  @return [Company] Returns a company object you can then call `fetch` on.
-  ###    
-  @companyWithKBSubdomain: (subdomain) ->
-    Firehose.Object._objectOfClassWithID Firehose.Company,
-      knowledgeBaseSubdomain: subdomain
-      
-      
-  ###
-  Create a company object when all you have is the custom domain for the knowledge base. You can then call `fetch` to get the company's `id` and `title`.
-  @param customDomain [string] The custom domain that maps (via a CNAME DNS record) to the subdomain of the company's kb.
-  @return [Company] Returns a company object you can then call `fetch` on.
-  ###    
-  @companyWithKBCustomDomain: (customDomain) ->
-    Firehose.Object._objectOfClassWithID Firehose.Company,
-      knowledgeBaseCustomDomain: customDomain
-      
     
   ###
-  Fetch a companies properties based on `id`, `knowledgeBaseSubdomain` or `knowledgeBaseCustomDomain`.
+  Fetch a companies properties based on its `id`.
   @return [jqXHR Promise] Promise
   ###
   fetch: (options = {}) ->
     if @id?
-      requested_settings = if options.include_settings? then "?include=#{options.include_settings.join "," }" else ""
       request = 
-        route: "companies/#{@id}#{requested_settings}"
-        
-    else if @knowledgeBaseSubdomain
-      request = 
-        auth:   false
-        route:  "companies"
-        params: 
-          kb_subdomain: @knowledgeBaseSubdomain
-       
-    else if @knowledgeBaseCustomDomain
-      request = 
-        auth:   false
-        route:  "companies"
-        params: 
-          kb_custom_domain: @knowledgeBaseCustomDomain
-    
+        route: "companies/#{@id}"
     else
-      throw "You can't call 'fetch' on a company unless 'id', 'knowledgeBaseSubdomain' or 'knowledgeBaseCustomDomain' is set."
+      throw "You can't call 'fetch' on a company unless 'id' is set."
       
     Firehose.client.get( this, request ).done (data) =>
       this._populateWithJSON data
+ 
  
   ###
   Persists any changes you've made to the company to the server. Properties that can be updated: `title`, `fetch_automatically`
@@ -363,11 +257,11 @@ class Firehose.Company extends Firehose.Object
   ###
   The customers of a company, filtered by a criteria.
   @param criteria [Object] A hash of criteria by which customers should be searched. 
-  @option criteria [string] filter "everything" or "unresolved"
-  @option criteria [string] channel A comma seperated list of channels to fetch (e.g. "twitter,email"). Omit to include all channels.
-  @option criteria [string] sort "newest_first" or "oldest_first"
-  @option criteria [string] search_text Any text that will be searched for an a customers name, email/twitter/facebook accunt name, and interaction body.
-  @option criteria [string] preFetch Any one channel. If included, the server will synchronously fetch the channel specified. (e.g. "twitter")
+  @option criteria [String] filter "everything" or "unresolved"
+  @option criteria [String] channel A comma seperated list of channels to fetch (e.g. "twitter,email"). Omit to include all channels.
+  @option criteria [String] sort "newest_first" or "oldest_first"
+  @option criteria [String] search_text Any text that will be searched for an a customers name, email/twitter/facebook accunt name, and interaction body.
+  @option criteria [String] preFetch Any one channel. If included, the server will synchronously fetch the channel specified. (e.g. "twitter")
   @return [RemoteArray<Customer>] The customer that matched the criteria.
   ###  
   customersWithCriteria: (criteria) ->
@@ -434,37 +328,6 @@ class Firehose.Company extends Firehose.Object
       @_emailAccounts.sortOn "username"
     @_emailAccounts
     
-  ### 
-  All the articles of a company.
-  @return [RemoteArray<Article>] The found articles.
-  ###
-  articles: ->
-    unless @_articles?
-      articlesRemoteArray = new Firehose.RemoteArray "companies/#{@id}/articles", null, (json) =>
-        Firehose.Article.articleWithID( json.id, this )
-      articlesRemoteArray.auth = false
-      this._setIfNotNull "_articles", articlesRemoteArray
-    @_articles
-    
-  
-  ###
-  Returns a remote array of articles found by searching for `text`.
-  @param text [string] The string of text you want to search for articles containing.
-  @note Every time you call this on a company, you are creating a new remote array and any previously created have their network requests cancelled.
-  @return [RemoteArray<Article>] The found articles.
-  ### 
-  searchedArticles: (text) ->
-    currentSearchedArticles = this.get '_searchedArticles'
-    if currentSearchedArticles
-      currentSearchedArticles.abort()
-    articlesRemoteArray = new Firehose.RemoteArray "companies/#{@id}/article_search", q: text, (json) =>
-      article = Firehose.Article.articleWithID( json.id, this )
-      article._populateWithJSON json
-      article
-    articlesRemoteArray.auth = false
-    this._setIfNotNull "_searchedArticles", articlesRemoteArray
-    articlesRemoteArray
-    
   
   ###
   Associates an agent with a company.
@@ -493,8 +356,8 @@ class Firehose.Company extends Firehose.Object
   ###
   Fetches the billing info for the company from the billing server.
   This will populate `discounts` with a list of discount objects each having the follower properties:
-    name: [string] The name of the discount.
-    applyType: [string] either "percentage" or "fixed amount"
+    name: [String] The name of the discount.
+    applyType: [String] either "percentage" or "fixed amount"
     amount: [number] The percentage or fixed amount to discount from the total price.
     expirationDate: [Date] When the discount expires and should not longer be applied to the monthly billing.
     @return [jqXHR Promise] Promise
@@ -569,18 +432,6 @@ class Firehose.Company extends Firehose.Object
     else
       this.fetch().then ->
         requestBlock()
-        
-  ###
-  Returns the base URL for the company's knowledge base for the current environment.
-  @note In production, if a custom domain is set on the company, it returns that. Otherwise, it returns the companies subdomain URL. (i.e. msytrou.firehosehelp.com)
-  @note The beta URL for the kb is firehosesupport.com. So instead of mystrou.firehosehelp.com like in production, the beta URL would be mystrou.firehosesupport.com.
-  @return [string] The URL for the company's knowledge base in the current environment.
-  ###
-  kbBaseURL: ->
-    if Firehose.environment() == 'production' and customDomain = this.get('knowledgeBaseCustomDomain')
-      "http://#{customDomain}"
-    else 
-     Firehose.baseURLFor 'kb', this.get('knowledgeBaseSubdomain')
       
     
   # @nodoc
@@ -595,26 +446,13 @@ class Firehose.Company extends Firehose.Object
     # settings    
     this._setIfNotNull "fetchAutomatically",            json.company_settings?.fetch_automatically
     
-    this._setIfNotNull "knowledgeBaseSubdomain",        json.company_settings?.kb_subdomain
-    this._setIfNotNull "knowledgeBaseCustomDomain",     json.company_settings?.kb_custom_domain
-    this._setIfNotNull "knowledgeBaseCSS",              json.company_settings?.kb_css
-    this._setIfNotNull "knowledgeBaseLayoutTemplate",   json.company_settings?.kb_layout_template
-    this._setIfNotNull "knowledgeBaseSearchTemplate",   json.company_settings?.kb_search_template
-    this._setIfNotNull "knowledgeBaseArticleTemplate",  json.company_settings?.kb_article_template
-    
-    this._setIfNotNull "chatTitleTextColor",            json.company_settings?.chat_title_text_color
-    this._setIfNotNull "chatTitleBackgroundColor",      json.company_settings?.chat_title_background_color
-    this._setIfNotNull "chatAgentColor",                json.company_settings?.chat_agent_color
-    this._setIfNotNull "chatCustomerColor",             json.company_settings?.chat_customer_color
-    this._setIfNotNull "chatFieldTextColor",            json.company_settings?.chat_field_text_color
-    this._setIfNotNull "chatFieldBackgroundColor",      json.company_settings?.chat_field_background_color
-    this._setIfNotNull "chatBackgroundColor",           json.company_settings?.chat_background_color
-    this._setIfNotNull "chatResponseBackgroundColor",   json.company_settings?.chat_response_background_color
-    
     this._populateAssociatedObjects this, "agents", json.agents, (json) =>
       agent = Firehose.Agent.agentWithID( json.id )
       agent.companies.insertObject this
       agent
+      
+    this._populateAssociatedObjects this, "products", json.products, (json) =>
+      Firehose.Product.productWithID( json.id, this )
       
     this._populateAssociatedObjects this, "agentInvites", json.agent_invites, (json) =>
       Firehose.AgentInvite._agentInviteWithID( json.id, this )
@@ -636,23 +474,6 @@ class Firehose.Company extends Firehose.Object
       title : @title
       company_settings_attributes:
         fetch_automatically            : @fetchAutomatically
-        
-        kb_subdomain                   : this._textOrNull @knowledgeBaseSubdomain 
-        kb_custom_domain               : this._textOrNull @knowledgeBaseCustomDomain 
-        kb_css                         : this._textOrNull @knowledgeBaseCSS          
-        kb_layout_template             : this._textOrNull @knowledgeBaseLayoutTemplate
-        kb_search_template             : this._textOrNull @knowledgeBaseSearchTemplate 
-        kb_article_template            : this._textOrNull @knowledgeBaseArticleTemplate 
-        
-        chat_title_text_color          : this._textOrNull @chatTitleTextColor
-        chat_title_background_color    : this._textOrNull @chatTitleBackgroundColor
-        chat_agent_color               : this._textOrNull @chatAgentColor
-        chat_customer_color            : this._textOrNull @chatCustomerColor
-        chat_field_text_color          : this._textOrNull @chatFieldTextColor
-        chat_field_background_color    : this._textOrNull @chatFieldBackgroundColor
-        chat_background_color          : this._textOrNull @chatBackgroundColor
-        chat_response_background_color : this._textOrNull @chatResponseBackgroundColor
-
 
 
   # @nodoc

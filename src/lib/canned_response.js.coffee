@@ -5,31 +5,31 @@ class Firehose.CannedResponse extends Firehose.Object
   @_firehoseType: "CannedResponse"
   
   ###
-  @property [Comany] The company this canned response belongs to.
+  @property [Company] The company this canned response belongs to.
   ###
   company: null
   
   ###
-  @property [string] The name of this canned response.
+  @property [String] The name of this canned response.
   ###
   name: null
   
   ###
-  @property [string] A string used for providing a fast shortcut that expands to the full canned response.
+  @property [String] A string used for providing a fast shortcut that expands to the full canned response.
   @deprecated
   ###
   shortcut: null
   
   ###
-  @property [string] The actual text of the canned response.
+  @property [String] The actual text of the canned response.
   ###
   text: null
     
   
   ###
   The designated method of creating a new canned response.  
-  @param name [string] The short display name
-  @param text [string] The actual text of the canned response
+  @param name [String] The short display name
+  @param text [String] The actual text of the canned response
   @param company [Company] The company this canned response will belong to once saved to the server.
   ### 
   @cannedResponseWithNameAndText: (name, text, company) ->

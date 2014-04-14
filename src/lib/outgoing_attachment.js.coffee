@@ -10,17 +10,17 @@ class Firehose.OutgoingAttachment extends Firehose.Object
   company: null
   
   ###
-  @property [string] 
+  @property [String] 
   ###
   token: null
   
   ###
-  @property [string] 
+  @property [String] 
   ###
   downloadURL: null
   
   ###
-  @property [string] 
+  @property [String] 
   ###
   uploadURL: null
   

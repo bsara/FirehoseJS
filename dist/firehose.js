@@ -8,7 +8,7 @@ window.Firehose = {};
 
 /*
 Returns the current environment that Firehose is running in based on the current docment URL.
-@return   [string] The current environment. 'production', 'beta', 'test' or 'development'.
+@return   [String] The current environment. 'production', 'beta', 'test' or 'development'.
 */
 
 
@@ -18,9 +18,9 @@ Firehose.environment = function() {
 };
 
 /*
-@param    server [string] The name of the server. Possible values: 'API', 'browser', 'billing', 'files', 'marketing', 'settings'
-@param    subdomain [string] If the generated url should have a subdomain you can optionally provide it.
-@return   [string] The root url of the server based on the current environement.
+@param    server [String] The name of the server. Possible values: 'API', 'browser', 'billing', 'files', 'marketing', 'settings'
+@param    subdomain [String] If the generated url should have a subdomain you can optionally provide it.
+@return   [String] The root url of the server based on the current environement.
 @example  Create a URL to the login page of the browser app.
   "#{Firehose.baseURLFor('browser')/home/login"
 */
@@ -31,8 +31,8 @@ Firehose.baseURLFor = function(app, subdomain) {
 };
 
 /*
-@param    service [string] The name of the service. Possible values: 'pusher', 'stripe'
-@return   [string] The token/key used for that service's library.
+@param    service [String] The name of the service. Possible values: 'pusher', 'stripe'
+@return   [String] The token/key used for that service's library.
 */
 
 
@@ -781,7 +781,7 @@ Firehose.Object = (function() {
 
   /*
   Uses the classes 'archivableProperties' to stringify this object and save it in localStorage.
-  @param key [string] an optional key to archive the object by if the 'id' is not available.
+  @param key [String] an optional key to archive the object by if the 'id' is not available.
   */
 
 
@@ -796,7 +796,7 @@ Firehose.Object = (function() {
 
   /*
   Unarchives the object from local storage.
-  @param key [string] an optional key to unarchive the object by if 'id' is not available.
+  @param key [String] an optional key to unarchive the object by if 'id' is not available.
   @return [boolean] true if the object was in localStorage, false if it was not.
   */
 
@@ -827,7 +827,7 @@ Firehose.Object = (function() {
 
   /*
   Takes the `errors` property and formats it's items for display in HTML.
-  @return [string] An HTML marked-up version of the `errors` property in the form of an unordered list (<ul>).
+  @return [String] An HTML marked-up version of the `errors` property in the form of an unordered list (<ul>).
   */
 
 
@@ -971,35 +971,35 @@ Firehose.Agent = (function(_super) {
   Agent.loggedInAgent = null;
 
   /*
-  @property [string] Available once the agent is logged in. You can store this locally for automatic login on the user's next visit.
+  @property [String] Available once the agent is logged in. You can store this locally for automatic login on the user's next visit.
   */
 
 
   Agent.prototype.accessToken = null;
 
   /*
-  @property [string]
+  @property [String]
   */
 
 
   Agent.prototype.URLToken = null;
 
   /*
-  @property [string]
+  @property [String]
   */
 
 
   Agent.prototype.firstName = null;
 
   /*
-  @property [string]
+  @property [String]
   */
 
 
   Agent.prototype.lastName = null;
 
   /*
-  @property [string]
+  @property [String]
   */
 
 
@@ -1041,9 +1041,9 @@ Firehose.Agent = (function(_super) {
 
   /*
   Create a new agent.
-  @param firstName [string] The first name of the agent that will be shown in the interace and to customers.
-  @param lastName [string] The last name of the agent.
-  @param inviteToken [string] If The user is accepting an invite from an email, the invite token will be in the url and you can pass it in here to link this agent to that company when they sign up.
+  @param firstName [String] The first name of the agent that will be shown in the interace and to customers.
+  @param lastName [String] The last name of the agent.
+  @param inviteToken [String] If The user is accepting an invite from an email, the invite token will be in the url and you can pass it in here to link this agent to that company when they sign up.
   @return [Promise] a jqXHR Promise.
   */
 
@@ -1233,7 +1233,7 @@ Firehose.Agent = (function(_super) {
 
   /*
   The agents gravatar given their email address.
-  @return [string] the url of the agent's gravatar.
+  @return [String] the url of the agent's gravatar.
   */
 
 
@@ -1315,14 +1315,14 @@ Firehose.Company = (function(_super) {
   Company._firehoseType = "Company";
 
   /*
-  @property [string]
+  @property [String]
   */
 
 
   Company.prototype.title = null;
 
   /*
-  @property [string]
+  @property [String]
   */
 
 
@@ -1336,7 +1336,7 @@ Firehose.Company = (function(_super) {
   Company.prototype.lastFetchAt = null;
 
   /*
-  @property [string]
+  @property [String]
   */
 
 
@@ -1364,98 +1364,98 @@ Firehose.Company = (function(_super) {
   Company.prototype.fetchAutomatically = true;
 
   /*
-  @property [string]
+  @property [String]
   */
 
 
   Company.prototype.knowledgeBaseSubdomain = null;
 
   /*
-  @property [string]
+  @property [String]
   */
 
 
   Company.prototype.knowledgeBaseCustomDomain = null;
 
   /*
-  @property [string]
+  @property [String]
   */
 
 
   Company.prototype.knowledgeBaseCSS = null;
 
   /*
-  @property [string]
+  @property [String]
   */
 
 
   Company.prototype.knowlegeBaseLayoutTemplate = null;
 
   /*
-  @property [string]
+  @property [String]
   */
 
 
   Company.prototype.knowlegeBaseSearchTemplate = null;
 
   /*
-  @property [string]
+  @property [String]
   */
 
 
   Company.prototype.knowlegeBaseArticleTemplate = null;
 
   /*
-  @property [string]
+  @property [String]
   */
 
 
   Company.prototype.chatTitleTextColor = null;
 
   /*
-  @property [string]
+  @property [String]
   */
 
 
   Company.prototype.chatTitleBackgroundColor = null;
 
   /*
-  @property [string]
+  @property [String]
   */
 
 
   Company.prototype.chatAgentColor = null;
 
   /*
-  @property [string]
+  @property [String]
   */
 
 
   Company.prototype.chatCustomerColor = null;
 
   /*
-  @property [string]
+  @property [String]
   */
 
 
   Company.prototype.chatFieldTextColor = null;
 
   /*
-  @property [string]
+  @property [String]
   */
 
 
   Company.prototype.chatFieldBackgroundColor = null;
 
   /*
-  @property [string]
+  @property [String]
   */
 
 
   Company.prototype.chatBackgroundColor = null;
 
   /*
-  @property [string]
+  @property [String]
   */
 
 
@@ -1511,7 +1511,7 @@ Firehose.Company = (function(_super) {
   Company.prototype.creditCard = null;
 
   /*
-  @property [string]
+  @property [String]
   */
 
 
@@ -1608,7 +1608,7 @@ Firehose.Company = (function(_super) {
 
   /*
   Create a brand new company with a title and an optional creator.
-  @param title [string] The title of the company.
+  @param title [String] The title of the company.
   @param creator [Agent] The creator of the company. You can leave blank and it will make the current agent the creator.
   */
 
@@ -1639,7 +1639,7 @@ Firehose.Company = (function(_super) {
 
   /*
   Create a company object when all you have is the subdomain for the knowledge base. You can then call `fetch` to get the company's `id` and `title`.
-  @param subdomain [string] The subdomain of the company
+  @param subdomain [String] The subdomain of the company
   @return [Company] Returns a company object you can then call `fetch` on.
   */
 
@@ -1652,7 +1652,7 @@ Firehose.Company = (function(_super) {
 
   /*
   Create a company object when all you have is the custom domain for the knowledge base. You can then call `fetch` to get the company's `id` and `title`.
-  @param customDomain [string] The custom domain that maps (via a CNAME DNS record) to the subdomain of the company's kb.
+  @param customDomain [String] The custom domain that maps (via a CNAME DNS record) to the subdomain of the company's kb.
   @return [Company] Returns a company object you can then call `fetch` on.
   */
 
@@ -1765,11 +1765,11 @@ Firehose.Company = (function(_super) {
   /*
   The customers of a company, filtered by a criteria.
   @param criteria [Object] A hash of criteria by which customers should be searched. 
-  @option criteria [string] filter "everything" or "unresolved"
-  @option criteria [string] channel A comma seperated list of channels to fetch (e.g. "twitter,email"). Omit to include all channels.
-  @option criteria [string] sort "newest_first" or "oldest_first"
-  @option criteria [string] search_text Any text that will be searched for an a customers name, email/twitter/facebook accunt name, and interaction body.
-  @option criteria [string] preFetch Any one channel. If included, the server will synchronously fetch the channel specified. (e.g. "twitter")
+  @option criteria [String] filter "everything" or "unresolved"
+  @option criteria [String] channel A comma seperated list of channels to fetch (e.g. "twitter,email"). Omit to include all channels.
+  @option criteria [String] sort "newest_first" or "oldest_first"
+  @option criteria [String] search_text Any text that will be searched for an a customers name, email/twitter/facebook accunt name, and interaction body.
+  @option criteria [String] preFetch Any one channel. If included, the server will synchronously fetch the channel specified. (e.g. "twitter")
   @return [RemoteArray<Customer>] The customer that matched the criteria.
   */
 
@@ -1891,7 +1891,7 @@ Firehose.Company = (function(_super) {
 
   /*
   Returns a remote array of articles found by searching for `text`.
-  @param text [string] The string of text you want to search for articles containing.
+  @param text [String] The string of text you want to search for articles containing.
   @note Every time you call this on a company, you are creating a new remote array and any previously created have their network requests cancelled.
   @return [RemoteArray<Article>] The found articles.
   */
@@ -1956,8 +1956,8 @@ Firehose.Company = (function(_super) {
   /*
   Fetches the billing info for the company from the billing server.
   This will populate `discounts` with a list of discount objects each having the follower properties:
-    name: [string] The name of the discount.
-    applyType: [string] either "percentage" or "fixed amount"
+    name: [String] The name of the discount.
+    applyType: [String] either "percentage" or "fixed amount"
     amount: [number] The percentage or fixed amount to discount from the total price.
     expirationDate: [Date] When the discount expires and should not longer be applied to the monthly billing.
     @return [jqXHR Promise] Promise
@@ -2059,7 +2059,7 @@ Firehose.Company = (function(_super) {
   Returns the base URL for the company's knowledge base for the current environment.
   @note In production, if a custom domain is set on the company, it returns that. Otherwise, it returns the companies subdomain URL. (i.e. msytrou.firehosehelp.com)
   @note The beta URL for the kb is firehosesupport.com. So instead of mystrou.firehosehelp.com like in production, the beta URL would be mystrou.firehosesupport.com.
-  @return [string] The URL for the company's knowledge base in the current environment.
+  @return [String] The URL for the company's knowledge base in the current environment.
   */
 
 
@@ -2188,14 +2188,14 @@ Firehose.Interaction = (function(_super) {
   Interaction.prototype.customer = null;
 
   /*
-  @property [string]
+  @property [String]
   */
 
 
   Interaction.prototype.token = null;
 
   /*
-  @property [string]
+  @property [String]
   */
 
 
@@ -2224,21 +2224,21 @@ Firehose.Interaction = (function(_super) {
   Interaction.prototype.isOutgoing = null;
 
   /*
-  @property [string]
+  @property [String]
   */
 
 
   Interaction.prototype.body = null;
 
   /*
-  @property [string]
+  @property [String]
   */
 
 
   Interaction.prototype.privateURL = null;
 
   /*
-  @property [string] What channel the interaction is through (email, fb, twitter)
+  @property [String] What channel the interaction is through (email, fb, twitter)
   */
 
 
@@ -2313,7 +2313,7 @@ Firehose.Interaction = (function(_super) {
 
   /*
   Used to create a generic interaction that can then be fetched, without authentication, by the token.
-  @param token [string] 
+  @param token [String] 
   @note: Any interactions is publicly visible with a token.
   @return [Interaction] a generic interaction object.
   */
@@ -2327,7 +2327,7 @@ Firehose.Interaction = (function(_super) {
 
   /*
   Used to create an interaction from JSON received from a web socket event.
-  @param json [string] The json received from the pusher even or the API.
+  @param json [String] The json received from the pusher even or the API.
   @param customer [Customer] The customer this interaction belongs to.
   @return [Interaction] a generic interaction object.
   */
@@ -2549,7 +2549,7 @@ Firehose.AgentInvite = (function(_super) {
   AgentInvite._firehoseType = "AgentInvite";
 
   /*
-  @property [string]
+  @property [String]
   */
 
 
@@ -2653,14 +2653,14 @@ Firehose.Attachment = (function(_super) {
   Attachment.prototype.emailInteraction = null;
 
   /*
-  @property [string]
+  @property [String]
   */
 
 
   Attachment.prototype.filename = null;
 
   /*
-  @property [string]
+  @property [String]
   */
 
 
@@ -2698,21 +2698,21 @@ Firehose.CannedResponse = (function(_super) {
   CannedResponse._firehoseType = "CannedResponse";
 
   /*
-  @property [Comany] The company this canned response belongs to.
+  @property [Company] The company this canned response belongs to.
   */
 
 
   CannedResponse.prototype.company = null;
 
   /*
-  @property [string] The name of this canned response.
+  @property [String] The name of this canned response.
   */
 
 
   CannedResponse.prototype.name = null;
 
   /*
-  @property [string] A string used for providing a fast shortcut that expands to the full canned response.
+  @property [String] A string used for providing a fast shortcut that expands to the full canned response.
   @deprecated
   */
 
@@ -2720,7 +2720,7 @@ Firehose.CannedResponse = (function(_super) {
   CannedResponse.prototype.shortcut = null;
 
   /*
-  @property [string] The actual text of the canned response.
+  @property [String] The actual text of the canned response.
   */
 
 
@@ -2728,8 +2728,8 @@ Firehose.CannedResponse = (function(_super) {
 
   /*
   The designated method of creating a new canned response.  
-  @param name [string] The short display name
-  @param text [string] The actual text of the canned response
+  @param name [String] The short display name
+  @param text [String] The actual text of the canned response
   @param company [Company] The company this canned response will belong to once saved to the server.
   */
 
@@ -2831,6 +2831,171 @@ var _ref,
   __hasProp = {}.hasOwnProperty,
   __extends = function(child, parent) { for (var key in parent) { if (__hasProp.call(parent, key)) child[key] = parent[key]; } function ctor() { this.constructor = child; } ctor.prototype = parent.prototype; child.prototype = new ctor(); child.__super__ = parent.prototype; return child; };
 
+Firehose.CloudFile = (function(_super) {
+  __extends(CloudFile, _super);
+
+  function CloudFile() {
+    _ref = CloudFile.__super__.constructor.apply(this, arguments);
+    return _ref;
+  }
+
+  CloudFile._firehoseType = "CloudFile";
+
+  /*
+  @property [Company]
+  */
+
+
+  CloudFile.prototype.company = null;
+
+  /*
+  @property [String]
+  */
+
+
+  CloudFile.prototype.token = null;
+
+  /*
+  @property [String]
+  */
+
+
+  CloudFile.prototype.downloadURL = null;
+
+  /*
+  @property [String]
+  */
+
+
+  CloudFile.prototype.uploadURL = null;
+
+  /*
+  @property [boolean]
+  */
+
+
+  CloudFile.prototype.uploaded = false;
+
+  /*
+  @property [File]
+  */
+
+
+  CloudFile.prototype.file = null;
+
+  CloudFile.CloudFileWithFile = function(file, company) {
+    return new Firehose.CloudFile({
+      file: file,
+      company: company
+    });
+  };
+
+  CloudFile.openFilePicker = function(completion) {
+    var fileEl,
+      _this = this;
+    fileEl = $('<input type="file"/>');
+    fileEl.bind("change", function(e) {
+      var file;
+      file = e.target.files[0];
+      if (file.size > 1024 * 1024 * 1024) {
+        alert("Files must be smaller than 1GB.");
+        return;
+      }
+      if (file.size > 300 * 1024 * 1024) {
+        alert("File sizes greater than 300MB have a higher chance of failure when uploaded from a browser. If you experience problems, perhaps try it from the Mac app.");
+        return;
+      }
+      return completion(file);
+    });
+    return fileEl.trigger('click');
+  };
+
+  CloudFile.prototype.upload = function(options) {
+    var params,
+      _this = this;
+    if (options == null) {
+      options = {};
+    }
+    params = {
+      route: "companies/" + this.company.id + "/cloud_files",
+      body: this._toJSON()
+    };
+    return Firehose.client.post(this, params).done(function(data) {
+      var xhr, _ref1;
+      _this._populateWithJSON(data);
+      xhr = new XMLHttpRequest();
+      if ("withCredentials" in xhr) {
+        xhr.open('PUT', data.upload_url, true);
+      } else if (typeof XDomainRequest !== "undefined") {
+        xhr = new XDomainRequest();
+        xhr.open('PUT', data.upload_url);
+      }
+      if (options.progress != null) {
+        if ((_ref1 = xhr.upload) != null) {
+          _ref1.addEventListener('progress', function(event) {
+            var percentComplete;
+            if (event.lengthComputable) {
+              percentComplete = parseInt(event.loaded / event.total * 100, 10);
+              if (percentComplete >= 95) {
+                return options.progress(95);
+              } else {
+                return options.progress(percentComplete);
+              }
+            }
+          });
+        }
+      }
+      xhr.onload = function() {
+        if (xhr.status === 200) {
+          _this.uploaded = true;
+          params = {
+            route: "cloud_files/" + data.id,
+            body: _this._toJSON()
+          };
+          return Firehose.client.put(_this, params).done(function() {
+            return typeof options.success === "function" ? options.success(data.download_url) : void 0;
+          }).fail(function(jqXHR, textStatus, errorThrown) {
+            return typeof options.error === "function" ? options.error(errorThrown) : void 0;
+          });
+        } else {
+          return typeof options.error === "function" ? options.error("Your attachment failed to upload successfully, please try again. Please contact support@getfirehose.com if the problem persists and we'll get it fixed for you.") : void 0;
+        }
+      };
+      xhr.onerror = function(error) {
+        return typeof options.error === "function" ? options.error("Your attachment failed to upload successfully, please try again. Please contact support@getfirehose.com if the problem persists and we'll get it fixed for you.") : void 0;
+      };
+      xhr.setRequestHeader('Content-Type', _this.file.type);
+      xhr.setRequestHeader('x-amz-acl', 'authenticated-read');
+      return xhr.send(_this.file);
+    }).fail(function(jqXHR, textStatus, errorThrown) {
+      return typeof options.error === "function" ? options.error(errorThrown) : void 0;
+    });
+  };
+
+  CloudFile.prototype._populateWithJSON = function(json) {
+    this._setIfNotNull("downloadURL", json.download_url);
+    this._setIfNotNull("uploadURL", json.upload_url);
+    return CloudFile.__super__._populateWithJSON.call(this, json);
+  };
+
+  CloudFile.prototype._toJSON = function() {
+    return {
+      cloud_file: {
+        filename: this.file.name,
+        mimetype: this.file.type || "application/zip",
+        uploaded: this.uploaded
+      }
+    };
+  };
+
+  return CloudFile;
+
+})(Firehose.Object);
+
+var _ref,
+  __hasProp = {}.hasOwnProperty,
+  __extends = function(child, parent) { for (var key in parent) { if (__hasProp.call(parent, key)) child[key] = parent[key]; } function ctor() { this.constructor = child; } ctor.prototype = parent.prototype; child.prototype = new ctor(); child.__super__ = parent.prototype; return child; };
+
 Firehose.CreditCard = (function(_super) {
   __extends(CreditCard, _super);
 
@@ -2849,49 +3014,49 @@ Firehose.CreditCard = (function(_super) {
   CreditCard.prototype.company = null;
 
   /*
-  @property [string] Only ever populated when set locally in preparation for submitting to Stripe.
+  @property [String] Only ever populated when set locally in preparation for submitting to Stripe.
   */
 
 
   CreditCard.prototype.number = null;
 
   /*
-  @property [string] Only ever populated when set locally in preparation for submitting to Stripe.
+  @property [String] Only ever populated when set locally in preparation for submitting to Stripe.
   */
 
 
   CreditCard.prototype.cvc = null;
 
   /*
-  @property [string]
+  @property [String]
   */
 
 
   CreditCard.prototype.expirationMonth = null;
 
   /*
-  @property [string]
+  @property [String]
   */
 
 
   CreditCard.prototype.expirationYear = null;
 
   /*
-  @property [string]
+  @property [String]
   */
 
 
   CreditCard.prototype.lastFour = null;
 
   /*
-  @property [string]
+  @property [String]
   */
 
 
   CreditCard.prototype.stripeToken = null;
 
   /*
-  @property [string] The e-mail receipts will be sent to.
+  @property [String] The e-mail receipts will be sent to.
   */
 
 
@@ -2899,11 +3064,11 @@ Firehose.CreditCard = (function(_super) {
 
   /*
   Create a credit card for submitting to Stripe.
-  @param number [string] The credit card number.
+  @param number [String] The credit card number.
   @param cvc [number] The cvc
   @param expMonth [number] String of a number between "01" and "12" representing the expiration month.
   @param expYear [number] String of the expiration year (e.g. "2014")
-  @param email [string] The email that receipts should be sent to.
+  @param email [String] The email that receipts should be sent to.
   @param company [Company] The company this card will be added to
   @return [CreditCard] Returns a credit card that can then be sumitted to Stripe for a token and saved to Firehose.
   */
@@ -3081,21 +3246,21 @@ Firehose.Customer = (function(_super) {
   Customer.prototype.company = null;
 
   /*
-  @property [string]
+  @property [String]
   */
 
 
   Customer.prototype.name = null;
 
   /*
-  @property [string]
+  @property [String]
   */
 
 
   Customer.prototype.location = null;
 
   /*
-  @property [string]
+  @property [String]
   */
 
 
@@ -3109,7 +3274,7 @@ Firehose.Customer = (function(_super) {
   Customer.prototype.newestInteractionId = null;
 
   /*
-  @property [string]
+  @property [String]
   */
 
 
@@ -3275,7 +3440,7 @@ Firehose.CustomerAccount = (function(_super) {
   CustomerAccount.prototype.customer = null;
 
   /*
-  @property [string]
+  @property [String]
   */
 
 
@@ -3289,14 +3454,14 @@ Firehose.CustomerAccount = (function(_super) {
   CustomerAccount.prototype.followingUs = null;
 
   /*
-  @property [string]
+  @property [String]
   */
 
 
   CustomerAccount.prototype.imageURL = null;
 
   /*
-  @property [string]
+  @property [String]
   */
 
 
@@ -3310,7 +3475,7 @@ Firehose.CustomerAccount = (function(_super) {
   CustomerAccount.prototype.followersCount = null;
 
   /*
-  @property [string]
+  @property [String]
   */
 
 
@@ -3325,7 +3490,7 @@ Firehose.CustomerAccount = (function(_super) {
 
   /*
   The customer account's avatar URL.
-  @return [string] the url of the customer's avatar.
+  @return [String] the url of the customer's avatar.
   */
 
 
@@ -3380,7 +3545,7 @@ Firehose.EmailAccount = (function(_super) {
   EmailAccount.prototype.company = null;
 
   /*
-  @property [string]
+  @property [String]
   */
 
 
@@ -3394,42 +3559,42 @@ Firehose.EmailAccount = (function(_super) {
   EmailAccount.prototype.isForwarding = false;
 
   /*
-  @property [string]
+  @property [String]
   */
 
 
   EmailAccount.prototype.title = null;
 
   /*
-  @property [string] Can be either `IMAP` or `POP`
+  @property [String] Can be either `IMAP` or `POP`
   */
 
 
   EmailAccount.prototype.kind = 'IMAP';
 
   /*
-  @property [string]
+  @property [String]
   */
 
 
   EmailAccount.prototype.server = null;
 
   /*
-  @property [string]
+  @property [String]
   */
 
 
   EmailAccount.prototype.port = null;
 
   /*
-  @property [string]
+  @property [String]
   */
 
 
   EmailAccount.prototype.username = null;
 
   /*
-  @property [string]
+  @property [String]
   */
 
 
@@ -3668,28 +3833,28 @@ Firehose.EmailInteraction = (function(_super) {
   EmailInteraction.prototype.emailAccount = null;
 
   /*
-  @property [string]
+  @property [String]
   */
 
 
   EmailInteraction.prototype.emailSubject = null;
 
   /*
-  @property [string]
+  @property [String]
   */
 
 
   EmailInteraction.prototype.replyTo = null;
 
   /*
-  @property [string]
+  @property [String]
   */
 
 
   EmailInteraction.prototype.toEmail = null;
 
   /*
-  @property [string]
+  @property [String]
   */
 
 
@@ -3768,28 +3933,28 @@ Firehose.FacebookAccount = (function(_super) {
   FacebookAccount.prototype.company = null;
 
   /*
-  @property [string]
+  @property [String]
   */
 
 
   FacebookAccount.prototype.username = null;
 
   /*
-  @property [string]
+  @property [String]
   */
 
 
   FacebookAccount.prototype.facebookUserId = null;
 
   /*
-  @property [string]
+  @property [String]
   */
 
 
   FacebookAccount.prototype.imageURL = null;
 
   /*
-  @property [string]
+  @property [String]
   */
 
 
@@ -3866,56 +4031,56 @@ Firehose.FacebookInteraction = (function(_super) {
   FacebookInteraction.prototype.facebookAccount = null;
 
   /*
-  @property [string]
+  @property [String]
   */
 
 
   FacebookInteraction.prototype.fromUserId = null;
 
   /*
-  @property [string]
+  @property [String]
   */
 
 
   FacebookInteraction.prototype.fromName = null;
 
   /*
-  @property [string]
+  @property [String]
   */
 
 
   FacebookInteraction.prototype.toUserId = null;
 
   /*
-  @property [string]
+  @property [String]
   */
 
 
   FacebookInteraction.prototype.toName = null;
 
   /*
-  @property [string]
+  @property [String]
   */
 
 
   FacebookInteraction.prototype.postId = null;
 
   /*
-  @property [string]
+  @property [String]
   */
 
 
   FacebookInteraction.prototype.commentId = null;
 
   /*
-  @property [string] either `post`, `comment` or `message`
+  @property [String] either `post`, `comment` or `message`
   */
 
 
   FacebookInteraction.prototype.postType = null;
 
   /*
-  @property [string]
+  @property [String]
   */
 
 
@@ -3980,21 +4145,21 @@ Firehose.FacebookPage = (function(_super) {
   FacebookPage.prototype.facebookAccount = null;
 
   /*
-  @property [string]
+  @property [String]
   */
 
 
   FacebookPage.prototype.name = null;
 
   /*
-  @property [string]
+  @property [String]
   */
 
 
   FacebookPage.prototype.category = null;
 
   /*
-  @property [string]
+  @property [String]
   */
 
 
@@ -4065,7 +4230,7 @@ Firehose.Note = (function(_super) {
   Note.prototype.interaction = null;
 
   /*
-  @property [string]
+  @property [String]
   */
 
 
@@ -4166,14 +4331,14 @@ Firehose.Notification = (function(_super) {
   Notification.prototype.company = null;
 
   /*
-  @property [string]
+  @property [String]
   */
 
 
   Notification.prototype.title = null;
 
   /*
-  @property [string]
+  @property [String]
   */
 
 
@@ -4226,21 +4391,21 @@ Firehose.OutgoingAttachment = (function(_super) {
   OutgoingAttachment.prototype.company = null;
 
   /*
-  @property [string]
+  @property [String]
   */
 
 
   OutgoingAttachment.prototype.token = null;
 
   /*
-  @property [string]
+  @property [String]
   */
 
 
   OutgoingAttachment.prototype.downloadURL = null;
 
   /*
-  @property [string]
+  @property [String]
   */
 
 
@@ -4373,6 +4538,371 @@ var _ref,
   __hasProp = {}.hasOwnProperty,
   __extends = function(child, parent) { for (var key in parent) { if (__hasProp.call(parent, key)) child[key] = parent[key]; } function ctor() { this.constructor = child; } ctor.prototype = parent.prototype; child.prototype = new ctor(); child.__super__ = parent.prototype; return child; };
 
+Firehose.Product = (function(_super) {
+  __extends(Product, _super);
+
+  function Product() {
+    _ref = Product.__super__.constructor.apply(this, arguments);
+    return _ref;
+  }
+
+  Product._firehoseType = "Product";
+
+  /*
+  @property [Company] The company this product belongs to.
+  */
+
+
+  Product.prototype.company = null;
+
+  /*
+  @property [String] The name of this product.
+  */
+
+
+  Product.prototype.name = null;
+
+  /*
+  @property [String]
+  */
+
+
+  Product.prototype.knowledgeBaseSubdomain = null;
+
+  /*
+  @property [String]
+  */
+
+
+  Product.prototype.knowledgeBaseCustomDomain = null;
+
+  /*
+  @property [String]
+  */
+
+
+  Product.prototype.knowledgeBaseCSS = null;
+
+  /*
+  @property [String]
+  */
+
+
+  Product.prototype.knowlegeBaseLayoutTemplate = null;
+
+  /*
+  @property [String]
+  */
+
+
+  Product.prototype.knowlegeBaseSearchTemplate = null;
+
+  /*
+  @property [String]
+  */
+
+
+  Product.prototype.knowlegeBaseArticleTemplate = null;
+
+  /*
+  @property [String]
+  */
+
+
+  Product.prototype.chatTitleTextColor = null;
+
+  /*
+  @property [String]
+  */
+
+
+  Product.prototype.chatTitleBackgroundColor = null;
+
+  /*
+  @property [String]
+  */
+
+
+  Product.prototype.chatAgentColor = null;
+
+  /*
+  @property [String]
+  */
+
+
+  Product.prototype.chatCustomerColor = null;
+
+  /*
+  @property [String]
+  */
+
+
+  Product.prototype.chatFieldTextColor = null;
+
+  /*
+  @property [String]
+  */
+
+
+  Product.prototype.chatFieldBackgroundColor = null;
+
+  /*
+  @property [String]
+  */
+
+
+  Product.prototype.chatBackgroundColor = null;
+
+  /*
+  @property [String]
+  */
+
+
+  Product.prototype.chatResponseBackgroundColor = null;
+
+  /*
+  @property [String]
+  */
+
+
+  Product.prototype.chatCSS = null;
+
+  /*
+  @property [String]
+  */
+
+
+  Product.prototype.chatOnlineHeaderText = null;
+
+  /*
+  @property [String]
+  */
+
+
+  Product.prototype.chatOnlineWelcomeText = null;
+
+  /*
+  @property [String]
+  */
+
+
+  Product.prototype.chatOfflineHeaderText = null;
+
+  /*
+  @property [String]
+  */
+
+
+  Product.prototype.chatOfflineWelcomeText = null;
+
+  /*
+  @property [String]
+  */
+
+
+  Product.prototype.chatOfflineEmailAddress = null;
+
+  /*
+  The designated method of creating a new product.  
+  @param name [String] The short display name.
+  @param text [String] The actual text of the product.
+  @param company [Company] The company this product will belong to once saved to the server.
+  */
+
+
+  Product.productWithName = function(name, company) {
+    return Firehose.Object._objectOfClassWithID(Firehose.Product, {
+      name: name,
+      company: company
+    });
+  };
+
+  Product._productWithID = function(id, company) {
+    return Firehose.Object._objectOfClassWithID(Firehose.Product, {
+      id: id,
+      company: company
+    });
+  };
+
+  /*
+  Save the product to the server.
+  @return [Promise] A jqXHR Promise.
+  @note If it has never been saved, it creates it on the server. Otherwise it updates it.
+  @example Creating and saving a product.
+    product = Firehose.Product.productWithName "Product", company
+    product.save().done ->
+      console.log "saved!"
+  */
+
+
+  Product.prototype.save = function() {
+    var params,
+      _this = this;
+    if (this.id != null) {
+      params = {
+        route: "products/" + this.id,
+        body: this._toJSON()
+      };
+      return Firehose.client.put(this, params);
+    } else {
+      params = {
+        route: "companies/" + this.company.id + "/products",
+        body: this._toJSON()
+      };
+      return Firehose.client.post(this, params).done(function(data) {
+        _this._populateWithJSON(data);
+        return _this.company.products.insertObject(_this);
+      });
+    }
+  };
+
+  /*
+  Fetch a companies properties based on `id`, `knowledgeBaseSubdomain` or `knowledgeBaseCustomDomain`.
+  @param  options [Object] A hash of options. Currently the only option is "include". This allows you to include knowledge base settings and chat settings attributes for this product.
+  @option options [String] include Use this query string param to include settings for "kb" or "chat" or both.
+  @return [jqXHR Promise] Promise
+  */
+
+
+  Product.prototype.fetch = function(options) {
+    var request, requested_attributes,
+      _this = this;
+    if (options == null) {
+      options = {};
+    }
+    if (this.id != null) {
+      requested_attributes = options.include != null ? "?include=" + (options.include.join(",")) : "";
+      request = {
+        route: "products/" + this.id + requested_attributes
+      };
+    } else if (this.knowledgeBaseSubdomain) {
+      request = {
+        auth: false,
+        route: "products",
+        params: {
+          kb_subdomain: this.knowledgeBaseSubdomain
+        }
+      };
+    } else if (this.knowledgeBaseCustomDomain) {
+      request = {
+        auth: false,
+        route: "products",
+        params: {
+          kb_custom_domain: this.knowledgeBaseCustomDomain
+        }
+      };
+    } else {
+      throw "You can't call 'fetch' on a product unless 'id', 'knowledgeBaseSubdomain' or 'knowledgeBaseCustomDomain' is set.";
+    }
+    return Firehose.client.get(this, request).done(function(data) {
+      return _this._populateWithJSON(data);
+    });
+  };
+
+  /*
+  Destroy this product from the server. This will destroy all articles that belong to this product.
+  @return [Promise] A jqXHR Promise.
+  */
+
+
+  Product.prototype.destroy = function() {
+    var params,
+      _this = this;
+    params = {
+      route: "products/" + this.id
+    };
+    return Firehose.client["delete"](this, params).done(function() {
+      return _this.company.products.dropObject(_this);
+    });
+  };
+
+  Product.prototype._populateWithJSON = function(json) {
+    this._setIfNotNull("name", json.name);
+    this._setIfNotNull("knowledgeBaseSubdomain", json.kb_subdomain);
+    this._setIfNotNull("knowledgeBaseCustomDomain", json.kb_custom_domain);
+    this._setIfNotNull("knowledgeBaseCSS", json.kb_css);
+    this._setIfNotNull("knowlegeBaseLayoutTemplate", json.kb_layout_template);
+    this._setIfNotNull("knowlegeBaseSearchTemplate", json.kb_search_template);
+    this._setIfNotNull("knowlegeBaseArticleTemplate", json.kb_article_template);
+    this._setIfNotNull("chatTitleTextColor", json.chat_title_text_color);
+    this._setIfNotNull("chatTitleBackgroundColor", json.chat_title_background_color);
+    this._setIfNotNull("chatAgentColor", json.chat_agent_color);
+    this._setIfNotNull("chatCustomerColor", json.chat_customer_color);
+    this._setIfNotNull("chatFieldTextColor", json.chat_field_text_color);
+    this._setIfNotNull("chatFieldBackgroundColor", json.chat_field_background_color);
+    this._setIfNotNull("chatBackgroundColor", json.chat_background_color);
+    this._setIfNotNull("chatResponseBackgroundColor", json.chat_response_background_color);
+    this._setIfNotNull("chatCSS", json.chat_css);
+    this._setIfNotNull("chatOnlineHeaderText", json.chat_online_header_text);
+    this._setIfNotNull("chatOnlineWelcomeText", json.chat_online_welcome_text);
+    this._setIfNotNull("chatOfflineHeaderText", json.chat_offline_header_text);
+    this._setIfNotNull("chatOfflineWelcomeText", json.chat_offline_welcome_text);
+    this._setIfNotNull("chatOfflineEmailAddress", json.chat_offline_email_address);
+    return Product.__super__._populateWithJSON.call(this, json);
+  };
+
+  Product.prototype._toJSON = function() {
+    return {
+      product: {
+        name: this.name,
+        kb_subdomain: this.knowledgeBaseSubdomain,
+        kb_custom_domain: this.knowledgeBaseCustomDomain,
+        kb_css: this.knowledgeBaseCSS,
+        kb_layout_template: this.knowlegeBaseLayoutTemplate,
+        kb_search_template: this.knowlegeBaseSearchTemplate,
+        kb_article_template: this.knowlegeBaseArticleTemplate,
+        chat_title_text_color: this.chatTitleTextColor,
+        chat_title_background_color: this.chatTitleBackgroundColor,
+        chat_agent_color: this.chatAgentColor,
+        chat_customer_color: this.chatCustomerColor,
+        chat_field_text_color: this.chatFieldTextColor,
+        chat_field_background_color: this.chatFieldBackgroundColor,
+        chat_background_color: this.chatBackgroundColor,
+        chat_response_background_color: this.chatResponseBackgroundColor,
+        chat_css: this.chatCSS,
+        chat_online_header_text: this.chatOnlineHeaderText,
+        chat_online_welcome_text: this.chatOnlineWelcomeText,
+        chat_offline_header_text: this.chatOfflineHeaderText,
+        chat_offline_welcome_text: this.chatOfflineWelcomeText,
+        chat_offline_email_address: this.chatOfflineEmailAddress
+      }
+    };
+  };
+
+  Product.prototype._toArchivableJSON = function() {
+    return $.extend(Product.__super__._toArchivableJSON.call(this), {
+      name: this.name,
+      kb_subdomain: this.knowledgeBaseSubdomain,
+      kb_custom_domain: this.knowledgeBaseCustomDomain,
+      kb_css: this.knowledgeBaseCSS,
+      kb_layout_template: this.knowlegeBaseLayoutTemplate,
+      kb_search_template: this.knowlegeBaseSearchTemplate,
+      kb_article_template: this.knowlegeBaseArticleTemplate,
+      chat_title_text_color: this.chatTitleTextColor,
+      chat_title_background_color: this.chatTitleBackgroundColor,
+      chat_agent_color: this.chatAgentColor,
+      chat_customer_color: this.chatCustomerColor,
+      chat_field_text_color: this.chatFieldTextColor,
+      chat_field_background_color: this.chatFieldBackgroundColor,
+      chat_background_color: this.chatBackgroundColor,
+      chat_response_background_color: this.chatResponseBackgroundColor,
+      chat_css: this.chatCSS,
+      chat_online_header_text: this.chatOnlineHeaderText,
+      chat_online_welcome_text: this.chatOnlineWelcomeText,
+      chat_offline_header_text: this.chatOfflineHeaderText,
+      chat_offline_welcome_text: this.chatOfflineWelcomeText,
+      chat_offline_email_address: this.chatOfflineEmailAddress
+    });
+  };
+
+  return Product;
+
+})(Firehose.Object);
+
+var _ref,
+  __hasProp = {}.hasOwnProperty,
+  __extends = function(child, parent) { for (var key in parent) { if (__hasProp.call(parent, key)) child[key] = parent[key]; } function ctor() { this.constructor = child; } ctor.prototype = parent.prototype; child.prototype = new ctor(); child.__super__ = parent.prototype; return child; };
+
 Firehose.Tag = (function(_super) {
   __extends(Tag, _super);
 
@@ -4391,7 +4921,7 @@ Firehose.Tag = (function(_super) {
   Tag.prototype.company = null;
 
   /*
-  @property [string]
+  @property [String]
   */
 
 
@@ -4488,21 +5018,21 @@ Firehose.TwitterAccount = (function(_super) {
   TwitterAccount.prototype.company = null;
 
   /*
-  @property [string]
+  @property [String]
   */
 
 
   TwitterAccount.prototype.screenName = null;
 
   /*
-  @property [string]
+  @property [String]
   */
 
 
   TwitterAccount.prototype.twitterUserId = null;
 
   /*
-  @property [string]
+  @property [String]
   */
 
 
@@ -4570,21 +5100,21 @@ Firehose.TwitterInteraction = (function(_super) {
   TwitterInteraction.prototype.favorited = false;
 
   /*
-  @property [string]
+  @property [String]
   */
 
 
   TwitterInteraction.prototype.tweetId = null;
 
   /*
-  @property [string]
+  @property [String]
   */
 
 
   TwitterInteraction.prototype.inReplyToScreenName = null;
 
   /*
-  @property [string]
+  @property [String]
   */
 
 
@@ -4598,28 +5128,28 @@ Firehose.TwitterInteraction = (function(_super) {
   TwitterInteraction.prototype.retweetCount = 0;
 
   /*
-  @property [string]
+  @property [String]
   */
 
 
   TwitterInteraction.prototype.tweetSource = null;
 
   /*
-  @property [string]
+  @property [String]
   */
 
 
   TwitterInteraction.prototype.toUserId = null;
 
   /*
-  @property [string]
+  @property [String]
   */
 
 
   TwitterInteraction.prototype.toScreenName = null;
 
   /*
-  @property [string]
+  @property [String]
   */
 
 
@@ -4677,21 +5207,21 @@ Firehose.Article = (function(_super) {
   Article.prototype.company = null;
 
   /*
-  @property [string]
+  @property [String]
   */
 
 
   Article.prototype.slug = null;
 
   /*
-  @property [string]
+  @property [String]
   */
 
 
   Article.prototype.title = null;
 
   /*
-  @property [string]
+  @property [String]
   */
 
 

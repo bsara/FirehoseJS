@@ -10,7 +10,7 @@ class Firehose.CustomerAccount extends Firehose.Object
   customer: null
   
   ###
-  @property [string] 
+  @property [String] 
   ###
   username: null
   
@@ -20,12 +20,12 @@ class Firehose.CustomerAccount extends Firehose.Object
   followingUs: null
   
   ###
-  @property [string] 
+  @property [String] 
   ###
   imageURL: null
   
   ###
-  @property [string] 
+  @property [String] 
   ###
   description: null
   
@@ -35,7 +35,7 @@ class Firehose.CustomerAccount extends Firehose.Object
   followersCount: null
   
   ###
-  @property [string] 
+  @property [String] 
   ###
   channel: null
   
@@ -49,7 +49,7 @@ class Firehose.CustomerAccount extends Firehose.Object
       
   ###
   The customer account's avatar URL.
-  @return [string] the url of the customer's avatar.
+  @return [String] the url of the customer's avatar.
   ###
   avatarURL: ->
     # if an image url is present from facebook or twitter

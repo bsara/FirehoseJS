@@ -5,37 +5,37 @@ class Firehose.Article extends Firehose.Object
   @_firehoseType: "Article"
   
   ###
-  @property [Company] 
+  @property [Product] 
   ###
-  company: null
+  product: null
   
   ###
-  @property [string] 
+  @property [String] 
   ###
   slug: null
   
   ###
-  @property [string] 
+  @property [String] 
   ###
   title: null
   
   ###
-  @property [string] 
+  @property [String] 
   ###
   body: null
     
     
-  @articleWithTitleBodyAndCompany: (title, body, company) ->
+  @articleWithTitleAndBody: (title, body, product) ->
     Firehose.Object._objectOfClassWithID Firehose.Article,
       title:    title
       body:     body
-      company:  company
+      product:  product
   
   
-  @articleWithID: (id, company) ->
+  @articleWithID: (id, product) ->
     Firehose.Object._objectOfClassWithID Firehose.Article,
       id:      id
-      company: company
+      product: product
   
   
   fetch: ->
@@ -54,18 +54,18 @@ class Firehose.Article extends Firehose.Object
       Firehose.client.put( this, params )
     else
       params = 
-        route: "companies/#{@company.id}/articles"
+        route: "products/#{@company.id}/articles"
         body:  this._toJSON()
       Firehose.client.post( this, params ).done (data) =>
         this._populateWithJSON data
-        @company.articles().insertObject this
+        @product.articles().insertObject this
       
       
   destroy: ->
     params = 
       route: "articles/#{@id}"
     Firehose.client.delete( this, params ).done =>
-      @company.articles().dropObject this
+      @product.articles().dropObject this
     
 
   # @nodoc
