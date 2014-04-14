@@ -1,6 +1,4 @@
-module "Company",
-  teardown: ->
-    window.unitTestDocumentURL = null
+module "Company"
 
 firehoseTest 'Create', 13, (agent) ->
   company = Firehose.Company.companyWithTitle( Faker.Lorem.words(1).join(" "), agent )
@@ -46,7 +44,7 @@ firehoseTest 'Fetch', 13, (agent) ->
 
 
 
-firehoseTest 'Update', 17, (agent) ->
+firehoseTest 'Update', 3, (agent) ->
   company       = agent.companies[0]
   company.title = "Adam's Company"
   company.save()

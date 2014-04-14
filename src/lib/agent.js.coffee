@@ -40,6 +40,21 @@ class Firehose.Agent extends Firehose.Object
   ###
   currentCompany: null
   
+  ###
+  @property [integer] 
+  ###
+  DNDStartHourUTC: null
+  
+  ###
+  @property [integer] 
+  ###
+  DNDEndHourUTC: null
+  
+  ###
+  @property [boolean] 
+  ###
+  DNDIsManuallyTurnedOn: false
+  
   # @nodoc
   _password: null
   
@@ -233,11 +248,14 @@ class Firehose.Agent extends Firehose.Object
   
   # @nodoc
   _populateWithJSON: (json) ->
-    this._setIfNotNull "accessToken", json.browser_token  unless @accessToken?
-    this._setIfNotNull "URLToken",    json.url_token      unless @URLToken?
-    this._setIfNotNull "firstName",   json.first_name
-    this._setIfNotNull "lastName",    json.last_name
-    this._setIfNotNull "email",       json.email
+    this._setIfNotNull "accessToken",             json.browser_token  unless @accessToken?
+    this._setIfNotNull "URLToken",                json.url_token      unless @URLToken?
+    this._setIfNotNull "firstName",               json.first_name
+    this._setIfNotNull "lastName",                json.last_name
+    this._setIfNotNull "email",                   json.email
+    this._setIfNotNull "DNDStartHourUTC",         json.dnd_start_hour_utc
+    this._setIfNotNull "DNDEndHourUTC",           json.dnd_end_hour_utc
+    this._setIfNotNull "DNDIsManuallyTurnedOn",   json.dnd_is_manually_turned_on
     
     this._populateAssociatedObjects this, "companies", json.companies, (json) =>
       Firehose.Company.companyWithID( json.id, null, this )
@@ -251,20 +269,26 @@ class Firehose.Agent extends Firehose.Object
   # @nodoc
   _toJSON: ->
     agent:
-      first_name: @firstName
-      last_name:  @lastName
-      email:      @email
-      password:   @_password if @_password?
+      first_name                : @firstName
+      last_name                 : @lastName
+      email                     : @email
+      password                  : @_password if @_password?
+      dnd_start_hour_utc        : @DNDStartHourUTC     
+      dnd_end_hour_utc          : @DNDEndHourUTC       
+      dnd_is_manually_turned_on : @DNDIsManuallyTurnedOn
       
   # @nodoc
   _toArchivableJSON: ->
     $.extend super(),
-      access_token: @accessToken
-      url_token:    @URLToken
-      first_name:   @firstName
-      last_name:    @lastName
-      email:        @email
-      password:     @_password if @_password?
-      companies:    @companies?._toArchivableJSON()
+      access_token              : @accessToken
+      url_token                 : @URLToken
+      first_name                : @firstName
+      last_name                 : @lastName
+      email                     : @email
+      password                  : @_password if @_password?
+      dnd_start_hour_utc        : @DNDStartHourUTC     
+      dnd_end_hour_utc          : @DNDEndHourUTC       
+      dnd_is_manually_turned_on : @DNDIsManuallyTurnedOn
+      companies                 : @companies?._toArchivableJSON()
 
   
