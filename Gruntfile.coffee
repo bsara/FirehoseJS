@@ -148,16 +148,16 @@ module.exports = (grunt) ->
 
   grunt.event.on 'qunit.moduleStart', (name) ->
     grunt.log.writeln("")
-    grunt.log.ok("Testing: #{name}");
+    grunt.log.ok("Testing: #{name}")
 
   # grunt.event.on 'qunit.testStart', (name) ->
   #   grunt.log.ok("Started #{name}");
 
   grunt.event.on 'qunit.testDone', (name, failed, passed, total) ->
     if passed
-      grunt.log.ok("Passed: #{name}");
+      grunt.log.ok("Passed: #{name}")
     else
-      grunt.log.error("Failed: #{name}");
+      grunt.log.error("Failed: #{name}")
 
 
   # These plugins provide necessary tasks.
