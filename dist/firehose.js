@@ -4732,14 +4732,14 @@ Firehose.Product = (function(_super) {
   Product.prototype._populateWithJSON = function(json) {
     this._setIfNotNull("name", json.name);
     this._setIfNotNull("token", json.token);
-    this._includesKnowledgeBaseAttributes = typeof json.kb_subdomain !== 'undefined';
+    this.set("_includesKnowledgeBaseAttributes", typeof json.kb_subdomain !== 'undefined');
     this._setIfNotNull("knowledgeBaseSubdomain", json.kb_subdomain);
     this._setIfNotNull("knowledgeBaseCustomDomain", json.kb_custom_domain);
     this._setIfNotNull("knowledgeBaseCSS", json.kb_css);
     this._setIfNotNull("knowledgeBaseLayoutTemplate", json.kb_layout_template);
     this._setIfNotNull("knowledgeBaseSearchTemplate", json.kb_search_template);
     this._setIfNotNull("knowledgeBaseArticleTemplate", json.kb_article_template);
-    this._includesChatAttributes = typeof json.chat_title_text_color !== 'undefined';
+    this.set("_includesChatAttributes", typeof json.chat_title_text_color !== 'undefined');
     this._setIfNotNull("chatTitleTextColor", json.chat_title_text_color);
     this._setIfNotNull("chatTitleBackgroundColor", json.chat_title_background_color);
     this._setIfNotNull("chatAgentColor", json.chat_agent_color);
