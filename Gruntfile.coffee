@@ -179,3 +179,4 @@ module.exports = (grunt) ->
   grunt.registerTask 'debug', ['clean', 'coffee', 'concat', 'copy', 'exec:start_server', 'exec:open_browser', 'connect:debug']
   # grunt.registerTask 'noserver', ['clean', 'coffee', 'concat', 'copy', 'connect:test', 'qunit' ]
   grunt.registerTask 'noserver', ['clean', 'coffee', 'concat', 'copy', 'exec:open_browser', 'connect:debug' ]
+  grunt.registerTask 'tinker', ['clean', 'coffee', 'concat', 'copy', 'exec:open_browser', 'connect:debug']
