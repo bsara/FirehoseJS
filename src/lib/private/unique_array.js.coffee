@@ -1,43 +1,43 @@
 # @nodoc
 class Firehose.UniqueArray extends Array
-  
-  
+
+
   _sortOn: null
-  
+
   _sortDirection: 'asc'
-  
-  
+
+
   constructor: ->
     super
-  
-  
+
+
   appendObject: ->
     for arg in arguments
       if this.indexOf(arg) == -1
         this.push arg
-        
-  
+
+
   appendObjects: (objects) ->
     for obj in objects
       this.appendObject obj
-    
-    
+
+
   insertObject: ->
     this.appendObject.apply this, arguments
     this.sortObjects()
-    
-    
-  insertObjects: (objects) -> 
+
+
+  insertObjects: (objects) ->
     this.appendObjects objects
     this.sortObjects()
-    
-        
+
+
   dropObject: ->
     for arg in arguments
       idx = this.indexOf arg
       this.splice( idx, 1 ) unless idx == -1
-      
-      
+
+
   dropObjects: (objects) ->
     for obj in objects
       this.dropObject obj
@@ -58,12 +58,12 @@ class Firehose.UniqueArray extends Array
       else
         0
     this.reverse() if @_sortDirection == 'desc'
-    
-    
+
+
   # @nodoc
   _toArchivableJSON: ->
     archiveArray = []
     for obj in this
       archiveArray.push obj._toArchivableJSON()
     archiveArray
-      
+

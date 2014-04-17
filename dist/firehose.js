@@ -1184,7 +1184,7 @@ Firehose.Agent = (function(_super) {
   /*
   Deletes this agent from the server.
   @note The logic of what this does is somewhat complex. The rules are: Every company this agent belongs to where this is the only agent the company has will be destroyed
-        with the agent. Any company this agent belongs to that has other agents will not be destroyed and if the agent was the company's owner, the agent will still be 
+        with the agent. Any company this agent belongs to that has other agents will not be destroyed and if the agent was the company's owner, the agent will still be
         destroyed and a new owner will be selected from remaining agents at random.
   @return [Promise] A jqXHR Promise.
   */
@@ -2116,7 +2116,7 @@ Firehose.Interaction = (function(_super) {
 
   /*
   Used to create a generic interaction that can then be fetched, without authentication, by the token.
-  @param token [String] 
+  @param token [String]
   @note: Any interactions is publicly visible with a token.
   @return [Interaction] a generic interaction object.
   */
@@ -2530,7 +2530,7 @@ Firehose.CannedResponse = (function(_super) {
   CannedResponse.prototype.text = null;
 
   /*
-  The designated method of creating a new canned response.  
+  The designated method of creating a new canned response.
   @param name [String] The short display name
   @param text [String] The actual text of the canned response
   @param company [Company] The company this canned response will belong to once saved to the server.
@@ -3681,7 +3681,7 @@ Firehose.EmailInteraction = (function(_super) {
   };
 
   /*
-  Returns the URL to the source of the email interaction exactly as it was received into Firehose. 
+  Returns the URL to the source of the email interaction exactly as it was received into Firehose.
   @note: You can only call this on an e-mail interaction.
   @return [String] A full URL to the email's raw RFC source.
   */

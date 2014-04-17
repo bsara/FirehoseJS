@@ -1,66 +1,66 @@
 class Firehose.TwitterInteraction extends Firehose.Interaction
-  
-  
+
+
   # @nodoc
   @_firehoseType: "TwitterInteraction"
-  
+
   ###
-  @property [TwitterAccount] 
+  @property [TwitterAccount]
   ###
   twitterAccount: null
-  
+
   ###
-  @property [boolean] 
+  @property [boolean]
   ###
   favorited: false
-  
+
   ###
-  @property [String] 
+  @property [String]
   ###
   tweetId: null
-  
+
   ###
-  @property [String] 
+  @property [String]
   ###
   inReplyToScreenName: null
-  
+
   ###
-  @property [String] 
+  @property [String]
   ###
   inReplyToStatusId: null
-  
+
   ###
-  @property [number] 
+  @property [number]
   ###
   retweetCount: 0
-  
+
   ###
-  @property [String] 
+  @property [String]
   ###
   tweetSource: null
-  
+
   ###
-  @property [String] 
+  @property [String]
   ###
   toUserId: null
-  
+
   ###
-  @property [String] 
+  @property [String]
   ###
   toScreenName: null
-  
+
   ###
-  @property [String] 
+  @property [String]
   ###
   fromUserId: null
-  
-  
+
+
   # @nodoc
   @_twitterInteractionWithID: (id) ->
     Firehose.Object._objectOfClassWithID Firehose.TwitterInteraction,
       id: id
-  
-  
+
+
   # @nodoc
   _populateWithJSON: (json) ->
     if json.twitter_interaction?
@@ -74,9 +74,8 @@ class Firehose.TwitterInteraction extends Firehose.Interaction
       this._setIfNotNull "toUserId",            twitterJSON.to_user_id
       this._setIfNotNull "toScreenName",        twitterJSON.twitter_account.screen_name
       this._setIfNotNull "fromUserId",          twitterJSON.from_user_id
-      
+
       this._populateAssociatedObjectWithJSON this, "twitterAccount", twitterJSON.twitter_account, (json) ->
         Firehose.TwitterAccount._twitterAccountWithID( json.id )
 
     super json
- 

@@ -24,8 +24,8 @@ Firehose.environment = ->
 ###
 Firehose.baseURLFor = (app, subdomain) ->
   Firehose.client.environment.baseURLFor app, subdomain
-  
-  
+
+
 ###
 @param    service [String] The name of the service. Possible values: 'pusher', 'stripe'
 @return   [String] The token/key used for that service's library.

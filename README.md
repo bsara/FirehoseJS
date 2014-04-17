@@ -21,7 +21,7 @@ Because Firehose.js is meant to be used in a browser environment, it's environme
 consider a link in the brower app:
 
     <a href="javascript:Firehose.baseURLFor('marketing') + '/home/login';">Log In</a>
-    
+
 If you were viewing the browser app in development at `http://localhost:4001` then the link would be generated as `http://localhost:4004/home/login`. If the current browser app was running in production at `https://firehoseapp.com` the linke would be generated as `https://getfirehose.com/home/login`.
 
 #### Beta
@@ -32,7 +32,7 @@ Every browser client will have a variation of the production hostname, each with
 
 On localhost, where you are supplying port numbers, you can modify the different digits of the port number to modify how Firehose.js generates URLs. In production, there are no port numbers, so Firehose.js will use the default expected behavior. The different port number digits represent the following:
 
-* **[1]** The type of service served. Changing this does not actually affect anything at all, it's just going to be convention that servers will have the first digit of `3` and browser clients will have the first digit of `4`. This way, when you look at a URL, you can quickly tell if the url can be visted in a browser or if it's simply a json server. The API, billing and frh.io URLs have port numbers starting with 3, all the rest start with 4. So When testing the browser client locally, run middleman with `middleman -p 4001` 
+* **[1]** The type of service served. Changing this does not actually affect anything at all, it's just going to be convention that servers will have the first digit of `3` and browser clients will have the first digit of `4`. This way, when you look at a URL, you can quickly tell if the url can be visted in a browser or if it's simply a json server. The API, billing and frh.io URLs have port numbers starting with 3, all the rest start with 4. So When testing the browser client locally, run middleman with `middleman -p 4001`
 
     	3: Sever
     	4: Client
@@ -43,22 +43,22 @@ of the browser client.
     	0: development
     	1. mini
     	2. production
-    
+
 * **[3]** The environment. Because the environment is usually inferred from the hostname, this is an optional override for when you are developing a browser client locally. For example, the test suite of Firehose.js runs on port `4011` to pose as if it's the browser app, but pointing to the local server and its test environment. This only makes sense for running in dev or test.
 
 		0: development
 		1: test
-		
+
 * **[4]** The app. Running marketing on port \*\*\*1 would change nothing, except that Firehose.js assumes everything is running on it's designated port. So if the billing app was running on \*\*\*7, and you took some action that resulted in the browser app redirecting you to the marketing app, it would try to send you to \*\*\*4, because that's where it assumes it is running. In this scenario of not following the rules, it would say server could not be found because nothing is running at \*\*\*4. So, it's just in your best interest to learn these and run apps locally on the right fourth digit port number.
 
-    	0: API   
+    	0: API
     	1: browser
-    	2: billing 
-		  3: files    
-    	4: marketing 
-    	5: settings   
-    	6: tweetlonger 
-    	7: kb          
+    	2: billing
+		  3: files
+    	4: marketing
+    	5: settings
+    	6: tweetlonger
+    	7: kb
 
 
 
@@ -76,12 +76,12 @@ Make sure you install the following npm packages:
 
     sudo npm install -g coffeedoc
     sudo npm install -g exec
-    
+
 Make sure these two env vars are set in your .bash_profile:
 
     export FH_API_PATH='/Users/adamkirk/mt/projects/firehose/firehose'
     export FH_BILLING_PATH='/Users/adamkirk/mt/projects/firehose/billing'
-    
+
 So that the start_server.sh script knows where your apps are to start them for testing.
 
 You must also make sure that both your local API and billing apps have run `rake db:create RAILS_ENV=testclient` and `rake db:migrate RAILS_ENV=testclient`
@@ -89,7 +89,7 @@ You must also make sure that both your local API and billing apps have run `rake
 #### Testing
 
 Unlike rails integration tests, libraries have no direct access to the application to create the test data needed for a test as part of the test, we must prepare a database full of all the different data scenarios we need to test. To generate these prepopulated postgres dbs you run rake tasks. For each app:
-	
+
 	API: rake fh:test:client:prepare[200]
 	Billing: rake fh_billing:test:client:prepare[30]
 

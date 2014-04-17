@@ -1,20 +1,20 @@
 class Firehose.Tag extends Firehose.Object
-  
-  
+
+
   # @nodoc
   @_firehoseType: "Tag"
-  
+
   ###
-  @property [Company] 
+  @property [Company]
   ###
   company: null
-  
+
   ###
-  @property [String] 
+  @property [String]
   ###
   label: null
-  
-  
+
+
   @tagWithLabel: (label, company) ->
     Firehose.Object._objectOfClassWithID Firehose.Tag,
       label:   label
@@ -26,41 +26,41 @@ class Firehose.Tag extends Firehose.Object
     Firehose.Object._objectOfClassWithID Firehose.Tag,
       id:      id
       company: company
-      
-        
+
+
   save: ->
     if @id?
-      params = 
+      params =
         route: "tags/#{@id}"
         body:  this._toJSON()
       Firehose.client.put( this, params )
     else
-      params = 
+      params =
         route: "companies/#{@company.id}/tags"
         body:  this._toJSON()
       Firehose.client.post( this, params ).done (data) =>
         this._populateWithJSON data
         @company.tags.insertObject this
-      
-      
+
+
   destroy: ->
-    params = 
+    params =
       route: "tags/#{@id}"
     Firehose.client.delete( this, params ).done =>
       @company.tags.dropObject this
-    
+
 
   # @nodoc
   _populateWithJSON: (json) ->
     this._setIfNotNull "label", json.label
     super json
-    
-    
+
+
   # @nodoc
   _toJSON: ->
     tag:
       label: @label
-      
+
     # @nodoc
   _toArchivableJSON: ->
     $.extend super(),

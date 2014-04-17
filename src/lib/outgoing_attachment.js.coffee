@@ -1,46 +1,46 @@
 class Firehose.OutgoingAttachment extends Firehose.Object
-  
-  
+
+
   # @nodoc
   @_firehoseType: "OutgoingAttachment"
-  
+
   ###
-  @property [Company] 
+  @property [Company]
   ###
   company: null
-  
+
   ###
-  @property [String] 
+  @property [String]
   ###
   token: null
-  
+
   ###
-  @property [String] 
+  @property [String]
   ###
   downloadURL: null
-  
+
   ###
-  @property [String] 
+  @property [String]
   ###
   uploadURL: null
-  
+
   ###
-  @property [boolean] 
+  @property [boolean]
   ###
   uploaded: false
-  
+
   ###
-  @property [File] 
+  @property [File]
   ###
   file: null
-  
-    
+
+
   @outgoingAttachmentWithFile: (file, company) ->
     new Firehose.OutgoingAttachment
       file:    file
       company: company
-    
-  
+
+
   @openFilePicker: (completion) ->
     # Make an unattached input tag to be garbage collected when we're done
     fileEl = $('<input type="file"/>')
@@ -56,28 +56,28 @@ class Firehose.OutgoingAttachment extends Firehose.Object
       if file.size > 300*1024*1024
         alert "File sizes greater than 300MB have a higher chance of failure when uploaded from a browser. If you experience problems, perhaps try it from the Mac app."
         return
-        
+
       completion file
-        
+
     fileEl.trigger 'click'
- 
-    
-  
+
+
+
   upload: (options = {}) ->
-    params = 
+    params =
       route: "companies/#{@company.id}/outgoing_attachments"
       body: this._toJSON()
     Firehose.client.post( this, params ).done (data) =>
-      
+
       this._populateWithJSON data
-      
+
       # Because we can't use jquery exactly, we have to do a bit of tomfoolery
       # to create the xhr object
       xhr = new XMLHttpRequest()
-      
+
       if "withCredentials" of xhr
         xhr.open 'PUT', data.upload_url, true
-        
+
       else if typeof XDomainRequest != "undefined"
         xhr = new XDomainRequest()
         xhr.open 'PUT', data.upload_url
@@ -86,7 +86,7 @@ class Firehose.OutgoingAttachment extends Firehose.Object
         xhr.upload?.addEventListener 'progress', (event) ->
           if event.lengthComputable
             percentComplete = parseInt event.loaded / event.total * 100, 10
-            if percentComplete >= 95 
+            if percentComplete >= 95
               options.progress 95
             else
               options.progress percentComplete
@@ -99,7 +99,7 @@ class Firehose.OutgoingAttachment extends Firehose.Object
           # we might want to show users their uploaded attachments, we don't want
           # to show them attachments that were never uploaded correctly.
           @uploaded = true
-          params = 
+          params =
             route: "outgoing_attachments/#{data.id}"
             body: this._toJSON()
           Firehose.client.put( this, params ).done ->
@@ -108,7 +108,7 @@ class Firehose.OutgoingAttachment extends Firehose.Object
             options.error? errorThrown
         else
           options.error? "Your attachment failed to upload successfully, please try again. Please contact support@getfirehose.com if the problem persists and we'll get it fixed for you."
-          
+
       xhr.onerror = (error) =>
         options.error? "Your attachment failed to upload successfully, please try again. Please contact support@getfirehose.com if the problem persists and we'll get it fixed for you."
 
@@ -116,23 +116,23 @@ class Firehose.OutgoingAttachment extends Firehose.Object
       xhr.setRequestHeader 'Content-Type', @file.type
       xhr.setRequestHeader 'x-amz-acl', 'authenticated-read'
       xhr.send @file
-    
+
     .fail (jqXHR, textStatus, errorThrown) ->
       options.error? errorThrown
-      
-    
+
+
   # @nodoc
   _populateWithJSON: (json) ->
     this._setIfNotNull "downloadURL", json.download_url
     this._setIfNotNull "uploadURL", json.upload_url
     super json
-    
-    
+
+
   # @nodoc
   _toJSON: ->
     outgoing_attachment:
       filename: @file.name
       mimetype: @file.type || "application/zip"
       uploaded: @uploaded
-      
-      
+
+

@@ -1,98 +1,98 @@
 class Firehose.Interaction extends Firehose.Object
-      
+
   # @nodoc
   @_firehoseType: "Interaction"
-  
+
   ###
-  @property [Customer] 
+  @property [Customer]
   ###
   customer: null
-  
+
   ###
-  @property [String] 
+  @property [String]
   ###
   token: null
-  
+
   ###
-  @property [String] 
+  @property [String]
   ###
   responseDraft: null
-  
+
   ###
   @property [integer] 1 = unhappy, 2 = satisfied, 3 = happy
   @deprecated
   ###
   happiness: null
-  
+
   ###
-  @property [boolean] 
+  @property [boolean]
   ###
   resolved: false
-  
+
   ###
-  @property [boolean] 
+  @property [boolean]
   ###
   isOutgoing: null
-  
+
   ###
-  @property [String] 
+  @property [String]
   ###
   body: null
-  
+
   ###
-  @property [String] 
+  @property [String]
   ###
   privateURL: null
-  
+
   ###
   @property [String] What channel the interaction is through (email, fb, twitter)
   ###
   channel: null
-  
+
   ###
-  @property [Date] 
+  @property [Date]
   ###
   receivedAt: null
-  
+
   ###
   @property [CustomerAccount] The account this interaction is linked to.
   ###
   customerAccount: null
-  
+
   ###
   @property [Agent] If this is a response interaction, the agent that wrote it.
   ###
   agent: null
-  
-  
+
+
   # associations
-  
+
   ###
-  @property [Interaction] 
+  @property [Interaction]
   ###
   originalInteraction: null
-  
+
   ###
-  @property [Array<Interaction>] 
+  @property [Array<Interaction>]
   ###
   responseInteractions: null
-  
+
   ###
-  @property [Array<Note>] 
+  @property [Array<Note>]
   ###
   notes: null
-  
+
   ###
-  @property [Array<Tag>] 
+  @property [Array<Tag>]
   ###
   tags: null
-  
+
   ###
-  @property [Array<Agent>] 
+  @property [Array<Agent>]
   ###
   flaggedAgents: null
-  
-  
+
+
   # @nodoc
   _setup: ->
     @responseInteractions = new Firehose.UniqueArray
@@ -103,38 +103,38 @@ class Firehose.Interaction extends Firehose.Object
     @notes.sortOn "createdAt"
     @tags.sortOn "label"
     @flaggedAgents.sortOn "firstName"
-    
-  
+
+
   ###
   Used to create a generic interaction that can then be fetched, without authentication, by the token.
-  @param token [String] 
+  @param token [String]
   @note: Any interactions is publicly visible with a token.
   @return [Interaction] a generic interaction object.
-  ### 
+  ###
   @interactionWithToken: (token) ->
     Firehose.Object._objectOfClassWithID Firehose.Interaction,
       token: token
-    
-    
+
+
   ###
   Used to create an interaction from JSON received from a web socket event.
   @param json [String] The json received from the pusher even or the API.
   @param customer [Customer] The customer this interaction belongs to.
   @return [Interaction] a generic interaction object.
-  ### 
+  ###
   @interactionWithJSON: (json, customer) ->
     interaction = null
     if json.channel == "twitter"
       interaction = Firehose.TwitterInteraction._twitterInteractionWithID( json.id )
-    else if json.channel == "facebook"    
+    else if json.channel == "facebook"
       interaction = Firehose.FacebookInteraction._facebookInteractionWithID( json.id )
     else if json.channel == "email"
       interaction = Firehose.EmailInteraction._emailInteractionWithID( json.id )
     interaction._setCustomer customer
     interaction._populateWithJSON json
     interaction
-    
-  
+
+
   subject: ->
     if this.constructor._firehoseType == "EmailInteraction"
       return this.emailSubject
@@ -142,13 +142,13 @@ class Firehose.Interaction extends Firehose.Object
       return if this.inReplyToScreenName then "Reply to #{this.inReplyToScreenName}" else "Mention of #{this.toScreenName}"
     else if this.constructor._firehoseType == "FacebookInteraction"
       return this.type[0].toUpperCase() + this.type.slice(1)
-  
-  
+
+
   reply: ->
     body =
       interaction:
         body: @responseDraft
-    params = 
+    params =
       route: "interactions/#{@id}/reply"
       body:  body
     Firehose.client.post( this, params ).done (data) =>
@@ -158,15 +158,15 @@ class Firehose.Interaction extends Firehose.Object
       response._setIfNotNull "agent", Firehose.Agent.loggedInAgent
       @responseInteractions.sort (interaction1, interaction2) ->
         interaction1.createdAt > interaction2.createdAt
-    
-    
+
+
   save: ->
-    params = 
+    params =
       route: "interactions/#{@id}"
       body:  this._toJSON()
     Firehose.client.put( this, params )
-    
-    
+
+
   ###
   Fetches the latest data from the server and populates the object's properties with it.
   @note: If an id is used, an access token is required and you will a more comprehensive JSON object in return. If no id is present, but a token is, it will fetch without authentication.
@@ -177,43 +177,43 @@ class Firehose.Interaction extends Firehose.Object
       route: "interactions/#{@token || @id}"
     Firehose.client.get( this, params ).done (data) =>
       this._populateWithJSON data
-      
-    
+
+
   destroy: ->
-    params = 
+    params =
       route: "interactions/#{@id}"
     Firehose.client.delete( this, params ).done =>
       @customer.interactions().dropObject this
-    
-    
+
+
   addTag: (tag) ->
-    params = 
+    params =
       route: "interactions/#{@id}/tags/#{tag.id}"
     Firehose.client.put( this, params ).done =>
       @tags.insertObject tag
-    
-    
+
+
   removeTag: (tag) ->
-    params = 
+    params =
       route: "interactions/#{@id}/tags/#{tag.id}"
     Firehose.client.delete( this, params ).done =>
       @tags.dropObject tag
-    
-    
+
+
   flagAgent: (agent) ->
-    params = 
+    params =
       route: "interactions/#{@id}/agents/#{agent.id}"
     Firehose.client.put( this, params ).done =>
       @flaggedAgents.insertObject agent
-    
-  
+
+
   unflagAgent: (agent) ->
-    params = 
+    params =
       route: "interactions/#{@id}/agents/#{agent.id}"
     Firehose.client.delete( this, params ).done =>
       @flaggedAgents.dropObject agent
-    
-  
+
+
   happinessString: ->
     if @happiness == 0
       "Upset"
@@ -221,15 +221,15 @@ class Firehose.Interaction extends Firehose.Object
       "Satisfied"
     else if @happiness == 2
       "Happy"
-      
-      
-      
-      
+
+
+
+
   # @nodoc
   _setCustomer: (customer) ->
     this._setIfNotNull "customer", customer
-    
-    
+
+
   # @nodoc
   _populateWithJSON: (json) ->
     this._setIfNotNull "token",         json.token unless @token?
@@ -241,32 +241,32 @@ class Firehose.Interaction extends Firehose.Object
     this._setIfNotNull "happiness",     json.happiness
     this._setIfNotNull "resolved",      json.resolved
     this._setIfNotNull "isOutgoing",    json.outgoing
-    
+
     this._populateAssociatedObjectWithJSON this, "agent", json.agent, (json) ->
       Firehose.Agent.agentWithID( json.id )
-      
+
     this._populateAssociatedObjectWithJSON this, "customerAccount", json.customer_account, (json) =>
       json.channel = @channel
       Firehose.CustomerAccount._customerAccountWithID( json.id, @customer )
-    
+
     this._populateAssociatedObjects this, "responseInteractions", json.response_interactions, (json) =>
       json.channel = @channel
       interaction = Firehose.Interaction.interactionWithJSON( json, @customer )
       interaction.set 'originalInteraction', this
       interaction
-      
+
     this._populateAssociatedObjects this, "notes", json.notes, (json) =>
       Firehose.Note._noteWithID( json.id, this )
-      
+
     this._populateAssociatedObjects this, "tags", json.tags, (json) =>
       Firehose.Tag._tagWithID( json.id, @customer.company )
-      
+
     this._populateAssociatedObjects this, "flaggedAgents", json.flagged_agents, (json) =>
       Firehose.Agent.agentWithID( json.id )
-      
+
     super json
-    
-    
+
+
   # @nodoc
   _toJSON: ->
     interaction:

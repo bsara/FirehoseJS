@@ -1,37 +1,37 @@
 class Firehose.Notification extends Firehose.Object
-    
-  
+
+
   # @nodoc
   @_firehoseType: "Notification"
-  
+
   ###
-  @property [Company] 
+  @property [Company]
   ###
   company: null
-  
+
   ###
-  @property [String] 
+  @property [String]
   ###
   title: null
-  
+
   ###
-  @property [String] 
+  @property [String]
   ###
   text: null
-  
+
   ###
-  @property [integer] 
+  @property [integer]
   ###
   level: 0
-  
-    
+
+
   # @nodoc
   @_notificationWithID: (id, company) ->
     Firehose.Object._objectOfClassWithID Firehose.Notification,
       id:      id
       company: company
-    
-    
+
+
   # @nodoc
   _populateWithJSON: (json) ->
     this._setIfNotNull "title", json.title

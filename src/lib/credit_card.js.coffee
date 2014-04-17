@@ -54,7 +54,7 @@ class Firehose.CreditCard extends Firehose.Object
   @param email [String] The email that receipts should be sent to.
   @param company [Company] The company this card will be added to
   @return [CreditCard] Returns a credit card that can then be sumitted to Stripe for a token and saved to Firehose.
-  ###    
+  ###
   @creditCardWithNumber: (number, cvc, expMonth, expYear, email, company) ->
     Firehose.Object._objectOfClassWithID Firehose.CreditCard,
     number:          number
@@ -70,7 +70,7 @@ class Firehose.CreditCard extends Firehose.Object
   @param id [number] The id of the credit card object from the api.
   @param company [Company] The company this card will be added to
   @return [CreditCard] Returns a credit card that can then be fetched.
-  ###    
+  ###
   @creditCardWithID: (id, company) ->
     Firehose.Object._objectOfClassWithID Firehose.CreditCard,
       id:      id
