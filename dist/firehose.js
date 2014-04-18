@@ -1033,6 +1033,13 @@ Firehose.Agent = (function(_super) {
 
   Agent.prototype.DNDIsManuallyTurnedOn = false;
 
+  /*
+  @property [Array] An array of weekday numbers (Sunday: 1, Saturday: 7) that an agent will receive a digest email on.
+  */
+
+
+  Agent.prototype.digestDays = null;
+
   Agent.prototype._password = null;
 
   Agent.prototype.companies = null;
@@ -1274,7 +1281,8 @@ Firehose.Agent = (function(_super) {
   };
 
   Agent.prototype._populateWithJSON = function(json) {
-    var _this = this;
+    var _ref1, _ref2, _ref3, _ref4,
+      _this = this;
     if (this.accessToken == null) {
       this._setIfNotNull("accessToken", json.browser_token);
     }
@@ -1284,9 +1292,10 @@ Firehose.Agent = (function(_super) {
     this._setIfNotNull("firstName", json.first_name);
     this._setIfNotNull("lastName", json.last_name);
     this._setIfNotNull("email", json.email);
-    this._setIfNotNull("DNDStartHourUTC", json.dnd_start_hour_utc);
-    this._setIfNotNull("DNDEndHourUTC", json.dnd_end_hour_utc);
-    this._setIfNotNull("DNDIsManuallyTurnedOn", json.dnd_is_manually_turned_on);
+    this._setIfNotNull("DNDStartHourUTC", (_ref1 = json.agent_settings) != null ? _ref1.dnd_start_hour_utc : void 0);
+    this._setIfNotNull("DNDEndHourUTC", (_ref2 = json.agent_settings) != null ? _ref2.dnd_end_hour_utc : void 0);
+    this._setIfNotNull("DNDIsManuallyTurnedOn", (_ref3 = json.agent_settings) != null ? _ref3.dnd_is_manually_turned_on : void 0);
+    this._setIfNotNull("digestDays", (_ref4 = json.agent_settings) != null ? _ref4.digest_days : void 0);
     this._populateAssociatedObjects(this, "companies", json.companies, function(json) {
       return Firehose.Company.companyWithID(json.id, null, _this);
     });
@@ -1303,9 +1312,12 @@ Firehose.Agent = (function(_super) {
         last_name: this.lastName,
         email: this.email,
         password: this._password != null ? this._password : void 0,
-        dnd_start_hour_utc: this.DNDStartHourUTC,
-        dnd_end_hour_utc: this.DNDEndHourUTC,
-        dnd_is_manually_turned_on: this.DNDIsManuallyTurnedOn
+        agent_settings_attributes: {
+          dnd_start_hour_utc: this.DNDStartHourUTC,
+          dnd_end_hour_utc: this.DNDEndHourUTC,
+          dnd_is_manually_turned_on: this.DNDIsManuallyTurnedOn,
+          digest_days: this.digestDays
+        }
       }
     };
   };
@@ -1322,6 +1334,7 @@ Firehose.Agent = (function(_super) {
       dnd_start_hour_utc: this.DNDStartHourUTC,
       dnd_end_hour_utc: this.DNDEndHourUTC,
       dnd_is_manually_turned_on: this.DNDIsManuallyTurnedOn,
+      digest_days: this.digestDays,
       companies: (_ref1 = this.companies) != null ? _ref1._toArchivableJSON() : void 0
     });
   };
@@ -1656,7 +1669,7 @@ Firehose.Company = (function(_super) {
 
   /*
   The customers of a company, filtered by a criteria.
-  @param criteria [Object] A hash of criteria by which customers should be searched. 
+  @param criteria [Object] A hash of criteria by which customers should be searched.
   @option criteria [String] filter "everything" or "unresolved"
   @option criteria [String] channel A comma seperated list of channels to fetch (e.g. "twitter,email"). Omit to include all channels.
   @option criteria [String] sort "newest_first" or "oldest_first"
@@ -1728,7 +1741,7 @@ Firehose.Company = (function(_super) {
     return this._twitterAccounts;
   };
 
-  /* 
+  /*
   The Facebook accounts of a company.
   @return [RemoteArray<facebookAccount>] The found articles.
   */
@@ -1745,7 +1758,7 @@ Firehose.Company = (function(_super) {
     return this._facebookAccounts;
   };
 
-  /* 
+  /*
   The email accounts of a company.
   @return [RemoteArray<EmailAccount>] The found articles.
   */
@@ -4732,14 +4745,14 @@ Firehose.Product = (function(_super) {
   Product.prototype._populateWithJSON = function(json) {
     this._setIfNotNull("name", json.name);
     this._setIfNotNull("token", json.token);
-    this._includesKnowledgeBaseAttributes = typeof json.kb_subdomain !== 'undefined';
+    this.set("_includesKnowledgeBaseAttributes", typeof json.kb_subdomain !== 'undefined');
     this._setIfNotNull("knowledgeBaseSubdomain", json.kb_subdomain);
     this._setIfNotNull("knowledgeBaseCustomDomain", json.kb_custom_domain);
     this._setIfNotNull("knowledgeBaseCSS", json.kb_css);
     this._setIfNotNull("knowledgeBaseLayoutTemplate", json.kb_layout_template);
     this._setIfNotNull("knowledgeBaseSearchTemplate", json.kb_search_template);
     this._setIfNotNull("knowledgeBaseArticleTemplate", json.kb_article_template);
-    this._includesChatAttributes = typeof json.chat_title_text_color !== 'undefined';
+    this.set("_includesChatAttributes", typeof json.chat_title_text_color !== 'undefined');
     this._setIfNotNull("chatTitleTextColor", json.chat_title_text_color);
     this._setIfNotNull("chatTitleBackgroundColor", json.chat_title_background_color);
     this._setIfNotNull("chatAgentColor", json.chat_agent_color);

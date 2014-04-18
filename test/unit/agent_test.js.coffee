@@ -1,6 +1,6 @@
 module "Agent"
 
-asyncTest 'Sign Up', 9, ->
+asyncTest 'Sign Up', 10, ->
   agent = Firehose.Agent.agentWithEmailAndPassword(Faker.Internet.email(), Faker.Name.firstName())
   agent.signUpWithFirstAndLastName( Faker.Name.firstName(), Faker.Name.lastName() )
   .done (data, textStatus) ->
@@ -11,6 +11,7 @@ asyncTest 'Sign Up', 9, ->
     ok agent.id?
     ok agent.createdAt?
     ok agent.DNDIsManuallyTurnedOn?
+    ok agent.digestDays?
     equal agent.companies.length, 1
     ok agent.currentCompany?
     start()
@@ -32,7 +33,7 @@ asyncTest 'Sign Up (Fail with errors populated)', 3, ->
 # Test of login w un/pw occurs with every test
 ###
 
-firehoseTest 'Test Immediate Login', 14, (agent) ->
+firehoseTest 'Test Immediate Login', 15, (agent) ->
   ok agent.firstName?
   ok agent.lastName?
   ok agent.email?
@@ -47,13 +48,14 @@ firehoseTest 'Test Immediate Login', 14, (agent) ->
     ok agent.DNDStartHourUTC?
     ok agent.DNDEndHourUTC?
     ok agent.DNDIsManuallyTurnedOn?
+    ok agent.digestDays?
     equal agent.companies.length, 1
     ok agent.currentCompany?
     start()
   .fail ->
     start()
 
-firehoseTest 'Log In With Access Token', 11, (agent) ->
+firehoseTest 'Log In With Access Token', 12, (agent) ->
   agent.email = null
   agent.login()
   .done (data, textStatus) ->
@@ -66,6 +68,7 @@ firehoseTest 'Log In With Access Token', 11, (agent) ->
     ok agent.DNDStartHourUTC?
     ok agent.DNDEndHourUTC?
     ok agent.DNDIsManuallyTurnedOn?
+    ok agent.digestDays?
     equal agent.companies.length, 1
     ok agent.currentCompany?
     start()
@@ -86,7 +89,7 @@ firehoseTest 'Log Out', 2, (agent) ->
   .fail ->
     start()
 
-firehoseTest 'Fetch', 17, (agent) ->
+firehoseTest 'Fetch', 18, (agent) ->
   agent.fetch()
   .done (data, textStatus) ->
     equal textStatus, "success"
@@ -98,6 +101,7 @@ firehoseTest 'Fetch', 17, (agent) ->
     ok agent.DNDStartHourUTC?
     ok agent.DNDEndHourUTC?
     ok agent.DNDIsManuallyTurnedOn?
+    ok agent.digestDays?
     equal agent.companies.length, 1
     company = agent.currentCompany
     ok company?
@@ -111,9 +115,13 @@ firehoseTest 'Fetch', 17, (agent) ->
   .fail ->
     start()
 
-firehoseTest 'Update', 10, (agent) ->
-  agent.firstName = "Heidi"
-  agent.lastName  = "Kirk"
+firehoseTest 'Update', 12, (agent) ->
+  agent.firstName               = "Heidi"
+  agent.lastName                = "Kirk"
+  agent.DNDStartHourUTC         = 10
+  agent.DNDEndHourUTC           = 16
+  agent.DNDIsManuallyTurnedOn   = true
+  agent.digestDays              = [1,2]
   agent.setNewPassword Faker.Lorem.words(1)
   agent.save()
   .done (saveData, saveTextStatus) ->
@@ -123,12 +131,14 @@ firehoseTest 'Update', 10, (agent) ->
       equal fetchTextStatus, "success"
       equal agent.firstName, "Heidi"
       equal agent.lastName, "Kirk"
+      equal agent.DNDStartHourUTC, 10
+      equal agent.DNDEndHourUTC, 16
+      equal agent.DNDIsManuallyTurnedOn, true
+      equal agent.digestDays[0], 1
+      equal agent.digestDays[1], 2
       ok agent.email?
       ok agent.id?
       ok agent.createdAt?
-      ok agent.DNDStartHourUTC?
-      ok agent.DNDEndHourUTC?
-      ok agent.DNDIsManuallyTurnedOn?
       start()
     .fail ->
       start()

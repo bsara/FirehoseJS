@@ -55,6 +55,11 @@ class Firehose.Agent extends Firehose.Object
   ###
   DNDIsManuallyTurnedOn: false
 
+  ###
+  @property [Array] An array of weekday numbers (Sunday: 1, Saturday: 7) that an agent will receive a digest email on.
+  ###
+  digestDays: null
+
   # @nodoc
   _password: null
 
@@ -253,9 +258,10 @@ class Firehose.Agent extends Firehose.Object
     this._setIfNotNull "firstName",               json.first_name
     this._setIfNotNull "lastName",                json.last_name
     this._setIfNotNull "email",                   json.email
-    this._setIfNotNull "DNDStartHourUTC",         json.dnd_start_hour_utc
-    this._setIfNotNull "DNDEndHourUTC",           json.dnd_end_hour_utc
-    this._setIfNotNull "DNDIsManuallyTurnedOn",   json.dnd_is_manually_turned_on
+    this._setIfNotNull "DNDStartHourUTC",         json.agent_settings?.dnd_start_hour_utc
+    this._setIfNotNull "DNDEndHourUTC",           json.agent_settings?.dnd_end_hour_utc
+    this._setIfNotNull "DNDIsManuallyTurnedOn",   json.agent_settings?.dnd_is_manually_turned_on
+    this._setIfNotNull "digestDays",              json.agent_settings?.digest_days
 
     this._populateAssociatedObjects this, "companies", json.companies, (json) =>
       Firehose.Company.companyWithID( json.id, null, this )
@@ -273,9 +279,11 @@ class Firehose.Agent extends Firehose.Object
       last_name                 : @lastName
       email                     : @email
       password                  : @_password if @_password?
-      dnd_start_hour_utc        : @DNDStartHourUTC
-      dnd_end_hour_utc          : @DNDEndHourUTC
-      dnd_is_manually_turned_on : @DNDIsManuallyTurnedOn
+      agent_settings_attributes:
+        dnd_start_hour_utc        : @DNDStartHourUTC
+        dnd_end_hour_utc          : @DNDEndHourUTC
+        dnd_is_manually_turned_on : @DNDIsManuallyTurnedOn
+        digest_days               : @digestDays
 
   # @nodoc
   _toArchivableJSON: ->
@@ -289,5 +297,6 @@ class Firehose.Agent extends Firehose.Object
       dnd_start_hour_utc        : @DNDStartHourUTC
       dnd_end_hour_utc          : @DNDEndHourUTC
       dnd_is_manually_turned_on : @DNDIsManuallyTurnedOn
+      digest_days               : @digestDays
       companies                 : @companies?._toArchivableJSON()
 

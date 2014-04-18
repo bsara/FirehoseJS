@@ -1,108 +1,108 @@
 class Firehose.Company extends Firehose.Object
-  
-  
+
+
   # @nodoc
   @_firehoseType: "Company"
-  
+
   ###
-  @property [String] 
+  @property [String]
   ###
   title: null
-  
+
   ###
-  @property [String] 
+  @property [String]
   ###
   token: null
-  
+
   ###
-  @property [Date] 
+  @property [Date]
   ###
   lastFetchAt: null
-  
+
   ###
-  @property [String] 
+  @property [String]
   ###
   forwardingEmailAddress: null
-  
+
   ###
-  @property [integer] 
+  @property [integer]
   ###
   unresolvedCount: 0
-  
+
   ###
-  @property [boolean] 
+  @property [boolean]
   ###
   isBrandNew: 0
-  
-  
+
+
   # settings
-  
+
   ###
-  @property [boolean] 
+  @property [boolean]
   ###
   fetchAutomatically: true
-  
+
 
   # associations
-  
+
   ###
-  @property [Array<Agent>] 
+  @property [Array<Agent>]
   ###
   agents: null
-  
+
   ###
-  @property [Array<Product>] 
+  @property [Array<Product>]
   ###
   products: null
-  
+
   ###
-  @property [Array<AgentInvite>] 
+  @property [Array<AgentInvite>]
   ###
   agentInvites: null
-  
+
   ###
-  @property [Array<Tag>] 
+  @property [Array<Tag>]
   ###
   tags: null
-  
+
   ###
-  @property [Array<CannedResponse>] 
+  @property [Array<CannedResponse>]
   ###
   cannedResponses: null
-  
-  
+
+
   # remote arrays
-  
+
   # @nodoc
   _customers: null
-  
+
   # @nodoc
   _notifications: null
-  
+
   # @nodoc
   _twitterAccounts: null
-  
+
   # @nodoc
   _facebookAccounts: null
-  
+
   # @nodoc
   _emailAccounts: null
-  
-  
+
+
   # billing
-  
+
   ###
-  @property [CreditCard] 
+  @property [CreditCard]
   ###
   creditCard: null
-  
+
   ###
-  @property [String] 
+  @property [String]
   ###
   billingEmail: null
-  
+
   ###
-  @property [float] 
+  @property [float]
   ###
   billingRate: -1
 
@@ -115,54 +115,54 @@ class Firehose.Company extends Firehose.Object
   @property [float]
   ###
   nextBillAmountAfterDiscounts: 0.0
-  
+
   ###
-  @property [boolean] 
+  @property [boolean]
   ###
   isFreeTrialEligible: false
-  
+
   ###
-  @property [Date] 
+  @property [Date]
   ###
   trialExpirationDate: null
-  
+
   ###
   @property [Array<Object>] Contains all the discounts for a billing account. Each object will have 4 keys: `name`, `applyType`, `amount`, `expirationDate`. `applyType` will be either `percentage` or `fixed amount`.
   ###
   discounts: null
-  
+
   ###
-  @property [Date] 
+  @property [Date]
   ###
   nextBillingDate: null
-  
+
   ###
-  @property [boolean] 
+  @property [boolean]
   ###
   isGracePeriodOver: false
-  
+
   ###
-  @property [integer] 
+  @property [integer]
   ###
   daysLeftInGracePeriod: -1
-  
+
   ###
-  @property [boolean] 
+  @property [boolean]
   ###
   isCurrent: false
-  
+
   ###
-  @property [boolean] 
+  @property [boolean]
   ###
   hasSuccessfulBilling: false
-  
-  
+
+
   # protected
-  
+
   # @nodoc
   _creator: null
-    
-    
+
+
   # @nodoc
   _setup: ->
     @agents           = new Firehose.UniqueArray
@@ -173,97 +173,97 @@ class Firehose.Company extends Firehose.Object
     @agents.sortOn "firstName"
     @tags.sortOn "label"
     @cannedResponses.sortOn "name"
-    
-    
+
+
   ###
   Create a brand new company with a title and an optional creator.
   @param title [String] The title of the company.
   @param creator [Agent] The creator of the company. You can leave blank and it will make the current agent the creator.
-  ###    
+  ###
   @companyWithTitle: (title, creator) ->
     Firehose.Object._objectOfClassWithID Firehose.Company,
       title:    title
       _creator: creator || Firehose.Agent.loggedInAgent
-  
-  
+
+
   ###
   Create a company object when all you have is an id. You can then fetch articles or fetch the companies properties if you're authenticated as an agent of the company.
   @param id [number] The id of the company.
   @param token [number] The company token.
   @param creator [Agent] The agent that is the creator of this company. (This is mostly used internally).
   @return [Company] Returns a company object. If a company object with this id already exists in the cache, it will be returned.
-  ###    
+  ###
   @companyWithID: (id, token, creator) ->
     Firehose.Object._objectOfClassWithID Firehose.Company,
       id:       id
       token:    token
       _creator: creator
-      
-    
+
+
   ###
   Fetch a companies properties based on its `id`.
   @return [jqXHR Promise] Promise
   ###
   fetch: (options = {}) ->
     if @id?
-      request = 
+      request =
         route: "companies/#{@id}"
     else
       throw "You can't call 'fetch' on a company unless 'id' is set."
-      
+
     Firehose.client.get( this, request ).done (data) =>
       this._populateWithJSON data
- 
- 
+
+
   ###
   Persists any changes you've made to the company to the server. Properties that can be updated: `title`, `fetch_automatically`
   @return [jqXHR Promise] Promise
   ###
   save: ->
     if @id?
-      params = 
+      params =
         route: "companies/#{@id}"
         body:  this._toJSON()
       Firehose.client.put( this, params )
     else
-      params = 
+      params =
         route: "agents/#{@_creator.id}/companies"
         body:  this._toJSON()
       Firehose.client.post( this, params ).done (data) =>
         this._populateWithJSON data
-    
-    
+
+
   ###
   Force a company to fetch it's accounts right now. (otherwise it's about every 10 minutes if `fetch_automatically` is true)
   @return [jqXHR Promise] Promise
   ###
   forceChannelsFetch: ->
-    params = 
+    params =
       route: "companies/#{@id}/force_channels_fetch"
     Firehose.client.put( this, params )
-    
-    
+
+
   ###
   Destroy a company. This will destroy all data associated with the company, including customers, interactions, notes, etc. It is asynchronous, so it will
   not be deleted immediately but in the background over the course of possibly an hour.
   @return [jqXHR Promise] Promise
   ###
   destroy: ->
-    params = 
+    params =
       route: "companies/#{@id}"
     Firehose.client.delete( this, params ).done =>
       Firehose.Agent.loggedInAgent.companies.dropObject this
-    
+
   ###
   The customers of a company, filtered by a criteria.
-  @param criteria [Object] A hash of criteria by which customers should be searched. 
+  @param criteria [Object] A hash of criteria by which customers should be searched.
   @option criteria [String] filter "everything" or "unresolved"
   @option criteria [String] channel A comma seperated list of channels to fetch (e.g. "twitter,email"). Omit to include all channels.
   @option criteria [String] sort "newest_first" or "oldest_first"
   @option criteria [String] search_text Any text that will be searched for an a customers name, email/twitter/facebook accunt name, and interaction body.
   @option criteria [String] preFetch Any one channel. If included, the server will synchronously fetch the channel specified. (e.g. "twitter")
   @return [RemoteArray<Customer>] The customer that matched the criteria.
-  ###  
+  ###
   customersWithCriteria: (criteria) ->
     criteria ?= {}
     params =
@@ -279,8 +279,8 @@ class Firehose.Company extends Firehose.Object
       @_customers.sortOn "newestInteractionReceivedAt", "asc"
     @_customers.onceParams = { pre_fetch: criteria.preFetch } if criteria.preFetch?
     @_customers
-      
-      
+
+
   ###
   The notifications of a company.
   @return [RemoteArray<TwitterAccount>] the Twitter accounts
@@ -291,8 +291,8 @@ class Firehose.Company extends Firehose.Object
         Firehose.Notification._notificationWithID( json.id, this )
       @_notifications.sortOn "title"
     @_notifications
-    
-    
+
+
   ###
   The Twitter accounts of a company
   @return [RemoteArray<TwitterAccount>] the Twitter accounts
@@ -303,9 +303,9 @@ class Firehose.Company extends Firehose.Object
         Firehose.TwitterAccount._twitterAccountWithID( json.id, this )
       @_twitterAccounts.sortOn "screenName"
     @_twitterAccounts
-    
-  
-  ### 
+
+
+  ###
   The Facebook accounts of a company.
   @return [RemoteArray<facebookAccount>] The found articles.
   ###
@@ -315,9 +315,9 @@ class Firehose.Company extends Firehose.Object
         Firehose.FacebookAccount._facebookAccountWithID( json.id, this )
       @_facebookAccounts.sortOn "name"
     @_facebookAccounts
-    
-    
-  ### 
+
+
+  ###
   The email accounts of a company.
   @return [RemoteArray<EmailAccount>] The found articles.
   ###
@@ -327,32 +327,32 @@ class Firehose.Company extends Firehose.Object
         Firehose.EmailAccount._emailAccountWithID( json.id, this )
       @_emailAccounts.sortOn "username"
     @_emailAccounts
-    
-  
+
+
   ###
   Associates an agent with a company.
   @param agent [Agent] The agent to add.
   @return [jqXHR Promise] Promise
-  ### 
+  ###
   addAgent: (agent) ->
-    params = 
+    params =
       route: "companies/#{@id}/agents/#{agent.id}"
     Firehose.client.put( this, params ).done =>
       @agents.insertObject agent
-    
-  
+
+
   ###
   Removes an agent's association with a company.
   @param agent [Agent] The agent to remove.
   @return [jqXHR Promise] Promise
-  ### 
+  ###
   removeAgent: (agent) ->
-    params = 
+    params =
       route: "companies/#{@id}/agents/#{agent.id}"
     Firehose.client.delete( this, params ).done =>
       @agents.dropObject agent
-    
-    
+
+
   ###
   Fetches the billing info for the company from the billing server.
   This will populate `discounts` with a list of discount objects each having the follower properties:
@@ -364,15 +364,15 @@ class Firehose.Company extends Firehose.Object
   ###
   fetchBillingInfo: ->
     fetchBlock = =>
-      Firehose.client.billingAccessToken = @token 
-      params = 
+      Firehose.client.billingAccessToken = @token
+      params =
         server: "billing"
         route: "entities/#{@id}"
       Firehose.client.get( this, params ).done (json) =>
         if json.credit_card?
           this._setIfNotNull "creditCard", Firehose.CreditCard.creditCardWithID( json.credit_card.id, this )
           @creditCard._populateWithJSON json.credit_card
-        
+
         this._setIfNotNull "billingEmail",                  json.email || Firehose.Agent.loggedInAgent.email
         this._setIfNotNull "billingRate",                   (json.rate / 100.0).toFixed(2)
         this._setIfNotNull "nextBillAmountBeforeDiscounts", (@billingRate * @agents.length).toFixed(2)
@@ -383,8 +383,8 @@ class Firehose.Company extends Firehose.Object
         this._setIfNotNull "daysLeftInGracePeriod",         json.days_left_in_grace_period
         this._setIfNotNull "isCurrent",                     json.current
         this._setIfNotNull "hasSuccessfulBilling",          json.has_successful_billing
-        
-        
+
+
         totalDiscount = 0.0
         discountAmt = 0.0
         discountAmtStr = ""
@@ -414,26 +414,26 @@ class Firehose.Company extends Firehose.Object
     else
       this.fetch().then ->
         fetchBlock()
-        
+
   ###
   If the company is still in trial and has 3 days left in its trial, the trial can be extended by the length of the original trial period.
   @return [jqXHR Promise] Promise
-  ### 
+  ###
   extendTrial: ->
     requestBlock = =>
-      Firehose.client.billingAccessToken = @token 
-      params = 
+      Firehose.client.billingAccessToken = @token
+      params =
         server: "billing"
         route: "entities/#{@id}/renew_trial"
       Firehose.client.put( this, params ).done (json) =>
-        this._setIfNotNull "trialExpirationDate", @_date( json.free_trial_expiration_date ) 
+        this._setIfNotNull "trialExpirationDate", @_date( json.free_trial_expiration_date )
     if @token
       requestBlock()
     else
       this.fetch().then ->
         requestBlock()
-      
-    
+
+
   # @nodoc
   _populateWithJSON: (json) ->
     this._setIfNotNull "title",                         json.title
@@ -442,32 +442,32 @@ class Firehose.Company extends Firehose.Object
     this._setIfNotNull "forwardingEmailAddress",        json.forwarding_email       unless @forwardingEmailAddress?
     this._setIfNotNull "unresolvedCount",               json.unresolved_count
     this._setIfNotNull "isBrandNew",                    json.is_brand_new
-        
-    # settings    
+
+    # settings
     this._setIfNotNull "fetchAutomatically",            json.company_settings?.fetch_automatically
-    
+
     this._populateAssociatedObjects this, "agents", json.agents, (json) =>
       agent = Firehose.Agent.agentWithID( json.id )
       agent.companies.insertObject this
       agent
-      
+
     this._populateAssociatedObjects this, "products", json.products, (json) =>
       Firehose.Product.productWithID( json.id, this )
-      
+
     this._populateAssociatedObjects this, "agentInvites", json.agent_invites, (json) =>
       Firehose.AgentInvite._agentInviteWithID( json.id, this )
-      
+
     this._populateAssociatedObjects this, "tags", json.tags, (json) =>
       Firehose.Tag._tagWithID( json.id, this )
-      
+
     this._populateAssociatedObjects this, "cannedResponses", json.canned_responses, (json) =>
       Firehose.CannedResponse._cannedResponseWithID( json.id, this )
-      
+
     Firehose.client.billingAccessToken = @token
-    
+
     super json
-    
-    
+
+
   # @nodoc
   _toJSON: ->
     company:
