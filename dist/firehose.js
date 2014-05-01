@@ -2985,7 +2985,11 @@ Firehose.CreditCard = (function(_super) {
       route: "entities/" + this.company.id + "/credit_card",
       body: this._toJSON()
     };
-    return Firehose.client.put(this, params).done(function() {
+    return Firehose.client.put(this, params).fail(function(jqXHR) {
+      if ((jqXHR != null) && (jqXHR.responseJSON != null)) {
+        return _this.set('errors', jqXHR.responseJSON.errors);
+      }
+    }).done(function() {
       return _this.company.set('creditCard', _this);
     });
   };

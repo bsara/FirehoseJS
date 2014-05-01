@@ -130,7 +130,11 @@ class Firehose.CreditCard extends Firehose.Object
       server: "billing"
       route:  "entities/#{@company.id}/credit_card"
       body:   this._toJSON()
-    Firehose.client.put( this, params ).done =>
+    Firehose.client.put( this, params )
+    .fail (jqXHR) =>
+      if jqXHR? && jqXHR.responseJSON?
+        @set 'errors', jqXHR.responseJSON.errors
+    .done =>
       @company.set 'creditCard', this
 
 
