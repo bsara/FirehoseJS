@@ -3609,8 +3609,8 @@ Firehose.EmailAccount = (function(_super) {
   EmailAccount.prototype._toJSON = function() {
     return {
       email_account: {
-        email: this.emailAddress ? this.emailAddress : void 0,
-        title: this.title ? this.title : void 0,
+        email: this.emailAddress != null ? this.emailAddress : void 0,
+        title: this.title != null ? this.title : void 0,
         forwarding: this.isForwarding != null ? this.isForwarding : void 0,
         incoming_server: this.server ? this.server : void 0,
         incoming_ssl: this.SSL != null ? this.SSL : void 0,

@@ -203,8 +203,8 @@ class Firehose.EmailAccount extends Firehose.Object
   # @nodoc
   _toJSON: ->
     email_account:
-      email:              @emailAddress     if @emailAddress
-      title:              @title            if @title
+      email:              @emailAddress     if @emailAddress?
+      title:              @title            if @title?
       forwarding:         @isForwarding     if @isForwarding?
       incoming_server:    @server           if @server
       incoming_ssl:       @SSL              if @SSL?
