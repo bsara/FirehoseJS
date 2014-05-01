@@ -90,11 +90,11 @@ class Firehose.CreditCard extends Firehose.Object
 
     if !@number?.trim()
       errorsFound.push stripeErrorCodes.invalidNumber
-    if !@cvc? || !String(@cvc).trim() || typeof @cvc != "number"
+    if !@cvc? || !String(@cvc).trim() || isNaN(@cvc)
       errorsFound.push stripeErrorCodes.invalidCVC
-    if !@expirationMonth? || !String(@expirationMonth).trim() || typeof @expirationMonth != "number"
+    if !@expirationMonth? || !String(@expirationMonth).trim() || isNaN(@expirationMonth)
       errorsFound.push stripeErrorCodes.invalidExpiryMonth
-    if !@expirationYear? || !String(@expirationYear).trim() || typeof @expirationYear != "number"
+    if !@expirationYear? || !String(@expirationYear).trim() || isNaN(@expirationYear)
       errorsFound.push stripeErrorCodes.invalidExpiryYear
 
     Stripe.card.createToken

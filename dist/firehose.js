@@ -2930,13 +2930,13 @@ Firehose.CreditCard = (function(_super) {
     if (!((_ref1 = this.number) != null ? _ref1.trim() : void 0)) {
       errorsFound.push(stripeErrorCodes.invalidNumber);
     }
-    if ((this.cvc == null) || !String(this.cvc).trim() || typeof this.cvc !== "number") {
+    if ((this.cvc == null) || !String(this.cvc).trim() || isNaN(this.cvc)) {
       errorsFound.push(stripeErrorCodes.invalidCVC);
     }
-    if ((this.expirationMonth == null) || !String(this.expirationMonth).trim() || typeof this.expirationMonth !== "number") {
+    if ((this.expirationMonth == null) || !String(this.expirationMonth).trim() || isNaN(this.expirationMonth)) {
       errorsFound.push(stripeErrorCodes.invalidExpiryMonth);
     }
-    if ((this.expirationYear == null) || !String(this.expirationYear).trim() || typeof this.expirationYear !== "number") {
+    if ((this.expirationYear == null) || !String(this.expirationYear).trim() || isNaN(this.expirationYear)) {
       errorsFound.push(stripeErrorCodes.invalidExpiryYear);
     }
     return Stripe.card.createToken({
