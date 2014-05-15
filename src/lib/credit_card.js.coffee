@@ -81,10 +81,15 @@ class Firehose.CreditCard extends Firehose.Object
     @clearErrors()
 
     stripeErrorCodes =
-      invalidNumber:      "invalid_number"
-      invalidCVC:         "invalid_cvc"
-      invalidExpiryMonth: "invalid_expiry_month"
-      invalidExpiryYear:  "invalid_expiry_year"
+      cardDeclined:       'card_declined'
+      expiredCard:        'expired_card'
+      incorrectNumber:    'incorrect_number'
+      incorrectCVC:       'incorrect_cvc'
+      invalidNumber:      'invalid_number'
+      invalidCVC:         'invalid_cvc'
+      invalidExpiryMonth: 'invalid_expiry_month'
+      invalidExpiryYear:  'invalid_expiry_year'
+      processingError:    'processing_error'
 
     errorsFound = []
 
@@ -105,21 +110,26 @@ class Firehose.CreditCard extends Firehose.Object
     , (status, response) =>
       hasErrors = false
       if not response.error
-        this._setIfNotNull "expirationMonth", response.card.exp_month
-        this._setIfNotNull "expirationYear",  response.card.exp_year
-        this._setIfNotNull "lastFour",        response.card.last4
-        this._setIfNotNull "stripeToken",     response.id
-        this._setIfNotNull "email",           if ccEmail?.trim() then ccEmail.trim() else Firehose.Agent.loggedInAgent.email
+        this._setIfNotNull 'expirationMonth', response.card.exp_month
+        this._setIfNotNull 'expirationYear',  response.card.exp_year
+        this._setIfNotNull 'lastFour',        response.card.last4
+        this._setIfNotNull 'stripeToken',     response.id
+        this._setIfNotNull 'email',           if ccEmail?.trim() then ccEmail.trim() else Firehose.Agent.loggedInAgent.email
         hasErrors = errorsFound.length > 0
       else
         errorsFound.push response.error.code
         hasErrors = true
 
       if hasErrors
-        @errors.push "Credit card number is invalid" if $.inArray(stripeErrorCodes.invalidNumber, errorsFound) > -1
-        @errors.push "CVV is invalid"                if $.inArray(stripeErrorCodes.invalidCVC, errorsFound) > -1
-        @errors.push "Expiration month is invalid"   if $.inArray(stripeErrorCodes.invalidExpiryMonth, errorsFound) > -1
-        @errors.push "Expiration year is invalid"    if $.inArray(stripeErrorCodes.invalidExpiryYear, errorsFound) > -1
+        @errors.push "Credit card was declined"                          if $.inArray(stripeErrorCodes.cardDeclined, errorsFound) > -1
+        @errors.push "Credit card has expired"                           if $.inArray(stripeErrorCodes.expiredCard, errorsFound) > -1
+        @errors.push "Credit card number is incorrect"                   if $.inArray(stripeErrorCodes.incorrectNumber, errorsFound) > -1
+        @errors.push "CVV is incorrect"                                  if $.inArray(stripeErrorCodes.incorrectCVC, errorsFound) > -1
+        @errors.push "Credit card number is invalid"                     if $.inArray(stripeErrorCodes.invalidNumber, errorsFound) > -1
+        @errors.push "CVV is invalid"                                    if $.inArray(stripeErrorCodes.invalidCVC, errorsFound) > -1
+        @errors.push "Expiration month is invalid"                       if $.inArray(stripeErrorCodes.invalidExpiryMonth, errorsFound) > -1
+        @errors.push "Expiration year is invalid"                        if $.inArray(stripeErrorCodes.invalidExpiryYear, errorsFound) > -1
+        @errors.push "Credit card failed to process for unknown reasons" if $.inArray(stripeErrorCodes.processingError, errorsFound) > -1
 
       callback(hasErrors)
 

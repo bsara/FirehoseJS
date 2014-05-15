@@ -16,7 +16,7 @@ firehoseTest 'Create', 5, (agent) ->
     start()
   .fail (jqXHR, textStatus, errorThrown) ->
     start()
-    
+
 firehoseTest 'Fetch', 5, (agent) ->
   company = agent.companies[0]
   product = company.products[0]
@@ -101,13 +101,13 @@ firehoseTest 'Fetch (include extra settings)', 22, (agent) ->
     ok product.knowledgeBaseLayoutTemplate?
     ok product.knowledgeBaseSearchTemplate?
     ok product.knowledgeBaseArticleTemplate?
-    ok product.chatTitleTextColor?         
-    ok product.chatTitleBackgroundColor?   
-    ok product.chatAgentColor?             
-    ok product.chatCustomerColor?          
-    ok product.chatFieldTextColor?         
-    ok product.chatFieldBackgroundColor?   
-    ok product.chatBackgroundColor?        
+    ok product.chatTitleTextColor?
+    ok product.chatTitleBackgroundColor?
+    ok product.chatAgentColor?
+    ok product.chatCustomerColor?
+    ok product.chatFieldTextColor?
+    ok product.chatFieldBackgroundColor?
+    ok product.chatBackgroundColor?
     ok product.chatResponseBackgroundColor?
     ok product.chatCSS?
     ok product.chatOnlineHeaderText?
@@ -130,7 +130,7 @@ firehoseTest 'Update', 5, (agent) ->
       equal textStatus, "nocontent"
       product2 = Firehose.Product.productWithID product.id, company
       product2.fetch()
-      .done (data, textStatus) -> 
+      .done (data, textStatus) ->
         equal textStatus, "success"
         ok product2.id?
         ok product2.token?
@@ -156,7 +156,7 @@ firehoseTest 'Destroy', 1, (agent) ->
       start()
   .fail (jqXHR, textStatus, errorThrown) ->
     start()
-    
+
 
 firehoseTest 'Fetch Articles', 2, (agent) ->
   company  = agent.companies[0]
@@ -232,4 +232,4 @@ firehoseTest 'Produce URL for products kb', 5, (agent) ->
 
     start()
   .fail (jqXHR, textStatus, errorThrown) ->
-    start() 
+    start()

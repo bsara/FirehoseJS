@@ -2921,10 +2921,15 @@ Firehose.CreditCard = (function(_super) {
       _this = this;
     this.clearErrors();
     stripeErrorCodes = {
-      invalidNumber: "invalid_number",
-      invalidCVC: "invalid_cvc",
-      invalidExpiryMonth: "invalid_expiry_month",
-      invalidExpiryYear: "invalid_expiry_year"
+      cardDeclined: 'card_declined',
+      expiredCard: 'expired_card',
+      incorrectNumber: 'incorrect_number',
+      incorrectCVC: 'incorrect_cvc',
+      invalidNumber: 'invalid_number',
+      invalidCVC: 'invalid_cvc',
+      invalidExpiryMonth: 'invalid_expiry_month',
+      invalidExpiryYear: 'invalid_expiry_year',
+      processingError: 'processing_error'
     };
     errorsFound = [];
     if (!((_ref1 = this.number) != null ? _ref1.trim() : void 0)) {
@@ -2948,17 +2953,29 @@ Firehose.CreditCard = (function(_super) {
       var hasErrors;
       hasErrors = false;
       if (!response.error) {
-        _this._setIfNotNull("expirationMonth", response.card.exp_month);
-        _this._setIfNotNull("expirationYear", response.card.exp_year);
-        _this._setIfNotNull("lastFour", response.card.last4);
-        _this._setIfNotNull("stripeToken", response.id);
-        _this._setIfNotNull("email", (ccEmail != null ? ccEmail.trim() : void 0) ? ccEmail.trim() : Firehose.Agent.loggedInAgent.email);
+        _this._setIfNotNull('expirationMonth', response.card.exp_month);
+        _this._setIfNotNull('expirationYear', response.card.exp_year);
+        _this._setIfNotNull('lastFour', response.card.last4);
+        _this._setIfNotNull('stripeToken', response.id);
+        _this._setIfNotNull('email', (ccEmail != null ? ccEmail.trim() : void 0) ? ccEmail.trim() : Firehose.Agent.loggedInAgent.email);
         hasErrors = errorsFound.length > 0;
       } else {
         errorsFound.push(response.error.code);
         hasErrors = true;
       }
       if (hasErrors) {
+        if ($.inArray(stripeErrorCodes.cardDeclined, errorsFound) > -1) {
+          _this.errors.push("Credit card was declined");
+        }
+        if ($.inArray(stripeErrorCodes.expiredCard, errorsFound) > -1) {
+          _this.errors.push("Credit card has expired");
+        }
+        if ($.inArray(stripeErrorCodes.incorrectNumber, errorsFound) > -1) {
+          _this.errors.push("Credit card number is incorrect");
+        }
+        if ($.inArray(stripeErrorCodes.incorrectCVC, errorsFound) > -1) {
+          _this.errors.push("CVV is incorrect");
+        }
         if ($.inArray(stripeErrorCodes.invalidNumber, errorsFound) > -1) {
           _this.errors.push("Credit card number is invalid");
         }
@@ -2970,6 +2987,9 @@ Firehose.CreditCard = (function(_super) {
         }
         if ($.inArray(stripeErrorCodes.invalidExpiryYear, errorsFound) > -1) {
           _this.errors.push("Expiration year is invalid");
+        }
+        if ($.inArray(stripeErrorCodes.processingError, errorsFound) > -1) {
+          _this.errors.push("Credit card failed to process for unknown reasons");
         }
       }
       return callback(hasErrors);
