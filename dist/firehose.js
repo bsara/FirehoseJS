@@ -1006,6 +1006,13 @@ Firehose.Agent = (function(_super) {
   Agent.prototype.email = null;
 
   /*
+  @property [String]
+  */
+
+
+  Agent.prototype.avatarURL = null;
+
+  /*
   @property [Company]
   */
 
@@ -1259,21 +1266,6 @@ Firehose.Agent = (function(_super) {
     return "" + this.firstName + " " + this.lastName;
   };
 
-  /*
-  The agents gravatar given their email address.
-  @return [String] the url of the agent's gravatar.
-  */
-
-
-  Agent.prototype.gravatarURL = function() {
-    var e, hashedEmail;
-    if (this.email) {
-      e = this.email.trim().toLowerCase();
-      hashedEmail = md5(e);
-    }
-    return "https://www.gravatar.com/avatar/" + hashedEmail + "?d=identicon";
-  };
-
   Agent.prototype._handleSuccessfulLogin = function() {
     Firehose.client.APIAccessToken = this.accessToken;
     Firehose.client.URLToken = this.URLToken;
@@ -1284,23 +1276,24 @@ Firehose.Agent = (function(_super) {
     var _ref1, _ref2, _ref3, _ref4,
       _this = this;
     if (this.accessToken == null) {
-      this._setIfNotNull("accessToken", json.browser_token);
+      this._setIfNotNull('accessToken', json.browser_token);
     }
     if (this.URLToken == null) {
-      this._setIfNotNull("URLToken", json.url_token);
+      this._setIfNotNull('URLToken', json.url_token);
     }
-    this._setIfNotNull("firstName", json.first_name);
-    this._setIfNotNull("lastName", json.last_name);
-    this._setIfNotNull("email", json.email);
-    this._setIfNotNull("DNDStartHourUTC", (_ref1 = json.agent_settings) != null ? _ref1.dnd_start_hour_utc : void 0);
-    this._setIfNotNull("DNDEndHourUTC", (_ref2 = json.agent_settings) != null ? _ref2.dnd_end_hour_utc : void 0);
-    this._setIfNotNull("DNDIsManuallyTurnedOn", (_ref3 = json.agent_settings) != null ? _ref3.dnd_is_manually_turned_on : void 0);
-    this._setIfNotNull("digestDays", (_ref4 = json.agent_settings) != null ? _ref4.digest_days : void 0);
-    this._populateAssociatedObjects(this, "companies", json.companies, function(json) {
+    this._setIfNotNull('firstName', json.first_name);
+    this._setIfNotNull('lastName', json.last_name);
+    this._setIfNotNull('email', json.email);
+    this._setIfNotNull('avatarURL', json.avatar_url);
+    this._setIfNotNull('DNDStartHourUTC', (_ref1 = json.agent_settings) != null ? _ref1.dnd_start_hour_utc : void 0);
+    this._setIfNotNull('DNDEndHourUTC', (_ref2 = json.agent_settings) != null ? _ref2.dnd_end_hour_utc : void 0);
+    this._setIfNotNull('DNDIsManuallyTurnedOn', (_ref3 = json.agent_settings) != null ? _ref3.dnd_is_manually_turned_on : void 0);
+    this._setIfNotNull('digestDays', (_ref4 = json.agent_settings) != null ? _ref4.digest_days : void 0);
+    this._populateAssociatedObjects(this, 'companies', json.companies, function(json) {
       return Firehose.Company.companyWithID(json.id, null, _this);
     });
     if (this.companies.length > 0 && (this.currentCompany == null)) {
-      this._setIfNotNull("currentCompany", this.companies[0]);
+      this._setIfNotNull('currentCompany', this.companies[0]);
     }
     return Agent.__super__._populateWithJSON.call(this, json);
   };
@@ -1311,6 +1304,7 @@ Firehose.Agent = (function(_super) {
         first_name: this.firstName,
         last_name: this.lastName,
         email: this.email,
+        avatar_url: this.avatarURL,
         password: this._password != null ? this._password : void 0,
         agent_settings_attributes: {
           dnd_start_hour_utc: this.DNDStartHourUTC,
@@ -1330,7 +1324,8 @@ Firehose.Agent = (function(_super) {
       first_name: this.firstName,
       last_name: this.lastName,
       email: this.email,
-      password: this._password != null ? this._password : void 0,
+      avatar_url: this.avatarURL,
+      password: this.get_password != null ? this._password : void 0,
       dnd_start_hour_utc: this.DNDStartHourUTC,
       dnd_end_hour_utc: this.DNDEndHourUTC,
       dnd_is_manually_turned_on: this.DNDIsManuallyTurnedOn,

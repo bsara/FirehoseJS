@@ -1,6 +1,5 @@
 class Firehose.Agent extends Firehose.Object
 
-
   # @nodoc
   @_firehoseType: "Agent"
 
@@ -34,6 +33,11 @@ class Firehose.Agent extends Firehose.Object
   @property [String]
   ###
   email: null
+
+  ###
+  @property [String]
+  ###
+  avatarURL: null
 
   ###
   @property [Company]
@@ -232,17 +236,6 @@ class Firehose.Agent extends Firehose.Object
     "#{@firstName} #{@lastName}"
 
 
-  ###
-  The agents gravatar given their email address.
-  @return [String] the url of the agent's gravatar.
-  ###
-  gravatarURL: ->
-    if @email
-      e = @email.trim().toLowerCase()
-      hashedEmail = md5(e)
-    "https://www.gravatar.com/avatar/#{hashedEmail}?d=identicon"
-
-
   # @nodoc
   _handleSuccessfulLogin: =>
     Firehose.client.APIAccessToken = @accessToken
@@ -253,21 +246,22 @@ class Firehose.Agent extends Firehose.Object
 
   # @nodoc
   _populateWithJSON: (json) ->
-    this._setIfNotNull "accessToken",             json.browser_token  unless @accessToken?
-    this._setIfNotNull "URLToken",                json.url_token      unless @URLToken?
-    this._setIfNotNull "firstName",               json.first_name
-    this._setIfNotNull "lastName",                json.last_name
-    this._setIfNotNull "email",                   json.email
-    this._setIfNotNull "DNDStartHourUTC",         json.agent_settings?.dnd_start_hour_utc
-    this._setIfNotNull "DNDEndHourUTC",           json.agent_settings?.dnd_end_hour_utc
-    this._setIfNotNull "DNDIsManuallyTurnedOn",   json.agent_settings?.dnd_is_manually_turned_on
-    this._setIfNotNull "digestDays",              json.agent_settings?.digest_days
+    this._setIfNotNull 'accessToken',           json.browser_token  unless @accessToken?
+    this._setIfNotNull 'URLToken',              json.url_token      unless @URLToken?
+    this._setIfNotNull 'firstName',             json.first_name
+    this._setIfNotNull 'lastName',              json.last_name
+    this._setIfNotNull 'email',                 json.email
+    this._setIfNotNull 'avatarURL',             json.avatar_url
+    this._setIfNotNull 'DNDStartHourUTC',       json.agent_settings?.dnd_start_hour_utc
+    this._setIfNotNull 'DNDEndHourUTC',         json.agent_settings?.dnd_end_hour_utc
+    this._setIfNotNull 'DNDIsManuallyTurnedOn', json.agent_settings?.dnd_is_manually_turned_on
+    this._setIfNotNull 'digestDays',            json.agent_settings?.digest_days
 
-    this._populateAssociatedObjects this, "companies", json.companies, (json) =>
+    this._populateAssociatedObjects this, 'companies', json.companies, (json) =>
       Firehose.Company.companyWithID( json.id, null, this )
 
     if @companies.length > 0 and not @currentCompany?
-      this._setIfNotNull "currentCompany", @companies[0]
+      this._setIfNotNull 'currentCompany', @companies[0]
 
     super json
 
@@ -278,8 +272,9 @@ class Firehose.Agent extends Firehose.Object
       first_name                : @firstName
       last_name                 : @lastName
       email                     : @email
+      avatar_url                : @avatarURL
       password                  : @_password if @_password?
-      agent_settings_attributes:
+      agent_settings_attributes :
         dnd_start_hour_utc        : @DNDStartHourUTC
         dnd_end_hour_utc          : @DNDEndHourUTC
         dnd_is_manually_turned_on : @DNDIsManuallyTurnedOn
@@ -293,7 +288,8 @@ class Firehose.Agent extends Firehose.Object
       first_name                : @firstName
       last_name                 : @lastName
       email                     : @email
-      password                  : @_password if @_password?
+      avatar_url                : @avatarURL
+      password                  : @_password if @get_password?
       dnd_start_hour_utc        : @DNDStartHourUTC
       dnd_end_hour_utc          : @DNDEndHourUTC
       dnd_is_manually_turned_on : @DNDIsManuallyTurnedOn

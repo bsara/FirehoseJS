@@ -1,6 +1,6 @@
 module "Agent"
 
-asyncTest 'Sign Up', 10, ->
+asyncTest 'Sign Up', 11, ->
   agent = Firehose.Agent.agentWithEmailAndPassword(Faker.Internet.email(), Faker.Name.firstName())
   agent.signUpWithFirstAndLastName( Faker.Name.firstName(), Faker.Name.lastName() )
   .done (data, textStatus) ->
@@ -8,6 +8,7 @@ asyncTest 'Sign Up', 10, ->
     ok agent.firstName?
     ok agent.lastName?
     ok agent.email?
+    ok agent.avatarURL?
     ok agent.id?
     ok agent.createdAt?
     ok agent.DNDIsManuallyTurnedOn?
@@ -33,7 +34,7 @@ asyncTest 'Sign Up (Fail with errors populated)', 3, ->
 # Test of login w un/pw occurs with every test
 ###
 
-firehoseTest 'Test Immediate Login', 15, (agent) ->
+firehoseTest 'Test Immediate Login', 16, (agent) ->
   ok agent.firstName?
   ok agent.lastName?
   ok agent.email?
@@ -43,6 +44,7 @@ firehoseTest 'Test Immediate Login', 15, (agent) ->
     ok agent.firstName?
     ok agent.lastName?
     ok agent.email?
+    ok agent.avatarURL?
     ok agent.id?
     ok agent.createdAt?
     ok agent.DNDStartHourUTC?
@@ -55,7 +57,7 @@ firehoseTest 'Test Immediate Login', 15, (agent) ->
   .fail ->
     start()
 
-firehoseTest 'Log In With Access Token', 12, (agent) ->
+firehoseTest 'Log In With Access Token', 13, (agent) ->
   agent.email = null
   agent.login()
   .done (data, textStatus) ->
@@ -63,6 +65,7 @@ firehoseTest 'Log In With Access Token', 12, (agent) ->
     ok agent.firstName?
     ok agent.lastName?
     ok agent.email?
+    ok agent.avatarURL?
     ok agent.id?
     ok agent.createdAt?
     ok agent.DNDStartHourUTC?
@@ -89,13 +92,14 @@ firehoseTest 'Log Out', 2, (agent) ->
   .fail ->
     start()
 
-firehoseTest 'Fetch', 18, (agent) ->
+firehoseTest 'Fetch', 19, (agent) ->
   agent.fetch()
   .done (data, textStatus) ->
     equal textStatus, "success"
     ok agent.firstName?
     ok agent.lastName?
     ok agent.email?
+    ok agent.avatarURL?
     ok agent.id?
     ok agent.createdAt?
     ok agent.DNDStartHourUTC?
@@ -137,6 +141,7 @@ firehoseTest 'Update', 12, (agent) ->
       equal agent.digestDays[0], 1
       equal agent.digestDays[1], 2
       ok agent.email?
+      ok agent.avatarURL?
       ok agent.id?
       ok agent.createdAt?
       start()
@@ -153,10 +158,6 @@ firehoseTest 'Destroy', 1, (agent) ->
   .fail ->
     start()
 
-firehoseTest 'Gravatar URL', 1, (agent) ->
-  ok agent.gravatarURL().length > 40
-  start()
-
 firehoseTest 'Status Code Handlers', 1, (agent) ->
   Firehose.client.statusCodeHandlers =
     401: ->
@@ -171,12 +172,15 @@ firehoseTest 'Archive/Unarchive', 8, (agent) ->
   agent.archive()
   agent2 = Firehose.Agent.agentWithID agent.id
   agent2.unarchive()
-  ok agent.id == agent2.id
-  ok agent.createdAt == agent2.createdAt
-  ok agent.firstName == agent2.firstName
-  ok agent.lastName == agent2.lastName
-  ok agent.email == agent2.email
-  ok agent.accessToken == agent2.accessToken
-  ok agent.URLToken == agent2.URLToken
-  ok agent.companies.length == agent2.companies.length
+
+  equal agent.id, agent2.id
+  equal agent.createdAt, agent2.createdAt
+  equal agent.firstName, agent2.firstName
+  equal agent.lastName, agent2.lastName
+  equal agent.email, agent2.email
+  equal agent.avatarURL, agent2.avatarURL
+  equal agent.accessToken, agent2.accessToken
+  equal agent.URLToken, agent2.URLToken
+  equal agent.companies.length, agent2.companies.length
+
   start()

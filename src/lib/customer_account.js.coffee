@@ -1,52 +1,51 @@
 class Firehose.CustomerAccount extends Firehose.Object
-  
-  
+
   # @nodoc
   @_firehoseType: "CustomerAccount"
-  
+
   ###
-  @property [Customer] 
+  @property [Customer]
   ###
   customer: null
-  
+
   ###
-  @property [String] 
+  @property [String]
   ###
   username: null
-  
+
   ###
-  @property [boolean] 
+  @property [boolean]
   ###
   followingUs: null
-  
+
   ###
-  @property [String] 
+  @property [String]
   ###
   imageURL: null
-  
+
   ###
-  @property [String] 
+  @property [String]
   ###
   description: null
-  
+
   ###
-  @property [integer] 
+  @property [integer]
   ###
   followersCount: null
-  
+
   ###
-  @property [String] 
+  @property [String]
   ###
   channel: null
-  
-  
+
+
   # @nodoc
   @_customerAccountWithID: (id, customer) ->
     Firehose.Object._objectOfClassWithID Firehose.CustomerAccount,
       id:       id
       customer: customer
-      
-      
+
+
   ###
   The customer account's avatar URL.
   @return [String] the url of the customer's avatar.
@@ -62,8 +61,8 @@ class Firehose.CustomerAccount extends Firehose.Object
     # otherwise, we just hash the username and use whatever pretty design gravatar generates from the hash.
     hashedEmail = md5 this.username unless hashedEmail
     "https://www.gravatar.com/avatar/#{hashedEmail}?d=identicon"
-    
-    
+
+
   # @nodoc
   _populateWithJSON: (json) ->
     this._setIfNotNull "username",       json.username
