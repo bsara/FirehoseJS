@@ -151,13 +151,14 @@ class Firehose.Interaction extends Firehose.Object
     params =
       route: "interactions/#{@id}/reply"
       body:  body
-    Firehose.client.post( this, params ).done (data) =>
-      this._setIfNotNull "responseDraft", null
+    Firehose.client.post( this, params ).success (data) =>
       response = Firehose.Interaction.interactionWithJSON( data, @customer )
       @responseInteractions.insertObject response
       response._setIfNotNull "agent", Firehose.Agent.loggedInAgent
       @responseInteractions.sort (interaction1, interaction2) ->
         interaction1.createdAt > interaction2.createdAt
+      @set 'resolved', true
+      @save()
 
 
   save: ->
@@ -253,6 +254,7 @@ class Firehose.Interaction extends Firehose.Object
       json.channel = @channel
       interaction = Firehose.Interaction.interactionWithJSON( json, @customer )
       interaction.set 'originalInteraction', this
+      interaction.set 'isOutgoing', true
       interaction
 
     this._populateAssociatedObjects this, "notes", json.notes, (json) =>

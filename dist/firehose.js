@@ -2185,15 +2185,16 @@ Firehose.Interaction = (function(_super) {
       route: "interactions/" + this.id + "/reply",
       body: body
     };
-    return Firehose.client.post(this, params).done(function(data) {
+    return Firehose.client.post(this, params).success(function(data) {
       var response;
-      _this._setIfNotNull("responseDraft", null);
       response = Firehose.Interaction.interactionWithJSON(data, _this.customer);
       _this.responseInteractions.insertObject(response);
       response._setIfNotNull("agent", Firehose.Agent.loggedInAgent);
-      return _this.responseInteractions.sort(function(interaction1, interaction2) {
+      _this.responseInteractions.sort(function(interaction1, interaction2) {
         return interaction1.createdAt > interaction2.createdAt;
       });
+      _this.set('resolved', true);
+      return _this.save();
     });
   };
 
@@ -2318,6 +2319,7 @@ Firehose.Interaction = (function(_super) {
       json.channel = _this.channel;
       interaction = Firehose.Interaction.interactionWithJSON(json, _this.customer);
       interaction.set('originalInteraction', _this);
+      interaction.set('isOutgoing', true);
       return interaction;
     });
     this._populateAssociatedObjects(this, "notes", json.notes, function(json) {
