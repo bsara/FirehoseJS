@@ -326,7 +326,9 @@ Firehose.Environment = (function() {
     marketing: 4,
     settings: 5,
     tweetlonger: 6,
-    kb: 7
+    kb: 7,
+    chatserver: 8,
+    chatbrowser: 9
   };
 
   Environment.prototype._appDomainNames = {
@@ -357,8 +359,8 @@ Firehose.Environment = (function() {
     marketing: {
       development: "localhost",
       test: "localhost",
-      beta: "beta.getfirehose.com",
-      production: "getfirehose.com"
+      beta: "beta.firehosedesk.com",
+      production: "firehosedesk.com"
     },
     settings: {
       development: "localhost",
@@ -377,6 +379,18 @@ Firehose.Environment = (function() {
       test: "lvh.me",
       beta: "firehosesupport.com",
       production: "firehosehelp.com"
+    },
+    chatserver: {
+      development: "localhost",
+      test: "localhost",
+      beta: "chat.firehoseapp.com",
+      production: "chat.firehoseapp.com"
+    },
+    chatbrowser: {
+      development: "localhost",
+      test: "localhost",
+      beta: "beta.firehoseapp.com",
+      production: "firehoseapp.com"
     }
   };
 
@@ -388,7 +402,9 @@ Firehose.Environment = (function() {
     marketing: "client",
     settings: "client",
     tweetlonger: "client",
-    kb: "client"
+    kb: "client",
+    chatserver: "server",
+    chatbrowser: "client"
   };
 
   Environment.prototype._serviceKeys = {

@@ -1,58 +1,58 @@
 # @nodoc
 class Firehose.Environment
-  
-  
+
+
   baseURLFor: (app, subdomain) ->
     this._inferEnvironmentFromURL()
-    
-    scheme    = this._schemeFor app 
+
+    scheme    = this._schemeFor app
     subdomain = subdomain && subdomain + "." || ""
     domain    = this._domainNameFor app
-    port      = this._portFor app 
-    
+    port      = this._portFor app
+
     "#{scheme}#{subdomain}#{domain}#{port}"
-    
-    
+
+
   serviceToken: (service) ->
     this._inferEnvironmentFromURL()
-    env = if @_server == "production" then "production" else @_environment 
+    env = if @_server == "production" then "production" else @_environment
     @_serviceKeys[env][service]
-    
-    
+
+
   environment: ->
     this._inferEnvironmentFromURL()
     @_environment
-  
-  
-  
-  
+
+
+
+
   # private
-  
+
   _server: null
-  
+
   _environment: null
-  
-  
-  
-  
+
+
+
+
   ## Mappings (URL Parsing)
-  
+
   # the first digit in the port number
   _typeNumber:
     server      : 3
     client      : 4
-    
+
   # the second number in the port number
   _serverNumber:
     local       : 0
     mini        : 1
     production  : 2
-    
+
   # the third digit in the port number
   _environmentNumber:
     development : 0
     test        : 1
-    
+
   # The last digit in the port number
   _appNumber:
     API         : 0
@@ -63,12 +63,14 @@ class Firehose.Environment
     settings    : 5
     tweetlonger : 6
     kb          : 7
-    
-    
-    
-  
+    chatserver  : 8
+    chatbrowser : 9
+
+
+
+
   ## Mappings (URL Generation)
-  
+
   _appDomainNames:
     API:
       development:  "localhost"
@@ -93,8 +95,8 @@ class Firehose.Environment
     marketing:
       development:  "localhost"
       test:         "localhost"
-      beta:         "beta.getfirehose.com"
-      production:   "getfirehose.com"
+      beta:         "beta.firehosedesk.com"
+      production:   "firehosedesk.com"
     settings:
       development:  "localhost"
       test:         "localhost"
@@ -110,7 +112,17 @@ class Firehose.Environment
       test:         "lvh.me"
       beta:         "firehosesupport.com"
       production:   "firehosehelp.com"
-    
+    chatserver:
+      development:  "localhost"
+      test:         "localhost"
+      beta:         "chat.firehoseapp.com"
+      production:   "chat.firehoseapp.com"
+    chatbrowser:
+      development:  "localhost"
+      test:         "localhost"
+      beta:         "beta.firehoseapp.com"
+      production:   "firehoseapp.com"
+
   _appTypes:
     API          : "server"
     browser      : "client"
@@ -120,7 +132,9 @@ class Firehose.Environment
     settings     : "client"
     tweetlonger  : "client"
     kb           : "client"
-    
+    chatserver   : "server"
+    chatbrowser  : "client"
+
   _serviceKeys:
     development:
       stripe  : "pk_test_oIyMNHil987ug1v8owRhuJwr"
@@ -134,74 +148,74 @@ class Firehose.Environment
     production:
       stripe  : "pk_live_CGPaLboKkpr7tqswA4elf8NQ"
       pusher  : "d3e373f7fac89de7bde8"
-      
-   
-   
-   
+
+
+
+
   ## methods (URL parsing)
-  
+
   _inferEnvironmentFromURL: () ->
     currentURL      = document.createElement "a"
     currentURL.href = window.unitTestDocumentURL || document.URL
     domainName      = currentURL.hostname.split('.').slice(-2).join(".")
-      
+
     @_server      = 'production'
     @_environment = 'production'
-    
+
     if parseInt(currentURL.port) > 0
       @_server      = 'local'
       @_environment = 'development'
-      
+
       serverNumber = parseInt currentURL.port[1]
       for key, value of @_serverNumber
         if value == serverNumber
           @_server = key
-      
+
       environmentNumber = parseInt currentURL.port[2]
       for key, value of @_environmentNumber
         if value == environmentNumber
           @_environment = key
-      
+
     if currentURL.hostname.match /^beta(\.|_)/
       @_environment = 'beta'
-      
-      
-      
-  
+
+
+
+
   ## methods (URL Generation)
-      
+
   _environmentFor: (app) ->
     if @_appTypes[app] == 'server' and @_server == 'production'
       "production"
     else
       @_environment
-      
-      
+
+
   _schemeFor: (app) ->
     environment = this._environmentFor app
     if environment == 'development' or environment == 'test' or app == 'kb' then "http://" else "https://"
-          
-          
+
+
   _domainNameFor: (app) ->
     environment = this._environmentFor app
     @_appDomainNames[app][environment]
-    
-          
+
+
   _portFor: (app) ->
     environment = this._environmentFor app
     return "" if environment == 'production' or environment == 'beta'
-    port = ":" 
-    port += @_typeNumber[@_appTypes[app]]     
+    port = ":"
+    port += @_typeNumber[@_appTypes[app]]
     port += if @_appTypes[app] == "client" then @_serverNumber[@_server] else 0
     port += @_environmentNumber[environment]
     port += @_appNumber[app]
     port
-    
-      
-      
-      
+
+
+
+
   ## helpers
-  
+
   _values: (obj) ->
     values  = []
     for key, value of obj
