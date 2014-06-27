@@ -55,16 +55,17 @@ class Firehose.Environment
 
   # The last digit in the port number
   _appNumber:
-    API         : 0
-    browser     : 1
-    billing     : 2
-    files       : 3
-    marketing   : 4
-    settings    : 5
-    tweetlonger : 6
-    kb          : 7
-    chatserver  : 8
-    chatbrowser : 9
+    API           : 0
+    browser       : 1
+    billing       : 2
+    files         : 3
+    marketing     : 4
+    settings      : 5
+    tweetlonger   : 6
+    kb            : 7
+    chatserver    : 8
+    chatbrowser   : 9
+    chatmarketing : 0
 
 
 
@@ -122,18 +123,24 @@ class Firehose.Environment
       test:         "localhost"
       beta:         "beta.firehoseapp.com"
       production:   "firehoseapp.com"
+    chatmarketing:
+      development:  "localhost"
+      test:         "localhost"
+      beta:         "firehosechat.com"
+      production:   "firehosechat.com"
 
   _appTypes:
-    API          : "server"
-    browser      : "client"
-    billing      : "server"
-    files        : "server"
-    marketing    : "client"
-    settings     : "client"
-    tweetlonger  : "client"
-    kb           : "client"
-    chatserver   : "server"
-    chatbrowser  : "client"
+    API           : "server"
+    browser       : "client"
+    billing       : "server"
+    files         : "server"
+    marketing     : "client"
+    settings      : "client"
+    tweetlonger   : "client"
+    kb            : "client"
+    chatserver    : "server"
+    chatbrowser   : "client"
+    chatmarketing : "client"
 
   _serviceKeys:
     development:
