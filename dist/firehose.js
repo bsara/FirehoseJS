@@ -1384,6 +1384,13 @@ Firehose.Company = (function(_super) {
   Company.prototype.title = null;
 
   /*
+  @property [Firehose.CompanyKind]
+  */
+
+
+  Company.prototype.kind = null;
+
+  /*
   @property [String]
   */
 
@@ -1416,7 +1423,28 @@ Firehose.Company = (function(_super) {
   */
 
 
-  Company.prototype.isBrandNew = 0;
+  Company.prototype.isBrandNew = false;
+
+  /*
+  @property [Firehose.Product]
+  */
+
+
+  Company.prototype.currentProduct = null;
+
+  /*
+  @property [boolean]
+  */
+
+
+  Company.prototype.isPremium = false;
+
+  /*
+  @property [boolean]
+  */
+
+
+  Company.prototype.isOnlineVisitorsFetched = false;
 
   /*
   @property [boolean]
@@ -1426,39 +1454,46 @@ Firehose.Company = (function(_super) {
   Company.prototype.fetchAutomatically = true;
 
   /*
-  @property [Array<Agent>]
+  @property [Array<Firehose.Agent>]
   */
 
 
   Company.prototype.agents = null;
 
   /*
-  @property [Array<Product>]
+  @property [Array<Firehose.Product>]
   */
 
 
   Company.prototype.products = null;
 
   /*
-  @property [Array<AgentInvite>]
+  @property [Array<Firehose.AgentInvite>]
   */
 
 
   Company.prototype.agentInvites = null;
 
   /*
-  @property [Array<Tag>]
+  @property [Array<Firehose.Tag>]
   */
 
 
   Company.prototype.tags = null;
 
   /*
-  @property [Array<CannedResponse>]
+  @property [Array<Firehose.CannedResponse>]
   */
 
 
   Company.prototype.cannedResponses = null;
+
+  /*
+  @property [Array<Firehose.Visitor>]
+  */
+
+
+  Company.prototype.onlineVisitors = null;
 
   Company.prototype._customers = null;
 
@@ -1470,8 +1505,10 @@ Firehose.Company = (function(_super) {
 
   Company.prototype._emailAccounts = null;
 
+  Company.prototype._visitors = null;
+
   /*
-  @property [CreditCard]
+  @property [Firehose.CreditCard]
   */
 
 
@@ -1568,6 +1605,7 @@ Firehose.Company = (function(_super) {
     this.agentInvites = new Firehose.UniqueArray;
     this.tags = new Firehose.UniqueArray;
     this.cannedResponses = new Firehose.UniqueArray;
+    this.onlineVisitors = new Firehose.UniqueArray;
     this.agents.sortOn("firstName");
     this.tags.sortOn("label");
     return this.cannedResponses.sortOn("name");
@@ -1795,6 +1833,23 @@ Firehose.Company = (function(_super) {
   };
 
   /*
+  The visitors of a company.
+  @return [Firehose.RemoteArray<Firehose.Visitor>] The found visitors.
+  */
+
+
+  Company.prototype.visitors = function() {
+    var _this = this;
+    if (this._visitors == null) {
+      this._setIfNotNull('_visitors', new Firehose.RemoteArray("companies/" + this.id + "/visitors", null, function(json) {
+        return Firehose.Visitor.visitorWithID(jsond.id);
+      }));
+      this._visitors.sortOn('needsResponse', 'mostRecentChatRecievedTime', 'createdAt');
+    }
+    return this._visitors;
+  };
+
+  /*
   Associates an agent with a company.
   @param agent [Agent] The agent to add.
   @return [jqXHR Promise] Promise
@@ -1827,6 +1882,58 @@ Firehose.Company = (function(_super) {
     };
     return Firehose.client["delete"](this, params).done(function() {
       return _this.agents.dropObject(agent);
+    });
+  };
+
+  /*
+  @return [jqXHR Promise] Promise
+  */
+
+
+  Company.prototype.fetchOnlineVisitors = function() {
+    return null;
+  };
+
+  /*
+  @param visitors [Array<Firehose.Visitor>]
+  */
+
+
+  Company.prototype.resetVisitorsWithArray = function(visitors) {};
+
+  /*
+  Associates a visitor with a company.
+  @param visitor [Firehose.Visitor] The visitor to add.
+  @return [jqXHR Promise] Promise
+  */
+
+
+  Company.prototype.addVisitor = function(visitor) {
+    var params,
+      _this = this;
+    params = {
+      route: "companies/" + this.id + "/visitors/" + visitor.id
+    };
+    return Firehose.client.put(this, params).done(function() {
+      return _this.visitors.insertObject(visitor);
+    });
+  };
+
+  /*
+  Removes a visitor's association with a company.
+  @param visitor [Firhose.Visitor] The visior to remove.
+  @return [jqXHR Promice] Promise
+  */
+
+
+  Company.prototype.removeVisitor = function(visitor) {
+    var params,
+      _this = this;
+    params = {
+      route: "companies/" + this.id + "/visitors/" + visitor.id
+    };
+    return Firehose.client["delete"](this, params).done(function() {
+      return _this.visitors.dropObject(visitor);
     });
   };
 
@@ -1967,6 +2074,9 @@ Firehose.Company = (function(_super) {
       return Firehose.CannedResponse._cannedResponseWithID(json.id, _this);
     });
     Firehose.client.billingAccessToken = this.token;
+    if (this.products.length > 0 && (this.currentProduct == null)) {
+      this._setIfNotNull('currentProduct', this.product[0]);
+    }
     return Company.__super__._populateWithJSON.call(this, json);
   };
 
@@ -1993,7 +2103,8 @@ Firehose.Company = (function(_super) {
       is_brand_new: this.isBrandNew,
       agent_invites: this.agentInvites._toArchivableJSON(),
       tags: this.tags._toArchivableJSON(),
-      canned_responses: this.cannedResponses._toArchivableJSON()
+      canned_responses: this.cannedResponses._toArchivableJSON(),
+      visitors: this.visitors._toArchivableJSON()
     });
   };
 

@@ -10,6 +10,11 @@ class Firehose.Company extends Firehose.Object
   title: null
 
   ###
+  @property [Firehose.CompanyKind]
+  ###
+  kind: null
+
+  ###
   @property [String]
   ###
   token: null
@@ -32,7 +37,22 @@ class Firehose.Company extends Firehose.Object
   ###
   @property [boolean]
   ###
-  isBrandNew: 0
+  isBrandNew: false
+
+  ###
+  @property [Firehose.Product]
+  ###
+  currentProduct: null
+
+  ###
+  @property [boolean]
+  ###
+  isPremium: false
+
+  ###
+  @property [boolean]
+  ###
+  isOnlineVisitorsFetched: false
 
 
   # settings
@@ -46,29 +66,34 @@ class Firehose.Company extends Firehose.Object
   # associations
 
   ###
-  @property [Array<Agent>]
+  @property [Array<Firehose.Agent>]
   ###
   agents: null
 
   ###
-  @property [Array<Product>]
+  @property [Array<Firehose.Product>]
   ###
   products: null
 
   ###
-  @property [Array<AgentInvite>]
+  @property [Array<Firehose.AgentInvite>]
   ###
   agentInvites: null
 
   ###
-  @property [Array<Tag>]
+  @property [Array<Firehose.Tag>]
   ###
   tags: null
 
   ###
-  @property [Array<CannedResponse>]
+  @property [Array<Firehose.CannedResponse>]
   ###
   cannedResponses: null
+
+  ###
+  @property [Array<Firehose.Visitor>]
+  ###
+  onlineVisitors: null
 
 
   # remote arrays
@@ -88,11 +113,14 @@ class Firehose.Company extends Firehose.Object
   # @nodoc
   _emailAccounts: null
 
+  # @nodoc
+  _visitors: null
+
 
   # billing
 
   ###
-  @property [CreditCard]
+  @property [Firehose.CreditCard]
   ###
   creditCard: null
 
@@ -169,6 +197,7 @@ class Firehose.Company extends Firehose.Object
     @agentInvites     = new Firehose.UniqueArray
     @tags             = new Firehose.UniqueArray
     @cannedResponses  = new Firehose.UniqueArray
+    @onlineVisitors   = new Firehose.UniqueArray
 
     @agents.sortOn "firstName"
     @tags.sortOn "label"
@@ -212,7 +241,7 @@ class Firehose.Company extends Firehose.Object
       throw "You can't call 'fetch' on a company unless 'id' is set."
 
     Firehose.client.get( this, request ).done (data) =>
-      this._populateWithJSON data
+      @_populateWithJSON data
 
 
   ###
@@ -223,14 +252,14 @@ class Firehose.Company extends Firehose.Object
     if @id?
       params =
         route: "companies/#{@id}"
-        body:  this._toJSON()
+        body:  @_toJSON()
       Firehose.client.put( this, params )
     else
       params =
         route: "agents/#{@_creator.id}/companies"
-        body:  this._toJSON()
+        body:  @_toJSON()
       Firehose.client.post( this, params ).done (data) =>
-        this._populateWithJSON data
+        @_populateWithJSON data
 
 
   ###
@@ -287,8 +316,8 @@ class Firehose.Company extends Firehose.Object
   ###
   notifications: ->
     unless @_notifications?
-      this._setIfNotNull "_notifications", new Firehose.RemoteArray "companies/#{@id}/notifications", null, (json) =>
-        Firehose.Notification._notificationWithID( json.id, this )
+      @_setIfNotNull "_notifications", new Firehose.RemoteArray "companies/#{@id}/notifications", null, (json) =>
+        Firehose.Notification._notificationWithID json.id, this
       @_notifications.sortOn "title"
     @_notifications
 
@@ -299,8 +328,8 @@ class Firehose.Company extends Firehose.Object
   ###
   twitterAccounts: ->
     unless @_twitterAccounts?
-      this._setIfNotNull "_twitterAccounts", new Firehose.RemoteArray "companies/#{@id}/twitter_accounts", null, (json) =>
-        Firehose.TwitterAccount._twitterAccountWithID( json.id, this )
+      @_setIfNotNull "_twitterAccounts", new Firehose.RemoteArray "companies/#{@id}/twitter_accounts", null, (json) =>
+        Firehose.TwitterAccount._twitterAccountWithID json.id, this
       @_twitterAccounts.sortOn "screenName"
     @_twitterAccounts
 
@@ -311,8 +340,8 @@ class Firehose.Company extends Firehose.Object
   ###
   facebookAccounts: ->
     unless @_facebookAccounts?
-      this._setIfNotNull "_facebookAccounts", new Firehose.RemoteArray "companies/#{@id}/facebook_accounts", null, (json) =>
-        Firehose.FacebookAccount._facebookAccountWithID( json.id, this )
+      @_setIfNotNull "_facebookAccounts", new Firehose.RemoteArray "companies/#{@id}/facebook_accounts", null, (json) =>
+        Firehose.FacebookAccount._facebookAccountWithID json.id, this
       @_facebookAccounts.sortOn "name"
     @_facebookAccounts
 
@@ -323,10 +352,22 @@ class Firehose.Company extends Firehose.Object
   ###
   emailAccounts: ->
     unless @_emailAccounts?
-      this._setIfNotNull "_emailAccounts", new Firehose.RemoteArray "companies/#{@id}/email_accounts", null, (json) =>
-        Firehose.EmailAccount._emailAccountWithID( json.id, this )
+      @_setIfNotNull "_emailAccounts", new Firehose.RemoteArray "companies/#{@id}/email_accounts", null, (json) =>
+        Firehose.EmailAccount._emailAccountWithID json.id, this
       @_emailAccounts.sortOn "username"
     @_emailAccounts
+
+
+  ###
+  The visitors of a company.
+  @return [Firehose.RemoteArray<Firehose.Visitor>] The found visitors.
+  ###
+  visitors: ->
+    unless @_visitors?
+      @_setIfNotNull '_visitors', new Firehose.RemoteArray "companies/#{@id}/visitors", null, (json) =>
+        Firehose.Visitor.visitorWithID jsond.id
+      @_visitors.sortOn 'needsResponse', 'mostRecentChatRecievedTime', 'createdAt'
+    @_visitors
 
 
   ###
@@ -353,6 +394,47 @@ class Firehose.Company extends Firehose.Object
       @agents.dropObject agent
 
 
+
+  ###
+  @return [jqXHR Promise] Promise
+  ###
+  fetchOnlineVisitors: () ->
+    # TODO: Implement
+    null
+
+
+  ###
+  @param visitors [Array<Firehose.Visitor>]
+  ###
+  resetVisitorsWithArray: (visitors) ->
+    # TODO: Implement
+
+
+  ###
+  Associates a visitor with a company.
+  @param visitor [Firehose.Visitor] The visitor to add.
+  @return [jqXHR Promise] Promise
+  ###
+  addVisitor: (visitor) ->
+    params =
+      route: "companies/#{@id}/visitors/#{visitor.id}"
+    Firehose.client.put( this, params ).done =>
+      @visitors.insertObject visitor
+
+
+  ###
+  Removes a visitor's association with a company.
+  @param visitor [Firhose.Visitor] The visior to remove.
+  @return [jqXHR Promice] Promise
+  ###
+  removeVisitor: (visitor) ->
+    params =
+      route: "companies/#{@id}/visitors/#{visitor.id}"
+    Firehose.client.delete( this, params ).done =>
+      @visitors.dropObject visitor
+
+
+
   ###
   Fetches the billing info for the company from the billing server.
   This will populate `discounts` with a list of discount objects each having the follower properties:
@@ -370,19 +452,19 @@ class Firehose.Company extends Firehose.Object
         route: "entities/#{@id}"
       Firehose.client.get( this, params ).done (json) =>
         if json.credit_card?
-          this._setIfNotNull "creditCard", Firehose.CreditCard.creditCardWithID( json.credit_card.id, this )
+          @_setIfNotNull "creditCard", Firehose.CreditCard.creditCardWithID( json.credit_card.id, this )
           @creditCard._populateWithJSON json.credit_card
 
-        this._setIfNotNull "billingEmail",                  json.email || Firehose.Agent.loggedInAgent.email
-        this._setIfNotNull "billingRate",                   (json.rate / 100.0).toFixed(2)
-        this._setIfNotNull "nextBillAmountBeforeDiscounts", (@billingRate * @agents.length).toFixed(2)
-        this._setIfNotNull "isFreeTrialEligible",           json.is_free_trial_eligible
-        this._setIfNotNull "trialExpirationDate",           @_date( json.free_trial_expiration_date ) || new Date(+new Date + 12096e5) # 14 days away
-        this._setIfNotNull "nextBillingDate",               if json.next_bill_date then @_date( json.next_bill_date )
-        this._setIfNotNull "isGracePeriodOver",             json.grace_period_over
-        this._setIfNotNull "daysLeftInGracePeriod",         json.days_left_in_grace_period
-        this._setIfNotNull "isCurrent",                     json.current
-        this._setIfNotNull "hasSuccessfulBilling",          json.has_successful_billing
+        @_setIfNotNull "billingEmail",                  json.email || Firehose.Agent.loggedInAgent.email
+        @_setIfNotNull "billingRate",                   (json.rate / 100.0).toFixed(2)
+        @_setIfNotNull "nextBillAmountBeforeDiscounts", (@billingRate * @agents.length).toFixed(2)
+        @_setIfNotNull "isFreeTrialEligible",           json.is_free_trial_eligible
+        @_setIfNotNull "trialExpirationDate",           @_date( json.free_trial_expiration_date ) || new Date(+new Date + 12096e5) # 14 days away
+        @_setIfNotNull "nextBillingDate",               if json.next_bill_date then @_date( json.next_bill_date )
+        @_setIfNotNull "isGracePeriodOver",             json.grace_period_over
+        @_setIfNotNull "daysLeftInGracePeriod",         json.days_left_in_grace_period
+        @_setIfNotNull "isCurrent",                     json.current
+        @_setIfNotNull "hasSuccessfulBilling",          json.has_successful_billing
 
 
         totalDiscount = 0.0
@@ -412,7 +494,7 @@ class Firehose.Company extends Firehose.Object
     if @token
       fetchBlock()
     else
-      this.fetch().then ->
+      @fetch().then ->
         fetchBlock()
 
   ###
@@ -426,44 +508,47 @@ class Firehose.Company extends Firehose.Object
         server: "billing"
         route: "entities/#{@id}/renew_trial"
       Firehose.client.put( this, params ).done (json) =>
-        this._setIfNotNull "trialExpirationDate", @_date( json.free_trial_expiration_date )
+        @_setIfNotNull "trialExpirationDate", @_date( json.free_trial_expiration_date )
     if @token
       requestBlock()
     else
-      this.fetch().then ->
+      @fetch().then ->
         requestBlock()
 
 
   # @nodoc
   _populateWithJSON: (json) ->
-    this._setIfNotNull "title",                         json.title
-    this._setIfNotNull "token",                         json.token                  unless @token?
-    this._setIfNotNull "lastFetchAt",                   @_date(json.last_fetch_at)  if json.last_fetch_at?
-    this._setIfNotNull "forwardingEmailAddress",        json.forwarding_email       unless @forwardingEmailAddress?
-    this._setIfNotNull "unresolvedCount",               json.unresolved_count
-    this._setIfNotNull "isBrandNew",                    json.is_brand_new
+    @_setIfNotNull "title",                         json.title
+    @_setIfNotNull "token",                         json.token                  unless @token?
+    @_setIfNotNull "lastFetchAt",                   @_date(json.last_fetch_at)  if json.last_fetch_at?
+    @_setIfNotNull "forwardingEmailAddress",        json.forwarding_email       unless @forwardingEmailAddress?
+    @_setIfNotNull "unresolvedCount",               json.unresolved_count
+    @_setIfNotNull "isBrandNew",                    json.is_brand_new
 
     # settings
-    this._setIfNotNull "fetchAutomatically",            json.company_settings?.fetch_automatically
+    @_setIfNotNull "fetchAutomatically",            json.company_settings?.fetch_automatically
 
-    this._populateAssociatedObjects this, "agents", json.agents, (json) =>
-      agent = Firehose.Agent.agentWithID( json.id )
+    @_populateAssociatedObjects this, "agents", json.agents, (json) =>
+      agent = Firehose.Agent.agentWithID json.id
       agent.companies.insertObject this
       agent
 
-    this._populateAssociatedObjects this, "products", json.products, (json) =>
-      Firehose.Product.productWithID( json.id, this )
+    @_populateAssociatedObjects this, "products", json.products, (json) =>
+      Firehose.Product.productWithID json.id, this
 
-    this._populateAssociatedObjects this, "agentInvites", json.agent_invites, (json) =>
-      Firehose.AgentInvite._agentInviteWithID( json.id, this )
+    @_populateAssociatedObjects this, "agentInvites", json.agent_invites, (json) =>
+      Firehose.AgentInvite._agentInviteWithID json.id, this
 
-    this._populateAssociatedObjects this, "tags", json.tags, (json) =>
-      Firehose.Tag._tagWithID( json.id, this )
+    @_populateAssociatedObjects this, "tags", json.tags, (json) =>
+      Firehose.Tag._tagWithID json.id, this
 
-    this._populateAssociatedObjects this, "cannedResponses", json.canned_responses, (json) =>
-      Firehose.CannedResponse._cannedResponseWithID( json.id, this )
+    @_populateAssociatedObjects this, "cannedResponses", json.canned_responses, (json) =>
+      Firehose.CannedResponse._cannedResponseWithID json.id, this
 
     Firehose.client.billingAccessToken = @token
+
+    if @products.length > 0 and not @currentProduct?
+      @_setIfNotNull 'currentProduct', @product[0]
 
     super json
 
@@ -471,9 +556,9 @@ class Firehose.Company extends Firehose.Object
   # @nodoc
   _toJSON: ->
     company:
-      title : @title
+      title: @title
       company_settings_attributes:
-        fetch_automatically            : @fetchAutomatically
+        fetch_automatically: @fetchAutomatically
 
 
   # @nodoc
@@ -491,3 +576,4 @@ class Firehose.Company extends Firehose.Object
       agent_invites:        @agentInvites._toArchivableJSON()
       tags:                 @tags._toArchivableJSON()
       canned_responses:     @cannedResponses._toArchivableJSON()
+      visitors:             @visitors._toArchivableJSON()
