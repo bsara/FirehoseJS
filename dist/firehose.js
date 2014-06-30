@@ -997,121 +997,6 @@ Firehose.VisitorBoxState = (function() {
 })();
 
 var _ref,
-  __hasProp = {}.hasOwnProperty,
-  __extends = function(child, parent) { for (var key in parent) { if (__hasProp.call(parent, key)) child[key] = parent[key]; } function ctor() { this.constructor = child; } ctor.prototype = parent.prototype; child.prototype = new ctor(); child.__super__ = parent.prototype; return child; };
-
-Firehose.ChatInteraction = (function(_super) {
-  __extends(ChatInteraction, _super);
-
-  function ChatInteraction() {
-    _ref = ChatInteraction.__super__.constructor.apply(this, arguments);
-    return _ref;
-  }
-
-  ChatInteraction._firehoseType = "ChatInteraction";
-
-  /*
-  @property [Firehose.Visitor]
-  */
-
-
-  ChatInteraction.prototype.visitor = null;
-
-  /*
-  @property [Date]
-  */
-
-
-  ChatInteraction.prototype.deliveredAt = null;
-
-  /*
-  @property [Date]
-  */
-
-
-  ChatInteraction.prototype.readAt = null;
-
-  /*
-  @property [Date]
-  */
-
-
-  ChatInteraction.prototype.editedAt = null;
-
-  /*
-  @property [Date]
-  */
-
-
-  ChatInteraction.prototype.failedAt = null;
-
-  /*
-  @property [String]
-  */
-
-
-  ChatInteraction.prototype.senderDisplayName = null;
-
-  /*
-  @property [Firehose.ChatInteractionKind]
-  */
-
-
-  ChatInteraction.prototype.kind = null;
-
-  ChatInteraction._chatInteractionWithID = function(id) {
-    return Firehose.Object._objectOfClassWithID(Firehose.ChatInteraction, {
-      id: id
-    });
-  };
-
-  /*
-  @param json [JSON Object]
-  @param visitor [Firhose.Visitor]
-  @return [Firehose.ChatInteraction] The chat interaction object that was created.
-  */
-
-
-  ChatInteraction.chatInteractionWithJSON = function(json, visitor) {
-    var chatInteraction;
-    chatInteraction = Firehose.ChatInteraction._chatInteractionWithID(json.id);
-    chatInteraction.visitor = visitor;
-    return chatInteraction;
-  };
-
-  /*
-  @param body [String]
-  @param agent [Firehose.Agent]
-  @return [Firehose.ChatInteraction] The chat interaction object that was created.
-  */
-
-
-  ChatInteraction.chatInteractionWithBody = function(body, agent) {
-    return null;
-  };
-
-  ChatInteraction.prototype._populateWithJSON = function(json) {
-    var chatJSON;
-    if (json.chat_interaction != null) {
-      chatJSON = json.chat_interaction;
-      this._setIfNotNull("deliveredAt", this._date(chatJSON.delivered_at));
-      this._setIfNotNull("readAt", this._date(chatJSON.read_at));
-      this._setIfNotNull("editedAt", this._date(chatJSON.edited_at));
-      this._setIfNotNull("failedAt", this._date(chatJSON.failed_at));
-      this._setIfNotNull("senderDisplayName", chatJSON.sender_display_name);
-      this._setIfNotNull("kind", chatJSON.kind);
-      this._populateAssociatedObjectWithJSON(this, "visitor", chatJSON.visitor, function(json) {
-        return Firehose.Visitor.visitorWithID(json.id);
-      });
-    }
-    return ChatInteraction.__super__._populateWithJSON.call(this, json);
-  };
-
-  return ChatInteraction;
-
-})(Firehose.Interaction);
-
-var _ref,
   __bind = function(fn, me){ return function(){ return fn.apply(me, arguments); }; },
   __hasProp = {}.hasOwnProperty,
   __extends = function(child, parent) { for (var key in parent) { if (__hasProp.call(parent, key)) child[key] = parent[key]; } function ctor() { this.constructor = child; } ctor.prototype = parent.prototype; child.prototype = new ctor(); child.__super__ = parent.prototype; return child; };
@@ -1500,386 +1385,6 @@ Firehose.Agent = (function(_super) {
   };
 
   return Agent;
-
-})(Firehose.Object);
-
-var _ref,
-  __hasProp = {}.hasOwnProperty,
-  __extends = function(child, parent) { for (var key in parent) { if (__hasProp.call(parent, key)) child[key] = parent[key]; } function ctor() { this.constructor = child; } ctor.prototype = parent.prototype; child.prototype = new ctor(); child.__super__ = parent.prototype; return child; };
-
-Firehose.Visitor = (function(_super) {
-  __extends(Visitor, _super);
-
-  function Visitor() {
-    _ref = Visitor.__super__.constructor.apply(this, arguments);
-    return _ref;
-  }
-
-  Visitor._firehoseType = "Visitor";
-
-  /*
-  @property [Firehose.Company]
-  */
-
-
-  Visitor.prototype.company = null;
-
-  /*
-  @property [String]
-  */
-
-
-  Visitor.prototype.email = null;
-
-  /*
-  @property [String]
-  */
-
-
-  Visitor.prototype.name = null;
-
-  /*
-  @property [String]
-  */
-
-
-  Visitor.prototype.avatarURL = null;
-
-  /*
-  @property [String]
-  */
-
-
-  Visitor.prototype.location = null;
-
-  /*
-  @property [Number]
-  */
-
-
-  Visitor.prototype.locationLongitude = null;
-
-  /*
-  @property [Number]
-  */
-
-
-  Visitor.prototype.locationLatitude = null;
-
-  /*
-  @property [???]
-  */
-
-
-  Visitor.prototype.timeZone = null;
-
-  /*
-  @property [String]
-  */
-
-
-  Visitor.prototype.referringURL = null;
-
-  /*
-  @property [Date]
-  */
-
-
-  Visitor.prototype.connectedAt = null;
-
-  /*
-  @property [Date]
-  */
-
-
-  Visitor.prototype.disconnectedAt = null;
-
-  /*
-  @property [String]
-  */
-
-
-  Visitor.prototype.currentURL = null;
-
-  /*
-  @property [String]
-  */
-
-
-  Visitor.prototype.ipAddress = null;
-
-  /*
-  @property [Dictionary]
-  */
-
-
-  Visitor.prototype.customAttributes = null;
-
-  /*
-  @property [Date]
-  */
-
-
-  Visitor.prototype.visitedCurrentURLAt = null;
-
-  /*
-  @property [Firehose.VisitorBoxState]
-  */
-
-
-  Visitor.prototype.boxState = Firehose.VisitorBoxState.NONE;
-
-  /*
-  @property [String]
-  */
-
-
-  Visitor.prototype.mostRecentChat = null;
-
-  /*
-  @property [Date]
-  */
-
-
-  Visitor.prototype.mostRecentChatReceivedAt = null;
-
-  /*
-  @property [String]
-  */
-
-
-  Visitor.prototype.browserName = null;
-
-  /*
-  @property [String]
-  */
-
-
-  Visitor.prototype.browserVersion = null;
-
-  /*
-  @property [String]
-  */
-
-
-  Visitor.prototype.browserMajor = null;
-
-  /*
-  @property [String]
-  */
-
-
-  Visitor.prototype.operatingSystemName = null;
-
-  /*
-  @property [String]
-  */
-
-
-  Visitor.prototype.operatingSystemVersion = null;
-
-  /*
-  @property [String]
-  */
-
-
-  Visitor.prototype.deviceModel = null;
-
-  /*
-  @property [String]
-  */
-
-
-  Visitor.prototype.deviceType = null;
-
-  /*
-  @property [String]
-  */
-
-
-  Visitor.prototype.deviceVendor = null;
-
-  /*
-  @property [boolean]
-  */
-
-
-  Visitor.prototype.needsResponse = false;
-
-  /*
-  @property [boolean]
-  */
-
-
-  Visitor.prototype.isOnline = false;
-
-  /*
-  @property [Array]
-  */
-
-
-  Visitor.prototype.typers = null;
-
-  Visitor.prototype._chatInteractions = null;
-
-  Visitor.prototype._setup = function() {
-    return this.typers = new Firehose.UniqueArray;
-  };
-
-  /*
-  Create a visitor by ID so you can fetch its info and chat history from the api server.
-  @param id [Number] The ID of the visitor you wish to retrieve.
-  @return [Firehose.Visitor] The visitor object that was created.
-  */
-
-
-  Visitor.visitorWithID = function(id, company) {
-    return Firehose.Object._objectOfClassWithID(Firehose.Visitor, {
-      id: id,
-      company: company
-    });
-  };
-
-  /*
-  Create a visitor from JSON pushed through the chat server socket connection.
-  @param json [JSON Object]
-  @param company [Firehose.Company]
-  @return [Firehose.Visitor] The visitor object that was created.
-  */
-
-
-  Visitor.visitorWithJSON = function(json, company) {
-    var visitor;
-    visitor = Firehose.Visitor.visitorWithID(json.id);
-    visitor.company = company;
-    return visitor;
-  };
-
-  /*
-  Fetch information about this visitor that was archived to the api server by the chat
-  server based on its ID.
-  @return [jqXHR Promise] Promise
-  */
-
-
-  Visitor.prototype.fetch = function() {
-    return null;
-  };
-
-  /*
-  The chat interactions of the visitor.
-  @return [Firehose.RemoteArray<Firehose.ChatInteraction>] The found chat interactions.
-  */
-
-
-  Visitor.prototype.chatInterations = function() {
-    var _this = this;
-    if (this._chatInteractions == null) {
-      this._setIfNotNull('_chatInteractions', new Firehose.RemoteArray("visitors/" + this.id + "/chat_interactions", null, function(json) {
-        return Firehose.ChatInteraction.chatInteractionWithJSON(json, _this);
-      }));
-      this._chatInteractions.sortOn('deliveredAt');
-    }
-    return this._chatInteractions;
-  };
-
-  /*
-  When you first load a visitor and you have a lot of interactions you don't want to
-  add one-by-one this is the best way to add them all at once so the interface doesn't
-  animate the addition of each one.
-  @param chatInteractions [Array<Firehose.ChatInteraction>]
-  */
-
-
-  Visitor.prototype.addChatInteractions = function(chatInteractions) {};
-
-  /*
-  @return [boolean] Whether or no the visitor is currently chatting with an agent.
-  */
-
-
-  Visitor.prototype.isCurrentlyChatting = function() {
-    return this.isOnline && this.boxState === Firehose.VisitorBoxState.CHATTING;
-  };
-
-  /*
-  @return [String] The location if the display name is not a real human name.
-  */
-
-
-  Visitor.prototype.getPreferredDisplayName = function() {
-    return null;
-  };
-
-  /*
-  @return [Firehose.ChatInteraction] Only available if chats have been fetched for this visitor.
-  */
-
-
-  Visitor.prototype.getMostRecentChatInteraction = function() {
-    return null;
-  };
-
-  /*
-  Used when the chat server sends update information.
-  @param json [JSON Object]
-  */
-
-
-  Visitor.prototype.updateWithJSON = function(json) {};
-
-  /*
-  Adds a typer.
-  @param typer [Firehose.Object]
-  */
-
-
-  Visitor.prototype.addTyper = function(typer) {};
-
-  /*
-  Removes a typer.
-  @param typer [Firehose.Object]
-  */
-
-
-  Visitor.prototype.removeTyper = function(typer) {};
-
-  Visitor.prototype._populateWithJSON = function(json) {
-    this._setIfNotNull('email', json.email);
-    this._setIfNotNull('name', json.raw_name);
-    this._setIfNotNull('avatarURL', json.avatar_url);
-    this._setIfNotNull('location', json.location);
-    this._setIfNotNull('locationLongitude', json.longitude);
-    this._setIfNotNull('locationLatitude', json.latitude);
-    this._setIfNotNull('referringURL', json.referrer_url);
-    this._setIfNotNull('connectedAt', this._date(json.connected_at));
-    this._setIfNotNull('disconnectedAt', this._date(json.disconnected_at));
-    this._setIfNotNull('currentURL', json.current_url);
-    this._setIfNotNull('ipAddress', json.ip);
-    this._setIfNotNull('visitedCurrentURLAt', this._date(json.visited_current_url_at));
-    this._setIfNotNull('boxState', json.box_state);
-    this._setIfNotNull('mostRecentChat', json.most_recent_chat);
-    this._setIfNotNull('mostRecentChatReceivedAt', this._date(json.most_recent_chat_received_at));
-    this._setIfNotNull('browserName', json.env_browser_name);
-    this._setIfNotNull('browserVersion', json.env_browser_version);
-    this._setIfNotNull('browserMajor', json.env_browser_major);
-    this._setIfNotNull('operatingSystemName', json.env_os_name);
-    this._setIfNotNull('operatingSystemVersion', json.env_os_version);
-    this._setIfNotNull('deviceModel', json.env_device_model);
-    this._setIfNotNull('deviceType', json.env_device_type);
-    this._setIfNotNull('deviceVendor', json.env_device_vendor);
-    this._setIfNotNull('needsResponse', json.needs_response);
-    this._setIfNotNull('isOnline', json.is_online);
-    if (json.is_typing) {
-      this.addTyper(this);
-    }
-    this._populateAssociatedObjectWithJSON(this, 'company', json.company, function(json) {
-      return Firehose.Company.companyWithID(json.id, null, this);
-    });
-    return Visitor.__super__._populateWithJSON.call(this, json);
-  };
-
-  return Visitor;
 
 })(Firehose.Object);
 
@@ -3300,6 +2805,121 @@ Firehose.CannedResponse = (function(_super) {
   return CannedResponse;
 
 })(Firehose.Object);
+
+var _ref,
+  __hasProp = {}.hasOwnProperty,
+  __extends = function(child, parent) { for (var key in parent) { if (__hasProp.call(parent, key)) child[key] = parent[key]; } function ctor() { this.constructor = child; } ctor.prototype = parent.prototype; child.prototype = new ctor(); child.__super__ = parent.prototype; return child; };
+
+Firehose.ChatInteraction = (function(_super) {
+  __extends(ChatInteraction, _super);
+
+  function ChatInteraction() {
+    _ref = ChatInteraction.__super__.constructor.apply(this, arguments);
+    return _ref;
+  }
+
+  ChatInteraction._firehoseType = "ChatInteraction";
+
+  /*
+  @property [Firehose.Visitor]
+  */
+
+
+  ChatInteraction.prototype.visitor = null;
+
+  /*
+  @property [Date]
+  */
+
+
+  ChatInteraction.prototype.deliveredAt = null;
+
+  /*
+  @property [Date]
+  */
+
+
+  ChatInteraction.prototype.readAt = null;
+
+  /*
+  @property [Date]
+  */
+
+
+  ChatInteraction.prototype.editedAt = null;
+
+  /*
+  @property [Date]
+  */
+
+
+  ChatInteraction.prototype.failedAt = null;
+
+  /*
+  @property [String]
+  */
+
+
+  ChatInteraction.prototype.senderDisplayName = null;
+
+  /*
+  @property [Firehose.ChatInteractionKind]
+  */
+
+
+  ChatInteraction.prototype.kind = null;
+
+  ChatInteraction._chatInteractionWithID = function(id) {
+    return Firehose.Object._objectOfClassWithID(Firehose.ChatInteraction, {
+      id: id
+    });
+  };
+
+  /*
+  @param json [JSON Object]
+  @param visitor [Firhose.Visitor]
+  @return [Firehose.ChatInteraction] The chat interaction object that was created.
+  */
+
+
+  ChatInteraction.chatInteractionWithJSON = function(json, visitor) {
+    var chatInteraction;
+    chatInteraction = Firehose.ChatInteraction._chatInteractionWithID(json.id);
+    chatInteraction.visitor = visitor;
+    return chatInteraction;
+  };
+
+  /*
+  @param body [String]
+  @param agent [Firehose.Agent]
+  @return [Firehose.ChatInteraction] The chat interaction object that was created.
+  */
+
+
+  ChatInteraction.chatInteractionWithBody = function(body, agent) {
+    return null;
+  };
+
+  ChatInteraction.prototype._populateWithJSON = function(json) {
+    var chatJSON;
+    if (json.chat_interaction != null) {
+      chatJSON = json.chat_interaction;
+      this._setIfNotNull("deliveredAt", this._date(chatJSON.delivered_at));
+      this._setIfNotNull("readAt", this._date(chatJSON.read_at));
+      this._setIfNotNull("editedAt", this._date(chatJSON.edited_at));
+      this._setIfNotNull("failedAt", this._date(chatJSON.failed_at));
+      this._setIfNotNull("senderDisplayName", chatJSON.sender_display_name);
+      this._setIfNotNull("kind", chatJSON.kind);
+      this._populateAssociatedObjectWithJSON(this, "visitor", chatJSON.visitor, function(json) {
+        return Firehose.Visitor.visitorWithID(json.id);
+      });
+    }
+    return ChatInteraction.__super__._populateWithJSON.call(this, json);
+  };
+
+  return ChatInteraction;
+
+})(Firehose.Interaction);
 
 var _ref,
   __hasProp = {}.hasOwnProperty,
@@ -5967,5 +5587,385 @@ Firehose.Article = (function(_super) {
   };
 
   return Article;
+
+})(Firehose.Object);
+
+var _ref,
+  __hasProp = {}.hasOwnProperty,
+  __extends = function(child, parent) { for (var key in parent) { if (__hasProp.call(parent, key)) child[key] = parent[key]; } function ctor() { this.constructor = child; } ctor.prototype = parent.prototype; child.prototype = new ctor(); child.__super__ = parent.prototype; return child; };
+
+Firehose.Visitor = (function(_super) {
+  __extends(Visitor, _super);
+
+  function Visitor() {
+    _ref = Visitor.__super__.constructor.apply(this, arguments);
+    return _ref;
+  }
+
+  Visitor._firehoseType = "Visitor";
+
+  /*
+  @property [Firehose.Company]
+  */
+
+
+  Visitor.prototype.company = null;
+
+  /*
+  @property [String]
+  */
+
+
+  Visitor.prototype.email = null;
+
+  /*
+  @property [String]
+  */
+
+
+  Visitor.prototype.name = null;
+
+  /*
+  @property [String]
+  */
+
+
+  Visitor.prototype.avatarURL = null;
+
+  /*
+  @property [String]
+  */
+
+
+  Visitor.prototype.location = null;
+
+  /*
+  @property [Number]
+  */
+
+
+  Visitor.prototype.locationLongitude = null;
+
+  /*
+  @property [Number]
+  */
+
+
+  Visitor.prototype.locationLatitude = null;
+
+  /*
+  @property [???]
+  */
+
+
+  Visitor.prototype.timeZone = null;
+
+  /*
+  @property [String]
+  */
+
+
+  Visitor.prototype.referringURL = null;
+
+  /*
+  @property [Date]
+  */
+
+
+  Visitor.prototype.connectedAt = null;
+
+  /*
+  @property [Date]
+  */
+
+
+  Visitor.prototype.disconnectedAt = null;
+
+  /*
+  @property [String]
+  */
+
+
+  Visitor.prototype.currentURL = null;
+
+  /*
+  @property [String]
+  */
+
+
+  Visitor.prototype.ipAddress = null;
+
+  /*
+  @property [Dictionary]
+  */
+
+
+  Visitor.prototype.customAttributes = null;
+
+  /*
+  @property [Date]
+  */
+
+
+  Visitor.prototype.visitedCurrentURLAt = null;
+
+  /*
+  @property [Firehose.VisitorBoxState]
+  */
+
+
+  Visitor.prototype.boxState = Firehose.VisitorBoxState.NONE;
+
+  /*
+  @property [String]
+  */
+
+
+  Visitor.prototype.mostRecentChat = null;
+
+  /*
+  @property [Date]
+  */
+
+
+  Visitor.prototype.mostRecentChatReceivedAt = null;
+
+  /*
+  @property [String]
+  */
+
+
+  Visitor.prototype.browserName = null;
+
+  /*
+  @property [String]
+  */
+
+
+  Visitor.prototype.browserVersion = null;
+
+  /*
+  @property [String]
+  */
+
+
+  Visitor.prototype.browserMajor = null;
+
+  /*
+  @property [String]
+  */
+
+
+  Visitor.prototype.operatingSystemName = null;
+
+  /*
+  @property [String]
+  */
+
+
+  Visitor.prototype.operatingSystemVersion = null;
+
+  /*
+  @property [String]
+  */
+
+
+  Visitor.prototype.deviceModel = null;
+
+  /*
+  @property [String]
+  */
+
+
+  Visitor.prototype.deviceType = null;
+
+  /*
+  @property [String]
+  */
+
+
+  Visitor.prototype.deviceVendor = null;
+
+  /*
+  @property [boolean]
+  */
+
+
+  Visitor.prototype.needsResponse = false;
+
+  /*
+  @property [boolean]
+  */
+
+
+  Visitor.prototype.isOnline = false;
+
+  /*
+  @property [Array]
+  */
+
+
+  Visitor.prototype.typers = null;
+
+  Visitor.prototype._chatInteractions = null;
+
+  Visitor.prototype._setup = function() {
+    return this.typers = new Firehose.UniqueArray;
+  };
+
+  /*
+  Create a visitor by ID so you can fetch its info and chat history from the api server.
+  @param id [Number] The ID of the visitor you wish to retrieve.
+  @return [Firehose.Visitor] The visitor object that was created.
+  */
+
+
+  Visitor.visitorWithID = function(id, company) {
+    return Firehose.Object._objectOfClassWithID(Firehose.Visitor, {
+      id: id,
+      company: company
+    });
+  };
+
+  /*
+  Create a visitor from JSON pushed through the chat server socket connection.
+  @param json [JSON Object]
+  @param company [Firehose.Company]
+  @return [Firehose.Visitor] The visitor object that was created.
+  */
+
+
+  Visitor.visitorWithJSON = function(json, company) {
+    var visitor;
+    visitor = Firehose.Visitor.visitorWithID(json.id);
+    visitor.company = company;
+    return visitor;
+  };
+
+  /*
+  Fetch information about this visitor that was archived to the api server by the chat
+  server based on its ID.
+  @return [jqXHR Promise] Promise
+  */
+
+
+  Visitor.prototype.fetch = function() {
+    return null;
+  };
+
+  /*
+  The chat interactions of the visitor.
+  @return [Firehose.RemoteArray<Firehose.ChatInteraction>] The found chat interactions.
+  */
+
+
+  Visitor.prototype.chatInterations = function() {
+    var _this = this;
+    if (this._chatInteractions == null) {
+      this._setIfNotNull('_chatInteractions', new Firehose.RemoteArray("visitors/" + this.id + "/chat_interactions", null, function(json) {
+        return Firehose.ChatInteraction.chatInteractionWithJSON(json, _this);
+      }));
+      this._chatInteractions.sortOn('deliveredAt');
+    }
+    return this._chatInteractions;
+  };
+
+  /*
+  When you first load a visitor and you have a lot of interactions you don't want to
+  add one-by-one this is the best way to add them all at once so the interface doesn't
+  animate the addition of each one.
+  @param chatInteractions [Array<Firehose.ChatInteraction>]
+  */
+
+
+  Visitor.prototype.addChatInteractions = function(chatInteractions) {};
+
+  /*
+  @return [boolean] Whether or no the visitor is currently chatting with an agent.
+  */
+
+
+  Visitor.prototype.isCurrentlyChatting = function() {
+    return this.isOnline && this.boxState === Firehose.VisitorBoxState.CHATTING;
+  };
+
+  /*
+  @return [String] The location if the display name is not a real human name.
+  */
+
+
+  Visitor.prototype.getPreferredDisplayName = function() {
+    return null;
+  };
+
+  /*
+  @return [Firehose.ChatInteraction] Only available if chats have been fetched for this visitor.
+  */
+
+
+  Visitor.prototype.getMostRecentChatInteraction = function() {
+    return null;
+  };
+
+  /*
+  Used when the chat server sends update information.
+  @param json [JSON Object]
+  */
+
+
+  Visitor.prototype.updateWithJSON = function(json) {};
+
+  /*
+  Adds a typer.
+  @param typer [Firehose.Object]
+  */
+
+
+  Visitor.prototype.addTyper = function(typer) {};
+
+  /*
+  Removes a typer.
+  @param typer [Firehose.Object]
+  */
+
+
+  Visitor.prototype.removeTyper = function(typer) {};
+
+  Visitor.prototype._populateWithJSON = function(json) {
+    this._setIfNotNull('email', json.email);
+    this._setIfNotNull('name', json.raw_name);
+    this._setIfNotNull('avatarURL', json.avatar_url);
+    this._setIfNotNull('location', json.location);
+    this._setIfNotNull('locationLongitude', json.longitude);
+    this._setIfNotNull('locationLatitude', json.latitude);
+    this._setIfNotNull('referringURL', json.referrer_url);
+    this._setIfNotNull('connectedAt', this._date(json.connected_at));
+    this._setIfNotNull('disconnectedAt', this._date(json.disconnected_at));
+    this._setIfNotNull('currentURL', json.current_url);
+    this._setIfNotNull('ipAddress', json.ip);
+    this._setIfNotNull('visitedCurrentURLAt', this._date(json.visited_current_url_at));
+    this._setIfNotNull('boxState', json.box_state);
+    this._setIfNotNull('mostRecentChat', json.most_recent_chat);
+    this._setIfNotNull('mostRecentChatReceivedAt', this._date(json.most_recent_chat_received_at));
+    this._setIfNotNull('browserName', json.env_browser_name);
+    this._setIfNotNull('browserVersion', json.env_browser_version);
+    this._setIfNotNull('browserMajor', json.env_browser_major);
+    this._setIfNotNull('operatingSystemName', json.env_os_name);
+    this._setIfNotNull('operatingSystemVersion', json.env_os_version);
+    this._setIfNotNull('deviceModel', json.env_device_model);
+    this._setIfNotNull('deviceType', json.env_device_type);
+    this._setIfNotNull('deviceVendor', json.env_device_vendor);
+    this._setIfNotNull('needsResponse', json.needs_response);
+    this._setIfNotNull('isOnline', json.is_online);
+    if (json.is_typing) {
+      this.addTyper(this);
+    }
+    this._populateAssociatedObjectWithJSON(this, 'company', json.company, function(json) {
+      return Firehose.Company.companyWithID(json.id, null, this);
+    });
+    return Visitor.__super__._populateWithJSON.call(this, json);
+  };
+
+  return Visitor;
 
 })(Firehose.Object);

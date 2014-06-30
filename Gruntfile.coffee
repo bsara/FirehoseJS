@@ -62,14 +62,13 @@ module.exports = (grunt) ->
           files.push "lib/private/object"
           files.push "lib/chat_interaction_kind"
           files.push "lib/visitor_box_state"
-          files.push "lib/chat_interaction"
           files.push "lib/agent"
-          files.push "lib/visitor"
           files.push "lib/company"
           files.push "lib/interaction"
           files.push "lib/agent_invite"
           files.push "lib/attachment"
           files.push "lib/canned_response"
+          files.push "lib/chat_interaction"
           files.push "lib/cloud_file"
           files.push "lib/credit_card"
           files.push "lib/customer"
@@ -87,6 +86,7 @@ module.exports = (grunt) ->
           files.push "lib/twitter_account"
           files.push "lib/twitter_interaction"
           files.push "lib/article"
+          files.push "lib/visitor"
           sources = []
           sources.push 'stripe/stripe.js'
           for file in files
