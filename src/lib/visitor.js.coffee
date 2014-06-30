@@ -217,6 +217,13 @@ class Firehose.Visitor extends Firehose.Object
 
 
   ###
+  @return [boolean] Whether or no the visitor is currently chatting with an agent.
+  ###
+  isCurrentlyChatting: ->
+    @isOnline && @boxState == Firehose.VisitorBoxState.CHATTING
+
+
+  ###
   @return [String] The location if the display name is not a real human name.
   ###
   getPreferredDisplayName: ->
