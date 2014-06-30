@@ -257,43 +257,43 @@ class Firehose.Visitor extends Firehose.Object
 
   # @nodoc
   _populateWithJSON: (json) ->
-    @_setIfNotNull 'email',                      json.email
-    @_setIfNotNull 'name',                       json.raw_name
-    @_setIfNotNull 'avatarURL',                  json.avatar_url
-    @_setIfNotNull 'location',                   json.location
-    @_setIfNotNull 'locationLongitude',          json.longitude
-    @_setIfNotNull 'locationLatitude',           json.latitude
+    @_setIfNotNull 'email',                    json.email
+    @_setIfNotNull 'name',                     json.raw_name
+    @_setIfNotNull 'avatarURL',                json.avatar_url
+    @_setIfNotNull 'location',                 json.location
+    @_setIfNotNull 'locationLongitude',        json.longitude
+    @_setIfNotNull 'locationLatitude',         json.latitude
     # TODO: How to handle timeZone???
-    #@_setIfNotNull 'timeZone',                   json.time_zone
-    @_setIfNotNull 'referringURL',               json.referrer_url
+    #@_setIfNotNull 'timeZone',                 json.time_zone
+    @_setIfNotNull 'referringURL',             json.referrer_url
     @_setIfNotNull 'connectedAt',              @_date json.connected_at
     @_setIfNotNull 'disconnectedAt',           @_date json.disconnected_at
-    @_setIfNotNull 'currentURL',                 json.current_url
-    @_setIfNotNull 'ipAddress',                  json.ip
+    @_setIfNotNull 'currentURL',               json.current_url
+    @_setIfNotNull 'ipAddress',                json.ip
 
     # TODO: what to do with custom_attributes???
-    #@_setIfNotNull 'customAttributes',           json.custom_attributes
+    #@_setIfNotNull 'customAttributes',         json.custom_attributes
 
     @_setIfNotNull 'visitedCurrentURLAt',      @_date json.visited_current_url_at
 
-    @_setIfNotNull 'boxState',                   json.box_state
+    @_setIfNotNull 'boxState',                 json.box_state
 
-    @_setIfNotNull 'mostRecentChat',             json.most_recent_chat
+    @_setIfNotNull 'mostRecentChat',           json.most_recent_chat
     @_setIfNotNull 'mostRecentChatReceivedAt', @_date json.most_recent_chat_received_at
 
-    @_setIfNotNull 'browserName',                json.env_browser_name
-    @_setIfNotNull 'browserVersion',             json.env_browser_version
-    @_setIfNotNull 'browserMajor',               json.env_browser_major
+    @_setIfNotNull 'browserName',              json.env_browser_name
+    @_setIfNotNull 'browserVersion',           json.env_browser_version
+    @_setIfNotNull 'browserMajor',             json.env_browser_major
 
-    @_setIfNotNull 'operatingSystemName',        json.env_os_name
-    @_setIfNotNull 'operatingSystemVersion',     json.env_os_version
+    @_setIfNotNull 'operatingSystemName',      json.env_os_name
+    @_setIfNotNull 'operatingSystemVersion',   json.env_os_version
 
-    @_setIfNotNull 'deviceModel',                json.env_device_model
-    @_setIfNotNull 'deviceType',                 json.env_device_type
-    @_setIfNotNull 'deviceVendor',               json.env_device_vendor
+    @_setIfNotNull 'deviceModel',              json.env_device_model
+    @_setIfNotNull 'deviceType',               json.env_device_type
+    @_setIfNotNull 'deviceVendor',             json.env_device_vendor
 
-    @_setIfNotNull 'needsResponse',              json.needs_response
-    @_setIfNotNull 'isOnline',                   json.is_online
+    @_setIfNotNull 'needsResponse',            json.needs_response
+    @_setIfNotNull 'isOnline',                 json.is_online
 
     @addTyper this if json.is_typing
 
@@ -303,9 +303,6 @@ class Firehose.Visitor extends Firehose.Object
     super json
 
 
-  # @nodoc
-  _toJSON: ->
-    # TODO: Implement
-    return
+
 
 

@@ -12,22 +12,22 @@ class Firehose.ChatInteraction extends Firehose.Interaction
   ###
   @property [Date]
   ###
-  deliveredTime: null
+  deliveredAt: null
 
   ###
   @property [Date]
   ###
-  readTime: null
+  readAt: null
 
   ###
   @property [Date]
   ###
-  editedTime: null
+  editedAt: null
 
   ###
   @property [Date]
   ###
-  failedTime: null
+  failedAt: null
 
   ###
   @property [String]
@@ -71,10 +71,10 @@ class Firehose.ChatInteraction extends Firehose.Interaction
   _populateWithJSON: (json) ->
     if json.chat_interaction?
       chatJSON = json.chat_interaction
-      @_setIfNotNull "deliveredTime",     @_date chatJSON.delivered_at
-      @_setIfNotNull "readTime",          @_date chatJSON.read_at
-      @_setIfNotNull "editedTime",        @_date chatJSON.edited_at
-      @_setIfNotNull "failedTime",        @_date chatJSON.failed_at
+      @_setIfNotNull "deliveredAt",       @_date chatJSON.delivered_at
+      @_setIfNotNull "readAt",            @_date chatJSON.read_at
+      @_setIfNotNull "editedAt",          @_date chatJSON.edited_at
+      @_setIfNotNull "failedAt",          @_date chatJSON.failed_at
       @_setIfNotNull "senderDisplayName", chatJSON.sender_display_name
       @_setIfNotNull "kind",              chatJSON.kind
 

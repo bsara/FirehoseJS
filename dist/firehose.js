@@ -1844,7 +1844,7 @@ Firehose.Company = (function(_super) {
       this._setIfNotNull('_visitors', new Firehose.RemoteArray("companies/" + this.id + "/visitors", null, function(json) {
         return Firehose.Visitor.visitorWithID(jsond.id);
       }));
-      this._visitors.sortOn('needsResponse', 'mostRecentChatRecievedTime', 'createdAt');
+      this._visitors.sortOn('needsResponse', 'mostRecentChatRecievedAt', 'createdAt');
     }
     return this._visitors;
   };

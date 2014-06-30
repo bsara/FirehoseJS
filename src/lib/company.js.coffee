@@ -366,7 +366,7 @@ class Firehose.Company extends Firehose.Object
     unless @_visitors?
       @_setIfNotNull '_visitors', new Firehose.RemoteArray "companies/#{@id}/visitors", null, (json) =>
         Firehose.Visitor.visitorWithID jsond.id
-      @_visitors.sortOn 'needsResponse', 'mostRecentChatRecievedTime', 'createdAt'
+      @_visitors.sortOn 'needsResponse', 'mostRecentChatRecievedAt', 'createdAt'
     @_visitors
 
 
