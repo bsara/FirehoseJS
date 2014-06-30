@@ -548,7 +548,7 @@ class Firehose.Company extends Firehose.Object
     Firehose.client.billingAccessToken = @token
 
     if @products.length > 0 and not @currentProduct?
-      @_setIfNotNull 'currentProduct', @product[0]
+      @_setIfNotNull 'currentProduct', @products[0]
 
     super json
 

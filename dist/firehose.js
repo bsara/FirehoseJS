@@ -2075,7 +2075,7 @@ Firehose.Company = (function(_super) {
     });
     Firehose.client.billingAccessToken = this.token;
     if (this.products.length > 0 && (this.currentProduct == null)) {
-      this._setIfNotNull('currentProduct', this.product[0]);
+      this._setIfNotNull('currentProduct', this.products[0]);
     }
     return Company.__super__._populateWithJSON.call(this, json);
   };
