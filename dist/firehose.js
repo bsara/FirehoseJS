@@ -2103,8 +2103,7 @@ Firehose.Company = (function(_super) {
       is_brand_new: this.isBrandNew,
       agent_invites: this.agentInvites._toArchivableJSON(),
       tags: this.tags._toArchivableJSON(),
-      canned_responses: this.cannedResponses._toArchivableJSON(),
-      visitors: this.visitors._toArchivableJSON()
+      canned_responses: this.cannedResponses._toArchivableJSON()
     });
   };
 

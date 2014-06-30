@@ -576,4 +576,3 @@ class Firehose.Company extends Firehose.Object
       agent_invites:        @agentInvites._toArchivableJSON()
       tags:                 @tags._toArchivableJSON()
       canned_responses:     @cannedResponses._toArchivableJSON()
-      visitors:             @visitors._toArchivableJSON()

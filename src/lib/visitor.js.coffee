@@ -52,12 +52,12 @@ class Firehose.Visitor extends Firehose.Object
   ###
   @property [Date]
   ###
-  connectedTime: null
+  connectedAt: null
 
   ###
   @property [Date]
   ###
-  disconnectedTime: null
+  disconnectedAt: null
 
   ###
   @property [String]
@@ -77,7 +77,7 @@ class Firehose.Visitor extends Firehose.Object
   ###
   @property [Date]
   ###
-  visitedCurrentURLTime: null
+  visitedCurrentURLAt: null
 
   ###
   @property [Firehose.VisitorBoxState]
@@ -92,7 +92,7 @@ class Firehose.Visitor extends Firehose.Object
   ###
   @property [Date]
   ###
-  mostRecentChatReceivedTime: null
+  mostRecentChatReceivedAt: null
 
   ###
   @property [String]
@@ -200,7 +200,7 @@ class Firehose.Visitor extends Firehose.Object
     unless @_chatInteractions?
       @_setIfNotNull '_chatInteractions', new Firehose.RemoteArray "visitors/#{@id}/chat_interactions", null, (json) =>
         Firehose.ChatInteraction.chatInteractionWithJSON json, this
-      @_chatInteractions.sortOn 'deliveredTime'
+      @_chatInteractions.sortOn 'deliveredAt'
     @_chatInteractions
 
 
@@ -266,20 +266,20 @@ class Firehose.Visitor extends Firehose.Object
     # TODO: How to handle timeZone???
     #@_setIfNotNull 'timeZone',                   json.time_zone
     @_setIfNotNull 'referringURL',               json.referrer_url
-    @_setIfNotNull 'connectedTime',              @_date json.connected_at
-    @_setIfNotNull 'disconnectedTime',           @_date json.disconnected_at
+    @_setIfNotNull 'connectedAt',              @_date json.connected_at
+    @_setIfNotNull 'disconnectedAt',           @_date json.disconnected_at
     @_setIfNotNull 'currentURL',                 json.current_url
     @_setIfNotNull 'ipAddress',                  json.ip
 
     # TODO: what to do with custom_attributes???
     #@_setIfNotNull 'customAttributes',           json.custom_attributes
 
-    @_setIfNotNull 'visitedCurrentURLTime',      @_date json.visited_current_url_at
+    @_setIfNotNull 'visitedCurrentURLAt',      @_date json.visited_current_url_at
 
     @_setIfNotNull 'boxState',                   json.box_state
 
     @_setIfNotNull 'mostRecentChat',             json.most_recent_chat
-    @_setIfNotNull 'mostRecentChatReceivedTime', @_date json.most_recent_chat_received_at
+    @_setIfNotNull 'mostRecentChatReceivedAt', @_date json.most_recent_chat_received_at
 
     @_setIfNotNull 'browserName',                json.env_browser_name
     @_setIfNotNull 'browserVersion',             json.env_browser_version
@@ -306,10 +306,6 @@ class Firehose.Visitor extends Firehose.Object
   # @nodoc
   _toJSON: ->
     # TODO: Implement
-
-
-  # @nodoc
-  _toArchivableJSON: ->
-    # TODO: Implement
+    return
 
 
