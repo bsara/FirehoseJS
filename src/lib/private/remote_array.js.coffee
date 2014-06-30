@@ -1,57 +1,57 @@
 class Firehose.RemoteArray extends Firehose.UniqueArray
-  
-  
+
+
   ###
-  @property [integer] 
+  @property [integer]
   ###
   perPage: -1
-  
+
   ###
-  @property [integer] 
+  @property [integer]
   ###
   page: 1
-  
+
   ###
-  @property [boolean] 
+  @property [boolean]
   ###
   auth: true
-  
+
   ###
-  @property [integer] 
+  @property [integer]
   ###
   totalRows: 0
-  
+
   ###
   @property [Object] query params you only want sent on the first `next()` call.
   ###
   onceParams: null
-  
+
   # @nodoc
   _path: null
-  
+
   # @nodoc
   _params: null
-  
+
   # @nodoc
   _creationFunction: null
-  
+
   # @nodoc
   _fetchingFunction: null
-  
+
   # @nodoc
   _fresh: true
-  
+
   # @nodoc
   @_currentXHR: null
-  
-  
+
+
   # @nodoc
   constructor: (path, params = {}, creationFunction) ->
     @_path              = path
     @_params            = params
     @_creationFunction  = creationFunction
     @_fetchingFunction  = (page) =>
-      options = 
+      options =
         route:    @_path
         auth:     @auth
         params:   if @onceParams then $.extend( @onceParams, @_params ) else @_params
@@ -66,35 +66,34 @@ class Firehose.RemoteArray extends Firehose.UniqueArray
             object = @_creationFunction(json)
             object._populateWithJSON json
             aggregate.push object
-          this.insertObjects aggregate 
+          this.insertObjects aggregate
       .always =>
         @_currentXHR = null
-        
-      
+
+
   isAllLoaded: ->
     not @_fresh and parseInt(this.length) == parseInt(@totalRows)
-   
-    
+
+
   next: ->
     return null if not @_fresh and this.length == @totalRows
     @_fresh = false
     @_fetchingFunction( @page++ )
-  
-  
+
+
   abort: ->
-    @_currentXHR?.abort() 
-  
-  
+    @_currentXHR?.abort()
+
+
   empty: ->
     this.dropObjects this.splice(0)
-    
-    
+
+
   reset: ->
     this.empty()
     @totalRows  = 0
     @_fresh     = true
     @page       = 1
-    
-    
-  
-  
+
+
+

@@ -364,9 +364,14 @@ class Firehose.Company extends Firehose.Object
   ###
   visitors: ->
     unless @_visitors?
-      @_setIfNotNull '_visitors', new Firehose.RemoteArray "companies/#{@id}/visitors", null, (json) =>
-        Firehose.Visitor.visitorWithID jsond.id
-      @_visitors.sortOn 'needsResponse', 'mostRecentChatRecievedAt', 'createdAt'
+      params =
+        filter:  'everything'
+        channel: 'chat'
+        sort:    'newest_first'
+      @_customers = new Firehose.RemoteArray "companies/#{@id}/customers", params, (json) =>
+        Firehose.Customer.customerWithID(json.id, this).convertToVisitor()
+
+      @_visitors.sortOn 'needsResponse', 'mostRecentChatRecievedAt', 'createdAt', 'desc'
     @_visitors
 
 
@@ -576,3 +581,5 @@ class Firehose.Company extends Firehose.Object
       agent_invites:        @agentInvites._toArchivableJSON()
       tags:                 @tags._toArchivableJSON()
       canned_responses:     @cannedResponses._toArchivableJSON()
+
+

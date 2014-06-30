@@ -1839,12 +1839,18 @@ Firehose.Company = (function(_super) {
 
 
   Company.prototype.visitors = function() {
-    var _this = this;
+    var params,
+      _this = this;
     if (this._visitors == null) {
-      this._setIfNotNull('_visitors', new Firehose.RemoteArray("companies/" + this.id + "/visitors", null, function(json) {
-        return Firehose.Visitor.visitorWithID(jsond.id);
-      }));
-      this._visitors.sortOn('needsResponse', 'mostRecentChatRecievedAt', 'createdAt');
+      params = {
+        filter: 'everything',
+        channel: 'chat',
+        sort: 'newest_first'
+      };
+      this._customers = new Firehose.RemoteArray("companies/" + this.id + "/customers", params, function(json) {
+        return Firehose.Customer.customerWithID(json.id, _this).convertToVisitor();
+      });
+      this._visitors.sortOn('needsResponse', 'mostRecentChatRecievedAt', 'createdAt', 'desc');
     }
     return this._visitors;
   };
@@ -3363,6 +3369,58 @@ Firehose.Customer = (function(_super) {
       this._interactions.sortOn("receivedAt");
     }
     return this._interactions;
+  };
+
+  Customer.prototype.convertToVisitor = function() {
+    var chatCustomerAccount, customerAccount, onlineVisitor, visitor, _i, _j, _len, _len1, _ref1, _ref2;
+    chatCustomerAccount = null;
+    _ref1 = this.customerAccounts;
+    for (_i = 0, _len = _ref1.length; _i < _len; _i++) {
+      customerAccount = _ref1[_i];
+      if (customerAccount.channel === 'chat') {
+        chatCustomerAccount = customerAccount;
+        break;
+      }
+    }
+    _ref2 = this.company.onlineVisitors;
+    for (_j = 0, _len1 = _ref2.length; _j < _len1; _j++) {
+      onlineVisitor = _ref2[_j];
+      if (onlineVisitor.id === chatCustomerAccount.username) {
+        if (!onlineVisitor.mostRecentChatReceivedAt) {
+          onlineVisitor.mostRecentChatReceivedAt = this.newestInteractionReceivedAt;
+        }
+        return onlineVisitor;
+      }
+    }
+    if (chatCustomerAccount) {
+      visitor = Firehose.Visitor.visitorWithID({
+        visitorWithIdentifier: chatCustomerAccount.username(this.company)
+      });
+      visitor.createdAt = this.createdAt;
+      visitor.email = this.email;
+      visitor.name = this.name.get('length') > 0 ? this.name : chatCustomerAccount.username;
+      visitor.location = this.location;
+      visitor.locationLatitude = this.locationLatitude;
+      visitor.locationLongitude = this.locationLongitude;
+      visitor.timeZone = this.timeZone;
+      visitor.currentURL = this.currentURL;
+      visitor.referringURL = this.referringURL;
+      if (!visitor.mostRecentChat) {
+        visitor.mostRecentChat = this.newestInteractionExcerpt;
+        visitor.mostRecentChatReceivedAt = this.newestInteractionReceivedAt != null ? this.createdAt : this.newestInteractionReceivedAt;
+      }
+      visitor.IPAddress = this.IPAddress;
+      visitor.customAttributes = this.customAttributes;
+      visitor.browserName = this.browserName;
+      visitor.browserVersion = this.browserVersion;
+      visitor.operatingSystemName = this.operatingSystemName;
+      visitor.operatingSystemVersion = this.operatingSystemVersion;
+      visitor.deviceModel = this.deviceModel;
+      visitor.deviceType = this.deviceType;
+      visitor.deviceVendor = this.deviceVendor;
+      return visitor;
+    }
+    return null;
   };
 
   Customer.prototype._populateWithJSON = function(json) {

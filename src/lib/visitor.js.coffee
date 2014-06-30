@@ -165,9 +165,10 @@ class Firehose.Visitor extends Firehose.Object
   @param id [Number] The ID of the visitor you wish to retrieve.
   @return [Firehose.Visitor] The visitor object that was created.
   ###
-  @visitorWithID: (id) ->
+  @visitorWithID: (id, company) ->
     Firehose.Object._objectOfClassWithID Firehose.Visitor,
-      id: id
+      id      : id
+      company : company
 
 
   ###

@@ -125,6 +125,55 @@ class Firehose.Customer extends Firehose.Object
     @_interactions
 
 
+  convertToVisitor: ->
+    chatCustomerAccount = null
+    for customerAccount in @customerAccounts
+      if customerAccount.channel == 'chat'
+        chatCustomerAccount = customerAccount
+        break
+
+    for onlineVisitor in @company.onlineVisitors
+      if onlineVisitor.id == chatCustomerAccount.username
+        if !onlineVisitor.mostRecentChatReceivedAt
+          onlineVisitor.mostRecentChatReceivedAt = @newestInteractionReceivedAt
+        return onlineVisitor
+
+    if chatCustomerAccount
+      visitor                            = Firehose.Visitor.visitorWithID visitorWithIdentifier:chatCustomerAccount.username @company
+
+      visitor.createdAt                  = @createdAt
+      visitor.email                      = @email
+      visitor.name                       = if @name.get('length') > 0 then @name else chatCustomerAccount.username
+
+      visitor.location                   = @location
+      visitor.locationLatitude           = @locationLatitude
+      visitor.locationLongitude          = @locationLongitude
+
+      visitor.timeZone                   = @timeZone
+      visitor.currentURL                 = @currentURL
+      visitor.referringURL               = @referringURL
+
+      if !visitor.mostRecentChat
+        visitor.mostRecentChat           = @newestInteractionExcerpt
+        visitor.mostRecentChatReceivedAt = if @newestInteractionReceivedAt? then @createdAt else @newestInteractionReceivedAt
+
+      visitor.IPAddress                  = @IPAddress
+      visitor.customAttributes           = @customAttributes
+
+      visitor.browserName                = @browserName
+      visitor.browserVersion             = @browserVersion
+
+      visitor.operatingSystemName        = @operatingSystemName
+      visitor.operatingSystemVersion     = @operatingSystemVersion
+
+      visitor.deviceModel                = @deviceModel
+      visitor.deviceType                 = @deviceType
+      visitor.deviceVendor               = @deviceVendor
+
+      return visitor
+
+    return null
+
 
   # @nodoc
   _populateWithJSON: (json) ->
