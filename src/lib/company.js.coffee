@@ -368,7 +368,7 @@ class Firehose.Company extends Firehose.Object
         filter:  'everything'
         channel: 'chat'
         sort:    'newest_first'
-      @_customers = new Firehose.RemoteArray "companies/#{@id}/customers", params, (json) =>
+      @_visitors = new Firehose.RemoteArray "companies/#{@id}/customers", params, (json) =>
         Firehose.Customer.customerWithID(json.id, this).convertToVisitor()
 
       @_visitors.sortOn 'needsResponse', 'mostRecentChatRecievedAt', 'createdAt', 'desc'

@@ -1847,7 +1847,7 @@ Firehose.Company = (function(_super) {
         channel: 'chat',
         sort: 'newest_first'
       };
-      this._customers = new Firehose.RemoteArray("companies/" + this.id + "/customers", params, function(json) {
+      this._visitors = new Firehose.RemoteArray("companies/" + this.id + "/customers", params, function(json) {
         return Firehose.Customer.customerWithID(json.id, _this).convertToVisitor();
       });
       this._visitors.sortOn('needsResponse', 'mostRecentChatRecievedAt', 'createdAt', 'desc');
