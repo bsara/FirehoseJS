@@ -206,7 +206,9 @@ class Firehose.Visitor extends Firehose.Object
   ###
   chatInterations: ->
     unless @_chatInteractions?
-      @_setIfNotNull '_chatInteractions', new Firehose.RemoteArray "visitors/#{@id}/chat_interactions", null, (json) =>
+      params:
+        server: 'chatserver'
+      @_setIfNotNull '_chatInteractions', new Firehose.RemoteArray "visitors/#{@id}/chat_interactions", params, (json) =>
         Firehose.ChatInteraction.chatInteractionWithJSON json, this
       @_chatInteractions.sortOn 'deliveredAt'
     @_chatInteractions
@@ -234,8 +236,7 @@ class Firehose.Visitor extends Firehose.Object
   @return [String] The location if the display name is not a real human name.
   ###
   getPreferredDisplayName: ->
-    # TODO: Implement
-    null
+    if @location?.get('length') > 0 then @location else @name
 
 
   ###

@@ -106,8 +106,8 @@ class Firehose.Client
       "X-Firehose-Environment" : "beta" if this.environment.environment() == 'beta'
 
     if auth
-      if @APIAccessToken? and server == 'API'
-        $.extend headers, { "Authorization" : "Token token=\"#{@APIAccessToken}\"" }
+      if @APIAccessToken? && (server == 'API' || server == 'chatserver')
+          $.extend headers, { "Authorization" : "Token token=\"#{@APIAccessToken}\"" }
       else if @billingAccessToken? and server == 'billing'
         $.extend headers, { "Authorization" : "Token token=\"#{@billingAccessToken}\"" }
 
@@ -119,7 +119,7 @@ class Firehose.Client
       dataType:     'json'
       headers:      headers
       contentType:  'application/json'
-      statusCode:   if server == 'API' then @statusCodeHandlers || {}
+      statusCode:   if server == 'API' || server == 'chatserver' then @statusCodeHandlers || {}
 
     .fail (jqXHR, textStatus, errorThrown) =>
       if server == 'API'

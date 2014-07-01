@@ -132,6 +132,9 @@ class Firehose.Customer extends Firehose.Object
         chatCustomerAccount = customerAccount
         break
 
+    if !@company.isOnlineVisitorsFetched
+      @company.fetchOnlineVisitors()
+
     for onlineVisitor in @company.onlineVisitors
       if onlineVisitor.id == chatCustomerAccount.username
         if !onlineVisitor.mostRecentChatReceivedAt

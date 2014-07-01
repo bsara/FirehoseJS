@@ -404,8 +404,12 @@ class Firehose.Company extends Firehose.Object
   @return [jqXHR Promise] Promise
   ###
   fetchOnlineVisitors: () ->
-    # TODO: Implement
-    null
+    params =
+      server: "chatserver"
+      route: "online_visitors"
+    Firehose.client.get( this, params ).done (json) =>
+      @onlineVisitors = new Firehose.UniqueArray
+      return null
 
 
   ###

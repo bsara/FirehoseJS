@@ -628,7 +628,7 @@ Firehose.Client = (function() {
       "X-Firehose-Environment": this.environment.environment() === 'beta' ? "beta" : void 0
     };
     if (auth) {
-      if ((this.APIAccessToken != null) && server === 'API') {
+      if ((this.APIAccessToken != null) && (server === 'API' || server === 'chatserver')) {
         $.extend(headers, {
           "Authorization": "Token token=\"" + this.APIAccessToken + "\""
         });
@@ -1923,7 +1923,16 @@ Firehose.Company = (function(_super) {
 
 
   Company.prototype.fetchOnlineVisitors = function() {
-    return null;
+    var params,
+      _this = this;
+    params = {
+      server: "chatserver",
+      route: "online_visitors"
+    };
+    return Firehose.client.get(this, params).done(function(json) {
+      _this.onlineVisitors = new Firehose.UniqueArray;
+      return null;
+    });
   };
 
   /*
@@ -3522,6 +3531,9 @@ Firehose.Customer = (function(_super) {
         chatCustomerAccount = customerAccount;
         break;
       }
+    }
+    if (!this.company.isOnlineVisitorsFetched) {
+      this.company.fetchOnlineVisitors();
     }
     _ref2 = this.company.onlineVisitors;
     for (_j = 0, _len1 = _ref2.length; _j < _len1; _j++) {
@@ -5877,7 +5889,12 @@ Firehose.Visitor = (function(_super) {
   Visitor.prototype.chatInterations = function() {
     var _this = this;
     if (this._chatInteractions == null) {
-      this._setIfNotNull('_chatInteractions', new Firehose.RemoteArray("visitors/" + this.id + "/chat_interactions", null, function(json) {
+      ({
+        params: {
+          server: 'chatserver'
+        }
+      });
+      this._setIfNotNull('_chatInteractions', new Firehose.RemoteArray("visitors/" + this.id + "/chat_interactions", params, function(json) {
         return Firehose.ChatInteraction.chatInteractionWithJSON(json, _this);
       }));
       this._chatInteractions.sortOn('deliveredAt');
@@ -5910,7 +5927,12 @@ Firehose.Visitor = (function(_super) {
 
 
   Visitor.prototype.getPreferredDisplayName = function() {
-    return null;
+    var _ref1;
+    if (((_ref1 = this.location) != null ? _ref1.get('length') : void 0) > 0) {
+      return this.location;
+    } else {
+      return this.name;
+    }
   };
 
   /*
