@@ -5849,8 +5849,23 @@ Firehose.Visitor = (function(_super) {
   */
 
 
-  Visitor.prototype.fetch = function() {
-    return null;
+  Visitor.prototype.fetch = function(options) {
+    var request,
+      _this = this;
+    if (options == null) {
+      options = {};
+    }
+    if (this.id != null) {
+      request = {
+        server: 'chatserver',
+        route: "visitors/" + this.id
+      };
+    } else {
+      throw "You can't call 'fetch' on a visitor unless 'id' is set.";
+    }
+    return Firehose.client.get(this, request).done(function(data) {
+      return _this._populateWithJSON(data);
+    });
   };
 
   /*

@@ -188,9 +188,16 @@ class Firehose.Visitor extends Firehose.Object
   server based on its ID.
   @return [jqXHR Promise] Promise
   ###
-  fetch: ->
-    # TODO: Implement
-    null
+  fetch: (options = {}) ->
+    if @id?
+      request =
+        server: 'chatserver'
+        route: "visitors/#{@id}"
+    else
+      throw "You can't call 'fetch' on a visitor unless 'id' is set."
+
+    Firehose.client.get( this, request ).done (data) =>
+      @_populateWithJSON data
 
 
   ###
