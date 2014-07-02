@@ -142,11 +142,11 @@ class Firehose.Customer extends Firehose.Object
         return onlineVisitor
 
     if chatCustomerAccount
-      visitor                            = Firehose.Visitor.visitorWithID visitorWithIdentifier:chatCustomerAccount.username @company
+      visitor                            = Firehose.Visitor.visitorWithID chatCustomerAccount.username, @get('company')
 
       visitor.createdAt                  = @createdAt
       visitor.email                      = @email
-      visitor.name                       = if @name.get('length') > 0 then @name else chatCustomerAccount.username
+      visitor.name                       = if @name && @name?.get('length') > 0 then @name else chatCustomerAccount.username
 
       visitor.location                   = @location
       visitor.locationLatitude           = @locationLatitude

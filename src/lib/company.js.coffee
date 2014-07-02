@@ -369,7 +369,9 @@ class Firehose.Company extends Firehose.Object
         channel: 'chat'
         sort:    'newest_first'
       @_visitors = new Firehose.RemoteArray "companies/#{@id}/customers", params, (json) =>
-        Firehose.Customer.customerWithID(json.id, this).convertToVisitor()
+        customer = Firehose.Customer.customerWithID json.id, this
+        customer._populateWithJSON json
+        customer.convertToVisitor()
 
       @_visitors.sortOn 'needsResponse', 'mostRecentChatRecievedAt', 'createdAt', 'desc'
     @_visitors
@@ -404,12 +406,15 @@ class Firehose.Company extends Firehose.Object
   @return [jqXHR Promise] Promise
   ###
   fetchOnlineVisitors: () ->
+    return
+    ###
     params =
       server: "chatserver"
       route: "online_visitors"
     Firehose.client.get( this, params ).done (json) =>
       @onlineVisitors = new Firehose.UniqueArray
-      return null
+      return null # TODO: Implement
+    ###
 
 
   ###

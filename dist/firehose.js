@@ -646,7 +646,7 @@ Firehose.Client = (function() {
       dataType: 'json',
       headers: headers,
       contentType: 'application/json',
-      statusCode: server === 'API' ? this.statusCodeHandlers || {} : void 0
+      statusCode: server === 'API' || server === 'chatserver' ? this.statusCodeHandlers || {} : void 0
     }).fail(function(jqXHR, textStatus, errorThrown) {
       var errors, json, _ref, _results;
       if (server === 'API') {
@@ -1874,7 +1874,10 @@ Firehose.Company = (function(_super) {
         sort: 'newest_first'
       };
       this._visitors = new Firehose.RemoteArray("companies/" + this.id + "/customers", params, function(json) {
-        return Firehose.Customer.customerWithID(json.id, _this).convertToVisitor();
+        var customer;
+        customer = Firehose.Customer.customerWithID(json.id, _this);
+        customer._populateWithJSON(json);
+        return customer.convertToVisitor();
       });
       this._visitors.sortOn('needsResponse', 'mostRecentChatRecievedAt', 'createdAt', 'desc');
     }
@@ -1923,16 +1926,15 @@ Firehose.Company = (function(_super) {
 
 
   Company.prototype.fetchOnlineVisitors = function() {
-    var params,
-      _this = this;
-    params = {
-      server: "chatserver",
+    /*
+    params =
+      server: "chatserver"
       route: "online_visitors"
-    };
-    return Firehose.client.get(this, params).done(function(json) {
-      _this.onlineVisitors = new Firehose.UniqueArray;
-      return null;
-    });
+    Firehose.client.get( this, params ).done (json) =>
+      @onlineVisitors = new Firehose.UniqueArray
+      return null # TODO: Implement
+    */
+
   };
 
   /*
@@ -3522,7 +3524,7 @@ Firehose.Customer = (function(_super) {
   };
 
   Customer.prototype.convertToVisitor = function() {
-    var chatCustomerAccount, customerAccount, onlineVisitor, visitor, _i, _j, _len, _len1, _ref1, _ref2;
+    var chatCustomerAccount, customerAccount, onlineVisitor, visitor, _i, _j, _len, _len1, _ref1, _ref2, _ref3;
     chatCustomerAccount = null;
     _ref1 = this.customerAccounts;
     for (_i = 0, _len = _ref1.length; _i < _len; _i++) {
@@ -3546,12 +3548,10 @@ Firehose.Customer = (function(_super) {
       }
     }
     if (chatCustomerAccount) {
-      visitor = Firehose.Visitor.visitorWithID({
-        visitorWithIdentifier: chatCustomerAccount.username(this.company)
-      });
+      visitor = Firehose.Visitor.visitorWithID(chatCustomerAccount.username, this.get('company'));
       visitor.createdAt = this.createdAt;
       visitor.email = this.email;
-      visitor.name = this.name.get('length') > 0 ? this.name : chatCustomerAccount.username;
+      visitor.name = this.name && ((_ref3 = this.name) != null ? _ref3.get('length') : void 0) > 0 ? this.name : chatCustomerAccount.username;
       visitor.location = this.location;
       visitor.locationLatitude = this.locationLatitude;
       visitor.locationLongitude = this.locationLongitude;
