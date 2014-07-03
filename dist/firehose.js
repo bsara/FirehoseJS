@@ -3576,28 +3576,26 @@ Firehose.Customer = (function(_super) {
     }
     if (chatCustomerAccount) {
       visitor = Firehose.Visitor.visitorWithID(chatCustomerAccount.username, this.get('company'));
-      visitor.createdAt = this.createdAt;
-      visitor.email = this.email;
-      visitor.name = this.name && ((_ref3 = this.name) != null ? _ref3.get('length') : void 0) > 0 ? this.name : chatCustomerAccount.username;
-      visitor.location = this.location;
-      visitor.locationLatitude = this.locationLatitude;
-      visitor.locationLongitude = this.locationLongitude;
-      visitor.timeZone = this.timeZone;
-      visitor.currentURL = this.currentURL;
-      visitor.referringURL = this.referringURL;
-      if (!visitor.mostRecentChat) {
-        visitor.mostRecentChat = this.newestInteractionExcerpt;
-        visitor.mostRecentChatReceivedAt = this.newestInteractionReceivedAt != null ? this.createdAt : this.newestInteractionReceivedAt;
-      }
-      visitor.IPAddress = this.IPAddress;
-      visitor.customAttributes = this.customAttributes;
-      visitor.browserName = this.browserName;
-      visitor.browserVersion = this.browserVersion;
-      visitor.operatingSystemName = this.operatingSystemName;
-      visitor.operatingSystemVersion = this.operatingSystemVersion;
-      visitor.deviceModel = this.deviceModel;
-      visitor.deviceType = this.deviceType;
-      visitor.deviceVendor = this.deviceVendor;
+      visitor.set('createdAt', this.createdAt);
+      visitor.set('email', this.email);
+      visitor.set('name', this.name && ((_ref3 = this.name) != null ? _ref3.get('length') : void 0) > 0 ? this.name : chatCustomerAccount.username);
+      visitor.set('location', this.location);
+      visitor.set('locationLatitude', this.locationLatitude);
+      visitor.set('locationLongitude', this.locationLongitude);
+      visitor.set('timeZone', this.timeZone);
+      visitor.set('currentURL', this.currentURL);
+      visitor.set('referringURL', this.referringURL);
+      visitor.set('mostRecentChat', this.newestInteractionExcerpt);
+      visitor.set('mostRecentChatReceivedAt', this.newestInteractionReceivedAt != null ? this.createdAt : this.newestInteractionReceivedAt);
+      visitor.set('IPAddress', this.IPAddress);
+      visitor.set('customAttributes', this.customAttributes);
+      visitor.set('browserName', this.browserName);
+      visitor.set('browserVersion', this.browserVersion);
+      visitor.set('operatingSystemName', this.operatingSystemName);
+      visitor.set('operatingSystemVersion', this.operatingSystemVersion);
+      visitor.set('deviceModel', this.deviceModel);
+      visitor.set('deviceType', this.deviceType);
+      visitor.set('deviceVendor', this.deviceVendor);
       return visitor;
     }
     return null;
@@ -5977,7 +5975,9 @@ Firehose.Visitor = (function(_super) {
   */
 
 
-  Visitor.prototype.updateWithJSON = function(json) {};
+  Visitor.prototype.updateWithJSON = function(json) {
+    return this._populateWithJSON(json);
+  };
 
   /*
   Adds a typer.

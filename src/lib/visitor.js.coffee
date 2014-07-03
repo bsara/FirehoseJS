@@ -252,7 +252,7 @@ class Firehose.Visitor extends Firehose.Object
   @param json [JSON Object]
   ###
   updateWithJSON: (json) ->
-    # TODO: Implement
+    @_populateWithJSON json
 
 
   ###

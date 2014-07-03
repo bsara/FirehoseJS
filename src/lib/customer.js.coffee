@@ -142,36 +142,35 @@ class Firehose.Customer extends Firehose.Object
         return onlineVisitor
 
     if chatCustomerAccount
-      visitor                            = Firehose.Visitor.visitorWithID chatCustomerAccount.username, @get('company')
+      visitor = Firehose.Visitor.visitorWithID chatCustomerAccount.username, @get('company')
 
-      visitor.createdAt                  = @createdAt
-      visitor.email                      = @email
-      visitor.name                       = if @name && @name?.get('length') > 0 then @name else chatCustomerAccount.username
+      visitor.set 'createdAt',                  @createdAt
+      visitor.set 'email',                      @email
+      visitor.set 'name',                       if @name && @name?.get('length') > 0 then @name else chatCustomerAccount.username
 
-      visitor.location                   = @location
-      visitor.locationLatitude           = @locationLatitude
-      visitor.locationLongitude          = @locationLongitude
+      visitor.set 'location',                   @location
+      visitor.set 'locationLatitude',           @locationLatitude
+      visitor.set 'locationLongitude',          @locationLongitude
 
-      visitor.timeZone                   = @timeZone
-      visitor.currentURL                 = @currentURL
-      visitor.referringURL               = @referringURL
+      visitor.set 'timeZone',                   @timeZone
+      visitor.set 'currentURL',                 @currentURL
+      visitor.set 'referringURL',               @referringURL
 
-      if !visitor.mostRecentChat
-        visitor.mostRecentChat           = @newestInteractionExcerpt
-        visitor.mostRecentChatReceivedAt = if @newestInteractionReceivedAt? then @createdAt else @newestInteractionReceivedAt
+      visitor.set 'mostRecentChat',           @newestInteractionExcerpt
+      visitor.set 'mostRecentChatReceivedAt', if @newestInteractionReceivedAt? then @createdAt else @newestInteractionReceivedAt
 
-      visitor.IPAddress                  = @IPAddress
-      visitor.customAttributes           = @customAttributes
+      visitor.set 'IPAddress',                  @IPAddress
+      visitor.set 'customAttributes',           @customAttributes
 
-      visitor.browserName                = @browserName
-      visitor.browserVersion             = @browserVersion
+      visitor.set 'browserName',                @browserName
+      visitor.set 'browserVersion',             @browserVersion
 
-      visitor.operatingSystemName        = @operatingSystemName
-      visitor.operatingSystemVersion     = @operatingSystemVersion
+      visitor.set 'operatingSystemName',        @operatingSystemName
+      visitor.set 'operatingSystemVersion',     @operatingSystemVersion
 
-      visitor.deviceModel                = @deviceModel
-      visitor.deviceType                 = @deviceType
-      visitor.deviceVendor               = @deviceVendor
+      visitor.set 'deviceModel',                @deviceModel
+      visitor.set 'deviceType',                 @deviceType
+      visitor.set 'deviceVendor',               @deviceVendor
 
       return visitor
 
