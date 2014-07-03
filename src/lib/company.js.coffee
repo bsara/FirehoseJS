@@ -404,15 +404,18 @@ class Firehose.Company extends Firehose.Object
   @return [jqXHR Promise] Promise
   ###
   fetchOnlineVisitors: () ->
-    return
-    ###
     params =
       server: "chatserver"
       route: "online_visitors"
     Firehose.client.get( this, params ).done (json) =>
       @onlineVisitors = new Firehose.UniqueArray
-      return null # TODO: Implement
-    ###
+
+      for visitorJSON in json
+        visitor = Firehose.Visitor.visitorWithJSON visitorJSON, this
+        visitor.set 'isOnline', true
+        @onlineVisitors.push visitor
+
+      @set 'isOnlineVisitorsFetched', true
 
 
   ###

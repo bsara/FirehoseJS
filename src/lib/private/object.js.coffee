@@ -11,7 +11,6 @@ class Firehose.Object
   ###
   createdAt: null
 
-
   ###
   @property [Array<String>] The errors the server returned about fields that did not contain valid values.
   ###
@@ -39,6 +38,7 @@ class Firehose.Object
   ###
   _setup: ->
 
+
   ###
   A placeholder for third-party libraries to replace. (e.g Ember.js, Backbone.js)
   @note A client-side library that uses observers often uses get/set methods. You can do `Firehose.Object.set = Ember.Object.set` for example.
@@ -46,20 +46,23 @@ class Firehose.Object
   get: (key) ->
     this[key]
 
+
   ###
   A placeholder for third-party libraries to replace. (e.g Ember.js, Backbone.js)
   @note A client-side library that uses observers often uses get/set methods. You can do `Firehose.Object.get = Ember.Object.get` for example.
   ###
-  set: (key, value) ->
+  set: (key, value, checkIfIsEmber = true) ->
     this[key] = value
+
 
   ###
   Uses the classes 'archivableProperties' to stringify this object and save it in localStorage.
   @param key [String] an optional key to archive the object by if the 'id' is not available.
   ###
   archive: (key = @id) ->
-    index = "#{this.constructor._firehoseType}_#{key}"
-    localStorage[index] = JSON.stringify this._toArchivableJSON()
+    index = "#{@constructor._firehoseType}_#{key}"
+    localStorage[index] = JSON.stringify @_toArchivableJSON()
+
 
   ###
   Unarchives the object from local storage.
@@ -67,19 +70,21 @@ class Firehose.Object
   @return [boolean] true if the object was in localStorage, false if it was not.
   ###
   unarchive: (key = @id) ->
-    index = "#{this.constructor._firehoseType}_#{key}"
+    index = "#{@constructor._firehoseType}_#{key}"
     if localStorage[index]?
       json = $.parseJSON localStorage[index]
-      this._populateWithJSON json
+      @_populateWithJSON json
       true
     else
       false
+
 
   ###
   Clears all data from the `errors` array.
   ###
   clearErrors: ->
     @set "errors", []
+
 
   ###
   Takes the `errors` property and formats it's items for display in HTML.
@@ -93,6 +98,20 @@ class Firehose.Object
         HTML += "<li>#{line}</li>"
     HTML += "</ul>"
     HTML
+
+
+  ###
+  Checks if the Object has been converted into an "Ember object".
+  @return [boolean] Whether or not the object is an Ember object.
+  ###
+  isEmberObject: ->
+    `for (attr in this) {
+      if (attr.indexOf('__') != 0) {
+        continue;
+      }
+      return (attr.search(/__ember\d[^_]+?_meta/i) >= 0);
+    }`
+    return false
 
 
 
@@ -136,30 +155,39 @@ class Firehose.Object
 
   # @nodoc
   _populateAssociatedObjectWithID:(owner, association, id, creation) ->
-    owner.set association, if id? then creation( id ) else null
+    owner.set association, if id? then creation id else null
 
 
   # @nodoc
   _populateWithJSON: (json) ->
-    this._setIfNotNull "id",        json.id                 unless @id?
-    this._setIfNotNull "createdAt", @_date(json.created_at) unless @createdAt
+    @_setIfNotNull "id",        json.id                unless @id?
+    @_setIfNotNull "createdAt", @_date json.created_at unless @createdAt
+
 
   # @nodoc
   _setIfNotNull: (key, value) ->
     if value?
-      this.set key, value
+      @set key, value
+
 
   # @nodoc
   _toArchivableJSON: ->
     id:         @id
     created_at: @createdAt
 
+
   # @nodoc
   _textOrNull: (value) ->
     return if !value?
     if value.length > 0 then value else null
 
+
   # @nodoc
   _date: (dateString) ->
     date = new Date dateString
     if isNaN date then null else date
+
+
+
+
+

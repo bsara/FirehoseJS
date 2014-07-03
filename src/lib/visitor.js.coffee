@@ -178,7 +178,7 @@ class Firehose.Visitor extends Firehose.Object
   @return [Firehose.Visitor] The visitor object that was created.
   ###
   @visitorWithJSON: (json, company) ->
-    visitor = Firehose.Visitor.visitorWithID json.id, company
+    visitor = Firehose.Visitor.visitorWithID json.visitor_id, company
     visitor._populateWithJSON json
     visitor
 
@@ -276,45 +276,55 @@ class Firehose.Visitor extends Firehose.Object
     @_setIfNotNull 'email',                    json.email
     @_setIfNotNull 'name',                     json.raw_name
     @_setIfNotNull 'avatarURL',                json.avatar_url
-    @_setIfNotNull 'location',                 json.location
+    @_setIfNotNull 'location',                 json.location_string
     @_setIfNotNull 'locationLongitude',        json.longitude
     @_setIfNotNull 'locationLatitude',         json.latitude
     # TODO: How to handle timeZone???
     #@_setIfNotNull 'timeZone',                 json.time_zone
     @_setIfNotNull 'referringURL',             json.referrer_url
-    @_setIfNotNull 'connectedAt',              @_date json.connected_at
-    @_setIfNotNull 'disconnectedAt',           @_date json.disconnected_at
+    @_setIfNotNull 'connectedAt',              @_date json.connected_at    if json.connected_at?
+    @_setIfNotNull 'disconnectedAt',           @_date json.disconnected_at if json.disconnected_at?
     @_setIfNotNull 'currentURL',               json.current_url
     @_setIfNotNull 'ipAddress',                json.ip
 
     # TODO: what to do with custom_attributes???
     #@_setIfNotNull 'customAttributes',         json.custom_attributes
 
-    @_setIfNotNull 'visitedCurrentURLAt',      @_date json.visited_current_url_at
+    @_setIfNotNull 'visitedCurrentURLAt',      @_date json.visited_current_url_at if json.visited_current_url_at?
 
     @_setIfNotNull 'boxState',                 json.box_state
 
     @_setIfNotNull 'mostRecentChat',           json.most_recent_chat
-    @_setIfNotNull 'mostRecentChatReceivedAt', @_date json.most_recent_chat_received_at
+    @_setIfNotNull 'mostRecentChatReceivedAt', @_date json.most_recent_chat_received_at if json.most_recent_chat_received_at?
 
-    @_setIfNotNull 'browserName',              json.env_browser_name
-    @_setIfNotNull 'browserVersion',           json.env_browser_version
-    @_setIfNotNull 'browserMajor',             json.env_browser_major
+    if json.env?
+      if json.browser?
+        @_setIfNotNull 'browserName',            json.env.browser.name
+        @_setIfNotNull 'browserVersion',         json.env.browser.version
+        @_setIfNotNull 'browserMajor',           json.env.browser.major
+      if json.os?
+        @_setIfNotNull 'operatingSystemName',    json.env.os.name
+        @_setIfNotNull 'operatingSystemVersion', json.env.os.version
+      if json.device?
+        @_setIfNotNull 'deviceModel',            json.env.device.model
+        @_setIfNotNull 'deviceType',             json.env.device.type
+        @_setIfNotNull 'deviceVendor',           json.env.device.vendor
+    else
+      @_setIfNotNull 'browserName',              json.env_browser_name
+      @_setIfNotNull 'browserVersion',           json.env_browser_version
+      @_setIfNotNull 'browserMajor',             json.env_browser_major
 
-    @_setIfNotNull 'operatingSystemName',      json.env_os_name
-    @_setIfNotNull 'operatingSystemVersion',   json.env_os_version
+      @_setIfNotNull 'operatingSystemName',      json.env_os_name
+      @_setIfNotNull 'operatingSystemVersion',   json.env_os_version
 
-    @_setIfNotNull 'deviceModel',              json.env_device_model
-    @_setIfNotNull 'deviceType',               json.env_device_type
-    @_setIfNotNull 'deviceVendor',             json.env_device_vendor
+      @_setIfNotNull 'deviceModel',              json.env_device_model
+      @_setIfNotNull 'deviceType',               json.env_device_type
+      @_setIfNotNull 'deviceVendor',             json.env_device_vendor
 
     @_setIfNotNull 'needsResponse',            json.needs_response
     @_setIfNotNull 'isOnline',                 json.is_online
 
     @addTyper this if json.is_typing
-
-    @_populateAssociatedObjectWithJSON this, 'company', json.company, (json) ->
-      Firehose.Company.companyWithID json.id, null, this
 
     super json
 

@@ -63,9 +63,8 @@ class Firehose.Environment
     settings      : 5
     tweetlonger   : 6
     kb            : 7
-    chatserver    : 8
-    chatbrowser   : 9
-    chatmarketing : 0
+    chatbrowser   : 8
+    chatmarketing : 9
 
 
 
@@ -113,11 +112,6 @@ class Firehose.Environment
       test:         "lvh.me"
       beta:         "firehosesupport.com"
       production:   "firehosehelp.com"
-    chatserver:
-      development:  "localhost"
-      test:         "localhost"
-      beta:         "chat.firehoseapp.com"
-      production:   "chat.firehoseapp.com"
     chatbrowser:
       development:  "localhost"
       test:         "localhost"
@@ -128,6 +122,11 @@ class Firehose.Environment
       test:         "localhost"
       beta:         "firehosechat.com"
       production:   "firehosechat.com"
+    chatserver:
+      development:  "localhost"
+      test:         "localhost"
+      beta:         "chat.firehoseapp.com"
+      production:   "chat.firehoseapp.com"
 
   _appTypes:
     API           : "server"
@@ -138,9 +137,9 @@ class Firehose.Environment
     settings      : "client"
     tweetlonger   : "client"
     kb            : "client"
-    chatserver    : "server"
     chatbrowser   : "client"
     chatmarketing : "client"
+    chatserver    : "server"
 
   _serviceKeys:
     development:
@@ -210,7 +209,10 @@ class Firehose.Environment
 
   _portFor: (app) ->
     environment = this._environmentFor app
+
     return "" if environment == 'production' or environment == 'beta'
+    return ":8080" if app == 'chatserver'
+
     port = ":"
     port += @_typeNumber[@_appTypes[app]]
     port += if @_appTypes[app] == "client" then @_serverNumber[@_server] else 0

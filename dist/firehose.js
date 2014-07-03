@@ -327,9 +327,8 @@ Firehose.Environment = (function() {
     settings: 5,
     tweetlonger: 6,
     kb: 7,
-    chatserver: 8,
-    chatbrowser: 9,
-    chatmarketing: 0
+    chatbrowser: 8,
+    chatmarketing: 9
   };
 
   Environment.prototype._appDomainNames = {
@@ -381,12 +380,6 @@ Firehose.Environment = (function() {
       beta: "firehosesupport.com",
       production: "firehosehelp.com"
     },
-    chatserver: {
-      development: "localhost",
-      test: "localhost",
-      beta: "chat.firehoseapp.com",
-      production: "chat.firehoseapp.com"
-    },
     chatbrowser: {
       development: "localhost",
       test: "localhost",
@@ -398,6 +391,12 @@ Firehose.Environment = (function() {
       test: "localhost",
       beta: "firehosechat.com",
       production: "firehosechat.com"
+    },
+    chatserver: {
+      development: "localhost",
+      test: "localhost",
+      beta: "chat.firehoseapp.com",
+      production: "chat.firehoseapp.com"
     }
   };
 
@@ -410,9 +409,9 @@ Firehose.Environment = (function() {
     settings: "client",
     tweetlonger: "client",
     kb: "client",
-    chatserver: "server",
     chatbrowser: "client",
-    chatmarketing: "client"
+    chatmarketing: "client",
+    chatserver: "server"
   };
 
   Environment.prototype._serviceKeys = {
@@ -495,6 +494,9 @@ Firehose.Environment = (function() {
     environment = this._environmentFor(app);
     if (environment === 'production' || environment === 'beta') {
       return "";
+    }
+    if (app === 'chatserver') {
+      return ":8080";
     }
     port = ":";
     port += this._typeNumber[this._appTypes[app]];
@@ -799,7 +801,10 @@ Firehose.Object = (function() {
   */
 
 
-  Object.prototype.set = function(key, value) {
+  Object.prototype.set = function(key, value, checkIfIsEmber) {
+    if (checkIfIsEmber == null) {
+      checkIfIsEmber = true;
+    }
     return this[key] = value;
   };
 
@@ -867,6 +872,22 @@ Firehose.Object = (function() {
     }
     HTML += "</ul>";
     return HTML;
+  };
+
+  /*
+  Checks if the Object has been converted into an "Ember object".
+  @return [boolean] Whether or not the object is an Ember object.
+  */
+
+
+  Object.prototype.isEmberObject = function() {
+    for (attr in this) {
+      if (attr.indexOf('__') != 0) {
+        continue;
+      }
+      return (attr.search(/__ember\d[^_]+?_meta/i) >= 0);
+    };
+    return false;
   };
 
   /*
@@ -984,13 +1005,13 @@ Firehose.ChatInteractionKind = (function() {
 Firehose.VisitorBoxState = (function() {
   function VisitorBoxState() {}
 
-  VisitorBoxState.prototype.NONE = 0;
+  VisitorBoxState.prototype.NONE = 'none';
 
-  VisitorBoxState.prototype.OPEN = 1;
+  VisitorBoxState.prototype.OPEN = 'open';
 
-  VisitorBoxState.prototype.CHATTING = 2;
+  VisitorBoxState.prototype.CHATTING = 'chatting';
 
-  VisitorBoxState.prototype.DISCONNECTED = 3;
+  VisitorBoxState.prototype.DISCONNECTED = 'disconnected';
 
   return VisitorBoxState;
 
@@ -1924,15 +1945,23 @@ Firehose.Company = (function(_super) {
 
 
   Company.prototype.fetchOnlineVisitors = function() {
-    /*
-    params =
-      server: "chatserver"
+    var params,
+      _this = this;
+    params = {
+      server: "chatserver",
       route: "online_visitors"
-    Firehose.client.get( this, params ).done (json) =>
-      @onlineVisitors = new Firehose.UniqueArray
-      return null # TODO: Implement
-    */
-
+    };
+    return Firehose.client.get(this, params).done(function(json) {
+      var visitor, visitorJSON, _i, _len;
+      _this.onlineVisitors = new Firehose.UniqueArray;
+      for (_i = 0, _len = json.length; _i < _len; _i++) {
+        visitorJSON = json[_i];
+        visitor = Firehose.Visitor.visitorWithJSON(visitorJSON, _this);
+        visitor.set('isOnline', true);
+        _this.onlineVisitors.push(visitor);
+      }
+      return _this.set('isOnlineVisitorsFetched', true);
+    });
   };
 
   /*
@@ -5847,7 +5876,7 @@ Firehose.Visitor = (function(_super) {
 
   Visitor.visitorWithJSON = function(json, company) {
     var visitor;
-    visitor = Firehose.Visitor.visitorWithID(json.id, company);
+    visitor = Firehose.Visitor.visitorWithID(json.visitor_id, company);
     visitor._populateWithJSON(json);
     return visitor;
   };
@@ -5970,34 +5999,56 @@ Firehose.Visitor = (function(_super) {
     this._setIfNotNull('email', json.email);
     this._setIfNotNull('name', json.raw_name);
     this._setIfNotNull('avatarURL', json.avatar_url);
-    this._setIfNotNull('location', json.location);
+    this._setIfNotNull('location', json.location_string);
     this._setIfNotNull('locationLongitude', json.longitude);
     this._setIfNotNull('locationLatitude', json.latitude);
     this._setIfNotNull('referringURL', json.referrer_url);
-    this._setIfNotNull('connectedAt', this._date(json.connected_at));
-    this._setIfNotNull('disconnectedAt', this._date(json.disconnected_at));
+    if (json.connected_at != null) {
+      this._setIfNotNull('connectedAt', this._date(json.connected_at));
+    }
+    if (json.disconnected_at != null) {
+      this._setIfNotNull('disconnectedAt', this._date(json.disconnected_at));
+    }
     this._setIfNotNull('currentURL', json.current_url);
     this._setIfNotNull('ipAddress', json.ip);
-    this._setIfNotNull('visitedCurrentURLAt', this._date(json.visited_current_url_at));
+    if (json.visited_current_url_at != null) {
+      this._setIfNotNull('visitedCurrentURLAt', this._date(json.visited_current_url_at));
+    }
     this._setIfNotNull('boxState', json.box_state);
     this._setIfNotNull('mostRecentChat', json.most_recent_chat);
-    this._setIfNotNull('mostRecentChatReceivedAt', this._date(json.most_recent_chat_received_at));
-    this._setIfNotNull('browserName', json.env_browser_name);
-    this._setIfNotNull('browserVersion', json.env_browser_version);
-    this._setIfNotNull('browserMajor', json.env_browser_major);
-    this._setIfNotNull('operatingSystemName', json.env_os_name);
-    this._setIfNotNull('operatingSystemVersion', json.env_os_version);
-    this._setIfNotNull('deviceModel', json.env_device_model);
-    this._setIfNotNull('deviceType', json.env_device_type);
-    this._setIfNotNull('deviceVendor', json.env_device_vendor);
+    if (json.most_recent_chat_received_at != null) {
+      this._setIfNotNull('mostRecentChatReceivedAt', this._date(json.most_recent_chat_received_at));
+    }
+    if (json.env != null) {
+      if (json.browser != null) {
+        this._setIfNotNull('browserName', json.env.browser.name);
+        this._setIfNotNull('browserVersion', json.env.browser.version);
+        this._setIfNotNull('browserMajor', json.env.browser.major);
+      }
+      if (json.os != null) {
+        this._setIfNotNull('operatingSystemName', json.env.os.name);
+        this._setIfNotNull('operatingSystemVersion', json.env.os.version);
+      }
+      if (json.device != null) {
+        this._setIfNotNull('deviceModel', json.env.device.model);
+        this._setIfNotNull('deviceType', json.env.device.type);
+        this._setIfNotNull('deviceVendor', json.env.device.vendor);
+      }
+    } else {
+      this._setIfNotNull('browserName', json.env_browser_name);
+      this._setIfNotNull('browserVersion', json.env_browser_version);
+      this._setIfNotNull('browserMajor', json.env_browser_major);
+      this._setIfNotNull('operatingSystemName', json.env_os_name);
+      this._setIfNotNull('operatingSystemVersion', json.env_os_version);
+      this._setIfNotNull('deviceModel', json.env_device_model);
+      this._setIfNotNull('deviceType', json.env_device_type);
+      this._setIfNotNull('deviceVendor', json.env_device_vendor);
+    }
     this._setIfNotNull('needsResponse', json.needs_response);
     this._setIfNotNull('isOnline', json.is_online);
     if (json.is_typing) {
       this.addTyper(this);
     }
-    this._populateAssociatedObjectWithJSON(this, 'company', json.company, function(json) {
-      return Firehose.Company.companyWithID(json.id, null, this);
-    });
     return Visitor.__super__._populateWithJSON.call(this, json);
   };
 
