@@ -369,9 +369,7 @@ class Firehose.Company extends Firehose.Object
         channel: 'chat'
         sort:    'newest_first'
       @_visitors = new Firehose.RemoteArray "companies/#{@id}/customers", params, (json) =>
-        customer = Firehose.Customer.customerWithID json.id, this
-        customer._populateWithJSON json
-        customer.convertToVisitor()
+        Firehose.Customer.customerWithJSON(json, this)?.convertToVisitor()
 
       @_visitors.sortOn 'needsResponse', 'mostRecentChatRecievedAt', 'createdAt', 'desc'
     @_visitors

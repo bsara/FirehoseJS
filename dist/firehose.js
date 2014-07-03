@@ -1874,10 +1874,8 @@ Firehose.Company = (function(_super) {
         sort: 'newest_first'
       };
       this._visitors = new Firehose.RemoteArray("companies/" + this.id + "/customers", params, function(json) {
-        var customer;
-        customer = Firehose.Customer.customerWithID(json.id, _this);
-        customer._populateWithJSON(json);
-        return customer.convertToVisitor();
+        var _ref1;
+        return (_ref1 = Firehose.Customer.customerWithJSON(json, _this)) != null ? _ref1.convertToVisitor() : void 0;
       });
       this._visitors.sortOn('needsResponse', 'mostRecentChatRecievedAt', 'createdAt', 'desc');
     }
@@ -5849,8 +5847,8 @@ Firehose.Visitor = (function(_super) {
 
   Visitor.visitorWithJSON = function(json, company) {
     var visitor;
-    visitor = Firehose.Visitor.visitorWithID(json.id);
-    visitor.company = company;
+    visitor = Firehose.Visitor.visitorWithID(json.id, company);
+    visitor._populateWithJSON(json);
     return visitor;
   };
 

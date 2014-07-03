@@ -178,8 +178,8 @@ class Firehose.Visitor extends Firehose.Object
   @return [Firehose.Visitor] The visitor object that was created.
   ###
   @visitorWithJSON: (json, company) ->
-    visitor = Firehose.Visitor.visitorWithID json.id
-    visitor.company = company
+    visitor = Firehose.Visitor.visitorWithID json.id, company
+    visitor._populateWithJSON json
     visitor
 
 
