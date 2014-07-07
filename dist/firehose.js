@@ -897,16 +897,15 @@ Firehose.Object = (function() {
 
 
   Object._objectOfClassWithID = function(klass, properties) {
-    var obj, parsedID, _i, _len, _ref;
-    parsedID = parseInt(properties.id);
-    if (!isNaN(parsedID)) {
-      properties.id = parsedID;
+    var obj, _i, _len, _ref;
+    if (!isNaN(properties.id)) {
+      properties.id = parseInt(properties.id);
     }
-    if (parsedID) {
+    if (properties.id) {
       _ref = this._objects;
       for (_i = 0, _len = _ref.length; _i < _len; _i++) {
         obj = _ref[_i];
-        if (obj.id && obj.id === parsedID && obj.constructor._firehoseType === klass._firehoseType) {
+        if (obj.id && obj.id === properties.id && obj.constructor._firehoseType === klass._firehoseType) {
           return obj;
         }
       }
@@ -1947,19 +1946,26 @@ Firehose.Company = (function(_super) {
   Company.prototype.fetchOnlineVisitors = function() {
     var params,
       _this = this;
+    this.set('isOnlineVisitorsFetched', false);
     params = {
       server: "chatserver",
       route: "online_visitors"
     };
     return Firehose.client.get(this, params).done(function(json) {
-      var visitor, visitorJSON, _i, _len;
-      _this.onlineVisitors = new Firehose.UniqueArray;
+      var onlineVisitorsTemp, visitorAttrs, visitorJSON, _i, _len;
+      onlineVisitorsTemp = new Firehose.UniqueArray;
       for (_i = 0, _len = json.length; _i < _len; _i++) {
         visitorJSON = json[_i];
-        visitor = Firehose.Visitor.visitorWithJSON(visitorJSON, _this);
-        visitor.set('isOnline', true);
-        _this.onlineVisitors.push(visitor);
+        visitorAttrs = {
+          id: visitorJSON.visitor_id,
+          location: visitorJSON.location_string,
+          mostRecentChat: visitorJSON.most_recent_chat,
+          mostRecentChatRecievedAt: visitorJSON.most_recent_chat_received_at != null ? _this._date(visitorJSON.most_recent_chat_received_at) : void 0,
+          isOnline: true
+        };
+        onlineVisitorsTemp.push(Firehose.Visitor.visitorWithIDAndAttributes(visitorJSON.visitor_id, _this, visitorAttrs));
       }
+      _this.set('onlineVisitors', onlineVisitorsTemp);
       return _this.set('isOnlineVisitorsFetched', true);
     });
   };
@@ -3551,7 +3557,7 @@ Firehose.Customer = (function(_super) {
   };
 
   Customer.prototype.convertToVisitor = function() {
-    var chatCustomerAccount, customerAccount, onlineVisitor, visitor, _i, _j, _len, _len1, _ref1, _ref2, _ref3;
+    var chatCustomerAccount, customerAccount, onlineVisitor, visitorAttributes, _i, _j, _len, _len1, _ref1, _ref2, _ref3;
     chatCustomerAccount = null;
     _ref1 = this.customerAccounts;
     for (_i = 0, _len = _ref1.length; _i < _len; _i++) {
@@ -3560,9 +3566,6 @@ Firehose.Customer = (function(_super) {
         chatCustomerAccount = customerAccount;
         break;
       }
-    }
-    if (!this.company.isOnlineVisitorsFetched) {
-      this.company.fetchOnlineVisitors();
     }
     _ref2 = this.company.onlineVisitors;
     for (_j = 0, _len1 = _ref2.length; _j < _len1; _j++) {
@@ -3575,28 +3578,28 @@ Firehose.Customer = (function(_super) {
       }
     }
     if (chatCustomerAccount) {
-      visitor = Firehose.Visitor.visitorWithID(chatCustomerAccount.username, this.get('company'));
-      visitor.set('createdAt', this.createdAt);
-      visitor.set('email', this.email);
-      visitor.set('name', this.name && ((_ref3 = this.name) != null ? _ref3.get('length') : void 0) > 0 ? this.name : chatCustomerAccount.username);
-      visitor.set('location', this.location);
-      visitor.set('locationLatitude', this.locationLatitude);
-      visitor.set('locationLongitude', this.locationLongitude);
-      visitor.set('timeZone', this.timeZone);
-      visitor.set('currentURL', this.currentURL);
-      visitor.set('referringURL', this.referringURL);
-      visitor.set('mostRecentChat', this.newestInteractionExcerpt);
-      visitor.set('mostRecentChatReceivedAt', this.newestInteractionReceivedAt != null ? this.createdAt : this.newestInteractionReceivedAt);
-      visitor.set('IPAddress', this.IPAddress);
-      visitor.set('customAttributes', this.customAttributes);
-      visitor.set('browserName', this.browserName);
-      visitor.set('browserVersion', this.browserVersion);
-      visitor.set('operatingSystemName', this.operatingSystemName);
-      visitor.set('operatingSystemVersion', this.operatingSystemVersion);
-      visitor.set('deviceModel', this.deviceModel);
-      visitor.set('deviceType', this.deviceType);
-      visitor.set('deviceVendor', this.deviceVendor);
-      return visitor;
+      visitorAttributes = {};
+      visitorAttributes.createdAt = this.createdAt;
+      visitorAttributes.email = this.email;
+      visitorAttributes.name = this.name && ((_ref3 = this.name) != null ? _ref3.get('length') : void 0) > 0 ? this.name : chatCustomerAccount.username;
+      visitorAttributes.location = this.location;
+      visitorAttributes.locationLatitude = this.locationLatitude;
+      visitorAttributes.locationLongitude = this.locationLongitude;
+      visitorAttributes.timeZone = this.timeZone;
+      visitorAttributes.currentURL = this.currentURL;
+      visitorAttributes.referringURL = this.referringURL;
+      visitorAttributes.mostRecentChat = this.newestInteractionExcerpt;
+      visitorAttributes.mostRecentChatReceivedAt = this.newestInteractionReceivedAt != null ? this.createdAt : this.newestInteractionReceivedAt;
+      visitorAttributes.IPAddress = this.IPAddress;
+      visitorAttributes.customAttributes = this.customAttributes;
+      visitorAttributes.browserName = this.browserName;
+      visitorAttributes.browserVersion = this.browserVersion;
+      visitorAttributes.operatingSystemName = this.operatingSystemName;
+      visitorAttributes.operatingSystemVersion = this.operatingSystemVersion;
+      visitorAttributes.deviceModel = this.deviceModel;
+      visitorAttributes.deviceType = this.deviceType;
+      visitorAttributes.deviceVendor = this.deviceVendor;
+      return Firehose.Visitor.visitorWithIDAndAttributes(chatCustomerAccount.username, this.get('company'), visitorAttributes);
     }
     return null;
   };
@@ -5853,6 +5856,7 @@ Firehose.Visitor = (function(_super) {
   /*
   Create a visitor by ID so you can fetch its info and chat history from the api server.
   @param id [Number] The ID of the visitor you wish to retrieve.
+  @param company [Firehose.Company] The company that contains the visitor being created.
   @return [Firehose.Visitor] The visitor object that was created.
   */
 
@@ -5862,6 +5866,21 @@ Firehose.Visitor = (function(_super) {
       id: id,
       company: company
     });
+  };
+
+  /*
+  Create a visitor that is populated with the given attributes.
+  @param id [Number] The ID of the visitor you wish to retrieve.
+  @param company [Firehose.Company] The company that contains the visiror being created.
+  @param attrs [Object] The attributes to apply to the visitor being created.
+  @return [Firehose.Visitor] The visitor object that was created.
+  */
+
+
+  Visitor.visitorWithIDAndAttributes = function(id, company, attrs) {
+    attrs.id = id;
+    attrs.company = company;
+    return Firehose.Object._objectOfClassWithID(Firehose.Visitor, attrs);
   };
 
   /*

@@ -369,7 +369,7 @@ class Firehose.Company extends Firehose.Object
         channel: 'chat'
         sort:    'newest_first'
       @_visitors = new Firehose.RemoteArray "companies/#{@id}/customers", params, (json) =>
-        Firehose.Customer.customerWithID(json.id, this)?.convertToVisitor()
+        Firehose.Customer.customerWithJSON(json, this)?.convertToVisitor()
       @_visitors.sortOn 'needsResponse', 'mostRecentChatRecievedAt', 'createdAt', 'desc'
     @_visitors
 
@@ -403,21 +403,24 @@ class Firehose.Company extends Firehose.Object
   @return [jqXHR Promise] Promise
   ###
   fetchOnlineVisitors: () ->
+    @set 'isOnlineVisitorsFetched', false
+
     params =
       server: "chatserver"
       route: "online_visitors"
-    Firehose.client.get( this, params ).done (json) =>
-      @onlineVisitors = new Firehose.UniqueArray
 
+    Firehose.client.get( this, params ).done (json) =>
+      onlineVisitorsTemp = new Firehose.UniqueArray
       for visitorJSON in json
         visitorAttrs =
-          id: visitorJSON.id
-          location: visitorJSON.location_string
-          mostRecentChatMessage
-        visitor = Firehose.Visitor.visitorWithJSON visitorJSON, this
-        visitor.set 'isOnline', true
-        @onlineVisitors.push visitor
+          id                       : visitorJSON.visitor_id
+          location                 : visitorJSON.location_string
+          mostRecentChat           : visitorJSON.most_recent_chat
+          mostRecentChatRecievedAt : @_date visitorJSON.most_recent_chat_received_at if visitorJSON.most_recent_chat_received_at?
+          isOnline                 : true
+        onlineVisitorsTemp.push Firehose.Visitor.visitorWithIDAndAttributes(visitorJSON.visitor_id, this, visitorAttrs)
 
+      @set 'onlineVisitors', onlineVisitorsTemp
       @set 'isOnlineVisitorsFetched', true
 
 

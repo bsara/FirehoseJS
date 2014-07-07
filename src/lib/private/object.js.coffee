@@ -122,11 +122,10 @@ class Firehose.Object
   @nodoc
   ###
   @_objectOfClassWithID: (klass, properties) ->
-    parsedID = parseInt properties.id
-    properties.id = parsedID unless isNaN parsedID
-    if parsedID
+    properties.id = parseInt properties.id unless isNaN properties.id
+    if properties.id
       for obj in @_objects
-        if obj.id and obj.id == parsedID and obj.constructor._firehoseType == klass._firehoseType
+        if obj.id and obj.id == properties.id and obj.constructor._firehoseType == klass._firehoseType
           return obj
     obj = new klass properties
     obj._setup()
