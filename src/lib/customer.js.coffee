@@ -142,37 +142,37 @@ class Firehose.Customer extends Firehose.Object
         return onlineVisitor
 
     if chatCustomerAccount
-      visitor = Firehose.Visitor.visitorWithID chatCustomerAccount.username, @get('company')
+      visitorAttributes = {}
 
-      visitor.set 'createdAt',                  @createdAt
-      visitor.set 'email',                      @email
-      visitor.set 'name',                       if @name && @name?.get('length') > 0 then @name else chatCustomerAccount.username
+      visitorAttributes.createdAt                = @createdAt
+      visitorAttributes.email                    = @email
+      visitorAttributes.name                     = if @name && @name?.get('length') > 0 then @name else chatCustomerAccount.username
 
-      visitor.set 'location',                   @location
-      visitor.set 'locationLatitude',           @locationLatitude
-      visitor.set 'locationLongitude',          @locationLongitude
+      visitorAttributes.location                 = @location
+      visitorAttributes.locationLatitude         = @locationLatitude
+      visitorAttributes.locationLongitude        = @locationLongitude
 
-      visitor.set 'timeZone',                   @timeZone
-      visitor.set 'currentURL',                 @currentURL
-      visitor.set 'referringURL',               @referringURL
+      visitorAttributes.timeZone                 = @timeZone
+      visitorAttributes.currentURL               = @currentURL
+      visitorAttributes.referringURL             = @referringURL
 
-      visitor.set 'mostRecentChat',           @newestInteractionExcerpt
-      visitor.set 'mostRecentChatReceivedAt', if @newestInteractionReceivedAt? then @createdAt else @newestInteractionReceivedAt
+      visitorAttributes.mostRecentChat           = @newestInteractionExcerpt
+      visitorAttributes.mostRecentChatReceivedAt = if @newestInteractionReceivedAt? then @createdAt else @newestInteractionReceivedAt
 
-      visitor.set 'IPAddress',                  @IPAddress
-      visitor.set 'customAttributes',           @customAttributes
+      visitorAttributes.IPAddress                = @IPAddress
+      visitorAttributes.customAttributes         = @customAttributes
 
-      visitor.set 'browserName',                @browserName
-      visitor.set 'browserVersion',             @browserVersion
+      visitorAttributes.browserName              = @browserName
+      visitorAttributes.browserVersion           = @browserVersion
 
-      visitor.set 'operatingSystemName',        @operatingSystemName
-      visitor.set 'operatingSystemVersion',     @operatingSystemVersion
+      visitorAttributes.operatingSystemName      = @operatingSystemName
+      visitorAttributes.operatingSystemVersion   = @operatingSystemVersion
 
-      visitor.set 'deviceModel',                @deviceModel
-      visitor.set 'deviceType',                 @deviceType
-      visitor.set 'deviceVendor',               @deviceVendor
+      visitorAttributes.deviceModel              = @deviceModel
+      visitorAttributes.deviceType               = @deviceType
+      visitorAttributes.deviceVendor             = @deviceVendor
 
-      return visitor
+      return Firehose.Visitor.visitorWithIDAndAttributes chatCustomerAccount.username, @get('company'), visitorAttributes
 
     return null
 

@@ -163,12 +163,26 @@ class Firehose.Visitor extends Firehose.Object
   ###
   Create a visitor by ID so you can fetch its info and chat history from the api server.
   @param id [Number] The ID of the visitor you wish to retrieve.
+  @param company [Firehose.Company] The company that contains the visitor being created.
   @return [Firehose.Visitor] The visitor object that was created.
   ###
   @visitorWithID: (id, company) ->
     Firehose.Object._objectOfClassWithID Firehose.Visitor,
       id      : id
       company : company
+
+
+  ###
+  Create a visitor that is populated with the given attributes.
+  @param id [Number] The ID of the visitor you wish to retrieve.
+  @param company [Firehose.Company] The company that contains the visiror being created.
+  @param attrs [Object] The attributes to apply to the visitor being created.
+  @return [Firehose.Visitor] The visitor object that was created.
+  ###
+  @visitorWithIDAndAttributes: (id, company, attrs) ->
+    attrs.id = id
+    attrs.company = company
+    Firehose.Object._objectOfClassWithID Firehose.Visitor, attrs
 
 
   ###
