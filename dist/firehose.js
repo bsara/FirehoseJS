@@ -1958,6 +1958,7 @@ Firehose.Company = (function(_super) {
         visitorJSON = json[_i];
         visitorAttrs = {
           id: visitorJSON.visitor_id,
+          needsResponse: visitorJSON.needs_response,
           location: visitorJSON.location_string,
           mostRecentChat: visitorJSON.most_recent_chat,
           mostRecentChatRecievedAt: visitorJSON.most_recent_chat_received_at != null ? _this._date(visitorJSON.most_recent_chat_received_at) : void 0,

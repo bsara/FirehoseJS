@@ -414,6 +414,7 @@ class Firehose.Company extends Firehose.Object
       for visitorJSON in json
         visitorAttrs =
           id                       : visitorJSON.visitor_id
+          needsResponse            : visitorJSON.needs_response
           location                 : visitorJSON.location_string
           mostRecentChat           : visitorJSON.most_recent_chat
           mostRecentChatRecievedAt : @_date visitorJSON.most_recent_chat_received_at if visitorJSON.most_recent_chat_received_at?
