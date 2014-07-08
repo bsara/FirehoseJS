@@ -162,7 +162,7 @@ class Firehose.Visitor extends Firehose.Object
 
   ###
   Create a visitor by ID so you can fetch its info and chat history from the api server.
-  @param id [Number] The ID of the visitor you wish to retrieve.
+  @param id [String] The ID of the visitor you wish to retrieve.
   @param company [Firehose.Company] The company that contains the visitor being created.
   @return [Firehose.Visitor] The visitor object that was created.
   ###
@@ -174,7 +174,7 @@ class Firehose.Visitor extends Firehose.Object
 
   ###
   Create a visitor that is populated with the given attributes.
-  @param id [Number] The ID of the visitor you wish to retrieve.
+  @param id [String] The ID of the visitor you wish to retrieve.
   @param company [Firehose.Company] The company that contains the visiror being created.
   @param attrs [Object] The attributes to apply to the visitor being created.
   @return [Firehose.Visitor] The visitor object that was created.
@@ -220,10 +220,10 @@ class Firehose.Visitor extends Firehose.Object
   ###
   chatInteractions: ->
     unless @_chatInteractions?
-      params:
+      params =
         server: 'chatserver'
       @_setIfNotNull '_chatInteractions', new Firehose.RemoteArray "visitors/#{@id}/chat_interactions", params, (json) =>
-        Firehose.ChatInteraction.chatInteractionWithID json, this
+        Firehose.ChatInteraction.chatInteractionWithID json.id, this
       @_chatInteractions.sortOn 'deliveredAt'
     @_chatInteractions
 

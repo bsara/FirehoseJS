@@ -2914,7 +2914,14 @@ Firehose.ChatInteraction = (function(_super) {
 
   ChatInteraction.prototype.kind = null;
 
-  ChatInteraction._chatInteractionWithID = function(id, visitor) {
+  /*
+  Create a chat interaction by ID so you can fetch its info from the api server.
+  @param id [Number] The ID of the chat interaction you wish to retrieve.
+  @param visitor [Firhose.Visitor] The visitor that contains the chat interaction being created.
+  */
+
+
+  ChatInteraction.chatInteractionWithID = function(id, visitor) {
     return Firehose.Object._objectOfClassWithID(Firehose.ChatInteraction, {
       id: id,
       visitor: visitor
@@ -5854,7 +5861,7 @@ Firehose.Visitor = (function(_super) {
 
   /*
   Create a visitor by ID so you can fetch its info and chat history from the api server.
-  @param id [Number] The ID of the visitor you wish to retrieve.
+  @param id [String] The ID of the visitor you wish to retrieve.
   @param company [Firehose.Company] The company that contains the visitor being created.
   @return [Firehose.Visitor] The visitor object that was created.
   */
@@ -5869,7 +5876,7 @@ Firehose.Visitor = (function(_super) {
 
   /*
   Create a visitor that is populated with the given attributes.
-  @param id [Number] The ID of the visitor you wish to retrieve.
+  @param id [String] The ID of the visitor you wish to retrieve.
   @param company [Firehose.Company] The company that contains the visiror being created.
   @param attrs [Object] The attributes to apply to the visitor being created.
   @return [Firehose.Visitor] The visitor object that was created.
@@ -5930,15 +5937,14 @@ Firehose.Visitor = (function(_super) {
 
 
   Visitor.prototype.chatInteractions = function() {
-    var _this = this;
+    var params,
+      _this = this;
     if (this._chatInteractions == null) {
-      ({
-        params: {
-          server: 'chatserver'
-        }
-      });
+      params = {
+        server: 'chatserver'
+      };
       this._setIfNotNull('_chatInteractions', new Firehose.RemoteArray("visitors/" + this.id + "/chat_interactions", params, function(json) {
-        return Firehose.ChatInteraction.chatInteractionWithID(json, _this);
+        return Firehose.ChatInteraction.chatInteractionWithID(json.id, _this);
       }));
       this._chatInteractions.sortOn('deliveredAt');
     }

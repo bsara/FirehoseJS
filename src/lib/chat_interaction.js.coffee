@@ -40,8 +40,12 @@ class Firehose.ChatInteraction extends Firehose.Interaction
   kind: null
 
 
-  # @nodoc
-  @_chatInteractionWithID: (id, visitor) ->
+  ###
+  Create a chat interaction by ID so you can fetch its info from the api server.
+  @param id [Number] The ID of the chat interaction you wish to retrieve.
+  @param visitor [Firhose.Visitor] The visitor that contains the chat interaction being created.
+  ###
+  @chatInteractionWithID: (id, visitor) ->
     Firehose.Object._objectOfClassWithID Firehose.ChatInteraction,
       id      : id
       visitor : visitor
