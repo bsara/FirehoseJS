@@ -223,7 +223,7 @@ class Firehose.Visitor extends Firehose.Object
       params:
         server: 'chatserver'
       @_setIfNotNull '_chatInteractions', new Firehose.RemoteArray "visitors/#{@id}/chat_interactions", params, (json) =>
-        Firehose.ChatInteraction.chatInteractionWithJSON json, this
+        Firehose.ChatInteraction.chatInteractionWithID json, this
       @_chatInteractions.sortOn 'deliveredAt'
     @_chatInteractions
 

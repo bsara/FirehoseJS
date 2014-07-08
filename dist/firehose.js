@@ -2914,9 +2914,10 @@ Firehose.ChatInteraction = (function(_super) {
 
   ChatInteraction.prototype.kind = null;
 
-  ChatInteraction._chatInteractionWithID = function(id) {
+  ChatInteraction._chatInteractionWithID = function(id, visitor) {
     return Firehose.Object._objectOfClassWithID(Firehose.ChatInteraction, {
-      id: id
+      id: id,
+      visitor: visitor
     });
   };
 
@@ -2929,8 +2930,8 @@ Firehose.ChatInteraction = (function(_super) {
 
   ChatInteraction.chatInteractionWithJSON = function(json, visitor) {
     var chatInteraction;
-    chatInteraction = Firehose.ChatInteraction._chatInteractionWithID(json.id);
-    chatInteraction.visitor = visitor;
+    chatInteraction = Firehose.ChatInteraction._chatInteractionWithID(json.id, visitor);
+    chatInteraction._populateWithJSON(json);
     return chatInteraction;
   };
 
@@ -2955,9 +2956,6 @@ Firehose.ChatInteraction = (function(_super) {
       this._setIfNotNull("failedAt", this._date(chatJSON.failed_at));
       this._setIfNotNull("senderDisplayName", chatJSON.sender_display_name);
       this._setIfNotNull("kind", chatJSON.kind);
-      this._populateAssociatedObjectWithJSON(this, "visitor", chatJSON.visitor, function(json) {
-        return Firehose.Visitor.visitorWithID(json.id);
-      });
     }
     return ChatInteraction.__super__._populateWithJSON.call(this, json);
   };
@@ -5940,7 +5938,7 @@ Firehose.Visitor = (function(_super) {
         }
       });
       this._setIfNotNull('_chatInteractions', new Firehose.RemoteArray("visitors/" + this.id + "/chat_interactions", params, function(json) {
-        return Firehose.ChatInteraction.chatInteractionWithJSON(json, _this);
+        return Firehose.ChatInteraction.chatInteractionWithID(json, _this);
       }));
       this._chatInteractions.sortOn('deliveredAt');
     }

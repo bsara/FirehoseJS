@@ -41,9 +41,10 @@ class Firehose.ChatInteraction extends Firehose.Interaction
 
 
   # @nodoc
-  @_chatInteractionWithID: (id) ->
+  @_chatInteractionWithID: (id, visitor) ->
     Firehose.Object._objectOfClassWithID Firehose.ChatInteraction,
-      id: id
+      id      : id
+      visitor : visitor
 
 
   ###
@@ -52,8 +53,8 @@ class Firehose.ChatInteraction extends Firehose.Interaction
   @return [Firehose.ChatInteraction] The chat interaction object that was created.
   ###
   @chatInteractionWithJSON: (json, visitor) ->
-    chatInteraction = Firehose.ChatInteraction._chatInteractionWithID json.id
-    chatInteraction.visitor = visitor
+    chatInteraction = Firehose.ChatInteraction._chatInteractionWithID json.id, visitor
+    chatInteraction._populateWithJSON json
     chatInteraction
 
 
@@ -77,10 +78,6 @@ class Firehose.ChatInteraction extends Firehose.Interaction
       @_setIfNotNull "failedAt",          @_date chatJSON.failed_at
       @_setIfNotNull "senderDisplayName", chatJSON.sender_display_name
       @_setIfNotNull "kind",              chatJSON.kind
-
-      @_populateAssociatedObjectWithJSON this, "visitor", chatJSON.visitor, (json) ->
-        Firehose.Visitor.visitorWithID json.id
-
     super json
 
 
