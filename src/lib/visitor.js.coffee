@@ -218,7 +218,7 @@ class Firehose.Visitor extends Firehose.Object
   The chat interactions of the visitor.
   @return [Firehose.RemoteArray<Firehose.ChatInteraction>] The found chat interactions.
   ###
-  chatInterations: ->
+  chatInteractions: ->
     unless @_chatInteractions?
       params:
         server: 'chatserver'

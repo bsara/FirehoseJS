@@ -5929,7 +5929,7 @@ Firehose.Visitor = (function(_super) {
   */
 
 
-  Visitor.prototype.chatInterations = function() {
+  Visitor.prototype.chatInteractions = function() {
     var _this = this;
     if (this._chatInteractions == null) {
       ({
