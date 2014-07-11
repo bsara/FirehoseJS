@@ -1001,6 +1001,17 @@ Firehose.ChatInteractionKind = (function() {
 
 })();
 
+Firehose.CompanyKind = (function() {
+  function CompanyKind() {}
+
+  CompanyKind.prototype.DESK = 'desk';
+
+  CompanyKind.prototype.CHAT = 'chat';
+
+  return CompanyKind;
+
+})();
+
 Firehose.VisitorBoxState = (function() {
   function VisitorBoxState() {}
 

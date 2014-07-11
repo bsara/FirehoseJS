@@ -61,6 +61,7 @@ module.exports = (grunt) ->
           files.push "lib/private/client"
           files.push "lib/private/object"
           files.push "lib/chat_interaction_kind"
+          files.push "lib/company_kind"
           files.push "lib/visitor_box_state"
           files.push "lib/agent"
           files.push "lib/company"
