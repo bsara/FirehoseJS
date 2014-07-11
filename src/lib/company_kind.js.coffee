@@ -1,3 +1,3 @@
 class Firehose.CompanyKind
-  DESK : 'desk'
-  CHAT : 'chat'
+  @DESK : 'desk'
+  @CHAT : 'chat'

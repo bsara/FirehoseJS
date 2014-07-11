@@ -1,5 +1,5 @@
 class Firehose.VisitorBoxState
-  NONE         : 'none'
-  OPEN         : 'open'
-  CHATTING     : 'chatting'
-  DISCONNECTED : 'disconnected'
+  @NONE         : 'none'
+  @OPEN         : 'open'
+  @CHATTING     : 'chatting'
+  @DISCONNECTED : 'disconnected'

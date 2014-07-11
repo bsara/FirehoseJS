@@ -993,9 +993,9 @@ Firehose.Object = (function() {
 Firehose.ChatInteractionKind = (function() {
   function ChatInteractionKind() {}
 
-  ChatInteractionKind.prototype.CHAT = 0;
+  ChatInteractionKind.CHAT = 0;
 
-  ChatInteractionKind.prototype.NAVIGATION = 1;
+  ChatInteractionKind.NAVIGATION = 1;
 
   return ChatInteractionKind;
 
@@ -1004,9 +1004,9 @@ Firehose.ChatInteractionKind = (function() {
 Firehose.CompanyKind = (function() {
   function CompanyKind() {}
 
-  CompanyKind.prototype.DESK = 'desk';
+  CompanyKind.DESK = 'desk';
 
-  CompanyKind.prototype.CHAT = 'chat';
+  CompanyKind.CHAT = 'chat';
 
   return CompanyKind;
 
@@ -1015,13 +1015,13 @@ Firehose.CompanyKind = (function() {
 Firehose.VisitorBoxState = (function() {
   function VisitorBoxState() {}
 
-  VisitorBoxState.prototype.NONE = 'none';
+  VisitorBoxState.NONE = 'none';
 
-  VisitorBoxState.prototype.OPEN = 'open';
+  VisitorBoxState.OPEN = 'open';
 
-  VisitorBoxState.prototype.CHATTING = 'chatting';
+  VisitorBoxState.CHATTING = 'chatting';
 
-  VisitorBoxState.prototype.DISCONNECTED = 'disconnected';
+  VisitorBoxState.DISCONNECTED = 'disconnected';
 
   return VisitorBoxState;
 
@@ -1905,8 +1905,9 @@ Firehose.Company = (function(_super) {
         sort: 'newest_first'
       };
       this._visitors = new Firehose.RemoteArray("companies/" + this.id + "/customers", params, function(json) {
-        var _ref1;
-        return (_ref1 = Firehose.Customer.customerWithJSON(json, _this)) != null ? _ref1.convertToVisitor() : void 0;
+        var visitor, _ref1;
+        visitor = (_ref1 = Firehose.Customer.customerWithJSON(json, _this)) != null ? _ref1.convertToVisitor() : void 0;
+        return visitor.set('isBrandNew', false);
       });
       this._visitors.sortOn('needsResponse', 'mostRecentChatRecievedAt', 'createdAt', 'desc');
     }
@@ -1963,11 +1964,11 @@ Firehose.Company = (function(_super) {
       route: "online_visitors"
     };
     return Firehose.client.get(this, params).done(function(json) {
-      var onlineVisitorsTemp, visitorAttrs, visitorJSON, _i, _len;
+      var onlineVisitorsTemp, visitor, visitorJSON, visitorProperties, _i, _len;
       onlineVisitorsTemp = new Firehose.UniqueArray;
       for (_i = 0, _len = json.length; _i < _len; _i++) {
         visitorJSON = json[_i];
-        visitorAttrs = {
+        visitorProperties = {
           id: visitorJSON.visitor_id,
           needsResponse: visitorJSON.needs_response,
           location: visitorJSON.location_string,
@@ -1975,7 +1976,9 @@ Firehose.Company = (function(_super) {
           mostRecentChatRecievedAt: visitorJSON.most_recent_chat_received_at != null ? _this._date(visitorJSON.most_recent_chat_received_at) : void 0,
           isOnline: true
         };
-        onlineVisitorsTemp.push(Firehose.Visitor.visitorWithIDAndAttributes(visitorJSON.visitor_id, _this, visitorAttrs));
+        visitor = Firehose.Visitor.visitorWithIDAndProperties(visitorJSON.visitor_id, _this, visitorProperties);
+        visitor.set('isBrandNew', false);
+        onlineVisitorsTemp.push(visitor);
       }
       _this.set('onlineVisitors', onlineVisitorsTemp);
       return _this.set('isOnlineVisitorsFetched', true);
@@ -1983,46 +1986,49 @@ Firehose.Company = (function(_super) {
   };
 
   /*
+  Associates an online visitor with a company.
+  @param visitor [Firehose.Visitor] The visitor to add.
+  */
+
+
+  Company.prototype.addOnlineVisitor = function(visitor) {
+    visitor.set('isBrandNew', false);
+    visitor.set('isOnline', true);
+    return this.onlineVisitors.insertObject(visitor);
+  };
+
+  /*
+  Removes an online visitor's association with a company.
+  @param visitor [Firhose.Visitor] The visior to remove.
+  */
+
+
+  Company.prototype.removeOnlineVisitor = function(visitor) {
+    return this.onlineVisitors.dropObject(visitor);
+  };
+
+  /*
   @param visitors [Array<Firehose.Visitor>]
   */
 
 
-  Company.prototype.resetVisitorsWithArray = function(visitors) {};
-
-  /*
-  Associates a visitor with a company.
-  @param visitor [Firehose.Visitor] The visitor to add.
-  @return [jqXHR Promise] Promise
-  */
-
-
-  Company.prototype.addVisitor = function(visitor) {
-    var params,
-      _this = this;
-    params = {
-      route: "companies/" + this.id + "/visitors/" + visitor.id
-    };
-    return Firehose.client.put(this, params).done(function() {
-      return _this.visitors.insertObject(visitor);
-    });
-  };
-
-  /*
-  Removes a visitor's association with a company.
-  @param visitor [Firhose.Visitor] The visior to remove.
-  @return [jqXHR Promice] Promise
-  */
-
-
-  Company.prototype.removeVisitor = function(visitor) {
-    var params,
-      _this = this;
-    params = {
-      route: "companies/" + this.id + "/visitors/" + visitor.id
-    };
-    return Firehose.client["delete"](this, params).done(function() {
-      return _this.visitors.dropObject(visitor);
-    });
+  Company.prototype.resetOnlineVisitorsWithArray = function(visitors) {
+    var visitor, _i, _j, _len, _len1, _ref1;
+    this.set('isOnlineVisitorsFetched', false);
+    if (this.onlineVisitors != null) {
+      _ref1 = this.onlineVisitors;
+      for (_i = 0, _len = _ref1.length; _i < _len; _i++) {
+        visitor = _ref1[_i];
+        visitor.set('isOnline', false);
+      }
+    }
+    for (_j = 0, _len1 = visitors.length; _j < _len1; _j++) {
+      visitor = visitors[_j];
+      visitor.set('isBrandNew', false);
+      visitor.set('isOnline', true);
+    }
+    this.set('onlineVisitors', visitors);
+    return this.set('isOnlineVisitorsFetched', true);
   };
 
   /*
@@ -3574,7 +3580,7 @@ Firehose.Customer = (function(_super) {
   };
 
   Customer.prototype.convertToVisitor = function() {
-    var chatCustomerAccount, customerAccount, onlineVisitor, visitorAttributes, _i, _j, _len, _len1, _ref1, _ref2, _ref3;
+    var chatCustomerAccount, customerAccount, onlineVisitor, visitorProperties, _i, _j, _len, _len1, _ref1, _ref2, _ref3;
     chatCustomerAccount = null;
     _ref1 = this.customerAccounts;
     for (_i = 0, _len = _ref1.length; _i < _len; _i++) {
@@ -3595,28 +3601,28 @@ Firehose.Customer = (function(_super) {
       }
     }
     if (chatCustomerAccount) {
-      visitorAttributes = {};
-      visitorAttributes.createdAt = this.createdAt;
-      visitorAttributes.email = this.email;
-      visitorAttributes.name = this.name && ((_ref3 = this.name) != null ? _ref3.get('length') : void 0) > 0 ? this.name : chatCustomerAccount.username;
-      visitorAttributes.location = this.location;
-      visitorAttributes.locationLatitude = this.locationLatitude;
-      visitorAttributes.locationLongitude = this.locationLongitude;
-      visitorAttributes.timeZone = this.timeZone;
-      visitorAttributes.currentURL = this.currentURL;
-      visitorAttributes.referringURL = this.referringURL;
-      visitorAttributes.mostRecentChat = this.newestInteractionExcerpt;
-      visitorAttributes.mostRecentChatReceivedAt = this.newestInteractionReceivedAt != null ? this.createdAt : this.newestInteractionReceivedAt;
-      visitorAttributes.IPAddress = this.IPAddress;
-      visitorAttributes.customAttributes = this.customAttributes;
-      visitorAttributes.browserName = this.browserName;
-      visitorAttributes.browserVersion = this.browserVersion;
-      visitorAttributes.operatingSystemName = this.operatingSystemName;
-      visitorAttributes.operatingSystemVersion = this.operatingSystemVersion;
-      visitorAttributes.deviceModel = this.deviceModel;
-      visitorAttributes.deviceType = this.deviceType;
-      visitorAttributes.deviceVendor = this.deviceVendor;
-      return Firehose.Visitor.visitorWithIDAndAttributes(chatCustomerAccount.username, this.get('company'), visitorAttributes);
+      visitorProperties = {};
+      visitorProperties.createdAt = this.createdAt;
+      visitorProperties.email = this.email;
+      visitorProperties.name = this.name && ((_ref3 = this.name) != null ? _ref3.get('length') : void 0) > 0 ? this.name : chatCustomerAccount.username;
+      visitorProperties.location = this.location;
+      visitorProperties.locationLatitude = this.locationLatitude;
+      visitorProperties.locationLongitude = this.locationLongitude;
+      visitorProperties.timeZone = this.timeZone;
+      visitorProperties.currentURL = this.currentURL;
+      visitorProperties.referringURL = this.referringURL;
+      visitorProperties.mostRecentChat = this.newestInteractionExcerpt;
+      visitorProperties.mostRecentChatReceivedAt = this.newestInteractionReceivedAt != null ? this.createdAt : this.newestInteractionReceivedAt;
+      visitorProperties.IPAddress = this.IPAddress;
+      visitorProperties.customAttributes = this.customAttributes;
+      visitorProperties.browserName = this.browserName;
+      visitorProperties.browserVersion = this.browserVersion;
+      visitorProperties.operatingSystemName = this.operatingSystemName;
+      visitorProperties.operatingSystemVersion = this.operatingSystemVersion;
+      visitorProperties.deviceModel = this.deviceModel;
+      visitorProperties.deviceType = this.deviceType;
+      visitorProperties.deviceVendor = this.deviceVendor;
+      return Firehose.Visitor.visitorWithIDAndProperties(chatCustomerAccount.username, this.get('company'), visitorProperties);
     }
     return null;
   };
@@ -5669,6 +5675,13 @@ Firehose.Visitor = (function(_super) {
   Visitor.prototype.company = null;
 
   /*
+  @property [boolean]
+  */
+
+
+  Visitor.prototype.isBrandNew = false;
+
+  /*
   @property [String]
   */
 
@@ -5867,7 +5880,8 @@ Firehose.Visitor = (function(_super) {
   Visitor.prototype._chatInteractions = null;
 
   Visitor.prototype._setup = function() {
-    return this.typers = new Firehose.UniqueArray;
+    this.typers = new Firehose.UniqueArray;
+    return this.isBrandNew = true;
   };
 
   /*
@@ -5886,18 +5900,18 @@ Firehose.Visitor = (function(_super) {
   };
 
   /*
-  Create a visitor that is populated with the given attributes.
+  Create a visitor that is populated with the given properties.
   @param id [String] The ID of the visitor you wish to retrieve.
   @param company [Firehose.Company] The company that contains the visiror being created.
-  @param attrs [Object] The attributes to apply to the visitor being created.
+  @param properties [Object] The properties to apply to the visitor being created.
   @return [Firehose.Visitor] The visitor object that was created.
   */
 
 
-  Visitor.visitorWithIDAndAttributes = function(id, company, attrs) {
-    attrs.id = id;
-    attrs.company = company;
-    return Firehose.Object._objectOfClassWithID(Firehose.Visitor, attrs);
+  Visitor.visitorWithIDAndProperties = function(id, company, properties) {
+    properties.id = id;
+    properties.company = company;
+    return Firehose.Object._objectOfClassWithID(Firehose.Visitor, properties);
   };
 
   /*
@@ -5973,7 +5987,7 @@ Firehose.Visitor = (function(_super) {
   Visitor.prototype.addChatInteractions = function(chatInteractions) {};
 
   /*
-  @return [boolean] Whether or no the visitor is currently chatting with an agent.
+  @return [boolean] Whether or not the visitor is currently chatting with an agent.
   */
 
 

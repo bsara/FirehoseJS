@@ -369,7 +369,8 @@ class Firehose.Company extends Firehose.Object
         channel: 'chat'
         sort:    'newest_first'
       @_visitors = new Firehose.RemoteArray "companies/#{@id}/customers", params, (json) =>
-        Firehose.Customer.customerWithJSON(json, this)?.convertToVisitor()
+        visitor = Firehose.Customer.customerWithJSON(json, this)?.convertToVisitor()
+        visitor.set 'isBrandNew', false
       @_visitors.sortOn 'needsResponse', 'mostRecentChatRecievedAt', 'createdAt', 'desc'
     @_visitors
 
@@ -412,48 +413,55 @@ class Firehose.Company extends Firehose.Object
     Firehose.client.get( this, params ).done (json) =>
       onlineVisitorsTemp = new Firehose.UniqueArray
       for visitorJSON in json
-        visitorAttrs =
+        visitorProperties =
           id                       : visitorJSON.visitor_id
           needsResponse            : visitorJSON.needs_response
           location                 : visitorJSON.location_string
           mostRecentChat           : visitorJSON.most_recent_chat
           mostRecentChatRecievedAt : @_date visitorJSON.most_recent_chat_received_at if visitorJSON.most_recent_chat_received_at?
           isOnline                 : true
-        onlineVisitorsTemp.push Firehose.Visitor.visitorWithIDAndAttributes(visitorJSON.visitor_id, this, visitorAttrs)
+        visitor = Firehose.Visitor.visitorWithIDAndProperties visitorJSON.visitor_id, this, visitorProperties
+        visitor.set 'isBrandNew', false
+        onlineVisitorsTemp.push visitor
 
       @set 'onlineVisitors', onlineVisitorsTemp
       @set 'isOnlineVisitorsFetched', true
 
 
   ###
+  Associates an online visitor with a company.
+  @param visitor [Firehose.Visitor] The visitor to add.
+  ###
+  addOnlineVisitor: (visitor) ->
+    visitor.set 'isBrandNew', false
+    visitor.set 'isOnline', true
+    @onlineVisitors.insertObject visitor
+
+
+  ###
+  Removes an online visitor's association with a company.
+  @param visitor [Firhose.Visitor] The visior to remove.
+  ###
+  removeOnlineVisitor: (visitor) ->
+    @onlineVisitors.dropObject visitor
+
+
+  ###
   @param visitors [Array<Firehose.Visitor>]
   ###
-  resetVisitorsWithArray: (visitors) ->
-    # TODO: Implement
+  resetOnlineVisitorsWithArray: (visitors) ->
+    @set 'isOnlineVisitorsFetched', false
 
+    if @onlineVisitors?
+      for visitor in @onlineVisitors
+        visitor.set 'isOnline', false
 
-  ###
-  Associates a visitor with a company.
-  @param visitor [Firehose.Visitor] The visitor to add.
-  @return [jqXHR Promise] Promise
-  ###
-  addVisitor: (visitor) ->
-    params =
-      route: "companies/#{@id}/visitors/#{visitor.id}"
-    Firehose.client.put( this, params ).done =>
-      @visitors.insertObject visitor
+    for visitor in visitors
+      visitor.set 'isBrandNew', false
+      visitor.set 'isOnline', true
 
-
-  ###
-  Removes a visitor's association with a company.
-  @param visitor [Firhose.Visitor] The visior to remove.
-  @return [jqXHR Promice] Promise
-  ###
-  removeVisitor: (visitor) ->
-    params =
-      route: "companies/#{@id}/visitors/#{visitor.id}"
-    Firehose.client.delete( this, params ).done =>
-      @visitors.dropObject visitor
+    @set 'onlineVisitors', visitors
+    @set 'isOnlineVisitorsFetched', true
 
 
 

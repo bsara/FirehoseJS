@@ -1,3 +1,3 @@
 class Firehose.ChatInteractionKind
-  CHAT       : 0
-  NAVIGATION : 1
+  @CHAT       : 0
+  @NAVIGATION : 1

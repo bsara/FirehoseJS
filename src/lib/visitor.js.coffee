@@ -10,6 +10,11 @@ class Firehose.Visitor extends Firehose.Object
   company: null
 
   ###
+  @property [boolean]
+  ###
+  isBrandNew: false
+
+  ###
   @property [String]
   ###
   email: null
@@ -158,6 +163,7 @@ class Firehose.Visitor extends Firehose.Object
   # @nodoc
   _setup: ->
     @typers = new Firehose.UniqueArray
+    @isBrandNew = true
 
 
   ###
@@ -173,16 +179,16 @@ class Firehose.Visitor extends Firehose.Object
 
 
   ###
-  Create a visitor that is populated with the given attributes.
+  Create a visitor that is populated with the given properties.
   @param id [String] The ID of the visitor you wish to retrieve.
   @param company [Firehose.Company] The company that contains the visiror being created.
-  @param attrs [Object] The attributes to apply to the visitor being created.
+  @param properties [Object] The properties to apply to the visitor being created.
   @return [Firehose.Visitor] The visitor object that was created.
   ###
-  @visitorWithIDAndAttributes: (id, company, attrs) ->
-    attrs.id = id
-    attrs.company = company
-    Firehose.Object._objectOfClassWithID Firehose.Visitor, attrs
+  @visitorWithIDAndProperties: (id, company, properties) ->
+    properties.id      = id
+    properties.company = company
+    Firehose.Object._objectOfClassWithID Firehose.Visitor, properties
 
 
   ###
@@ -240,7 +246,7 @@ class Firehose.Visitor extends Firehose.Object
 
 
   ###
-  @return [boolean] Whether or no the visitor is currently chatting with an agent.
+  @return [boolean] Whether or not the visitor is currently chatting with an agent.
   ###
   isCurrentlyChatting: ->
     @isOnline && @boxState == Firehose.VisitorBoxState.CHATTING
