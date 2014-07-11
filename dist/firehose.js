@@ -993,9 +993,9 @@ Firehose.Object = (function() {
 Firehose.ChatInteractionKind = (function() {
   function ChatInteractionKind() {}
 
-  ChatInteractionKind.CHAT = 0;
+  ChatInteractionKind.CHAT = 'chat';
 
-  ChatInteractionKind.NAVIGATION = 1;
+  ChatInteractionKind.NAVIGATION = 'navigation';
 
   return ChatInteractionKind;
 
