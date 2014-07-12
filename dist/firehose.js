@@ -5537,73 +5537,6 @@ var _ref,
   __hasProp = {}.hasOwnProperty,
   __extends = function(child, parent) { for (var key in parent) { if (__hasProp.call(parent, key)) child[key] = parent[key]; } function ctor() { this.constructor = child; } ctor.prototype = parent.prototype; child.prototype = new ctor(); child.__super__ = parent.prototype; return child; };
 
-Firehose.Typer = (function(_super) {
-  __extends(Typer, _super);
-
-  function Typer() {
-    _ref = Typer.__super__.constructor.apply(this, arguments);
-    return _ref;
-  }
-
-  Typer._firehoseType = "Typer";
-
-  /*
-  @property [Firehose.Visitor]
-  */
-
-
-  Typer.prototype.visitor = null;
-
-  /*
-  @property [Firehose.TyperKind]
-  */
-
-
-  Typer.prototype.kind = null;
-
-  /*
-  @param id [Number or String] The ID of the agent or visitor that the created typer represents.
-  @param visitor [Firehose.Visitor] The visitor that contains the typer to be created.
-  @param kind [Firehose.TyperKind] The type/kind of typer that the created typer represents.
-  */
-
-
-  Typer.createTyper = function(id, visitor, kind) {
-    return Firehose.Object._objectOfClassWithID(Firehose.Typer, {
-      id: id,
-      visitor: visitor
-    });
-  };
-
-  Typer.prototype.getTyperRepresented = function() {
-    if (kind === Firehose.TyperKind.AGENT) {
-      return Firehose.Agent.agentWithID(this.get('id'));
-    }
-    if (kind === Firehose.TyperKind.VISITOR) {
-      return this.get('visitor');
-    }
-    return null;
-  };
-
-  return Typer;
-
-})(Firehose.Object);
-
-Firehose.TyperKind = (function() {
-  function TyperKind() {}
-
-  TyperKind.AGENT = 'agent';
-
-  TyperKind.VISITOR = 'visitor';
-
-  return TyperKind;
-
-})();
-
-var _ref,
-  __hasProp = {}.hasOwnProperty,
-  __extends = function(child, parent) { for (var key in parent) { if (__hasProp.call(parent, key)) child[key] = parent[key]; } function ctor() { this.constructor = child; } ctor.prototype = parent.prototype; child.prototype = new ctor(); child.__super__ = parent.prototype; return child; };
-
 Firehose.Article = (function(_super) {
   __extends(Article, _super);
 
@@ -5939,11 +5872,18 @@ Firehose.Visitor = (function(_super) {
   Visitor.prototype.isOnline = false;
 
   /*
-  @property [Array<Firehose.Typer>]
+  @property [Array<Number>]
   */
 
 
   Visitor.prototype.typers = null;
+
+  /*
+  @property [boolean]
+  */
+
+
+  Visitor.prototype.isTyping = false;
 
   Visitor.prototype._chatInteractions = null;
 
@@ -6098,28 +6038,29 @@ Firehose.Visitor = (function(_super) {
 
   /*
   Adds a typer.
-  @param typer [Firehose.Typer]
+  @param typerAgentId [Number]
   */
 
 
-  Visitor.prototype.addTyper = function(typer) {
-    return this.typers.insertObject(typer);
+  Visitor.prototype.addAgentTyper = function(typerAgentId) {
+    return this.typers.insertObject(typerAgentId);
   };
 
   /*
   Removes a typer.
-  @param typer [Firehose.Typer]
+  @param typerAgentId [Number]
   */
 
 
-  Visitor.prototype.removeTyper = function(typer) {
-    return this.typers.removeObject(typer);
+  Visitor.prototype.removeAgentTyper = function(typerAgentId) {
+    return this.typers.removeObject(typerAgentId);
   };
 
   Visitor.prototype._populateWithJSON = function(json) {
     this._setIfNotNull('email', json.email);
     this._setIfNotNull('name', json.raw_name);
     this._setIfNotNull('avatarURL', json.avatar_url);
+    this._setIfNotNull('isTyping', json.is_typing);
     this._setIfNotNull('location', json.location_string);
     this._setIfNotNull('locationLongitude', json.longitude);
     this._setIfNotNull('locationLatitude', json.latitude);
@@ -6167,9 +6108,6 @@ Firehose.Visitor = (function(_super) {
     }
     this._setIfNotNull('needsResponse', json.needs_response);
     this._setIfNotNull('isOnline', json.is_online);
-    if (json.is_typing) {
-      this.addTyper(this);
-    }
     return Visitor.__super__._populateWithJSON.call(this, json);
   };
 

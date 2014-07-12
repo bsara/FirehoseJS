@@ -150,9 +150,14 @@ class Firehose.Visitor extends Firehose.Object
   isOnline: false
 
   ###
-  @property [Array<Firehose.Typer>]
+  @property [Array<Number>]
   ###
   typers: null
+
+  ###
+  @property [boolean]
+  ###
+  isTyping: false
 
   # remote arrays
 
@@ -277,18 +282,18 @@ class Firehose.Visitor extends Firehose.Object
 
   ###
   Adds a typer.
-  @param typer [Firehose.Typer]
+  @param typerAgentId [Number]
   ###
-  addTyper: (typer) ->
-    @typers.insertObject typer
+  addAgentTyper: (typerAgentId) ->
+    @typers.insertObject typerAgentId
 
 
   ###
   Removes a typer.
-  @param typer [Firehose.Typer]
+  @param typerAgentId [Number]
   ###
-  removeTyper: (typer) ->
-    @typers.removeObject typer
+  removeAgentTyper: (typerAgentId) ->
+    @typers.removeObject typerAgentId
 
 
   # @nodoc
@@ -296,6 +301,7 @@ class Firehose.Visitor extends Firehose.Object
     @_setIfNotNull 'email',                    json.email
     @_setIfNotNull 'name',                     json.raw_name
     @_setIfNotNull 'avatarURL',                json.avatar_url
+    @_setIfNotNull 'isTyping',                 json.is_typing
     @_setIfNotNull 'location',                 json.location_string
     @_setIfNotNull 'locationLongitude',        json.longitude
     @_setIfNotNull 'locationLatitude',         json.latitude
@@ -343,8 +349,6 @@ class Firehose.Visitor extends Firehose.Object
 
     @_setIfNotNull 'needsResponse',            json.needs_response
     @_setIfNotNull 'isOnline',                 json.is_online
-
-    @addTyper this if json.is_typing
 
     super json
 
