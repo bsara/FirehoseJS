@@ -78,9 +78,10 @@ class Firehose.ChatInteraction extends Firehose.Interaction
   @param agent [Firehose.Agent]
   @return [Firehose.ChatInteraction] The chat interaction object that was created.
   ###
-  @chatInteractionWithBody: (body, agent) ->
+  @chatInteractionWithBody: (body, visitor) ->
     # TODO: Implement
     null
+
 
 
   # @nodoc
