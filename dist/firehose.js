@@ -492,11 +492,17 @@ Firehose.Environment = (function() {
   Environment.prototype._portFor = function(app) {
     var environment, port;
     environment = this._environmentFor(app);
+    if (app === 'chatserver') {
+      if (environment === 'production') {
+        return ":443";
+      }
+      if (environment === 'beta') {
+        return ":8082";
+      }
+      return ":8080";
+    }
     if (environment === 'production' || environment === 'beta') {
       return "";
-    }
-    if (app === 'chatserver') {
-      return ":8080";
     }
     port = ":";
     port += this._typeNumber[this._appTypes[app]];

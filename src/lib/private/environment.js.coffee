@@ -210,8 +210,12 @@ class Firehose.Environment
   _portFor: (app) ->
     environment = this._environmentFor app
 
+    if app == 'chatserver'
+      return ":443"  if environment == 'production'
+      return ":8082" if environment == 'beta'
+      return ":8080"
+
     return "" if environment == 'production' or environment == 'beta'
-    return ":8080" if app == 'chatserver'
 
     port = ":"
     port += @_typeNumber[@_appTypes[app]]
