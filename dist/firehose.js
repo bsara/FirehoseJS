@@ -2982,7 +2982,7 @@ Firehose.ChatInteraction = (function(_super) {
   */
 
 
-  ChatInteraction.chatInteractionWithBody = function(body, agent) {
+  ChatInteraction.chatInteractionWithBody = function(body, visitor) {
     return null;
   };
 
