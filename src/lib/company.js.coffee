@@ -433,9 +433,9 @@ class Firehose.Company extends Firehose.Object
   @param visitor [Firehose.Visitor] The visitor to add.
   ###
   addOnlineVisitor: (visitor) ->
+    @onlineVisitors.insertObject visitor
     visitor.set 'isBrandNew', false
     visitor.set 'isOnline', true
-    @onlineVisitors.insertObject visitor
 
 
   ###
@@ -444,23 +444,25 @@ class Firehose.Company extends Firehose.Object
   ###
   removeOnlineVisitor: (visitor) ->
     @onlineVisitors.dropObject visitor
+    visitor.set 'isOnline', false
 
 
   ###
   @param visitors [Array<Firehose.Visitor>]
   ###
-  resetOnlineVisitorsWithArray: (visitors) ->
+  setOnlineVisitors: (visitors) ->
     @set 'isOnlineVisitorsFetched', false
 
     if @onlineVisitors?
       for visitor in @onlineVisitors
         visitor.set 'isOnline', false
 
+    @set 'onlineVisitors', visitors
+
     for visitor in visitors
       visitor.set 'isBrandNew', false
       visitor.set 'isOnline', true
 
-    @set 'onlineVisitors', visitors
     @set 'isOnlineVisitorsFetched', true
 
 

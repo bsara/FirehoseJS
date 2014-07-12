@@ -1992,9 +1992,9 @@ Firehose.Company = (function(_super) {
 
 
   Company.prototype.addOnlineVisitor = function(visitor) {
+    this.onlineVisitors.insertObject(visitor);
     visitor.set('isBrandNew', false);
-    visitor.set('isOnline', true);
-    return this.onlineVisitors.insertObject(visitor);
+    return visitor.set('isOnline', true);
   };
 
   /*
@@ -2004,7 +2004,8 @@ Firehose.Company = (function(_super) {
 
 
   Company.prototype.removeOnlineVisitor = function(visitor) {
-    return this.onlineVisitors.dropObject(visitor);
+    this.onlineVisitors.dropObject(visitor);
+    return visitor.set('isOnline', false);
   };
 
   /*
@@ -2012,7 +2013,7 @@ Firehose.Company = (function(_super) {
   */
 
 
-  Company.prototype.resetOnlineVisitorsWithArray = function(visitors) {
+  Company.prototype.setOnlineVisitors = function(visitors) {
     var visitor, _i, _j, _len, _len1, _ref1;
     this.set('isOnlineVisitorsFetched', false);
     if (this.onlineVisitors != null) {
@@ -2022,12 +2023,12 @@ Firehose.Company = (function(_super) {
         visitor.set('isOnline', false);
       }
     }
+    this.set('onlineVisitors', visitors);
     for (_j = 0, _len1 = visitors.length; _j < _len1; _j++) {
       visitor = visitors[_j];
       visitor.set('isBrandNew', false);
       visitor.set('isOnline', true);
     }
-    this.set('onlineVisitors', visitors);
     return this.set('isOnlineVisitorsFetched', true);
   };
 
