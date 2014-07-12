@@ -302,30 +302,30 @@ class Firehose.Visitor extends Firehose.Object
     # TODO: How to handle timeZone???
     #@_setIfNotNull 'timeZone',                 json.time_zone
     @_setIfNotNull 'referringURL',             json.referrer_url
-    @_setIfNotNull 'connectedAt',              @_date json.connected_at    if json.connected_at?
-    @_setIfNotNull 'disconnectedAt',           @_date json.disconnected_at if json.disconnected_at?
+    @set           'connectedAt',              @_date json.connected_at    if json.connected_at?
+    @set           'disconnectedAt',           @_date json.disconnected_at if json.disconnected_at?
     @_setIfNotNull 'currentURL',               json.current_url
     @_setIfNotNull 'ipAddress',                json.ip
 
     # TODO: what to do with custom_attributes???
     #@_setIfNotNull 'customAttributes',         json.custom_attributes
 
-    @_setIfNotNull 'visitedCurrentURLAt',      @_date json.visited_current_url_at if json.visited_current_url_at?
+    @set           'visitedCurrentURLAt',      @_date json.visited_current_url_at if json.visited_current_url_at?
 
     @_setIfNotNull 'boxState',                 json.box_state
 
     @_setIfNotNull 'mostRecentChat',           json.most_recent_chat
-    @_setIfNotNull 'mostRecentChatReceivedAt', @_date json.most_recent_chat_received_at if json.most_recent_chat_received_at?
+    @set           'mostRecentChatReceivedAt', @_date json.most_recent_chat_received_at if json.most_recent_chat_received_at?
 
     if json.env?
-      if json.browser?
+      if json.env.browser?
         @_setIfNotNull 'browserName',            json.env.browser.name
         @_setIfNotNull 'browserVersion',         json.env.browser.version
         @_setIfNotNull 'browserMajor',           json.env.browser.major
-      if json.os?
+      if json.env.os?
         @_setIfNotNull 'operatingSystemName',    json.env.os.name
         @_setIfNotNull 'operatingSystemVersion', json.env.os.version
-      if json.device?
+      if json.env.device?
         @_setIfNotNull 'deviceModel',            json.env.device.model
         @_setIfNotNull 'deviceType',             json.env.device.type
         @_setIfNotNull 'deviceVendor',           json.env.device.vendor

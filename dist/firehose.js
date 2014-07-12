@@ -6054,32 +6054,32 @@ Firehose.Visitor = (function(_super) {
     this._setIfNotNull('locationLatitude', json.latitude);
     this._setIfNotNull('referringURL', json.referrer_url);
     if (json.connected_at != null) {
-      this._setIfNotNull('connectedAt', this._date(json.connected_at));
+      this.set('connectedAt', this._date(json.connected_at));
     }
     if (json.disconnected_at != null) {
-      this._setIfNotNull('disconnectedAt', this._date(json.disconnected_at));
+      this.set('disconnectedAt', this._date(json.disconnected_at));
     }
     this._setIfNotNull('currentURL', json.current_url);
     this._setIfNotNull('ipAddress', json.ip);
     if (json.visited_current_url_at != null) {
-      this._setIfNotNull('visitedCurrentURLAt', this._date(json.visited_current_url_at));
+      this.set('visitedCurrentURLAt', this._date(json.visited_current_url_at));
     }
     this._setIfNotNull('boxState', json.box_state);
     this._setIfNotNull('mostRecentChat', json.most_recent_chat);
     if (json.most_recent_chat_received_at != null) {
-      this._setIfNotNull('mostRecentChatReceivedAt', this._date(json.most_recent_chat_received_at));
+      this.set('mostRecentChatReceivedAt', this._date(json.most_recent_chat_received_at));
     }
     if (json.env != null) {
-      if (json.browser != null) {
+      if (json.env.browser != null) {
         this._setIfNotNull('browserName', json.env.browser.name);
         this._setIfNotNull('browserVersion', json.env.browser.version);
         this._setIfNotNull('browserMajor', json.env.browser.major);
       }
-      if (json.os != null) {
+      if (json.env.os != null) {
         this._setIfNotNull('operatingSystemName', json.env.os.name);
         this._setIfNotNull('operatingSystemVersion', json.env.os.version);
       }
-      if (json.device != null) {
+      if (json.env.device != null) {
         this._setIfNotNull('deviceModel', json.env.device.model);
         this._setIfNotNull('deviceType', json.env.device.type);
         this._setIfNotNull('deviceVendor', json.env.device.vendor);
