@@ -86,6 +86,8 @@ module.exports = (grunt) ->
           files.push "lib/tag"
           files.push "lib/twitter_account"
           files.push "lib/twitter_interaction"
+          files.push "lib/typer"
+          files.push "lib/typer_kind"
           files.push "lib/article"
           files.push "lib/visitor"
           sources = []

@@ -150,7 +150,7 @@ class Firehose.Visitor extends Firehose.Object
   isOnline: false
 
   ###
-  @property [Array]
+  @property [Array<Firehose.Typer>]
   ###
   typers: null
 
@@ -277,18 +277,18 @@ class Firehose.Visitor extends Firehose.Object
 
   ###
   Adds a typer.
-  @param typer [Firehose.Object]
+  @param typer [Firehose.Typer]
   ###
   addTyper: (typer) ->
-    # TODO: Implement
+    @typers.insertObject typer
 
 
   ###
   Removes a typer.
-  @param typer [Firehose.Object]
+  @param typer [Firehose.Typer]
   ###
   removeTyper: (typer) ->
-    # TODO: Implement
+    @typers.removeObject typer
 
 
   # @nodoc
