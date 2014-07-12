@@ -2926,6 +2926,21 @@ Firehose.ChatInteraction = (function(_super) {
   ChatInteraction.prototype.senderDisplayName = null;
 
   /*
+  If null, then the sender is the chat interaction's visitor
+  @property [Number]
+  */
+
+
+  ChatInteraction.prototype.senderId = null;
+
+  /*
+  @property [boolean]
+  */
+
+
+  ChatInteraction.prototype.isSenderAnAgent = false;
+
+  /*
   @property [Firehose.ChatInteractionKind]
   */
 
@@ -2955,7 +2970,7 @@ Firehose.ChatInteraction = (function(_super) {
 
   ChatInteraction.chatInteractionWithJSON = function(json, visitor) {
     var chatInteraction;
-    chatInteraction = Firehose.ChatInteraction._chatInteractionWithID(json.id, visitor);
+    chatInteraction = Firehose.ChatInteraction.chatInteractionWithID(json.id, visitor);
     chatInteraction._populateWithJSON(json);
     return chatInteraction;
   };
@@ -2973,15 +2988,23 @@ Firehose.ChatInteraction = (function(_super) {
 
   ChatInteraction.prototype._populateWithJSON = function(json) {
     var chatJSON;
-    if (json.chat_interaction != null) {
-      chatJSON = json.chat_interaction;
-      this._setIfNotNull("deliveredAt", this._date(chatJSON.delivered_at));
-      this._setIfNotNull("readAt", this._date(chatJSON.read_at));
-      this._setIfNotNull("editedAt", this._date(chatJSON.edited_at));
-      this._setIfNotNull("failedAt", this._date(chatJSON.failed_at));
-      this._setIfNotNull("senderDisplayName", chatJSON.sender_display_name);
-      this._setIfNotNull("kind", chatJSON.kind);
+    chatJSON = json.chat_interaction != null ? json.chat_interaction : json;
+    if (chatJSON.delivered_at != null) {
+      this.set('deliveredAt', this._date(chatJSON.delivered_at));
     }
+    if (chatJSON.read_at != null) {
+      this.set('readAt', this._date(chatJSON.read_at));
+    }
+    if (chatJSON.edited_at != null) {
+      this.set('editedAt', this._date(chatJSON.edited_at));
+    }
+    if (chatJSON.failed_at != null) {
+      this.set('failedAt', this._date(chatJSON.failed_at));
+    }
+    this._setIfNotNull('senderDisplayName', chatJSON.sender_display_name);
+    this._setIfNotNull('senderId', chatJSON.sender_id);
+    this._setIfNotNull('isSenderAnAgent', chatJSON.sender_is_agent);
+    this._setIfNotNull('kind', chatJSON.kind);
     return ChatInteraction.__super__._populateWithJSON.call(this, json);
   };
 
@@ -5979,20 +6002,30 @@ Firehose.Visitor = (function(_super) {
       this._setIfNotNull('_chatInteractions', new Firehose.RemoteArray("visitors/" + this.id + "/chat_interactions", params, function(json) {
         return Firehose.ChatInteraction.chatInteractionWithID(json.id, _this);
       }));
-      this._chatInteractions.sortOn('deliveredAt');
+      this._chatInteractions.sortOn('createdAt', 'deliveredAt');
     }
     return this._chatInteractions;
   };
 
   /*
-  When you first load a visitor and you have a lot of interactions you don't want to
-  add one-by-one this is the best way to add them all at once so the interface doesn't
-  animate the addition of each one.
-  @param chatInteractions [Array<Firehose.ChatInteraction>]
+  Adds a chat interaction to be connected with the visitor.
+  @param chatInteraction [Firehose.ChatInteraction]
   */
 
 
-  Visitor.prototype.addChatInteractions = function(chatInteractions) {};
+  Visitor.prototype.addChatInteraction = function(chatInteraction) {
+    return this._chatInteractions.insertObject(chatInteraction);
+  };
+
+  /*
+  Removes a chat interaction connected with the visitor.
+  @param chatInteraction [Firehose.ChatInteraction]
+  */
+
+
+  Visitor.prototype.removeChatInteraction = function(chatInteraction) {
+    return this._chatInteractions.removeObject(chatInteraction);
+  };
 
   /*
   @return [boolean] Whether or not the visitor is currently chatting with an agent.
@@ -6015,15 +6048,6 @@ Firehose.Visitor = (function(_super) {
     } else {
       return this.name;
     }
-  };
-
-  /*
-  @return [Firehose.ChatInteraction] Only available if chats have been fetched for this visitor.
-  */
-
-
-  Visitor.prototype.getMostRecentChatInteraction = function() {
-    return null;
   };
 
   /*

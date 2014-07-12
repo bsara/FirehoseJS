@@ -35,6 +35,17 @@ class Firehose.ChatInteraction extends Firehose.Interaction
   senderDisplayName: null
 
   ###
+  If null, then the sender is the chat interaction's visitor
+  @property [Number]
+  ###
+  senderId: null
+
+  ###
+  @property [boolean]
+  ###
+  isSenderAnAgent: false
+
+  ###
   @property [Firehose.ChatInteractionKind]
   ###
   kind: null
@@ -57,7 +68,7 @@ class Firehose.ChatInteraction extends Firehose.Interaction
   @return [Firehose.ChatInteraction] The chat interaction object that was created.
   ###
   @chatInteractionWithJSON: (json, visitor) ->
-    chatInteraction = Firehose.ChatInteraction._chatInteractionWithID json.id, visitor
+    chatInteraction = Firehose.ChatInteraction.chatInteractionWithID json.id, visitor
     chatInteraction._populateWithJSON json
     chatInteraction
 
@@ -74,14 +85,17 @@ class Firehose.ChatInteraction extends Firehose.Interaction
 
   # @nodoc
   _populateWithJSON: (json) ->
-    if json.chat_interaction?
-      chatJSON = json.chat_interaction
-      @_setIfNotNull "deliveredAt",       @_date chatJSON.delivered_at
-      @_setIfNotNull "readAt",            @_date chatJSON.read_at
-      @_setIfNotNull "editedAt",          @_date chatJSON.edited_at
-      @_setIfNotNull "failedAt",          @_date chatJSON.failed_at
-      @_setIfNotNull "senderDisplayName", chatJSON.sender_display_name
-      @_setIfNotNull "kind",              chatJSON.kind
+    chatJSON = if json.chat_interaction? then json.chat_interaction else json
+
+    @set           'deliveredAt',       @_date chatJSON.delivered_at if chatJSON.delivered_at?
+    @set           'readAt',            @_date chatJSON.read_at      if chatJSON.read_at?
+    @set           'editedAt',          @_date chatJSON.edited_at    if chatJSON.edited_at?
+    @set           'failedAt',          @_date chatJSON.failed_at    if chatJSON.failed_at?
+    @_setIfNotNull 'senderDisplayName', chatJSON.sender_display_name
+    @_setIfNotNull 'senderId',          chatJSON.sender_id
+    @_setIfNotNull 'isSenderAnAgent',   chatJSON.sender_is_agent
+    @_setIfNotNull 'kind',              chatJSON.kind
+
     super json
 
 

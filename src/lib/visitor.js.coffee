@@ -235,19 +235,24 @@ class Firehose.Visitor extends Firehose.Object
         server: 'chatserver'
       @_setIfNotNull '_chatInteractions', new Firehose.RemoteArray "visitors/#{@id}/chat_interactions", params, (json) =>
         Firehose.ChatInteraction.chatInteractionWithID json.id, this
-      @_chatInteractions.sortOn 'deliveredAt'
+      @_chatInteractions.sortOn 'createdAt', 'deliveredAt'
     @_chatInteractions
 
 
   ###
-  When you first load a visitor and you have a lot of interactions you don't want to
-  add one-by-one this is the best way to add them all at once so the interface doesn't
-  animate the addition of each one.
-  @param chatInteractions [Array<Firehose.ChatInteraction>]
+  Adds a chat interaction to be connected with the visitor.
+  @param chatInteraction [Firehose.ChatInteraction]
   ###
-  addChatInteractions: (chatInteractions) ->
-    # TODO: Implement
-    return
+  addChatInteraction: (chatInteraction) ->
+    @_chatInteractions.insertObject chatInteraction
+
+
+  ###
+  Removes a chat interaction connected with the visitor.
+  @param chatInteraction [Firehose.ChatInteraction]
+  ###
+  removeChatInteraction: (chatInteraction) ->
+    @_chatInteractions.removeObject chatInteraction
 
 
   ###
@@ -262,14 +267,6 @@ class Firehose.Visitor extends Firehose.Object
   ###
   getPreferredDisplayName: ->
     if @location?.get('length') > 0 then @location else @name
-
-
-  ###
-  @return [Firehose.ChatInteraction] Only available if chats have been fetched for this visitor.
-  ###
-  getMostRecentChatInteraction: ->
-    # TODO: Implement
-    null
 
 
   ###
