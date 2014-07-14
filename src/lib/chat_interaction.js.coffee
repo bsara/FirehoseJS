@@ -73,14 +73,23 @@ class Firehose.ChatInteraction extends Firehose.Interaction
     chatInteraction
 
 
-  ###
-  @param body [String]
-  @param agent [Firehose.Agent]
-  @return [Firehose.ChatInteraction] The chat interaction object that was created.
-  ###
-  @chatInteractionWithBody: (body, visitor) ->
-    # TODO: Implement
-    null
+  # @nodoc
+  getNewMessageJSON: ->
+    json =
+      message_id : @get 'id'
+      body       : @get 'body'
+      kind       : @get 'kind'
+
+    if @get 'isSenderAnAgent'
+      json.visitor_id = @get('visitor')?.get 'id'
+      json.agent =
+        id           : @get 'senderId'
+        display_name : @get 'senderDisplayName'
+    else
+      # TODO: Implement once it is needed
+
+    json
+
 
 
 

@@ -2981,15 +2981,23 @@ Firehose.ChatInteraction = (function(_super) {
     return chatInteraction;
   };
 
-  /*
-  @param body [String]
-  @param agent [Firehose.Agent]
-  @return [Firehose.ChatInteraction] The chat interaction object that was created.
-  */
+  ChatInteraction.prototype.getNewMessageJSON = function() {
+    var json, _ref1;
+    json = {
+      message_id: this.get('id'),
+      body: this.get('body'),
+      kind: this.get('kind')
+    };
+    if (this.get('isSenderAnAgent')) {
+      json.visitor_id = (_ref1 = this.get('visitor')) != null ? _ref1.get('id') : void 0;
+      json.agent = {
+        id: this.get('senderId'),
+        display_name: this.get('senderDisplayName')
+      };
+    } else {
 
-
-  ChatInteraction.chatInteractionWithBody = function(body, visitor) {
-    return null;
+    }
+    return json;
   };
 
   ChatInteraction.prototype._populateWithJSON = function(json) {
