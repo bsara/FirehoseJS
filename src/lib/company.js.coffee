@@ -413,15 +413,10 @@ class Firehose.Company extends Firehose.Object
     Firehose.client.get( this, params ).done (json) =>
       onlineVisitorsTemp = new Firehose.UniqueArray
       for visitorJSON in json
-        visitorProperties =
-          id                       : visitorJSON.visitor_id
-          needsResponse            : visitorJSON.needs_response
-          location                 : visitorJSON.location_string
-          mostRecentChat           : visitorJSON.most_recent_chat
-          mostRecentChatRecievedAt : @_date visitorJSON.most_recent_chat_received_at if visitorJSON.most_recent_chat_received_at?
-          isOnline                 : true
-        visitor = Firehose.Visitor.visitorWithIDAndProperties visitorJSON.visitor_id, this, visitorProperties
-        visitor.set 'isBrandNew', false
+        visitorJSON.id = visitorJSON.visitor_id
+        visitor = Firehose.Visitor.visitorWithJSON visitorJSON, this
+        visitor.set 'isOnline', true
+        visitor.set 'isBrandNew', !visitor.mostRecentChatRecievedAt?
         onlineVisitorsTemp.push visitor
 
       @set 'onlineVisitors', onlineVisitorsTemp

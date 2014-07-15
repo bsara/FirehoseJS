@@ -1971,20 +1971,14 @@ Firehose.Company = (function(_super) {
       route: "online_visitors"
     };
     return Firehose.client.get(this, params).done(function(json) {
-      var onlineVisitorsTemp, visitor, visitorJSON, visitorProperties, _i, _len;
+      var onlineVisitorsTemp, visitor, visitorJSON, _i, _len;
       onlineVisitorsTemp = new Firehose.UniqueArray;
       for (_i = 0, _len = json.length; _i < _len; _i++) {
         visitorJSON = json[_i];
-        visitorProperties = {
-          id: visitorJSON.visitor_id,
-          needsResponse: visitorJSON.needs_response,
-          location: visitorJSON.location_string,
-          mostRecentChat: visitorJSON.most_recent_chat,
-          mostRecentChatRecievedAt: visitorJSON.most_recent_chat_received_at != null ? _this._date(visitorJSON.most_recent_chat_received_at) : void 0,
-          isOnline: true
-        };
-        visitor = Firehose.Visitor.visitorWithIDAndProperties(visitorJSON.visitor_id, _this, visitorProperties);
-        visitor.set('isBrandNew', false);
+        visitorJSON.id = visitorJSON.visitor_id;
+        visitor = Firehose.Visitor.visitorWithJSON(visitorJSON, _this);
+        visitor.set('isOnline', true);
+        visitor.set('isBrandNew', visitor.mostRecentChatRecievedAt == null);
         onlineVisitorsTemp.push(visitor);
       }
       _this.set('onlineVisitors', onlineVisitorsTemp);
