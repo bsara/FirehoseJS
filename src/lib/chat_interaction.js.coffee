@@ -10,6 +10,11 @@ class Firehose.ChatInteraction extends Firehose.Interaction
   visitor: null
 
   ###
+  @propety [Firehose.Agent]
+  ###
+  agent: null
+
+  ###
   @property [Date]
   ###
   deliveredAt: null
@@ -33,17 +38,6 @@ class Firehose.ChatInteraction extends Firehose.Interaction
   @property [String]
   ###
   senderDisplayName: null
-
-  ###
-  If null, then the sender is the chat interaction's visitor
-  @property [Number]
-  ###
-  senderId: null
-
-  ###
-  @property [boolean]
-  ###
-  isSenderAnAgent: false
 
   ###
   @property [Firehose.ChatInteractionKind]
@@ -80,10 +74,11 @@ class Firehose.ChatInteraction extends Firehose.Interaction
       body       : @get 'body'
       kind       : @get 'kind'
 
-    if @get 'isSenderAnAgent'
+    agent = @get('agent')
+    if agent?
       json.visitor_id = @get('visitor')?.get 'id'
       json.agent =
-        id           : @get 'senderId'
+        id           : agent.get 'id'
         display_name : @get 'senderDisplayName'
     else
       # TODO: Implement once it is needed
@@ -102,9 +97,8 @@ class Firehose.ChatInteraction extends Firehose.Interaction
     @set           'editedAt',          @_date chatJSON.edited_at    if chatJSON.edited_at?
     @set           'failedAt',          @_date chatJSON.failed_at    if chatJSON.failed_at?
     @_setIfNotNull 'senderDisplayName', chatJSON.sender_display_name
-    @_setIfNotNull 'senderId',          chatJSON.sender_id
-    @_setIfNotNull 'isSenderAnAgent',   chatJSON.sender_is_agent
     @_setIfNotNull 'kind',              chatJSON.kind
+    @_setIfNotNull 'agent',             Firehose.Agent.agentWithID(chatJSON.agent_id, @visitor.company) if chatJSON.agent_id?
 
     super json
 

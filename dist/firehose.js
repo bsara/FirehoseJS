@@ -2897,6 +2897,13 @@ Firehose.ChatInteraction = (function(_super) {
   ChatInteraction.prototype.visitor = null;
 
   /*
+  @propety [Firehose.Agent]
+  */
+
+
+  ChatInteraction.prototype.agent = null;
+
+  /*
   @property [Date]
   */
 
@@ -2930,21 +2937,6 @@ Firehose.ChatInteraction = (function(_super) {
 
 
   ChatInteraction.prototype.senderDisplayName = null;
-
-  /*
-  If null, then the sender is the chat interaction's visitor
-  @property [Number]
-  */
-
-
-  ChatInteraction.prototype.senderId = null;
-
-  /*
-  @property [boolean]
-  */
-
-
-  ChatInteraction.prototype.isSenderAnAgent = false;
 
   /*
   @property [Firehose.ChatInteractionKind]
@@ -2982,16 +2974,17 @@ Firehose.ChatInteraction = (function(_super) {
   };
 
   ChatInteraction.prototype.getNewMessageJSON = function() {
-    var json, _ref1;
+    var agent, json, _ref1;
     json = {
       message_id: this.get('id'),
       body: this.get('body'),
       kind: this.get('kind')
     };
-    if (this.get('isSenderAnAgent')) {
+    agent = this.get('agent');
+    if (agent != null) {
       json.visitor_id = (_ref1 = this.get('visitor')) != null ? _ref1.get('id') : void 0;
       json.agent = {
-        id: this.get('senderId'),
+        id: agent.get('id'),
         display_name: this.get('senderDisplayName')
       };
     } else {
@@ -3016,9 +3009,10 @@ Firehose.ChatInteraction = (function(_super) {
       this.set('failedAt', this._date(chatJSON.failed_at));
     }
     this._setIfNotNull('senderDisplayName', chatJSON.sender_display_name);
-    this._setIfNotNull('senderId', chatJSON.sender_id);
-    this._setIfNotNull('isSenderAnAgent', chatJSON.sender_is_agent);
     this._setIfNotNull('kind', chatJSON.kind);
+    if (chatJSON.agent_id != null) {
+      this._setIfNotNull('agent', Firehose.Agent.agentWithID(chatJSON.agent_id, this.visitor.company));
+    }
     return ChatInteraction.__super__._populateWithJSON.call(this, json);
   };
 
