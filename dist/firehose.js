@@ -2144,35 +2144,34 @@ Firehose.Company = (function(_super) {
   Company.prototype._populateWithJSON = function(json) {
     var _ref1,
       _this = this;
-    this._setIfNotNull("title", json.title);
+    this._setIfNotNull('title', json.title);
     if (this.token == null) {
-      this._setIfNotNull("token", json.token);
+      this._setIfNotNull('token', json.token);
     }
-    if (json.last_fetch_at != null) {
-      this._setIfNotNull("lastFetchAt", this._date(json.last_fetch_at));
-    }
+    this._setIfNotNull('lastFetchAt', this._date(json.last_fetch_at));
     if (this.forwardingEmailAddress == null) {
-      this._setIfNotNull("forwardingEmailAddress", json.forwarding_email);
+      this._setIfNotNull('forwardingEmailAddress', json.forwarding_email);
     }
-    this._setIfNotNull("unresolvedCount", json.unresolved_count);
-    this._setIfNotNull("isBrandNew", json.is_brand_new);
+    this._setIfNotNull('unresolvedCount', json.unresolved_count);
+    this._setIfNotNull('isBrandNew', json.is_brand_new);
+    this._setIfNotNull('isPremium', json.is_premium);
     this._setIfNotNull("fetchAutomatically", (_ref1 = json.company_settings) != null ? _ref1.fetch_automatically : void 0);
-    this._populateAssociatedObjects(this, "agents", json.agents, function(json) {
+    this._populateAssociatedObjects(this, 'agents', json.agents, function(json) {
       var agent;
       agent = Firehose.Agent.agentWithID(json.id);
       agent.companies.insertObject(_this);
       return agent;
     });
-    this._populateAssociatedObjects(this, "products", json.products, function(json) {
+    this._populateAssociatedObjects(this, 'products', json.products, function(json) {
       return Firehose.Product.productWithID(json.id, _this);
     });
-    this._populateAssociatedObjects(this, "agentInvites", json.agent_invites, function(json) {
+    this._populateAssociatedObjects(this, 'agentInvites', json.agent_invites, function(json) {
       return Firehose.AgentInvite._agentInviteWithID(json.id, _this);
     });
-    this._populateAssociatedObjects(this, "tags", json.tags, function(json) {
+    this._populateAssociatedObjects(this, 'tags', json.tags, function(json) {
       return Firehose.Tag._tagWithID(json.id, _this);
     });
-    this._populateAssociatedObjects(this, "cannedResponses", json.canned_responses, function(json) {
+    this._populateAssociatedObjects(this, 'cannedResponses', json.canned_responses, function(json) {
       return Firehose.CannedResponse._cannedResponseWithID(json.id, _this);
     });
     Firehose.client.billingAccessToken = this.token;

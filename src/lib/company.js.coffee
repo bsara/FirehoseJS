@@ -550,31 +550,33 @@ class Firehose.Company extends Firehose.Object
 
   # @nodoc
   _populateWithJSON: (json) ->
-    @_setIfNotNull "title",                         json.title
-    @_setIfNotNull "token",                         json.token                  unless @token?
-    @_setIfNotNull "lastFetchAt",                   @_date(json.last_fetch_at)  if json.last_fetch_at?
-    @_setIfNotNull "forwardingEmailAddress",        json.forwarding_email       unless @forwardingEmailAddress?
-    @_setIfNotNull "unresolvedCount",               json.unresolved_count
-    @_setIfNotNull "isBrandNew",                    json.is_brand_new
+    @_setIfNotNull 'title',                  json.title
+    @_setIfNotNull 'token',                  json.token unless @token?
+    @_setIfNotNull 'lastFetchAt',            @_date json.last_fetch_at
+    @_setIfNotNull 'forwardingEmailAddress', json.forwarding_email unless @forwardingEmailAddress?
+    @_setIfNotNull 'unresolvedCount',        json.unresolved_count
+    @_setIfNotNull 'isBrandNew',             json.is_brand_new
+    @_setIfNotNull 'isPremium',              json.is_premium
 
     # settings
-    @_setIfNotNull "fetchAutomatically",            json.company_settings?.fetch_automatically
+    @_setIfNotNull "fetchAutomatically",     json.company_settings?.fetch_automatically
 
-    @_populateAssociatedObjects this, "agents", json.agents, (json) =>
+
+    @_populateAssociatedObjects this, 'agents', json.agents, (json) =>
       agent = Firehose.Agent.agentWithID json.id
       agent.companies.insertObject this
       agent
 
-    @_populateAssociatedObjects this, "products", json.products, (json) =>
+    @_populateAssociatedObjects this, 'products', json.products, (json) =>
       Firehose.Product.productWithID json.id, this
 
-    @_populateAssociatedObjects this, "agentInvites", json.agent_invites, (json) =>
+    @_populateAssociatedObjects this, 'agentInvites', json.agent_invites, (json) =>
       Firehose.AgentInvite._agentInviteWithID json.id, this
 
-    @_populateAssociatedObjects this, "tags", json.tags, (json) =>
+    @_populateAssociatedObjects this, 'tags', json.tags, (json) =>
       Firehose.Tag._tagWithID json.id, this
 
-    @_populateAssociatedObjects this, "cannedResponses", json.canned_responses, (json) =>
+    @_populateAssociatedObjects this, 'cannedResponses', json.canned_responses, (json) =>
       Firehose.CannedResponse._cannedResponseWithID json.id, this
 
     Firehose.client.billingAccessToken = @token
