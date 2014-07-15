@@ -92,10 +92,10 @@ class Firehose.ChatInteraction extends Firehose.Interaction
   _populateWithJSON: (json) ->
     chatJSON = if json.chat_interaction? then json.chat_interaction else json
 
-    @set           'deliveredAt',       @_date chatJSON.delivered_at if chatJSON.delivered_at?
-    @set           'readAt',            @_date chatJSON.read_at      if chatJSON.read_at?
-    @set           'editedAt',          @_date chatJSON.edited_at    if chatJSON.edited_at?
-    @set           'failedAt',          @_date chatJSON.failed_at    if chatJSON.failed_at?
+    @_setIfNotNull 'deliveredAt',       @_date chatJSON.delivered_at
+    @_setIfNotNull 'readAt',            @_date chatJSON.read_at
+    @_setIfNotNull 'editedAt',          @_date chatJSON.edited_at
+    @_setIfNotNull 'failedAt',          @_date chatJSON.failed_at
     @_setIfNotNull 'senderDisplayName', chatJSON.sender_display_name
     @_setIfNotNull 'kind',              chatJSON.kind
     @_setIfNotNull 'agent',             Firehose.Agent.agentWithID(chatJSON.agent_id, @visitor.company) if chatJSON.agent_id?

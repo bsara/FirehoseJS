@@ -305,20 +305,20 @@ class Firehose.Visitor extends Firehose.Object
     # TODO: How to handle timeZone???
     #@_setIfNotNull 'timeZone',                 json.time_zone
     @_setIfNotNull 'referringURL',             json.referrer_url
-    @set           'connectedAt',              @_date json.connected_at    if json.connected_at?
-    @set           'disconnectedAt',           @_date json.disconnected_at if json.disconnected_at?
+    @_setIfNotNull 'connectedAt',              @_date json.connected_at
+    @_setIfNotNull 'disconnectedAt',           @_date json.disconnected_at
     @_setIfNotNull 'currentURL',               json.current_url
     @_setIfNotNull 'ipAddress',                json.ip
 
     # TODO: what to do with custom_attributes???
     #@_setIfNotNull 'customAttributes',         json.custom_attributes
 
-    @set           'visitedCurrentURLAt',      @_date json.visited_current_url_at if json.visited_current_url_at?
+    @_setIfNotNull 'visitedCurrentURLAt',      @_date json.visited_current_url_at
 
     @_setIfNotNull 'boxState',                 json.box_state
 
     @_setIfNotNull 'mostRecentChat',           json.most_recent_chat
-    @set           'mostRecentChatReceivedAt', @_date json.most_recent_chat_received_at if json.most_recent_chat_received_at?
+    @_setIfNotNull 'mostRecentChatReceivedAt', @_date json.most_recent_chat_received_at
 
     if json.env?
       if json.env.browser?

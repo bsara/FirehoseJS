@@ -953,9 +953,7 @@ Firehose.Object = (function() {
     if (this.id == null) {
       this._setIfNotNull("id", json.id);
     }
-    if (!this.createdAt) {
-      return this._setIfNotNull("createdAt", this._date(json.created_at));
-    }
+    return this._setIfNotNull("createdAt", this._date(json.created_at));
   };
 
   Object.prototype._setIfNotNull = function(key, value) {
@@ -984,6 +982,9 @@ Firehose.Object = (function() {
 
   Object.prototype._date = function(dateString) {
     var date;
+    if ((dateString == null) || dateString.trim().length === 0) {
+      return null;
+    }
     date = new Date(dateString);
     if (isNaN(date)) {
       return null;
@@ -2996,18 +2997,10 @@ Firehose.ChatInteraction = (function(_super) {
   ChatInteraction.prototype._populateWithJSON = function(json) {
     var chatJSON;
     chatJSON = json.chat_interaction != null ? json.chat_interaction : json;
-    if (chatJSON.delivered_at != null) {
-      this.set('deliveredAt', this._date(chatJSON.delivered_at));
-    }
-    if (chatJSON.read_at != null) {
-      this.set('readAt', this._date(chatJSON.read_at));
-    }
-    if (chatJSON.edited_at != null) {
-      this.set('editedAt', this._date(chatJSON.edited_at));
-    }
-    if (chatJSON.failed_at != null) {
-      this.set('failedAt', this._date(chatJSON.failed_at));
-    }
+    this._setIfNotNull('deliveredAt', this._date(chatJSON.delivered_at));
+    this._setIfNotNull('readAt', this._date(chatJSON.read_at));
+    this._setIfNotNull('editedAt', this._date(chatJSON.edited_at));
+    this._setIfNotNull('failedAt', this._date(chatJSON.failed_at));
     this._setIfNotNull('senderDisplayName', chatJSON.sender_display_name);
     this._setIfNotNull('kind', chatJSON.kind);
     if (chatJSON.agent_id != null) {
@@ -6097,22 +6090,14 @@ Firehose.Visitor = (function(_super) {
     this._setIfNotNull('locationLongitude', json.longitude);
     this._setIfNotNull('locationLatitude', json.latitude);
     this._setIfNotNull('referringURL', json.referrer_url);
-    if (json.connected_at != null) {
-      this.set('connectedAt', this._date(json.connected_at));
-    }
-    if (json.disconnected_at != null) {
-      this.set('disconnectedAt', this._date(json.disconnected_at));
-    }
+    this._setIfNotNull('connectedAt', this._date(json.connected_at));
+    this._setIfNotNull('disconnectedAt', this._date(json.disconnected_at));
     this._setIfNotNull('currentURL', json.current_url);
     this._setIfNotNull('ipAddress', json.ip);
-    if (json.visited_current_url_at != null) {
-      this.set('visitedCurrentURLAt', this._date(json.visited_current_url_at));
-    }
+    this._setIfNotNull('visitedCurrentURLAt', this._date(json.visited_current_url_at));
     this._setIfNotNull('boxState', json.box_state);
     this._setIfNotNull('mostRecentChat', json.most_recent_chat);
-    if (json.most_recent_chat_received_at != null) {
-      this.set('mostRecentChatReceivedAt', this._date(json.most_recent_chat_received_at));
-    }
+    this._setIfNotNull('mostRecentChatReceivedAt', this._date(json.most_recent_chat_received_at));
     if (json.env != null) {
       if (json.env.browser != null) {
         this._setIfNotNull('browserName', json.env.browser.name);
