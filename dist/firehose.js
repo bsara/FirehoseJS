@@ -6080,8 +6080,8 @@ Firehose.Visitor = (function(_super) {
     this._setIfNotNull('avatarURL', json.avatar_url);
     this._setIfNotNull('isTyping', json.is_typing);
     this._setIfNotNull('location', json.location_string);
-    this._setIfNotNull('locationLongitude', json.longitude);
-    this._setIfNotNull('locationLatitude', json.latitude);
+    this._setIfNotNull('locationLatitude', json.latitude != null ? json.latitude : json.location[0]);
+    this._setIfNotNull('locationLongitude', json.longitude != null ? json.longitude : json.location[1]);
     this._setIfNotNull('referringURL', json.referrer_url);
     this._setIfNotNull('connectedAt', this._date(json.connected_at));
     this._setIfNotNull('disconnectedAt', this._date(json.disconnected_at));
