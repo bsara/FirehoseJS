@@ -985,6 +985,9 @@ Firehose.Object = (function() {
     if ((dateString == null) || dateString.trim().length === 0) {
       return null;
     }
+    if (dateString.trim().match(/^\d{4}-\d{2}-\d{2} \d{1,2}:\d{2}:\d{2}$/g)) {
+      dateString += " UTC";
+    }
     date = new Date(dateString);
     if (isNaN(date)) {
       return null;
@@ -5969,7 +5972,6 @@ Firehose.Visitor = (function(_super) {
     }
     if (this.id != null) {
       request = {
-        server: 'chatserver',
         route: "visitors/" + this.id
       };
     } else {
@@ -5987,13 +5989,9 @@ Firehose.Visitor = (function(_super) {
 
 
   Visitor.prototype.chatInteractions = function() {
-    var params,
-      _this = this;
+    var _this = this;
     if (this._chatInteractions == null) {
-      params = {
-        server: 'chatserver'
-      };
-      this._setIfNotNull('_chatInteractions', new Firehose.RemoteArray("visitors/" + this.id + "/chat_interactions", params, function(json) {
+      this._setIfNotNull('_chatInteractions', new Firehose.RemoteArray("visitors/" + this.id + "/chat_interactions", null, function(json) {
         return Firehose.ChatInteraction.chatInteractionWithID(json.id, _this);
       }));
       this._chatInteractions.sortOn('createdAt', 'deliveredAt');

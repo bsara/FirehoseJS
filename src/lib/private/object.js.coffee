@@ -185,6 +185,9 @@ class Firehose.Object
   _date: (dateString) ->
     return null if !dateString? || dateString.trim().length == 0
 
+    if dateString.trim().match /^\d{4}-\d{2}-\d{2} \d{1,2}:\d{2}:\d{2}$/g
+      dateString += " UTC"
+
     date = new Date dateString
     if isNaN date then null else date
 

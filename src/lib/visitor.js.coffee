@@ -216,7 +216,6 @@ class Firehose.Visitor extends Firehose.Object
   fetch: (options = {}) ->
     if @id?
       request =
-        server: 'chatserver'
         route: "visitors/#{@id}"
     else
       throw "You can't call 'fetch' on a visitor unless 'id' is set."
@@ -231,9 +230,7 @@ class Firehose.Visitor extends Firehose.Object
   ###
   chatInteractions: ->
     unless @_chatInteractions?
-      params =
-        server: 'chatserver'
-      @_setIfNotNull '_chatInteractions', new Firehose.RemoteArray "visitors/#{@id}/chat_interactions", params, (json) =>
+      @_setIfNotNull '_chatInteractions', new Firehose.RemoteArray "visitors/#{@id}/chat_interactions", null, (json) =>
         Firehose.ChatInteraction.chatInteractionWithID json.id, this
       @_chatInteractions.sortOn 'createdAt', 'deliveredAt'
     @_chatInteractions
