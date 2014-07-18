@@ -297,8 +297,8 @@ class Firehose.Visitor extends Firehose.Object
     @_setIfNotNull 'avatarURL',                json.avatar_url
     @_setIfNotNull 'isTyping',                 json.is_typing
     @_setIfNotNull 'location',                 json.location_string
-    @_setIfNotNull 'locationLatitude',         if json.latitude?  then json.latitude  else json.location[0]
-    @_setIfNotNull 'locationLongitude',        if json.longitude? then json.longitude else json.location[1]
+    @_setIfNotNull 'locationLatitude',         if json.latitude?  then json.latitude  else json.location?[0]
+    @_setIfNotNull 'locationLongitude',        if json.longitude? then json.longitude else json.location?[1]
     # TODO: How to handle timeZone???
     #@_setIfNotNull 'timeZone',                 json.time_zone
     @_setIfNotNull 'referringURL',             json.referrer_url
