@@ -2991,13 +2991,13 @@ Firehose.ChatInteraction = (function(_super) {
   };
 
   ChatInteraction.prototype._populateWithJSON = function(json) {
-    var chatJSON;
+    var chatJSON, _ref1;
     chatJSON = json.chat_interaction != null ? json.chat_interaction : json;
     this._setIfNotNull('deliveredAt', this._date(chatJSON.delivered_at));
     this._setIfNotNull('readAt', this._date(chatJSON.read_at));
     this._setIfNotNull('editedAt', this._date(chatJSON.edited_at));
     this._setIfNotNull('failedAt', this._date(chatJSON.failed_at));
-    this._setIfNotNull('senderDisplayName', chatJSON.sender_display_name);
+    this._setIfNotNull('senderDisplayName', chatJSON.sender_display_name != null ? chatJSON.sender_display_name : (_ref1 = chatJSON.agent) != null ? _ref1.display_name : void 0);
     this._setIfNotNull('kind', chatJSON.kind);
     if (chatJSON.agent_id != null) {
       this._setIfNotNull('agent', Firehose.Agent.agentWithID(chatJSON.agent_id, this.visitor.company));
@@ -5905,6 +5905,13 @@ Firehose.Visitor = (function(_super) {
 
   Visitor.prototype.isTyping = false;
 
+  /*
+  @property [boolean]
+  */
+
+
+  Visitor.prototype.hasFetchedChatInteractions = false;
+
   Visitor.prototype._chatInteractions = null;
 
   Visitor.prototype._setup = function() {
@@ -5990,11 +5997,13 @@ Firehose.Visitor = (function(_super) {
 
   Visitor.prototype.chatInteractions = function() {
     var _this = this;
+    this.set('hasFetchedChatInteractions', false);
     if (this._chatInteractions == null) {
       this._setIfNotNull('_chatInteractions', new Firehose.RemoteArray("visitors/" + this.id + "/chat_interactions", null, function(json) {
         return Firehose.ChatInteraction.chatInteractionWithID(json.id, _this);
       }));
       this._chatInteractions.sortOn('createdAt', 'deliveredAt');
+      this.set('hasFetchedChatInteractions', true);
     }
     return this._chatInteractions;
   };
@@ -6005,8 +6014,10 @@ Firehose.Visitor = (function(_super) {
   */
 
 
-  Visitor.prototype.addChatInteraction = function(chatInteraction) {
-    return this._chatInteractions.insertObject(chatInteraction);
+  Visitor.prototype.addChatInteractionShallow = function(chatInteraction) {
+    if (this.get('hasFetchedChatInteractions')) {
+      return this._chatInteractions.insertObject(chatInteraction);
+    }
   };
 
   /*
@@ -6015,8 +6026,10 @@ Firehose.Visitor = (function(_super) {
   */
 
 
-  Visitor.prototype.removeChatInteraction = function(chatInteraction) {
-    return this._chatInteractions.removeObject(chatInteraction);
+  Visitor.prototype.removeChatInteractionShallow = function(chatInteraction) {
+    if (this.get('hasFetchedChatInteractions')) {
+      return this._chatInteractions.removeObject(chatInteraction);
+    }
   };
 
   /*

@@ -96,7 +96,7 @@ class Firehose.ChatInteraction extends Firehose.Interaction
     @_setIfNotNull 'readAt',            @_date chatJSON.read_at
     @_setIfNotNull 'editedAt',          @_date chatJSON.edited_at
     @_setIfNotNull 'failedAt',          @_date chatJSON.failed_at
-    @_setIfNotNull 'senderDisplayName', chatJSON.sender_display_name
+    @_setIfNotNull 'senderDisplayName', if chatJSON.sender_display_name? then chatJSON.sender_display_name else chatJSON.agent?.display_name
     @_setIfNotNull 'kind',              chatJSON.kind
     @_setIfNotNull 'agent',             Firehose.Agent.agentWithID(chatJSON.agent_id, @visitor.company) if chatJSON.agent_id?
 

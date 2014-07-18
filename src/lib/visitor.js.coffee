@@ -159,6 +159,11 @@ class Firehose.Visitor extends Firehose.Object
   ###
   isTyping: false
 
+  ###
+  @property [boolean]
+  ###
+  hasFetchedChatInteractions: false
+
   # remote arrays
 
   # @nodoc
@@ -229,10 +234,14 @@ class Firehose.Visitor extends Firehose.Object
   @return [Firehose.RemoteArray<Firehose.ChatInteraction>] The found chat interactions.
   ###
   chatInteractions: ->
+    @set 'hasFetchedChatInteractions', false
+
     unless @_chatInteractions?
       @_setIfNotNull '_chatInteractions', new Firehose.RemoteArray "visitors/#{@id}/chat_interactions", null, (json) =>
         Firehose.ChatInteraction.chatInteractionWithID json.id, this
       @_chatInteractions.sortOn 'createdAt', 'deliveredAt'
+      @set 'hasFetchedChatInteractions', true
+
     @_chatInteractions
 
 
@@ -240,16 +249,18 @@ class Firehose.Visitor extends Firehose.Object
   Adds a chat interaction to be connected with the visitor.
   @param chatInteraction [Firehose.ChatInteraction]
   ###
-  addChatInteraction: (chatInteraction) ->
-    @_chatInteractions.insertObject chatInteraction
+  addChatInteractionShallow: (chatInteraction) ->
+    if @get 'hasFetchedChatInteractions'
+      @_chatInteractions.insertObject chatInteraction
 
 
   ###
   Removes a chat interaction connected with the visitor.
   @param chatInteraction [Firehose.ChatInteraction]
   ###
-  removeChatInteraction: (chatInteraction) ->
-    @_chatInteractions.removeObject chatInteraction
+  removeChatInteractionShallow: (chatInteraction) ->
+    if @get 'hasFetchedChatInteractions'
+      @_chatInteractions.removeObject chatInteraction
 
 
   ###
