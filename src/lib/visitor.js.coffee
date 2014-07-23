@@ -239,7 +239,7 @@ class Firehose.Visitor extends Firehose.Object
     unless @_chatInteractions?
       @_setIfNotNull '_chatInteractions', new Firehose.RemoteArray "visitors/#{@id}/chat_interactions", null, (json) =>
         Firehose.ChatInteraction.chatInteractionWithID json.id, this
-      @_chatInteractions.sortOn 'createdAt', 'deliveredAt'
+      @_chatInteractions.sortOn 'createdAt'
       @set 'hasFetchedChatInteractions', true
 
     @_chatInteractions

@@ -1919,7 +1919,6 @@ Firehose.Company = (function(_super) {
         visitor = (_ref1 = Firehose.Customer.customerWithJSON(json, _this)) != null ? _ref1.convertToVisitor() : void 0;
         return visitor.set('isBrandNew', false);
       });
-      this._visitors.sortOn('needsResponse', 'mostRecentChatRecievedAt', 'createdAt', 'desc');
     }
     return this._visitors;
   };
@@ -6002,7 +6001,7 @@ Firehose.Visitor = (function(_super) {
       this._setIfNotNull('_chatInteractions', new Firehose.RemoteArray("visitors/" + this.id + "/chat_interactions", null, function(json) {
         return Firehose.ChatInteraction.chatInteractionWithID(json.id, _this);
       }));
-      this._chatInteractions.sortOn('createdAt', 'deliveredAt');
+      this._chatInteractions.sortOn('createdAt');
       this.set('hasFetchedChatInteractions', true);
     }
     return this._chatInteractions;

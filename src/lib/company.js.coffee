@@ -371,7 +371,6 @@ class Firehose.Company extends Firehose.Object
       @_visitors = new Firehose.RemoteArray "companies/#{@id}/customers", params, (json) =>
         visitor = Firehose.Customer.customerWithJSON(json, this)?.convertToVisitor()
         visitor.set 'isBrandNew', false
-      @_visitors.sortOn 'needsResponse', 'mostRecentChatRecievedAt', 'createdAt', 'desc'
     @_visitors
 
 
