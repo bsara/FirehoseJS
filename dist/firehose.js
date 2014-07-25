@@ -315,7 +315,9 @@ Firehose.Environment = (function() {
 
   Environment.prototype._environmentNumber = {
     development: 0,
-    test: 1
+    test: 1,
+    beta: 2,
+    production: 3
   };
 
   Environment.prototype._appNumber = {
@@ -397,6 +399,12 @@ Firehose.Environment = (function() {
       test: "localhost",
       beta: "chat.firehoseapp.com",
       production: "chat.firehoseapp.com"
+    },
+    chatbilling: {
+      development: "localhost",
+      test: "localhost",
+      beta: "beta_billing.firehosechat.com",
+      production: "billing.firehosechat.com"
     }
   };
 
@@ -411,7 +419,8 @@ Firehose.Environment = (function() {
     kb: "client",
     chatbrowser: "client",
     chatmarketing: "client",
-    chatserver: "server"
+    chatserver: "server",
+    chatbilling: "client"
   };
 
   Environment.prototype._serviceKeys = {

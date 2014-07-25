@@ -52,6 +52,8 @@ class Firehose.Environment
   _environmentNumber:
     development : 0
     test        : 1
+    beta        : 2
+    production  : 3
 
   # The last digit in the port number
   _appNumber:
@@ -65,6 +67,7 @@ class Firehose.Environment
     kb            : 7
     chatbrowser   : 8
     chatmarketing : 9
+    #chatbilling   : -1 # TODO: Give chatbilling a port number
 
 
 
@@ -127,6 +130,12 @@ class Firehose.Environment
       test:         "localhost"
       beta:         "chat.firehoseapp.com"
       production:   "chat.firehoseapp.com"
+    chatbilling:
+      development:  "localhost"
+      test:         "localhost"
+      beta:         "beta_billing.firehosechat.com"
+      production:   "billing.firehosechat.com"
+
 
   _appTypes:
     API           : "server"
@@ -140,6 +149,7 @@ class Firehose.Environment
     chatbrowser   : "client"
     chatmarketing : "client"
     chatserver    : "server"
+    chatbilling   : "client"
 
   _serviceKeys:
     development:
