@@ -54,11 +54,13 @@ of the browser client.
     	0: API
     	1: browser
     	2: billing
-		  3: files
+	    3: files
     	4: marketing
     	5: settings
     	6: tweetlonger
     	7: kb
+        8: chat browser
+        9: chat billing
 
 
 

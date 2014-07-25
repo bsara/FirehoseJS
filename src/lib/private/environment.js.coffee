@@ -66,8 +66,8 @@ class Firehose.Environment
     tweetlonger   : 6
     kb            : 7
     chatbrowser   : 8
-    chatmarketing : 9
-    #chatbilling   : -1 # TODO: Give chatbilling a port number
+    chatbilling   : 9
+    #chatmarketing : -1 # TODO: Give chatbilling a port number
 
 
 
@@ -120,6 +120,11 @@ class Firehose.Environment
       test:         "localhost"
       beta:         "beta.firehoseapp.com"
       production:   "firehoseapp.com"
+    chatbilling:
+      development:  "localhost"
+      test:         "localhost"
+      beta:         "beta_billing.firehosechat.com"
+      production:   "billing.firehosechat.com"
     chatmarketing:
       development:  "localhost"
       test:         "localhost"
@@ -130,11 +135,6 @@ class Firehose.Environment
       test:         "localhost"
       beta:         "chat.firehoseapp.com"
       production:   "chat.firehoseapp.com"
-    chatbilling:
-      development:  "localhost"
-      test:         "localhost"
-      beta:         "beta_billing.firehosechat.com"
-      production:   "billing.firehosechat.com"
 
 
   _appTypes:

@@ -330,7 +330,7 @@ Firehose.Environment = (function() {
     tweetlonger: 6,
     kb: 7,
     chatbrowser: 8,
-    chatmarketing: 9
+    chatbilling: 9
   };
 
   Environment.prototype._appDomainNames = {
@@ -388,6 +388,12 @@ Firehose.Environment = (function() {
       beta: "beta.firehoseapp.com",
       production: "firehoseapp.com"
     },
+    chatbilling: {
+      development: "localhost",
+      test: "localhost",
+      beta: "beta_billing.firehosechat.com",
+      production: "billing.firehosechat.com"
+    },
     chatmarketing: {
       development: "localhost",
       test: "localhost",
@@ -399,12 +405,6 @@ Firehose.Environment = (function() {
       test: "localhost",
       beta: "chat.firehoseapp.com",
       production: "chat.firehoseapp.com"
-    },
-    chatbilling: {
-      development: "localhost",
-      test: "localhost",
-      beta: "beta_billing.firehosechat.com",
-      production: "billing.firehosechat.com"
     }
   };
 
