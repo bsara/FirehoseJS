@@ -330,7 +330,8 @@ Firehose.Environment = (function() {
     tweetlonger: 6,
     kb: 7,
     chatbrowser: 8,
-    chatbilling: 9
+    chatbilling: 9,
+    chatmarketing: 0
   };
 
   Environment.prototype._appDomainNames = {

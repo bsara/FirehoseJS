@@ -67,7 +67,7 @@ class Firehose.Environment
     kb            : 7
     chatbrowser   : 8
     chatbilling   : 9
-    #chatmarketing : -1 # TODO: Give chatbilling a port number
+    chatmarketing : 0 # TODO: Give chatbilling a port number
 
 
 
