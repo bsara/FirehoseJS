@@ -365,9 +365,10 @@ class Firehose.Company extends Firehose.Object
   visitors: ->
     unless @_visitors?
       params =
-        filter:  'everything'
-        channel: 'chat'
-        sort:    'newest_first'
+        filter   : 'everything'
+        channel  : 'chat'
+        sort     : 'newest_first'
+        per_page : 20
       @_visitors = new Firehose.RemoteArray "companies/#{@id}/customers", params, (json) =>
         visitor = Firehose.Customer.customerWithJSON(json, this)?.convertToVisitor()
         visitor.set 'isBrandNew', false

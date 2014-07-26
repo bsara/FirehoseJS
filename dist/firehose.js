@@ -126,15 +126,15 @@ Firehose.UniqueArray = (function(_super) {
     this.sort(function(obj1, obj2) {
       if (obj1[_this._sortOn] > obj2[_this._sortOn]) {
         return 1;
-      } else if (obj1[_this._sortOn] < obj2[_this._sortOn]) {
-        return -1;
-      } else {
-        return 0;
       }
+      if (obj1[_this._sortOn] < obj2[_this._sortOn]) {
+        return -1;
+      }
+      return 0;
     });
     if (this._sortDirection === 'desc') {
-      return this.reverse();
-    }
+      this.reverse();
+    };
   };
 
   UniqueArray.prototype._toArchivableJSON = function() {
@@ -1922,7 +1922,8 @@ Firehose.Company = (function(_super) {
       params = {
         filter: 'everything',
         channel: 'chat',
-        sort: 'newest_first'
+        sort: 'newest_first',
+        per_page: 20
       };
       this._visitors = new Firehose.RemoteArray("companies/" + this.id + "/customers", params, function(json) {
         var visitor, _ref1;
@@ -6011,7 +6012,7 @@ Firehose.Visitor = (function(_super) {
       this._setIfNotNull('_chatInteractions', new Firehose.RemoteArray("visitors/" + this.id + "/chat_interactions", null, function(json) {
         return Firehose.ChatInteraction.chatInteractionWithID(json.id, _this);
       }));
-      this._chatInteractions.sortOn('createdAt');
+      this._chatInteractions.sortOn('receivedAt');
       this.set('hasFetchedChatInteractions', true);
     }
     return this._chatInteractions;

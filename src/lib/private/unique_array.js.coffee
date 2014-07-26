@@ -50,14 +50,15 @@ class Firehose.UniqueArray extends Array
 
   sortObjects: ->
     return unless @_sortOn?
-    this.sort (obj1, obj2) =>
-      if obj1[@_sortOn] > obj2[@_sortOn]
-        1
-      else if obj1[@_sortOn] < obj2[@_sortOn]
-        -1
-      else
-        0
-    this.reverse() if @_sortDirection == 'desc'
+    @sort (obj1, obj2) =>
+      return  1 if obj1[@_sortOn] > obj2[@_sortOn]
+      return -1 if obj1[@_sortOn] < obj2[@_sortOn]
+      return  0
+    `if (this._sortDirection === 'desc') {
+      this.reverse();
+    }`
+    #@reverse() if @_sortDirection == 'desc'
+    return
 
 
   # @nodoc
