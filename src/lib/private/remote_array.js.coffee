@@ -96,4 +96,24 @@ class Firehose.RemoteArray extends Firehose.UniqueArray
     @page       = 1
 
 
+  copy: (isDeepCopy) ->
+    copy = new Firehose.RemoteArray @_path, @_params, @_creationFunction
+
+    copy.perPage        = @perPage
+    copy.page           = @page
+    copy.auth           = @auth
+    copy.totalRows      = @totalRows
+    copy.onceParams     = @onceParams
+    copy._fresh         = @_fresh
+
+    copy.insertObjects @slice(0)
+
+    copy._sortOn        = @_sortOn
+    copy._sortDirection = @_sortDirection
+
+    copy.sortObjects()
+
+    copy
+
+
 

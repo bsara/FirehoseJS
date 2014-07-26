@@ -269,6 +269,22 @@ Firehose.RemoteArray = (function(_super) {
     return this.page = 1;
   };
 
+  RemoteArray.prototype.copy = function(isDeepCopy) {
+    var copy;
+    copy = new Firehose.RemoteArray(this._path, this._params, this._creationFunction);
+    copy.perPage = this.perPage;
+    copy.page = this.page;
+    copy.auth = this.auth;
+    copy.totalRows = this.totalRows;
+    copy.onceParams = this.onceParams;
+    copy._fresh = this._fresh;
+    copy.insertObjects(this.slice(0));
+    copy._sortOn = this._sortOn;
+    copy._sortDirection = this._sortDirection;
+    copy.sortObjects();
+    return copy;
+  };
+
   return RemoteArray;
 
 })(Firehose.UniqueArray);
