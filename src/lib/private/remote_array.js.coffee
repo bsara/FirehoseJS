@@ -66,17 +66,17 @@ class Firehose.RemoteArray extends Firehose.UniqueArray
             object = @_creationFunction(json)
             object._populateWithJSON json
             aggregate.push object
-          this.insertObjects aggregate
+          @insertObjects aggregate
       .always =>
         @_currentXHR = null
 
 
   isAllLoaded: ->
-    not @_fresh and parseInt(this.length) == parseInt(@totalRows)
+    not @_fresh and parseInt(@length) == parseInt(@totalRows)
 
 
   next: ->
-    return null if not @_fresh and this.length == @totalRows
+    return null if not @_fresh and @length == @totalRows
     @_fresh = false
     @_fetchingFunction( @page++ )
 
@@ -86,11 +86,11 @@ class Firehose.RemoteArray extends Firehose.UniqueArray
 
 
   empty: ->
-    this.dropObjects this.splice(0)
+    @dropObjects @splice(0)
 
 
   reset: ->
-    this.empty()
+    @empty()
     @totalRows  = 0
     @_fresh     = true
     @page       = 1

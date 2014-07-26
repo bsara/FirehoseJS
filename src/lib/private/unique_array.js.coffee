@@ -13,34 +13,34 @@ class Firehose.UniqueArray extends Array
 
   appendObject: ->
     for arg in arguments
-      if this.indexOf(arg) == -1
-        this.push arg
+      if @indexOf(arg) == -1
+        @push arg
 
 
   appendObjects: (objects) ->
     for obj in objects
-      this.appendObject obj
+      @appendObject obj
 
 
   insertObject: ->
-    this.appendObject.apply this, arguments
-    this.sortObjects()
+    @appendObject.apply this, arguments
+    @sortObjects()
 
 
   insertObjects: (objects) ->
-    this.appendObjects objects
-    this.sortObjects()
+    @appendObjects objects
+    @sortObjects()
 
 
   dropObject: ->
     for arg in arguments
-      idx = this.indexOf arg
-      this.splice( idx, 1 ) unless idx == -1
+      idx = @indexOf arg
+      @splice( idx, 1 ) unless idx == -1
 
 
   dropObjects: (objects) ->
     for obj in objects
-      this.dropObject obj
+      @dropObject obj
 
 
   sortOn: (property, direction) ->
