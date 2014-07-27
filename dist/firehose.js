@@ -192,6 +192,8 @@ Firehose.RemoteArray = (function(_super) {
 
   RemoteArray.prototype.onceParams = null;
 
+  RemoteArray.prototype._loadedCount = 0;
+
   RemoteArray.prototype._path = null;
 
   RemoteArray.prototype._params = null;
@@ -233,7 +235,8 @@ Firehose.RemoteArray = (function(_super) {
             object._populateWithJSON(json);
             aggregate.push(object);
           }
-          return _this.insertObjects(aggregate);
+          _this.insertObjects(aggregate);
+          return _this._loadedCount += data.length;
         }
       }).always(function() {
         return _this._currentXHR = null;
@@ -242,11 +245,11 @@ Firehose.RemoteArray = (function(_super) {
   }
 
   RemoteArray.prototype.isAllLoaded = function() {
-    return !this._fresh && parseInt(this.length) >= parseInt(this.totalRows);
+    return !this._fresh && this._loadedCount === this.totalRows;
   };
 
   RemoteArray.prototype.next = function() {
-    if (!this._fresh && this.length === this.totalRows) {
+    if (!this._fresh && this._loadedCount === this.totalRows) {
       return null;
     }
     this._fresh = false;
@@ -265,6 +268,7 @@ Firehose.RemoteArray = (function(_super) {
   RemoteArray.prototype.reset = function() {
     this.empty();
     this.totalRows = 0;
+    this._loadedCount = 0;
     this._fresh = true;
     return this.page = 1;
   };

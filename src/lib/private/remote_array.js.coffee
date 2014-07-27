@@ -27,6 +27,9 @@ class Firehose.RemoteArray extends Firehose.UniqueArray
   onceParams: null
 
   # @nodoc
+  _loadedCount: 0
+
+  # @nodoc
   _path: null
 
   # @nodoc
@@ -67,16 +70,17 @@ class Firehose.RemoteArray extends Firehose.UniqueArray
             object._populateWithJSON json
             aggregate.push object
           @insertObjects aggregate
+          @_loadedCount += data.length
       .always =>
         @_currentXHR = null
 
 
   isAllLoaded: ->
-    not @_fresh and parseInt(@length) >= parseInt(@totalRows)
+    !@_fresh and @_loadedCount == @totalRows
 
 
   next: ->
-    return null if not @_fresh and @length == @totalRows
+    return null if !@_fresh and @_loadedCount == @totalRows
     @_fresh = false
     @_fetchingFunction( @page++ )
 
@@ -91,9 +95,10 @@ class Firehose.RemoteArray extends Firehose.UniqueArray
 
   reset: ->
     @empty()
-    @totalRows  = 0
-    @_fresh     = true
-    @page       = 1
+    @totalRows    = 0
+    @_loadedCount = 0
+    @_fresh       = true
+    @page         = 1
 
 
   copy: (isDeepCopy) ->
