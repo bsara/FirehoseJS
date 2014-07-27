@@ -72,7 +72,7 @@ class Firehose.RemoteArray extends Firehose.UniqueArray
 
 
   isAllLoaded: ->
-    not @_fresh and parseInt(@length) == parseInt(@totalRows)
+    not @_fresh and parseInt(@length) >= parseInt(@totalRows)
 
 
   next: ->
