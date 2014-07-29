@@ -119,7 +119,7 @@ class Firehose.Environment
       development:  "localhost"
       test:         "localhost"
       beta:         "beta.firehoseapp.com"
-      production:   "firehoseapp.com"
+      production:   "app.firehosechat.com"
     chatbilling:
       development:  "localhost"
       test:         "localhost"
