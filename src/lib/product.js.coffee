@@ -114,6 +114,11 @@ class Firehose.Product extends Firehose.Object
   ###
   chatOfflineEmailAddress: null
 
+  ###
+  @property [String]
+  ###
+  websiteURL: null
+
 
   # Remote Arrays
 
@@ -319,6 +324,7 @@ class Firehose.Product extends Firehose.Object
     this._setIfNotNull "chatOfflineHeaderText",         json.chat_offline_header_text
     this._setIfNotNull "chatOfflineWelcomeText",        json.chat_offline_welcome_text
     this._setIfNotNull "chatOfflineEmailAddress",       json.chat_offline_email_address
+    this._setIfNotNull "websiteURL",                    json.website
     super json
 
 
@@ -346,6 +352,7 @@ class Firehose.Product extends Firehose.Object
       chat_offline_header_text       : @chatOfflineHeaderText            if @_includesChatAttributes
       chat_offline_welcome_text      : @chatOfflineWelcomeText           if @_includesChatAttributes
       chat_offline_email_address     : @chatOfflineEmailAddress          if @_includesChatAttributes
+      website                        : @websiteURL                       if @_includesChatAttributes
 
    # @nodoc
   _toArchivableJSON: ->
@@ -372,3 +379,4 @@ class Firehose.Product extends Firehose.Object
       chat_offline_header_text       : @chatOfflineHeaderText
       chat_offline_welcome_text      : @chatOfflineWelcomeText
       chat_offline_email_address     : @chatOfflineEmailAddress
+      website                        : @websiteURL

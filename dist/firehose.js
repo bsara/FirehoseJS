@@ -407,7 +407,7 @@ Firehose.Environment = (function() {
       development: "localhost",
       test: "localhost",
       beta: "beta.firehoseapp.com",
-      production: "firehoseapp.com"
+      production: "app.firehosechat.com"
     },
     chatbilling: {
       development: "localhost",
@@ -4986,6 +4986,13 @@ Firehose.Product = (function(_super) {
 
   Product.prototype.chatOfflineEmailAddress = null;
 
+  /*
+  @property [String]
+  */
+
+
+  Product.prototype.websiteURL = null;
+
   Product.prototype._articles = null;
 
   Product.prototype._searchedArticles = null;
@@ -5235,6 +5242,7 @@ Firehose.Product = (function(_super) {
     this._setIfNotNull("chatOfflineHeaderText", json.chat_offline_header_text);
     this._setIfNotNull("chatOfflineWelcomeText", json.chat_offline_welcome_text);
     this._setIfNotNull("chatOfflineEmailAddress", json.chat_offline_email_address);
+    this._setIfNotNull("websiteURL", json.website);
     return Product.__super__._populateWithJSON.call(this, json);
   };
 
@@ -5261,7 +5269,8 @@ Firehose.Product = (function(_super) {
         chat_online_welcome_text: this._includesChatAttributes ? this.chatOnlineWelcomeText : void 0,
         chat_offline_header_text: this._includesChatAttributes ? this.chatOfflineHeaderText : void 0,
         chat_offline_welcome_text: this._includesChatAttributes ? this.chatOfflineWelcomeText : void 0,
-        chat_offline_email_address: this._includesChatAttributes ? this.chatOfflineEmailAddress : void 0
+        chat_offline_email_address: this._includesChatAttributes ? this.chatOfflineEmailAddress : void 0,
+        website: this._includesChatAttributes ? this.websiteURL : void 0
       }
     };
   };
@@ -5289,7 +5298,8 @@ Firehose.Product = (function(_super) {
       chat_online_welcome_text: this.chatOnlineWelcomeText,
       chat_offline_header_text: this.chatOfflineHeaderText,
       chat_offline_welcome_text: this.chatOfflineWelcomeText,
-      chat_offline_email_address: this.chatOfflineEmailAddress
+      chat_offline_email_address: this.chatOfflineEmailAddress,
+      website: this.websiteURL
     });
   };
 
