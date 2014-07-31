@@ -5075,6 +5075,7 @@ Firehose.Product = (function(_super) {
         route: "products/" + this.id,
         body: this._toJSON()
       };
+      console.debug(params);
       return Firehose.client.put(this, params);
     } else {
       params = {
@@ -5251,6 +5252,7 @@ Firehose.Product = (function(_super) {
       product: {
         name: this.name != null ? this.name : void 0,
         kb_subdomain: this.knowledgeBaseSubdomain != null ? this.knowledgeBaseSubdomain : void 0,
+        website: this.websiteURL != null ? this.websiteURL : void 0,
         kb_custom_domain: this._includesKnowledgeBaseAttributes ? this.knowledgeBaseCustomDomain : void 0,
         kb_css: this._includesKnowledgeBaseAttributes ? this.knowledgeBaseCSS : void 0,
         kb_layout_template: this._includesKnowledgeBaseAttributes ? this.knowledgeBaseLayoutTemplate : void 0,
@@ -5269,8 +5271,7 @@ Firehose.Product = (function(_super) {
         chat_online_welcome_text: this._includesChatAttributes ? this.chatOnlineWelcomeText : void 0,
         chat_offline_header_text: this._includesChatAttributes ? this.chatOfflineHeaderText : void 0,
         chat_offline_welcome_text: this._includesChatAttributes ? this.chatOfflineWelcomeText : void 0,
-        chat_offline_email_address: this._includesChatAttributes ? this.chatOfflineEmailAddress : void 0,
-        website: this._includesChatAttributes ? this.websiteURL : void 0
+        chat_offline_email_address: this._includesChatAttributes ? this.chatOfflineEmailAddress : void 0
       }
     };
   };
