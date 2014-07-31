@@ -333,6 +333,7 @@ class Firehose.Product extends Firehose.Object
     product:
       name                           : @name                             if @name?
       kb_subdomain                   : @knowledgeBaseSubdomain           if @knowledgeBaseSubdomain?
+      website                        : @websiteURL                       if @websiteURL?
       kb_custom_domain               : @knowledgeBaseCustomDomain        if @_includesKnowledgeBaseAttributes
       kb_css                         : @knowledgeBaseCSS                 if @_includesKnowledgeBaseAttributes
       kb_layout_template             : @knowledgeBaseLayoutTemplate      if @_includesKnowledgeBaseAttributes
@@ -352,7 +353,6 @@ class Firehose.Product extends Firehose.Object
       chat_offline_header_text       : @chatOfflineHeaderText            if @_includesChatAttributes
       chat_offline_welcome_text      : @chatOfflineWelcomeText           if @_includesChatAttributes
       chat_offline_email_address     : @chatOfflineEmailAddress          if @_includesChatAttributes
-      website                        : @websiteURL                       if @_includesChatAttributes
 
    # @nodoc
   _toArchivableJSON: ->
