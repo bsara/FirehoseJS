@@ -197,7 +197,6 @@ class Firehose.Product extends Firehose.Object
       params =
         route: "products/#{@id}"
         body:  this._toJSON()
-      console.debug params
       Firehose.client.put( this, params )
     else
       params =

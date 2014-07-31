@@ -5075,7 +5075,6 @@ Firehose.Product = (function(_super) {
         route: "products/" + this.id,
         body: this._toJSON()
       };
-      console.debug(params);
       return Firehose.client.put(this, params);
     } else {
       params = {
