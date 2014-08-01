@@ -6139,6 +6139,7 @@ Firehose.Visitor = (function(_super) {
     this._setIfNotNull('disconnectedAt', this._date(json.disconnected_at));
     this._setIfNotNull('currentURL', json.current_url);
     this._setIfNotNull('ipAddress', json.ip);
+    this._setIfNotNull('customAttributes', json.custom_attributes);
     this._setIfNotNull('visitedCurrentURLAt', this._date(json.visited_current_url_at));
     this._setIfNotNull('boxState', json.box_state);
     this._setIfNotNull('mostRecentChat', json.most_recent_chat);

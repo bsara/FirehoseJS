@@ -318,8 +318,7 @@ class Firehose.Visitor extends Firehose.Object
     @_setIfNotNull 'currentURL',               json.current_url
     @_setIfNotNull 'ipAddress',                json.ip
 
-    # TODO: what to do with custom_attributes???
-    #@_setIfNotNull 'customAttributes',         json.custom_attributes
+    @_setIfNotNull 'customAttributes',         json.custom_attributes
 
     @_setIfNotNull 'visitedCurrentURLAt',      @_date json.visited_current_url_at
 
@@ -356,8 +355,3 @@ class Firehose.Visitor extends Firehose.Object
     @_setIfNotNull 'isOnline',                 json.is_online
 
     super json
-
-
-
-
-
