@@ -670,6 +670,11 @@ Firehose.Client = (function() {
         $.extend(headers, {
           "Authorization": "Token token=\"" + this.APIAccessToken + "\""
         });
+      } else if (((typeof localStorage !== "undefined" && localStorage !== null ? localStorage.accessToken : void 0) != null) && (server === 'API' || server === 'chatserver')) {
+        this.APIAccessToken = localStorage.accessToken;
+        $.extend(headers, {
+          "Authorization": "Token token=\"" + this.APIAccessToken + "\""
+        });
       } else if ((this.billingAccessToken != null) && server === 'billing') {
         $.extend(headers, {
           "Authorization": "Token token=\"" + this.billingAccessToken + "\""

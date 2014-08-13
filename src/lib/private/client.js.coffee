@@ -107,7 +107,10 @@ class Firehose.Client
 
     if auth
       if @APIAccessToken? && (server == 'API' || server == 'chatserver')
-          $.extend headers, { "Authorization" : "Token token=\"#{@APIAccessToken}\"" }
+        $.extend headers, { "Authorization" : "Token token=\"#{@APIAccessToken}\"" }
+      else if localStorage?.accessToken? && (server == 'API' || server == 'chatserver')
+        @APIAccessToken = localStorage.accessToken
+        $.extend headers, { "Authorization" : "Token token=\"#{@APIAccessToken}\"" }
       else if @billingAccessToken? and server == 'billing'
         $.extend headers, { "Authorization" : "Token token=\"#{@billingAccessToken}\"" }
 
