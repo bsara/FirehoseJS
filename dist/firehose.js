@@ -2174,7 +2174,7 @@ Firehose.Company = (function(_super) {
   };
 
   Company.prototype._populateWithJSON = function(json) {
-    var _ref1,
+    var current, product, _i, _len, _ref1, _ref2,
       _this = this;
     this._setIfNotNull('title', json.title);
     if (this.token == null) {
@@ -2208,7 +2208,18 @@ Firehose.Company = (function(_super) {
     });
     Firehose.client.billingAccessToken = this.token;
     if (this.products.length > 0 && (this.currentProduct == null)) {
-      this._setIfNotNull('currentProduct', this.products[0]);
+      current = null;
+      _ref2 = this.products;
+      for (_i = 0, _len = _ref2.length; _i < _len; _i++) {
+        product = _ref2[_i];
+        if (current == null) {
+          current = product;
+        }
+        if (product.createdAt < current.createdAt) {
+          current = product;
+        }
+      }
+      this._setIfNotNull('currentProduct', current);
     }
     return Company.__super__._populateWithJSON.call(this, json);
   };

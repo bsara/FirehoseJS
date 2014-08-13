@@ -577,7 +577,12 @@ class Firehose.Company extends Firehose.Object
     Firehose.client.billingAccessToken = @token
 
     if @products.length > 0 and not @currentProduct?
-      @_setIfNotNull 'currentProduct', @products[0]
+      current = null
+      for product in @products
+        current = product unless current?
+        if product.createdAt < current.createdAt
+          current = product
+      @_setIfNotNull 'currentProduct', current
 
     super json
 
@@ -605,5 +610,3 @@ class Firehose.Company extends Firehose.Object
       agent_invites:        @agentInvites._toArchivableJSON()
       tags:                 @tags._toArchivableJSON()
       canned_responses:     @cannedResponses._toArchivableJSON()
-
-
