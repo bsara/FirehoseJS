@@ -6037,7 +6037,6 @@ Firehose.Visitor = (function(_super) {
 
   Visitor.prototype.chatInteractions = function() {
     var _this = this;
-    this.set('hasFetchedChatInteractions', false);
     if (this._chatInteractions == null) {
       this._setIfNotNull('_chatInteractions', new Firehose.RemoteArray("visitors/" + this.id + "/chat_interactions", null, function(json) {
         return Firehose.ChatInteraction.chatInteractionWithID(json.id, _this);

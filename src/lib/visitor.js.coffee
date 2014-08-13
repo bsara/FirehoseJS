@@ -234,7 +234,7 @@ class Firehose.Visitor extends Firehose.Object
   @return [Firehose.RemoteArray<Firehose.ChatInteraction>] The found chat interactions.
   ###
   chatInteractions: ->
-    @set 'hasFetchedChatInteractions', false
+    # @set 'hasFetchedChatInteractions', false
 
     unless @_chatInteractions?
       @_setIfNotNull '_chatInteractions', new Firehose.RemoteArray "visitors/#{@id}/chat_interactions", null, (json) =>
