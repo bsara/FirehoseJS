@@ -5007,6 +5007,20 @@ Firehose.Product = (function(_super) {
   */
 
 
+  Product.prototype.chatAppearance = null;
+
+  /*
+  @property [String]
+  */
+
+
+  Product.prototype.chatTabPosition = null;
+
+  /*
+  @property [String]
+  */
+
+
   Product.prototype.websiteURL = null;
 
   Product.prototype._articles = null;
@@ -5258,6 +5272,8 @@ Firehose.Product = (function(_super) {
     this._setIfNotNull("chatOfflineHeaderText", json.chat_offline_header_text);
     this._setIfNotNull("chatOfflineWelcomeText", json.chat_offline_welcome_text);
     this._setIfNotNull("chatOfflineEmailAddress", json.chat_offline_email_address);
+    this._setIfNotNull("chatAppearance", json.chat_appearance);
+    this._setIfNotNull("chatTabPosition", json.chat_tab_position);
     this._setIfNotNull("websiteURL", json.website);
     return Product.__super__._populateWithJSON.call(this, json);
   };
@@ -5286,7 +5302,9 @@ Firehose.Product = (function(_super) {
         chat_online_welcome_text: this._includesChatAttributes ? this.chatOnlineWelcomeText : void 0,
         chat_offline_header_text: this._includesChatAttributes ? this.chatOfflineHeaderText : void 0,
         chat_offline_welcome_text: this._includesChatAttributes ? this.chatOfflineWelcomeText : void 0,
-        chat_offline_email_address: this._includesChatAttributes ? this.chatOfflineEmailAddress : void 0
+        chat_offline_email_address: this._includesChatAttributes ? this.chatOfflineEmailAddress : void 0,
+        chat_appearance: this._includesChatAttributes ? this.chatAppearance : void 0,
+        chat_tab_position: this._includesChatAttributes ? this.chatTabPosition : void 0
       }
     };
   };
