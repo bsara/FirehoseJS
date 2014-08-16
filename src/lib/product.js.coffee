@@ -117,6 +117,16 @@ class Firehose.Product extends Firehose.Object
   ###
   @property [String]
   ###
+  chatAppearance: null
+
+  ###
+  @property [String]
+  ###
+  chatTabPosition: null
+
+  ###
+  @property [String]
+  ###
   websiteURL: null
 
 
@@ -324,6 +334,8 @@ class Firehose.Product extends Firehose.Object
     this._setIfNotNull "chatOfflineHeaderText",         json.chat_offline_header_text
     this._setIfNotNull "chatOfflineWelcomeText",        json.chat_offline_welcome_text
     this._setIfNotNull "chatOfflineEmailAddress",       json.chat_offline_email_address
+    this._setIfNotNull "chatAppearance",                json.chat_appearance
+    this._setIfNotNull "chatTabPosition",               json.chat_tab_position
     this._setIfNotNull "websiteURL",                    json.website
     super json
 
@@ -353,6 +365,8 @@ class Firehose.Product extends Firehose.Object
       chat_offline_header_text       : @chatOfflineHeaderText            if @_includesChatAttributes
       chat_offline_welcome_text      : @chatOfflineWelcomeText           if @_includesChatAttributes
       chat_offline_email_address     : @chatOfflineEmailAddress          if @_includesChatAttributes
+      chat_appearance                : @chatAppearance                   if @_includesChatAttributes
+      chat_tab_position              : @chatTabPosition                  if @_includesChatAttributes 
 
    # @nodoc
   _toArchivableJSON: ->
