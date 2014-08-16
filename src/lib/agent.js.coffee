@@ -295,4 +295,3 @@ class Firehose.Agent extends Firehose.Object
       dnd_is_manually_turned_on : @DNDIsManuallyTurnedOn
       digest_days               : @digestDays
       companies                 : @companies?._toArchivableJSON()
-
