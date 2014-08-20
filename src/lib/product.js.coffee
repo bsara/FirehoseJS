@@ -117,6 +117,11 @@ class Firehose.Product extends Firehose.Object
   ###
   @property [String]
   ###
+  chatPlaceholderText: null
+
+  ###
+  @property [String]
+  ###
   chatAppearance: null
 
   ###
@@ -342,6 +347,7 @@ class Firehose.Product extends Firehose.Object
     this._setIfNotNull "chatAppearance",                json.chat_appearance
     this._setIfNotNull "chatTabPosition",               json.chat_tab_position
     this._setIfNotNull "chatUseCustomCSS",              json.chat_use_custom_css
+    this._setIfNotNull "chatPlaceholderText",           json.chat_placeholder_text
     this._setIfNotNull "websiteURL",                    json.website
     super json
 
@@ -374,6 +380,7 @@ class Firehose.Product extends Firehose.Object
       chat_appearance                : @chatAppearance                   if @_includesChatAttributes
       chat_tab_position              : @chatTabPosition                  if @_includesChatAttributes
       chat_use_custom_css            : @chatUseCustomCSS                 if @_includesChatAttributes
+      chat_placeholder_text          : @chatPlaceholderText              if @_includesChatAttributes
 
    # @nodoc
   _toArchivableJSON: ->

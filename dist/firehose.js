@@ -5007,6 +5007,13 @@ Firehose.Product = (function(_super) {
   */
 
 
+  Product.prototype.chatPlaceholderText = null;
+
+  /*
+  @property [String]
+  */
+
+
   Product.prototype.chatAppearance = null;
 
   /*
@@ -5282,6 +5289,7 @@ Firehose.Product = (function(_super) {
     this._setIfNotNull("chatAppearance", json.chat_appearance);
     this._setIfNotNull("chatTabPosition", json.chat_tab_position);
     this._setIfNotNull("chatUseCustomCSS", json.chat_use_custom_css);
+    this._setIfNotNull("chatPlaceholderText", json.chat_placeholder_text);
     this._setIfNotNull("websiteURL", json.website);
     return Product.__super__._populateWithJSON.call(this, json);
   };
@@ -5313,7 +5321,8 @@ Firehose.Product = (function(_super) {
         chat_offline_email_address: this._includesChatAttributes ? this.chatOfflineEmailAddress : void 0,
         chat_appearance: this._includesChatAttributes ? this.chatAppearance : void 0,
         chat_tab_position: this._includesChatAttributes ? this.chatTabPosition : void 0,
-        chat_use_custom_css: this._includesChatAttributes ? this.chatUseCustomCSS : void 0
+        chat_use_custom_css: this._includesChatAttributes ? this.chatUseCustomCSS : void 0,
+        chat_placeholder_text: this._includesChatAttributes ? this.chatPlaceholderText : void 0
       }
     };
   };
