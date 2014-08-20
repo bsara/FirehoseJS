@@ -135,6 +135,16 @@ class Firehose.Product extends Firehose.Object
   chatUseCustomCSS: null
 
   ###
+  @property [Boolean]
+  ###
+  chatHideBoxWhenOffline: null
+
+  ###
+  @property [Boolean]
+  ###
+  chatHideBoxWhenUnavailable: null
+
+  ###
   @property [String]
   ###
   websiteURL: null
@@ -348,6 +358,8 @@ class Firehose.Product extends Firehose.Object
     this._setIfNotNull "chatTabPosition",               json.chat_tab_position
     this._setIfNotNull "chatUseCustomCSS",              json.chat_use_custom_css
     this._setIfNotNull "chatPlaceholderText",           json.chat_placeholder_text
+    this._setIfNotNull "chatHideBoxWhenOffline",        json.chat_hide_box_when_offline
+    this._setIfNotNull "chatHideBoxWhenUnavailable",    json.chat_hide_box_when_unavailable
     this._setIfNotNull "websiteURL",                    json.website
     super json
 
@@ -381,6 +393,8 @@ class Firehose.Product extends Firehose.Object
       chat_tab_position              : @chatTabPosition                  if @_includesChatAttributes
       chat_use_custom_css            : @chatUseCustomCSS                 if @_includesChatAttributes
       chat_placeholder_text          : @chatPlaceholderText              if @_includesChatAttributes
+      chat_hide_box_when_offline     : @chatHideBoxWhenOffline           if @_includesChatAttributes
+      chat_hide_box_when_unavailable : @chatHideBoxWhenUnavailable       if @_includesChatAttributes
 
    # @nodoc
   _toArchivableJSON: ->

@@ -5031,6 +5031,20 @@ Firehose.Product = (function(_super) {
   Product.prototype.chatUseCustomCSS = null;
 
   /*
+  @property [Boolean]
+  */
+
+
+  Product.prototype.chatHideBoxWhenOffline = null;
+
+  /*
+  @property [Boolean]
+  */
+
+
+  Product.prototype.chatHideBoxWhenUnavailable = null;
+
+  /*
   @property [String]
   */
 
@@ -5290,6 +5304,8 @@ Firehose.Product = (function(_super) {
     this._setIfNotNull("chatTabPosition", json.chat_tab_position);
     this._setIfNotNull("chatUseCustomCSS", json.chat_use_custom_css);
     this._setIfNotNull("chatPlaceholderText", json.chat_placeholder_text);
+    this._setIfNotNull("chatHideBoxWhenOffline", json.chat_hide_box_when_offline);
+    this._setIfNotNull("chatHideBoxWhenUnavailable", json.chat_hide_box_when_unavailable);
     this._setIfNotNull("websiteURL", json.website);
     return Product.__super__._populateWithJSON.call(this, json);
   };
@@ -5322,7 +5338,9 @@ Firehose.Product = (function(_super) {
         chat_appearance: this._includesChatAttributes ? this.chatAppearance : void 0,
         chat_tab_position: this._includesChatAttributes ? this.chatTabPosition : void 0,
         chat_use_custom_css: this._includesChatAttributes ? this.chatUseCustomCSS : void 0,
-        chat_placeholder_text: this._includesChatAttributes ? this.chatPlaceholderText : void 0
+        chat_placeholder_text: this._includesChatAttributes ? this.chatPlaceholderText : void 0,
+        chat_hide_box_when_offline: this._includesChatAttributes ? this.chatHideBoxWhenOffline : void 0,
+        chat_hide_box_when_unavailable: this._includesChatAttributes ? this.chatHideBoxWhenUnavailable : void 0
       }
     };
   };
